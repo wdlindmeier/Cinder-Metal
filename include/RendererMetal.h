@@ -45,15 +45,7 @@ namespace cinder { namespace app {
         
         void startDraw() override;
         void finishDraw() override;
-        
-#if defined __OBJC__
-        // Metal accessors
-        // TMP
-        // Abstract this
-        CAMetalLayer * getLayer();
-        id <MTLDevice> getDevice();
-#endif
-        
+
     protected:
         
 //        Renderer() {}

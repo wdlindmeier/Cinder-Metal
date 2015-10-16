@@ -25,6 +25,9 @@
 		A920449C1BCADD5E00CC8AAB /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */; };
 		A920449E1BCAE04100CC8AAB /* RendererImplMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449D1BCAE04100CC8AAB /* RendererImplMetal.mm */; };
 		A92044A11BCB0AD000CC8AAB /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A92044A01BCB0AD000CC8AAB /* Shaders.metal */; };
+		A96C5E591BCDD86F001DD6D3 /* MetalPipeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = A96C5E571BCDD86F001DD6D3 /* MetalPipeline.mm */; settings = {ASSET_TAGS = (); }; };
+		A96C5E5C1BCDD87C001DD6D3 /* MetalRenderPass.mm in Sources */ = {isa = PBXBuildFile; fileRef = A96C5E5A1BCDD87C001DD6D3 /* MetalRenderPass.mm */; settings = {ASSET_TAGS = (); }; };
+		A96C5E611BCDDE3E001DD6D3 /* MetalContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = A96C5E601BCDDE3E001DD6D3 /* MetalContext.mm */; settings = {ASSET_TAGS = (); }; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8F00FA186B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C725E000121DAC8F00FA186B /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8FFFFA18FF /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091FFFF /* ImageIO.framework */; };
@@ -60,6 +63,13 @@
 		A920449D1BCAE04100CC8AAB /* RendererImplMetal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererImplMetal.mm; sourceTree = "<group>"; };
 		A920449F1BCAE05200CC8AAB /* RendererImplMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererImplMetal.h; sourceTree = "<group>"; };
 		A92044A01BCB0AD000CC8AAB /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = ../src/Shaders.metal; sourceTree = "<group>"; };
+		A96C5E511BCD6FAA001DD6D3 /* metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = metal.h; sourceTree = "<group>"; };
+		A96C5E571BCDD86F001DD6D3 /* MetalPipeline.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalPipeline.mm; sourceTree = "<group>"; };
+		A96C5E5A1BCDD87C001DD6D3 /* MetalRenderPass.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalRenderPass.mm; sourceTree = "<group>"; };
+		A96C5E5E1BCDD8B5001DD6D3 /* MetalPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalPipeline.h; sourceTree = "<group>"; };
+		A96C5E5F1BCDD8B5001DD6D3 /* MetalRenderPass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderPass.h; sourceTree = "<group>"; };
+		A96C5E601BCDDE3E001DD6D3 /* MetalContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalContext.mm; sourceTree = "<group>"; };
+		A96C5E621BCDDE45001DD6D3 /* MetalContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalContext.h; sourceTree = "<group>"; };
 		B1EDD2D86ED34798BCF5DADA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C727C02B121B400300192073 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -192,8 +202,12 @@
 			isa = PBXGroup;
 			children = (
 				A92044961BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.h */,
-				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
+				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
+				A96C5E621BCDDE45001DD6D3 /* MetalContext.h */,
+				A96C5E5E1BCDD8B5001DD6D3 /* MetalPipeline.h */,
+				A96C5E5F1BCDD8B5001DD6D3 /* MetalRenderPass.h */,
 				A920449F1BCAE05200CC8AAB /* RendererImplMetal.h */,
+				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
 			);
 			name = include;
 			path = ../../../include;
@@ -203,8 +217,11 @@
 			isa = PBXGroup;
 			children = (
 				A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */,
-				A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */,
+				A96C5E601BCDDE3E001DD6D3 /* MetalContext.mm */,
+				A96C5E571BCDD86F001DD6D3 /* MetalPipeline.mm */,
+				A96C5E5A1BCDD87C001DD6D3 /* MetalRenderPass.mm */,
 				A920449D1BCAE04100CC8AAB /* RendererImplMetal.mm */,
+				A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */,
 			);
 			name = src;
 			path = ../../../src;
@@ -274,9 +291,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A96C5E5C1BCDD87C001DD6D3 /* MetalRenderPass.mm in Sources */,
 				22F02BB9C5664FB8B79128FD /* MetalCubeApp.mm in Sources */,
 				A920449C1BCADD5E00CC8AAB /* RendererMetal.mm in Sources */,
+				A96C5E591BCDD86F001DD6D3 /* MetalPipeline.mm in Sources */,
 				A920449E1BCAE04100CC8AAB /* RendererImplMetal.mm in Sources */,
+				A96C5E611BCDDE3E001DD6D3 /* MetalContext.mm in Sources */,
 				A920449B1BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm in Sources */,
 				A92044A11BCB0AD000CC8AAB /* Shaders.metal in Sources */,
 			);
