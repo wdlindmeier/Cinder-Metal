@@ -9,8 +9,6 @@
 #pragma once
 
 #include "cinder/Cinder.h"
-#import <Metal/Metal.h>
-#import <simd/simd.h>
 
 #if defined( __OBJC__ )
 @class MetalRenderPassImpl;
@@ -19,8 +17,6 @@ class MetalRenderPassImpl;
 #endif
 
 namespace cinder { namespace mtl {
-    
-//    typedef std::shared_ptr<class MetalRenderPass> MetalRenderPassRef;
     
     class MetalRenderPass
     {
@@ -46,30 +42,6 @@ namespace cinder { namespace mtl {
             float clearDepth;
         };
         
-//        static MetalRenderPassRef create( Format format = Format() );
-//
-//    protected:
-//        
-//        MetalRenderPassImpl *mImpl;
-//        Format mFormat;
-//
-//        MetalRenderPass( Format & format );
-//        ~MetalRenderPass(){}
-
     };
+    
 } }
-
-@interface MetalRenderPassImpl : NSObject
-{
-}
-
-//- (instancetype)initWithFormat:( ci::mtl::MetalRenderPass::Format & )format;
-- (void)prepareForRenderToTexture:(id <MTLTexture>)texture;
-
-@property (nonatomic, strong) MTLRenderPassDescriptor *renderPassDescriptor;
-@property (nonatomic, strong) id <MTLTexture> depthTex;
-@property (nonatomic, strong) id <MTLTexture> msaaTex;
-
-@end
-
-

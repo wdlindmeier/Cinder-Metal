@@ -21,7 +21,6 @@
 
 + (Class)layerClass
 {
-    NSLog(@"Setting CAMetalLayer");
     return [CAMetalLayer class];
 }
 
@@ -78,14 +77,11 @@
     [MetalContext sharedContext].metalLayer.drawableSize = drawableSize;
     _layerSizeDidUpdate = NO;
     [[MetalContext sharedContext] startDraw];
-    ci::app::console() << "start render\n";
 }
 
 - (void)finishDraw
 {
-    //...
-    [[MetalContext sharedContext] finishDraw];//:(id<MTLCommandBuffer>)
-    ci::app::console() << "finish render\n";
+    [[MetalContext sharedContext] finishDraw];
 }
 
 @end

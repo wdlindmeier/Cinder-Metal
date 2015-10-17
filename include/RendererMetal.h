@@ -21,7 +21,7 @@ namespace cinder { namespace app {
     public:
         
         RendererMetal();
-        ~RendererMetal();
+        virtual ~RendererMetal();
         
         // TODO
         // How do I cast this?
@@ -47,10 +47,7 @@ namespace cinder { namespace app {
         void finishDraw() override;
 
     protected:
-        
-//        Renderer() {}
-//        Renderer( const Renderer &renderer );
-        
+
         RendererImplMetal *mImpl;
         
     };

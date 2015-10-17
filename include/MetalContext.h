@@ -14,10 +14,10 @@
 #import <simd/simd.h>
 
 #include "cinder/Cinder.h"
+#include "metal.h"
 
 @interface MetalContext : NSObject
 {
-    
 }
 
 @property (nonatomic, strong) id <MTLDevice> device;
@@ -25,11 +25,7 @@
 @property (nonatomic, strong) id <MTLLibrary> library;
 @property (nonatomic, strong) CAMetalLayer *metalLayer;
 
-//- (void)commandBufferDraw:(void (^)(id <CAMetalDrawable>, id <MTLCommandBuffer> ))drawingBlock;
-//- (void)commandBufferDraw:(void (^)(id <MTLCommandBuffer> ))drawingBlock;
-//- (void)commandBufferDraw:(void (^)( id <MTLCommandBuffer> commandBuffer,
-//                                     MTLRenderPassDescriptor * renderPassDescriptor ))drawingBlock;
-- (void)commandBufferDraw:(void (^)( id <MTLRenderCommandEncoder> renderEncoder ))drawingBlock;
+- (void)commandBufferDraw:(void (^)( ci::mtl::MetalRenderEncoderRef renderEncoder ))drawingBlock;
 
 - (void)startDraw;
 - (void)finishDraw;

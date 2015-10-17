@@ -16,6 +16,9 @@ using namespace ci;
 using namespace ci::app;
 using namespace cinder::mtl;
 
+// Max API memory buffer size.
+static const size_t MAX_BYTES_PER_FRAME = 1024*1024;
+
 float cubeVertexData[216] =
 {
     // Data layout for each line below is:
@@ -77,21 +80,18 @@ class MetalCubeApp : public App {
 	void update() override;
 	void draw() override;
     
-    void setupRenderPassDescriptorForTexture(id <MTLTexture> texture);
-
-    RendererMetalRef mRenderer;
-//    MetalRenderPassRef mRenderPass;
+//    id <MTLBuffer> _vertexBuffer;
+//    id <MTLBuffer> _dynamicConstantBuffer;
     
-    id <MTLBuffer> _dynamicConstantBuffer;
+    MetalBufferRef mVertexBuffer;
+    MetalBufferRef mDynamicConstantBuffer;
     uint8_t _constantDataBufferIndex;
     
-//    MTLRenderPassDescriptor *_renderPassDescriptor;
-    id <MTLRenderPipelineState> _pipelineState;
-    id <MTLBuffer> _vertexBuffer;
-    id <MTLDepthStencilState> _depthState;
-//    id <MTLTexture> _depthTex;
-//    id <MTLTexture> _msaaTex;
     
+//    id <MTLRenderPipelineState> _pipelineState;
+//    id <MTLDepthStencilState> _depthState;
+    MetalPipelineRef mPipelineLighting;
+
     // uniforms
     uniforms_t _uniform_buffer;
     float _rotation;
@@ -102,14 +102,7 @@ class MetalCubeApp : public App {
 void MetalCubeApp::setup()
 {
     console() << "Setup\n";
-    mRenderer = std::dynamic_pointer_cast<RendererMetal>( this->getRenderer() );
-    
-    
-
-    // TODO: How much of this should be in the app and how much in the renderer?
     _constantDataBufferIndex = 0;
-//    _inflight_semaphore = dispatch_semaphore_create(g_max_inflight_buffers);
-
     loadAssets();
 }
 
@@ -124,73 +117,48 @@ void MetalCubeApp::loadAssets()
     // Allocate one region of memory for the uniform buffer
 
     // TODO: Abstract
-    auto device = [MetalContext sharedContext].device;
-    auto library = [MetalContext sharedContext].library;
+//    auto device = [MetalContext sharedContext].device;
+//    auto library = [MetalContext sharedContext].library;
     
-    _dynamicConstantBuffer = [device newBufferWithLength:MAX_BYTES_PER_FRAME options:0];
-    _dynamicConstantBuffer.label = @"UniformBuffer";
+    mDynamicConstantBuffer = MetalBuffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
     
-    // Load the fragment program into the library
-    id <MTLFunction> fragmentProgram = [library newFunctionWithName:@"lighting_fragment"];
+//    _dynamicConstantBuffer = [device newBufferWithLength:MAX_BYTES_PER_FRAME options:0];
+//    _dynamicConstantBuffer.label = @"UniformBuffer";
     
-    // Load the vertex program into the library
-    id <MTLFunction> vertexProgram = [library newFunctionWithName:@"lighting_vertex"];
+//    // Load the fragment program into the library
+//    id <MTLFunction> fragmentProgram = [library newFunctionWithName:@"lighting_fragment"];
+//    
+//    // Load the vertex program into the library
+//    id <MTLFunction> vertexProgram = [library newFunctionWithName:@"lighting_vertex"];
     
     // Setup the vertex buffers
-    _vertexBuffer = [device newBufferWithBytes:cubeVertexData length:sizeof(cubeVertexData) options:MTLResourceOptionCPUCacheModeDefault];
-    _vertexBuffer.label = @"Vertices";
+    mVertexBuffer = MetalBuffer::create(sizeof(cubeVertexData), cubeVertexData, "Vertices");
+//    _vertexBuffer = [device newBufferWithBytes:cubeVertexData length:sizeof(cubeVertexData) options:MTLResourceOptionCPUCacheModeDefault];
+//    _vertexBuffer.label = @"Vertices";
     
-    // Create a reusable pipeline state
-    MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    pipelineStateDescriptor.label = @"MyPipeline";
-    [pipelineStateDescriptor setSampleCount: 1];
-    [pipelineStateDescriptor setVertexFunction:vertexProgram];
-    [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
+    mPipelineLighting = MetalPipeline::create("lighting_vertex", "lighting_fragment",
+                                              MetalPipeline::Format().depth(true) );
     
-    NSError* error = NULL;
-    _pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
-    if (!_pipelineState) {
-        NSLog(@"Failed to created pipeline state, error %@", error);
-    }
-    
-    MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
-    depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
-    depthStateDesc.depthWriteEnabled = YES;
-    _depthState = [device newDepthStencilStateWithDescriptor:depthStateDesc];
-}
-
-//void MetalCubeApp::setupRenderPassDescriptorForTexture(id <MTLTexture> texture)
-//{
-//    // TODO: Abstract
-//    auto device = [MetalContext sharedContext].device;
-//
-//    if (_renderPassDescriptor == nil)
-//    {
-//        _renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
-//    }
-//
-//    _renderPassDescriptor.colorAttachments[0].texture = texture;
-//    _renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
-//    _renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.65f, 0.65f, 0.65f, 1.0f);
-//    _renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
+//    // Create a reusable pipeline state
+//    MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+//    pipelineStateDescriptor.label = @"MyPipeline";
+//    [pipelineStateDescriptor setSampleCount: 1];
+//    [pipelineStateDescriptor setVertexFunction:vertexProgram];
+//    [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
+//    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+//    pipelineStateDescriptor.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
 //    
-//    if (!_depthTex || (_depthTex && (_depthTex.width != texture.width || _depthTex.height != texture.height)))
-//    {
-//        //  If we need a depth texture and don't have one, or if the depth texture we have is the wrong size
-//        //  Then allocate one of the proper size
-//        
-//        MTLTextureDescriptor* desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: MTLPixelFormatDepth32Float width: texture.width height: texture.height mipmapped: NO];
-//        _depthTex = [device newTextureWithDescriptor: desc];
-//        _depthTex.label = @"Depth";
-//        
-//        _renderPassDescriptor.depthAttachment.texture = _depthTex;
-//        _renderPassDescriptor.depthAttachment.loadAction = MTLLoadActionClear;
-//        _renderPassDescriptor.depthAttachment.clearDepth = 1.0f;
-//        _renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionDontCare;
+//    NSError* error = NULL;
+//    _pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
+//    if (!_pipelineState) {
+//        NSLog(@"Failed to created pipeline state, error %@", error);
 //    }
-//}
+//    
+//    MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
+//    depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
+//    depthStateDesc.depthWriteEnabled = YES;
+//    _depthState = [device newDepthStencilStateWithDescriptor:depthStateDesc];
+}
 
 void MetalCubeApp::update()
 {
@@ -205,7 +173,8 @@ void MetalCubeApp::update()
     assert(sizeof(mat4) == sizeof(matrix_float4x4));
 
     // Load constant buffer data into appropriate buffer at current index
-    uint8_t *bufferPointer = (uint8_t *)[_dynamicConstantBuffer contents] + (sizeof(uniforms_t) * _constantDataBufferIndex);
+    //uint8_t *bufferPointer = (uint8_t *)[_dynamicConstantBuffer contents] + (sizeof(uniforms_t) * _constantDataBufferIndex);
+    uint8_t *bufferPointer = (uint8_t *)mDynamicConstantBuffer->contents() + (sizeof(uniforms_t) * _constantDataBufferIndex);
     memcpy(bufferPointer, &_uniform_buffer, sizeof(uniforms_t));
     
     _rotation += 0.01f;
@@ -214,19 +183,33 @@ void MetalCubeApp::update()
 void MetalCubeApp::draw()
 {
     // TODO: Make this more cinder-like
-    [[MetalContext sharedContext] commandBufferDraw:^void( id <MTLRenderCommandEncoder> renderEncoder )
+    [[MetalContext sharedContext] commandBufferDraw:^void( MetalRenderEncoderRef renderEncoder )
     {
-        [renderEncoder setDepthStencilState:_depthState];
+        renderEncoder->beginPipeline( mPipelineLighting );
+//        [renderEncoder setDepthStencilState:_depthState];
+//        [renderEncoder setRenderPipelineState:_pipelineState];
         
+        renderEncoder->pushDebugGroup("DrawCube");
+//        [renderEncoder pushDebugGroup:@"DrawCube"];
+        
+        
+        // TODO: Make these offsets enums
+        // Can these be shared between the shader and the app?
+        const static int TMP_SHADER_INDEX_VERTS = 0;
+        const static int TMP_SHADER_INDEX_UNIFORMS = 1;
         // Set context state
-        [renderEncoder pushDebugGroup:@"DrawCube"];
-        [renderEncoder setRenderPipelineState:_pipelineState];
-        [renderEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0 ];
-        [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:1 ];
+        renderEncoder->setVertexBuffer(mVertexBuffer, 0, TMP_SHADER_INDEX_VERTS);
+        //[renderEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0 ];
+        
+        uint offset = (sizeof(uniforms_t) * _constantDataBufferIndex);
+        renderEncoder->setVertexBuffer(mDynamicConstantBuffer, offset, TMP_SHADER_INDEX_UNIFORMS);
+        //[renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:1 ];
         
         // Tell the render context we want to draw our primitives
-        [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:1];
-        [renderEncoder popDebugGroup];
+        renderEncoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+        //[renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:36 instanceCount:1];
+        renderEncoder->popDebugGroup();
+        //[renderEncoder popDebugGroup];
         
     }];
     

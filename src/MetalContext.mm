@@ -13,7 +13,9 @@
 #import <simd/simd.h>
 #import "metal.h"
 #import "RendererMetal.h"
-#import "MetalRenderPass.h"
+#import "MetalRenderPassImpl.h"
+#import "MetalRenderEncoder.h"
+#import "MetalRenderEncoderImpl.h"
 
 using namespace cinder;
 using namespace ci::app;
@@ -22,8 +24,6 @@ using namespace cinder::mtl;
 @interface MetalContext()
 {
     dispatch_semaphore_t mInflightSemaphore;
-//    id <MTLCommandBuffer> mCurrentCommandBuffer;
-//    id <CAMetalDrawable> mCurrentDrawable;
     MetalRenderPassImpl *mRenderPass;
 }
 
@@ -65,11 +65,7 @@ static MetalContext * SharedContext = nil;
     dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
 }
 
-//- (void)commandBufferDraw:(void (^)(id <CAMetalDrawable>, id <MTLCommandBuffer> ))drawingBlock
-//- (void)commandBufferDraw:(void (^)(id <MTLCommandBuffer> ))drawingBlock
-//- (void)commandBufferDraw:(void (^)( id <MTLCommandBuffer> commandBuffer,
-//                                     MTLRenderPassDescriptor * renderPassDescriptor ))drawingBlock
-- (void)commandBufferDraw:(void (^)( id <MTLRenderCommandEncoder> renderEncoder ))drawingBlock
+- (void)commandBufferDraw:(void (^)( MetalRenderEncoderRef renderEncoder ))drawingBlock
 {
     id <MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
     commandBuffer.label = @"MyCommands";
@@ -81,18 +77,20 @@ static MetalContext * SharedContext = nil;
     // Maybe in commandBufferDraw?
     [mRenderPass prepareForRenderToTexture:drawable.texture];
 
-    //drawingBlock(commandBuffer);
+    // This seems like a lot of hoops to jump through to pass the encoder into a
+    // c++ app. Is there a cleaner way to do this?
     id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:mRenderPass.renderPassDescriptor];
     renderEncoder.label = @"MyRenderEncoder";
+    MetalRenderEncoderImpl *encoderImpl = [[MetalRenderEncoderImpl alloc] initWithRenderCommandEncoder:renderEncoder];
+    MetalRenderEncoderRef encoder = MetalRenderEncoder::create(encoderImpl);
 
-    drawingBlock(renderEncoder);
+    drawingBlock(encoder);
 
     // We're done encoding commands
     [renderEncoder endEncoding];
 
     __block dispatch_semaphore_t block_sema = mInflightSemaphore;
     [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
-        NSLog(@"Draw complete. Signaling semaphore.");
         dispatch_semaphore_signal(block_sema);
     }];
 

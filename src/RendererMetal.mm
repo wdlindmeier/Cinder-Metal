@@ -54,13 +54,3 @@ void RendererMetal::finishDraw()
 {
     [mImpl finishDraw];
 }
-
-//CAMetalLayer * RendererMetal::getLayer()
-//{
-//    return [mImpl metalLayer];
-//}
-
-//id <MTLDevice> RendererMetal::getDevice()
-//{
-//    return [mImpl device];
-//}

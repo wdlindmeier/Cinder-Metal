@@ -13,7 +13,7 @@
 @interface RendererImplMetal : NSObject
 {
     BOOL _layerSizeDidUpdate;
-    cinder::app::RendererMetal  *mRenderer; // equivalent of a weak_ptr; 'renderer' owns this
+    cinder::app::RendererMetal  *mRenderer;
     UIView  *mCinderView;
 }
 
@@ -21,7 +21,5 @@
 - (void)setFrameSize:(CGSize)newSize;
 - (void)startDraw;
 - (void)finishDraw;
-
-//@property (nonatomic, strong) CAMetalLayer * metalLayer;
 
 @end
