@@ -8,6 +8,7 @@
 
 #include <metal_stdlib>
 #include <simd/simd.h>
+#include "Uniforms.h"
 
 using namespace metal;
 
@@ -34,8 +35,8 @@ typedef struct {
 } ColorInOut;
 
 // Vertex shader function
-vertex ColorInOut lighting_vertex(device vertex_t* vertex_array [[ buffer(0) ]],
-                                  constant uniforms_t& uniforms [[ buffer(1) ]],
+vertex ColorInOut lighting_vertex(device vertex_t* vertex_array [[ buffer(SHADER_INDEX_VERTS) ]],
+                                  constant uniforms_t& uniforms [[ buffer(SHADER_INDEX_UNIFORMS) ]],
                                   unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;

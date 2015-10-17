@@ -71,6 +71,7 @@
 		A916E3251BD2B1770012573E /* MetalPipelineImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalPipelineImpl.h; sourceTree = "<group>"; };
 		A916E3271BD2B2830012573E /* MetalRenderPassImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalRenderPassImpl.mm; sourceTree = "<group>"; };
 		A916E3291BD2B2930012573E /* MetalRenderPassImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderPassImpl.h; sourceTree = "<group>"; };
+		A916E32A1BD2B8D60012573E /* Uniforms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Uniforms.h; path = ../src/Uniforms.h; sourceTree = "<group>"; };
 		A92044851BCAD14500CC8AAB /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/src"; sourceTree = "<absolute>"; };
 		A92044881BCAD17700CC8AAB /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A92044891BCAD17700CC8AAB /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
@@ -175,6 +176,7 @@
 			children = (
 				A92044A01BCB0AD000CC8AAB /* Shaders.metal */,
 				E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.mm */,
+				A916E32A1BD2B8D60012573E /* Uniforms.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
