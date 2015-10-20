@@ -1,0 +1,37 @@
+Metal Architecture
+	
+	device == GPU
+		Generally 1 per machine / app
+
+	command queue: sequence of command buffers
+		1 per applications
+		holding tank for GPU command buffers
+	
+	command buffer: memory: contains GPU commands
+		1 or more (e.g. multiple "inflight" per app for multithreading)
+			possibly 1 per frame
+		simply store GPU commands
+
+	command encoder: translates API commands to GPU commands
+		can be render, compute or blit
+		Render:
+			everything rendered to a single framebuffer target
+			state for vert and frag stages
+		can be interleaved w/in a command buffer
+		1 or more per command buffer
+			each encoder has a different description
+				e.g. depth, clear color, etc.
+
+	"state": framebuffer options, blend, depth, samples
+
+	resources: e.g. buffers & textures
+		Textures:
+			formatted image data (source and render)
+		Data buffers
+			a "bag of bytes"		
+		Resources are immutable
+		source buffers & source textures are changable per encoder
+		render targets are fixed for a given render command encoder
+			the description of these are passed in when the command encoder is created
+		memory is shared between GPU and CPU
+		

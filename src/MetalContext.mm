@@ -13,7 +13,7 @@
 #import <simd/simd.h>
 #import "metal.h"
 #import "RendererMetal.h"
-#import "MetalRenderPassImpl.h"
+#import "MetalCommandBufferImpl.h"
 #import "MetalRenderEncoder.h"
 #import "MetalRenderEncoderImpl.h"
 
@@ -24,7 +24,7 @@ using namespace cinder::mtl;
 @interface MetalContext()
 {
     dispatch_semaphore_t mInflightSemaphore;
-    MetalRenderPassImpl *mRenderPass;
+//    MetalRenderPassImpl *mRenderPass;
 }
 
 @end
@@ -54,7 +54,7 @@ static MetalContext * SharedContext = nil;
         mInflightSemaphore = dispatch_semaphore_create(MAX_INFLIGHT_BUFFERS);
 
 //        mRenderPass = MetalRenderPass::create( MetalRenderPass::Format() );
-        mRenderPass = [MetalRenderPassImpl new];
+//        mRenderPass = [MetalRenderPassImpl new];
         
     }
     return self;
@@ -65,37 +65,85 @@ static MetalContext * SharedContext = nil;
     dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
 }
 
-- (void)commandBufferDraw:(void (^)( MetalRenderEncoderRef renderEncoder ))drawingBlock
+//- (void)commandBufferDraw:(void (^)( MetalRenderEncoderRef renderEncoder ))drawingBlock
+//{
+//    id <MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
+//    commandBuffer.label = @"MyCommands";
+//
+//    id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
+//    
+//    // NOTE: The render pass has the clear color.
+//    // How can we pass this in?
+//    // Maybe in commandBufferDraw?
+//    [mRenderPass prepareForRenderToTexture:drawable.texture];
+//
+//    // TODO: There should be an option to create multiple encoders PER frame.
+//    
+//    
+//    // This seems like a lot of hoops to jump through to pass the encoder into a
+//    // c++ app. Is there a cleaner way to do this?
+//    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:mRenderPass.renderPassDescriptor];
+//    renderEncoder.label = @"MyRenderEncoder";
+//    MetalRenderEncoderImpl *encoderImpl = [[MetalRenderEncoderImpl alloc] initWithRenderCommandEncoder:renderEncoder];
+//    MetalRenderEncoderRef encoder = MetalRenderEncoder::create(encoderImpl);
+//
+//    drawingBlock(encoder);
+//
+//    // We're done encoding commands
+//    [renderEncoder endEncoding];
+//
+//    __block dispatch_semaphore_t block_sema = mInflightSemaphore;
+//    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
+//        dispatch_semaphore_signal(block_sema);
+//    }];
+//
+//    [commandBuffer presentDrawable:drawable];
+//
+//    // Finalize rendering here & push the command buffer to the GPU
+//    [commandBuffer commit];
+//}
+
+- (void)commandBufferBlock:(void (^)( ci::mtl::MetalCommandBufferRef commandBuffer ))commandBlock
 {
     id <MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
-    commandBuffer.label = @"MyCommands";
-
-    id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
+    // TODO: Pass in an optional name
+    commandBuffer.label = @"FrameCommands";
     
-    // NOTE: The render pass has the clear color.
-    // How can we pass this in?
-    // Maybe in commandBufferDraw?
-    [mRenderPass prepareForRenderToTexture:drawable.texture];
+//
+//    // NOTE: The render pass has the clear color.
+//    // How can we pass this in?
+//    // Maybe in commandBufferDraw?
+//    [mRenderPass prepareForRenderToTexture:drawable.texture];
+//    
+//    // TODO: There should be an option to create multiple encoders PER frame.
+//    
+//    
+//    // This seems like a lot of hoops to jump through to pass the encoder into a
+//    // c++ app. Is there a cleaner way to do this?
+//    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:mRenderPass.renderPassDescriptor];
+//    renderEncoder.label = @"MyRenderEncoder";
+//    MetalRenderEncoderImpl *encoderImpl = [[MetalRenderEncoderImpl alloc] initWithRenderCommandEncoder:renderEncoder];
+//    MetalRenderEncoderRef encoder = MetalRenderEncoder::create(encoderImpl);
+    
+//    drawingBlock(encoder);
+    
+    id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
 
-    // This seems like a lot of hoops to jump through to pass the encoder into a
-    // c++ app. Is there a cleaner way to do this?
-    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:mRenderPass.renderPassDescriptor];
-    renderEncoder.label = @"MyRenderEncoder";
-    MetalRenderEncoderImpl *encoderImpl = [[MetalRenderEncoderImpl alloc] initWithRenderCommandEncoder:renderEncoder];
-    MetalRenderEncoderRef encoder = MetalRenderEncoder::create(encoderImpl);
-
-    drawingBlock(encoder);
-
-    // We're done encoding commands
-    [renderEncoder endEncoding];
-
+    MetalCommandBufferImpl *commandBufferImpl = [[MetalCommandBufferImpl alloc] initWithCommandBuffer:commandBuffer];
+    commandBufferImpl.drawable = drawable;
+    MetalCommandBufferRef ciCommandBuffer = MetalCommandBuffer::create(commandBufferImpl);
+    commandBlock( ciCommandBuffer );
+    
+//    // We're done encoding commands
+//    [renderEncoder endEncoding];
+    
     __block dispatch_semaphore_t block_sema = mInflightSemaphore;
     [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
         dispatch_semaphore_signal(block_sema);
     }];
-
+    
     [commandBuffer presentDrawable:drawable];
-
+    
     // Finalize rendering here & push the command buffer to the GPU
     [commandBuffer commit];
 }

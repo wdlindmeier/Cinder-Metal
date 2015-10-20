@@ -11,7 +11,7 @@
 // TODO: Remove
 #include "MetalContext.h"
 
-#include "Uniforms.h"
+#include "BufferConstants.h"
 
 using namespace std;
 using namespace ci;
@@ -92,12 +92,26 @@ class MetalCubeApp : public App {
     uniforms_t _uniform_buffer;
     float _rotation;
     CameraPersp mCamera;
+    
+    MetalRenderFormatRef mRenderFormat;
+    MetalComputeFormatRef mComputeFormat;
+    MetalBlitFormatRef mBlitFormat;
 };
 
 void MetalCubeApp::setup()
 {
     console() << "Setup\n";
     _constantDataBufferIndex = 0;
+    
+    // TODO:
+    // Use an options-style constructor
+    mRenderFormat = MetalRenderFormat::create();
+    mRenderFormat->setShouldClear(true);
+    mRenderFormat->setClearColor(ColorAf(1.f,0.f,0.f,1.f));
+    
+    mComputeFormat = MetalComputeFormat::create();
+    mBlitFormat = MetalBlitFormat::create();
+
     loadAssets();
 }
 
@@ -117,7 +131,7 @@ void MetalCubeApp::loadAssets()
 
     // Create a reusable pipeline state
     mPipelineLighting = MetalPipeline::create("lighting_vertex", "lighting_fragment",
-                                              MetalPipeline::Format().depth(true) );
+                                               MetalPipeline::Format().depth(true) );
 }
 
 void MetalCubeApp::update()
@@ -130,36 +144,81 @@ void MetalCubeApp::update()
     _uniform_buffer.normal_matrix = normalMatrix;
     _uniform_buffer.modelview_projection_matrix = modelViewProjectionMatrix;
 
-    assert(sizeof(mat4) == sizeof(matrix_float4x4));
+    mDynamicConstantBuffer->setData( &_uniform_buffer, _constantDataBufferIndex );
 
-    // REFACTOR
-    // Load constant buffer data into appropriate buffer at current index
-    uint8_t *bufferPointer = (uint8_t *)mDynamicConstantBuffer->contents() + (sizeof(uniforms_t) * _constantDataBufferIndex);
-    memcpy(bufferPointer, &_uniform_buffer, sizeof(uniforms_t));
-    
     _rotation += 0.01f;
 }
 
 void MetalCubeApp::draw()
 {
-    // TODO: Make this more cinder-like
-    [[MetalContext sharedContext] commandBufferDraw:^void( MetalRenderEncoderRef renderEncoder )
+//    commandBuffer (not render) {}
+//    renderTargetWithFormat(){}
+//    compute ''
+//    blit ''
+    //commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc );
+    commandBufferBlock( [&]( MetalCommandBufferRef commandBuffer )
     {
-        renderEncoder->beginPipeline( mPipelineLighting );
-
-        renderEncoder->pushDebugGroup("DrawCube");
-
-        // Set context state
-        renderEncoder->setVertexBuffer(mVertexBuffer, 0, SHADER_INDEX_VERTS);
-
-        uint offset = (sizeof(uniforms_t) * _constantDataBufferIndex);
-        renderEncoder->setVertexBuffer(mDynamicConstantBuffer, offset, SHADER_INDEX_UNIFORMS);
+        commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( MetalRenderEncoderRef encoder )
+        {
+            encoder->pushDebugGroup("DrawCube");
+            
+            // Set the program
+            encoder->setPipeline( mPipelineLighting );
+            
+            // Set render state & resources
+            encoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
+            encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+                                                                       _constantDataBufferIndex,
+                                                                       BUFFER_INDEX_UNIFORMS);
+            
+            // Draw
+            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+            
+            encoder->popDebugGroup();
+        });
         
-        // Tell the render context we want to draw our primitives
-        renderEncoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
-        renderEncoder->popDebugGroup();
+        commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( MetalComputeEncoderRef encoder )
+        {
+            // FPO
+        });
         
-    }];
+        commandBuffer->blitTargetWithFormat( mBlitFormat, [&]( MetalBlitEncoderRef encoder )
+        {
+            // FPO
+        });
+    });
+    
+//    commandBufferDraw([&]( MetalRenderEncoderRef renderEncoder )
+//                      {
+//                          renderEncoder->setPipeline( mPipelineLighting );
+//                          renderEncoder->pushDebugGroup("DrawCube");
+//                          
+//                          // Set render state
+//                          renderEncoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
+//                          renderEncoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+//                                                                                     _constantDataBufferIndex,
+//                                                                                     BUFFER_INDEX_UNIFORMS);
+//                          
+//                          // Tell the render context we want to draw our primitives
+//                          renderEncoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+//                          renderEncoder->popDebugGroup();
+//                      });
+    
+//    commandBufferDraw([&]( MetalRenderEncoderRef renderEncoder )
+//    {
+//        renderEncoder->setPipeline( mPipelineLighting );
+//        renderEncoder->pushDebugGroup("DrawCube");
+//        
+//        // Set render state
+//        renderEncoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
+//        renderEncoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+//                                                                   _constantDataBufferIndex,
+//                                                                   BUFFER_INDEX_UNIFORMS);
+//        
+//        // Tell the render context we want to draw our primitives
+//        renderEncoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+//        renderEncoder->popDebugGroup();
+//    });
     
     _constantDataBufferIndex = (_constantDataBufferIndex + 1) % MAX_INFLIGHT_BUFFERS;
 

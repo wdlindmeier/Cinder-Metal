@@ -25,8 +25,8 @@
 @property (nonatomic, strong) id <MTLLibrary> library;
 @property (nonatomic, strong) CAMetalLayer *metalLayer;
 
-- (void)commandBufferDraw:(void (^)( ci::mtl::MetalRenderEncoderRef renderEncoder ))drawingBlock;
-
+//- (void)commandBufferDraw:(void (^)( ci::mtl::MetalRenderEncoderRef renderEncoder ))drawingBlock;
+- (void)commandBufferBlock:(void (^)( ci::mtl::MetalCommandBufferRef commandBuffer ))commandBlock;
 - (void)startDraw;
 - (void)finishDraw;
 

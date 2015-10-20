@@ -8,5 +8,5 @@
 
 #pragma once 
 
-#define SHADER_INDEX_VERTS 0
-#define SHADER_INDEX_UNIFORMS 1
+#define BUFFER_INDEX_VERTS 0
+#define BUFFER_INDEX_UNIFORMS 1

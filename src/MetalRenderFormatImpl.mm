@@ -6,7 +6,7 @@
 //
 //
 
-#import "MetalRenderPassImpl.h"
+#import "MetalRenderFormatImpl.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -15,7 +15,7 @@
 using namespace ci;
 using namespace ci::mtl;
 
-@implementation MetalRenderPassImpl
+@implementation MetalRenderFormatImpl
 
 - (instancetype)init
 {
@@ -25,14 +25,7 @@ using namespace ci::mtl;
         MTLRenderPassDescriptor *renderPassDesc = [MTLRenderPassDescriptor renderPassDescriptor];
         
         renderPassDesc.colorAttachments[0].loadAction = MTLLoadActionClear;
-        
-        // TODO: How / where do we set the clear color?
-        
-        //        renderPassDesc.colorAttachments[0].clearColor = MTLClearColorMake(format.clearColor.r,
-        //                                                                          format.clearColor.g,
-        //                                                                          format.clearColor.b,
-        //                                                                          format.clearColor.a);
-        
+
         renderPassDesc.colorAttachments[0].clearColor = MTLClearColorMake(0.5,0.5,0.5,1);
         
         renderPassDesc.colorAttachments[0].storeAction = MTLStoreActionStore;

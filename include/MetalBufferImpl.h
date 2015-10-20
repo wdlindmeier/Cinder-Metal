@@ -6,6 +6,8 @@
 //
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>

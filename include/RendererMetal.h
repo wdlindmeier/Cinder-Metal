@@ -12,44 +12,58 @@ class RendererImplMetal;
 #endif
 #endif
 
-namespace cinder { namespace app {
+namespace cinder {
     
-    typedef std::shared_ptr<class RendererMetal> RendererMetalRef;
+    namespace app {
     
-    class RendererMetal : public Renderer {
+        typedef std::shared_ptr<class RendererMetal> RendererMetalRef;
         
-    public:
-        
-        RendererMetal();
-        virtual ~RendererMetal();
-        
-        // TODO
-        // How do I cast this?
-        // Why does this need to be casted?
-        RendererRef clone() const override { return std::dynamic_pointer_cast<Renderer>(RendererMetalRef( new RendererMetal( *this ) ) ); }
-        
+        class RendererMetal : public Renderer {
+            
+        public:
+            
+            RendererMetal();
+            virtual ~RendererMetal();
+            
+            // TODO
+            // How do I cast this?
+            // Why does this need to be casted?
+            RendererRef clone() const override { return std::dynamic_pointer_cast<Renderer>(RendererMetalRef( new RendererMetal( *this ) ) ); }
+            
 #if defined( CINDER_COCOA )
 #if defined( CINDER_MAC )
-        void setup( CGRect frame, NSView *cinderView, RendererRef sharedRenderer, bool retinaEnabled )  override;
+            void setup( CGRect frame, NSView *cinderView, RendererRef sharedRenderer, bool retinaEnabled )  override;
 #elif defined( CINDER_COCOA_TOUCH )
-        void setup( const Area &frame, UIView *cinderView, RendererRef sharedRenderer )  override;
-        
-        // NOTE: We're not technically an EAGL layer, but we can pretent to be for the same callback / loop behavior
-        bool isEaglLayer() const override { return true; }
+            void setup( const Area &frame, UIView *cinderView, RendererRef sharedRenderer )  override;
+            
+            // NOTE: We're not technically an EAGL layer, but we can pretent to be for the same callback / loop behavior
+            bool isEaglLayer() const override { return true; }
 #endif
 #endif
-//        virtual CGContextRef	getCgContext() { throw; } // the default behavior is failure
-        void setFrameSize( int width, int height )  override;
-        
-        Surface8u copyWindowSurface( const Area &area, int32_t windowHeightPixels )  override;
-        
-        void startDraw() override;
-        void finishDraw() override;
+    //        virtual CGContextRef	getCgContext() { throw; } // the default behavior is failure
+            void setFrameSize( int width, int height )  override;
+            
+            Surface8u copyWindowSurface( const Area &area, int32_t windowHeightPixels )  override;
+            
+            void startDraw() override;
+            void finishDraw() override;
 
-    protected:
+        protected:
 
-        RendererImplMetal *mImpl;
+            RendererImplMetal *mImpl;
+            
+        };
         
-    };
-  
-}}
+    } // app
+    
+    namespace mtl {
+        
+        class MetalRenderEncoder;
+        class MetalCommandBuffer;
+        
+//        static void commandBufferDraw( std::function< void ( std::shared_ptr<MetalRenderEncoder> renderEncoder ) > drawFunc );
+        void commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc );
+        
+    }
+}
+

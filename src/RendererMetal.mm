@@ -1,8 +1,11 @@
 #include "RendererMetal.h"
 #include "RendererImplMetal.h"
+#include "MetalRenderEncoder.h"
+#include "MetalContext.h"
 
 using namespace cinder;
 using namespace cinder::app;
+using namespace cinder::mtl;
     
 RendererMetal::RendererMetal() : mImpl( nullptr ) {}
 
@@ -53,4 +56,23 @@ void RendererMetal::startDraw()
 void RendererMetal::finishDraw()
 {
     [mImpl finishDraw];
+}
+
+
+////namespace mtl {
+//// TODO: Move to commandBufferBlock
+//static void commandBufferDraw( std::function< void ( ci::mtl::MetalRenderEncoderRef renderEncoder ) > drawFunc )
+//{
+//    [[MetalContext sharedContext] commandBufferDraw:^void( ci::mtl::MetalRenderEncoderRef ctxRenderEncoder )
+//     {
+//         drawFunc(ctxRenderEncoder);
+//     }];
+//}
+////}
+
+void ci::mtl::commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc )
+{
+    [[MetalContext sharedContext] commandBufferBlock:^(ci::mtl::MetalCommandBufferRef commandBuffer) {
+        commandFunc(commandBuffer);
+    }];
 }

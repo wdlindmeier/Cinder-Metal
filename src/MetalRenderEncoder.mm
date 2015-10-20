@@ -14,7 +14,6 @@
 #import "MetalContext.h"
 #import "MetalRenderEncoderImpl.h"
 #import "MetalBufferImpl.h"
-#import "cinder/cocoa/CinderCocoa.h"
 #import "MetalPipelineImpl.h"
 
 // TODO: Move this
@@ -56,7 +55,7 @@ mImpl(encoderImpl)
 {
 }
 
-void MetalRenderEncoder::beginPipeline( MetalPipelineRef pipeline )
+void MetalRenderEncoder::setPipeline( MetalPipelineRef pipeline )
 {
     [mImpl.renderEncoder setDepthStencilState:pipeline->mImpl.depthState];
     [mImpl.renderEncoder setRenderPipelineState:pipeline->mImpl.pipelineState];

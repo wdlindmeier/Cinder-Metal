@@ -31,6 +31,13 @@ namespace cinder { namespace mtl {
         virtual ~MetalBuffer(){};
         
         void * contents();
+        
+        template <typename BufferType>
+        void setData(BufferType *data, int inflightBufferIndex )
+        {
+            uint8_t *bufferPointer = (uint8_t *)this->contents() + (sizeof(BufferType) * inflightBufferIndex);
+            memcpy(bufferPointer, data, sizeof(BufferType));
+        }
 
     protected:
         

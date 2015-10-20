@@ -11,8 +11,14 @@
 #include "cinder/Cinder.h"
 #include "MetalPipeline.h"
 #include "MetalRenderEncoder.h"
+#include "MetalComputeEncoder.h"
+#include "MetalBlitEncoder.h"
+#include "MetalCommandBuffer.h"
 #include "MetalGeom.h"
 #include "MetalBuffer.h"
+#include "MetalRenderFormat.h"
+#include "MetalComputeFormat.h"
+#include "MetalBlitFormat.h"
 
 namespace cinder {
 
