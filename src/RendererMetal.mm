@@ -1,7 +1,7 @@
 #include "RendererMetal.h"
-#include "RendererImplMetal.h"
+#include "CinderViewCocoaTouch+Metal.h"
+#include "RendererMetalImpl.h"
 #include "MetalRenderEncoder.h"
-#include "MetalContext.h"
 
 using namespace cinder;
 using namespace cinder::app;
@@ -29,7 +29,7 @@ void RendererMetal::setup( CGRect frame, NSView *cinderView, RendererRef sharedR
 #elif defined( CINDER_COCOA_TOUCH )
 void RendererMetal::setup( const Area &frame, UIView *cinderView, RendererRef sharedRenderer )
 {
-    mImpl = [[RendererImplMetal alloc] initWithFrame: cocoa::createCgRect( frame )
+    mImpl = [[RendererMetalImpl alloc] initWithFrame: cocoa::createCgRect( frame )
                                           cinderView: (UIView *)cinderView
                                             renderer: this];
 };
@@ -38,7 +38,6 @@ void RendererMetal::setup( const Area &frame, UIView *cinderView, RendererRef sh
 
 void RendererMetal::setFrameSize( int width, int height )
 {
-    // TODO
     [mImpl setFrameSize:CGSizeMake( width, height )];
 }
 
@@ -58,21 +57,9 @@ void RendererMetal::finishDraw()
     [mImpl finishDraw];
 }
 
-
-////namespace mtl {
-//// TODO: Move to commandBufferBlock
-//static void commandBufferDraw( std::function< void ( ci::mtl::MetalRenderEncoderRef renderEncoder ) > drawFunc )
-//{
-//    [[MetalContext sharedContext] commandBufferDraw:^void( ci::mtl::MetalRenderEncoderRef ctxRenderEncoder )
-//     {
-//         drawFunc(ctxRenderEncoder);
-//     }];
-//}
-////}
-
 void ci::mtl::commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc )
 {
-    [[MetalContext sharedContext] commandBufferBlock:^(ci::mtl::MetalCommandBufferRef commandBuffer) {
+    [[RendererMetalImpl sharedRenderer] commandBufferBlock:^(ci::mtl::MetalCommandBufferRef commandBuffer) {
         commandFunc(commandBuffer);
     }];
 }

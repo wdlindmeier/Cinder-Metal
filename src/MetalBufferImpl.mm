@@ -12,7 +12,7 @@
 #import <Metal/Metal.h>
 #import <simd/simd.h>
 #import "metal.h"
-#import "MetalContext.h"
+#import "RendererMetalImpl.h"
 
 using namespace cinder;
 using namespace cinder::mtl;
@@ -25,7 +25,7 @@ using namespace cinder::cocoa;
     self = [super init];
     if ( self )
     {
-        auto device = [MetalContext sharedContext].device;
+        auto device = [RendererMetalImpl sharedRenderer].device;
         
         // TODO: Let the user pass in options
         if ( pointer != nullptr )

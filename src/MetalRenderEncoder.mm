@@ -11,7 +11,6 @@
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import "MetalContext.h"
 #import "MetalRenderEncoderImpl.h"
 #import "MetalBufferImpl.h"
 #import "MetalPipelineImpl.h"

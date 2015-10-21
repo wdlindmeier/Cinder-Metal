@@ -31,7 +31,8 @@ namespace cinder { namespace mtl {
         
     public:
         
-        // Can this be a protected/private friend function w/ MetalContext?
+        // TODO
+        // Can this be a protected/private friend function w/ RenderMetalImpl?
         static MetalCommandBufferRef create( MetalCommandBufferImpl * impl );
         
         virtual ~MetalCommandBuffer(){};
@@ -47,7 +48,7 @@ namespace cinder { namespace mtl {
                                    const std::string encoderName = "BlitEncoderName" );
 
     protected:
-        
+                
         MetalCommandBuffer( MetalCommandBufferImpl * impl );
         
         MetalCommandBufferImpl *mImpl;        

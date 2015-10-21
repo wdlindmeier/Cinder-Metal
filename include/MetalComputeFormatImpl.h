@@ -12,6 +12,4 @@
 
 @interface MetalComputeFormatImpl : NSObject
 
-//@property (nonatomic, strong) MTLComputePipelineDescriptor *computePipelineDescriptor;
-
 @end

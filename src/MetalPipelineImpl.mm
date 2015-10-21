@@ -11,7 +11,7 @@
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import "MetalContext.h"
+#import "RendererMetalImpl.h"
 
 using namespace ci;
 using namespace ci::mtl;
@@ -26,8 +26,8 @@ using namespace ci::mtl;
     self = [super init];
     if ( self )
     {
-        id <MTLDevice> device = [MetalContext sharedContext].device;
-        id <MTLLibrary> library = [MetalContext sharedContext].library;
+        id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
+        id <MTLLibrary> library = [RendererMetalImpl sharedRenderer].library;
         
         // Load the fragment program into the library
         id <MTLFunction> fragmentProgram = [library newFunctionWithName:fragShaderName];

@@ -22,23 +22,16 @@ namespace cinder { namespace mtl {
     
     class MetalComputeEncoder
     {
+     
+        friend class MetalCommandBuffer;
         
     public:
         
-//        class Format
-//        {
-//            Format(){};
-//            ~Format(){};
-//        };
-        
-        // Can this be a protected/private friend function w/ MetalContext?
-        static MetalComputeEncoderRef create( MetalComputeEncoderImpl * );
-        
         virtual ~MetalComputeEncoder(){}
-        
-        // TODO: Subclass all encoders from same class that has general functions
-        
+
     protected:
+        
+        static MetalComputeEncoderRef create( MetalComputeEncoderImpl * );
         
         MetalComputeEncoder( MetalComputeEncoderImpl * );
         

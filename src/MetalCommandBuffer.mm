@@ -12,7 +12,6 @@
 #import "MetalRenderEncoderImpl.h"
 #import "MetalComputeEncoderImpl.h"
 #import "MetalBlitEncoderImpl.h"
-#import "MetalContext.h"
 
 using namespace ci;
 using namespace ci::mtl;

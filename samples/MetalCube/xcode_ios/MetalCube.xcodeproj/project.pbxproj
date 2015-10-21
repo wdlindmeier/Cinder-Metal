@@ -13,7 +13,7 @@
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		22F02BB9C5664FB8B79128FD /* MetalCubeApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.mm */; };
+		22F02BB9C5664FB8B79128FD /* MetalCubeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		6906BCA7A507477F8CDF073E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FC99894E58E4A5BB1D605B9 /* LaunchScreen.xib */; };
 		A916E3111BD15DA50012573E /* MetalRenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E30F1BD15DA50012573E /* MetalRenderEncoder.mm */; settings = {ASSET_TAGS = (); }; };
@@ -39,11 +39,10 @@
 		A92044911BCAD5B000CC8AAB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		A920449B1BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */; };
 		A920449C1BCADD5E00CC8AAB /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */; };
-		A920449E1BCAE04100CC8AAB /* RendererImplMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449D1BCAE04100CC8AAB /* RendererImplMetal.mm */; };
+		A920449E1BCAE04100CC8AAB /* RendererMetalImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */; };
 		A92044A11BCB0AD000CC8AAB /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A92044A01BCB0AD000CC8AAB /* Shaders.metal */; };
 		A96C5E591BCDD86F001DD6D3 /* MetalPipeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = A96C5E571BCDD86F001DD6D3 /* MetalPipeline.mm */; settings = {ASSET_TAGS = (); }; };
 		A96C5E5C1BCDD87C001DD6D3 /* MetalRenderFormat.mm in Sources */ = {isa = PBXBuildFile; fileRef = A96C5E5A1BCDD87C001DD6D3 /* MetalRenderFormat.mm */; settings = {ASSET_TAGS = (); }; };
-		A96C5E611BCDDE3E001DD6D3 /* MetalContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = A96C5E601BCDDE3E001DD6D3 /* MetalContext.mm */; settings = {ASSET_TAGS = (); }; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8F00FA186B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C725E000121DAC8F00FA186B /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8FFFFA18FF /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091FFFF /* ImageIO.framework */; };
@@ -102,7 +101,7 @@
 		A916E35B1BD5580B0012573E /* MetalComputeFormatImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalComputeFormatImpl.h; sourceTree = "<group>"; };
 		A916E35E1BD558240012573E /* MetalBlitFormatImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalBlitFormatImpl.mm; sourceTree = "<group>"; };
 		A916E35F1BD558240012573E /* MetalComputeFormatImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalComputeFormatImpl.mm; sourceTree = "<group>"; };
-		A92044851BCAD14500CC8AAB /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "/Users/bill/Tools/cinder_wdlindmeier/blocks/Cinder-Metal/src"; sourceTree = "<absolute>"; };
+		A92044851BCAD14500CC8AAB /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/src"; sourceTree = "<absolute>"; };
 		A92044881BCAD17700CC8AAB /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A92044891BCAD17700CC8AAB /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		A920448A1BCAD17700CC8AAB /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
@@ -110,16 +109,14 @@
 		A92044971BCADD5E00CC8AAB /* RendererMetal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RendererMetal.h; sourceTree = "<group>"; };
 		A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "CinderViewCocoaTouch+Metal.mm"; sourceTree = "<group>"; };
 		A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererMetal.mm; sourceTree = "<group>"; };
-		A920449D1BCAE04100CC8AAB /* RendererImplMetal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererImplMetal.mm; sourceTree = "<group>"; };
-		A920449F1BCAE05200CC8AAB /* RendererImplMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererImplMetal.h; sourceTree = "<group>"; };
+		A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererMetalImpl.mm; sourceTree = "<group>"; };
+		A920449F1BCAE05200CC8AAB /* RendererMetalImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererMetalImpl.h; sourceTree = "<group>"; };
 		A92044A01BCB0AD000CC8AAB /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = ../src/Shaders.metal; sourceTree = "<group>"; };
 		A96C5E511BCD6FAA001DD6D3 /* metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = metal.h; sourceTree = "<group>"; };
 		A96C5E571BCDD86F001DD6D3 /* MetalPipeline.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalPipeline.mm; sourceTree = "<group>"; };
 		A96C5E5A1BCDD87C001DD6D3 /* MetalRenderFormat.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalRenderFormat.mm; sourceTree = "<group>"; };
 		A96C5E5E1BCDD8B5001DD6D3 /* MetalPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalPipeline.h; sourceTree = "<group>"; };
 		A96C5E5F1BCDD8B5001DD6D3 /* MetalRenderFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderFormat.h; sourceTree = "<group>"; };
-		A96C5E601BCDDE3E001DD6D3 /* MetalContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalContext.mm; sourceTree = "<group>"; };
-		A96C5E621BCDDE45001DD6D3 /* MetalContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalContext.h; sourceTree = "<group>"; };
 		B1EDD2D86ED34798BCF5DADA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C727C02B121B400300192073 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -127,7 +124,7 @@
 		C7A81D9067F542429A4983D8 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		C7FB19D5124BC0D70045AFD2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DDDDDF6A1138442D0091DDDD /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MetalCubeApp.mm; path = ../src/MetalCubeApp.mm; sourceTree = "<group>"; };
+		E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MetalCubeApp.cpp; path = ../src/MetalCubeApp.cpp; sourceTree = "<group>"; };
 		F53509B74BC44AA0911A6377 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -205,7 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				A92044A01BCB0AD000CC8AAB /* Shaders.metal */,
-				E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.mm */,
+				E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */,
 				A916E32A1BD2B8D60012573E /* BufferConstants.h */,
 			);
 			name = Source;
@@ -252,7 +249,7 @@
 				A916E3251BD2B1770012573E /* MetalPipelineImpl.h */,
 				A916E3151BD161800012573E /* MetalRenderEncoderImpl.h */,
 				A916E3291BD2B2930012573E /* MetalRenderFormatImpl.h */,
-				A920449F1BCAE05200CC8AAB /* RendererImplMetal.h */,
+				A920449F1BCAE05200CC8AAB /* RendererMetalImpl.h */,
 			);
 			name = Impls;
 			sourceTree = "<group>";
@@ -269,7 +266,7 @@
 				A916E3231BD2B1670012573E /* MetalPipelineImpl.mm */,
 				A916E3131BD161560012573E /* MetalRenderEncoderImpl.mm */,
 				A916E3271BD2B2830012573E /* MetalRenderFormatImpl.mm */,
-				A920449D1BCAE04100CC8AAB /* RendererImplMetal.mm */,
+				A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */,
 			);
 			name = Impls;
 			sourceTree = "<group>";
@@ -295,7 +292,6 @@
 				A916E34C1BD31B5C0012573E /* MetalCommandBuffer.h */,
 				A916E3401BD318270012573E /* MetalComputeEncoder.h */,
 				A916E3551BD557540012573E /* MetalComputeFormat.h */,
-				A96C5E621BCDDE45001DD6D3 /* MetalContext.h */,
 				A916E3161BD2A47F0012573E /* MetalGeom.h */,
 				A96C5E5E1BCDD8B5001DD6D3 /* MetalPipeline.h */,
 				A916E3121BD15DC10012573E /* MetalRenderEncoder.h */,
@@ -317,7 +313,6 @@
 				A916E34D1BD31B650012573E /* MetalCommandBuffer.mm */,
 				A916E3451BD3182F0012573E /* MetalComputeEncoder.mm */,
 				A916E34F1BD5570D0012573E /* MetalComputeFormat.mm */,
-				A96C5E601BCDDE3E001DD6D3 /* MetalContext.mm */,
 				A96C5E571BCDD86F001DD6D3 /* MetalPipeline.mm */,
 				A916E30F1BD15DA50012573E /* MetalRenderEncoder.mm */,
 				A96C5E5A1BCDD87C001DD6D3 /* MetalRenderFormat.mm */,
@@ -353,6 +348,11 @@
 		00692BC614FF149000D0A05E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				TargetAttributes = {
+					00692BCE14FF149000D0A05E = {
+						DevelopmentTeam = 664M7G3SHW;
+					};
+				};
 			};
 			buildConfigurationList = 00692BC914FF149000D0A05E /* Build configuration list for PBXProject "MetalCube" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -392,7 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A96C5E5C1BCDD87C001DD6D3 /* MetalRenderFormat.mm in Sources */,
-				22F02BB9C5664FB8B79128FD /* MetalCubeApp.mm in Sources */,
+				22F02BB9C5664FB8B79128FD /* MetalCubeApp.cpp in Sources */,
 				A916E31B1BD2A51A0012573E /* MetalBuffer.mm in Sources */,
 				A916E34E1BD31B650012573E /* MetalCommandBuffer.mm in Sources */,
 				A916E3471BD3182F0012573E /* MetalBlitEncoder.mm in Sources */,
@@ -403,13 +403,12 @@
 				A916E3571BD5575B0012573E /* MetalBlitFormat.mm in Sources */,
 				A916E3601BD558240012573E /* MetalBlitFormatImpl.mm in Sources */,
 				A916E3281BD2B2830012573E /* MetalRenderFormatImpl.mm in Sources */,
-				A920449E1BCAE04100CC8AAB /* RendererImplMetal.mm in Sources */,
+				A920449E1BCAE04100CC8AAB /* RendererMetalImpl.mm in Sources */,
 				A916E3491BD3182F0012573E /* MetalCommandBufferImpl.mm in Sources */,
 				A916E3111BD15DA50012573E /* MetalRenderEncoder.mm in Sources */,
 				A916E3511BD5570D0012573E /* MetalComputeFormat.mm in Sources */,
 				A916E34A1BD3182F0012573E /* MetalComputeEncoder.mm in Sources */,
 				A916E34B1BD3182F0012573E /* MetalComputeEncoderImpl.mm in Sources */,
-				A96C5E611BCDDE3E001DD6D3 /* MetalContext.mm in Sources */,
 				A920449B1BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm in Sources */,
 				A916E3611BD558240012573E /* MetalComputeFormatImpl.mm in Sources */,
 				A916E3141BD161560012573E /* MetalRenderEncoderImpl.mm in Sources */,
@@ -492,6 +491,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
@@ -507,6 +508,7 @@
 					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -515,6 +517,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
@@ -530,6 +534,7 @@
 					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

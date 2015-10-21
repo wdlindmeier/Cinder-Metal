@@ -4,11 +4,11 @@
 #include "cinder/app/Renderer.h"
 
 #if defined( CINDER_COCOA )
-#include "CinderViewCocoaTouch+Metal.h"
+//#include "CinderViewCocoaTouch+Metal.h"
 #if defined __OBJC__
-@class RendererImplMetal;
+@class RendererMetalImpl;
 #else
-class RendererImplMetal;
+class RendererMetalImpl;
 #endif
 #endif
 
@@ -40,7 +40,6 @@ namespace cinder {
             bool isEaglLayer() const override { return true; }
 #endif
 #endif
-    //        virtual CGContextRef	getCgContext() { throw; } // the default behavior is failure
             void setFrameSize( int width, int height )  override;
             
             Surface8u copyWindowSurface( const Area &area, int32_t windowHeightPixels )  override;
@@ -50,7 +49,7 @@ namespace cinder {
 
         protected:
 
-            RendererImplMetal *mImpl;
+            RendererMetalImpl *mImpl;
             
         };
         
@@ -61,7 +60,6 @@ namespace cinder {
         class MetalRenderEncoder;
         class MetalCommandBuffer;
         
-//        static void commandBufferDraw( std::function< void ( std::shared_ptr<MetalRenderEncoder> renderEncoder ) > drawFunc );
         void commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc );
         
     }

@@ -10,7 +10,7 @@
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import "MetalContext.h"
+#import "RendererMetalImpl.h"
 
 using namespace ci;
 using namespace ci::mtl;
@@ -48,7 +48,7 @@ using namespace ci::mtl;
     
     if (!_depthTex || (_depthTex && (_depthTex.width != texture.width || _depthTex.height != texture.height)))
     {
-        auto device = [MetalContext sharedContext].device;
+        auto device = [RendererMetalImpl sharedRenderer].device;
         
         MTLTextureDescriptor* desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: MTLPixelFormatDepth32Float
                                                                                         width: texture.width

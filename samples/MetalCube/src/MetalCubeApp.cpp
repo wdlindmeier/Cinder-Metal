@@ -1,15 +1,9 @@
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Camera.h"
-#import <QuartzCore/CAMetalLayer.h>
-#import <Metal/Metal.h>
-#import <simd/simd.h>
 
 // Cinder-Metal
 #include "metal.h"
-#include "RendererMetal.h"
-// TODO: Remove
-#include "MetalContext.h"
 
 #include "BufferConstants.h"
 
@@ -100,7 +94,6 @@ class MetalCubeApp : public App {
 
 void MetalCubeApp::setup()
 {
-    console() << "Setup\n";
     _constantDataBufferIndex = 0;
     
     // TODO:
@@ -151,11 +144,6 @@ void MetalCubeApp::update()
 
 void MetalCubeApp::draw()
 {
-//    commandBuffer (not render) {}
-//    renderTargetWithFormat(){}
-//    compute ''
-//    blit ''
-    //commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc );
     commandBufferBlock( [&]( MetalCommandBufferRef commandBuffer )
     {
         commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( MetalRenderEncoderRef encoder )
@@ -168,8 +156,8 @@ void MetalCubeApp::draw()
             // Set render state & resources
             encoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
             encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-                                                                       _constantDataBufferIndex,
-                                                                       BUFFER_INDEX_UNIFORMS);
+                                                                 _constantDataBufferIndex,
+                                                                 BUFFER_INDEX_UNIFORMS);
             
             // Draw
             encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
@@ -188,40 +176,7 @@ void MetalCubeApp::draw()
         });
     });
     
-//    commandBufferDraw([&]( MetalRenderEncoderRef renderEncoder )
-//                      {
-//                          renderEncoder->setPipeline( mPipelineLighting );
-//                          renderEncoder->pushDebugGroup("DrawCube");
-//                          
-//                          // Set render state
-//                          renderEncoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
-//                          renderEncoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-//                                                                                     _constantDataBufferIndex,
-//                                                                                     BUFFER_INDEX_UNIFORMS);
-//                          
-//                          // Tell the render context we want to draw our primitives
-//                          renderEncoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
-//                          renderEncoder->popDebugGroup();
-//                      });
-    
-//    commandBufferDraw([&]( MetalRenderEncoderRef renderEncoder )
-//    {
-//        renderEncoder->setPipeline( mPipelineLighting );
-//        renderEncoder->pushDebugGroup("DrawCube");
-//        
-//        // Set render state
-//        renderEncoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
-//        renderEncoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-//                                                                   _constantDataBufferIndex,
-//                                                                   BUFFER_INDEX_UNIFORMS);
-//        
-//        // Tell the render context we want to draw our primitives
-//        renderEncoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
-//        renderEncoder->popDebugGroup();
-//    });
-    
     _constantDataBufferIndex = (_constantDataBufferIndex + 1) % MAX_INFLIGHT_BUFFERS;
-
 }
 
 CINDER_APP( MetalCubeApp, RendererMetal )

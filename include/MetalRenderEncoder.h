@@ -26,17 +26,10 @@ namespace cinder { namespace mtl {
     class MetalRenderEncoder
     {
 
+        friend class MetalCommandBuffer;
+        
     public:
-        
-//        class Format
-//        {
-//            Format(){};
-//            ~Format(){};
-//        };
-        
-        // Can this be a protected/private friend function w/ MetalContext?
-        static MetalRenderEncoderRef create( MetalRenderEncoderImpl * );
-        
+
         virtual ~MetalRenderEncoder(){}
         
         void pushDebugGroup( const std::string & groupName);
@@ -53,13 +46,20 @@ namespace cinder { namespace mtl {
         }
 
         void draw( ci::mtl::geom::Primitive primitive, int vertexStart, int vertexCount, int instanceCount );
-
         
     protected:
+
+        static MetalRenderEncoderRef create( id mtlRenderCommandEncoder );
         
-        MetalRenderEncoder( MetalRenderEncoderImpl * );
+        MetalRenderEncoder( id mtlRenderCommandEncoder );
         
-        MetalRenderEncoderImpl *mImpl;
+        id mImpl;
+
+//        static MetalRenderEncoderRef create( MetalRenderEncoderImpl * );
+//        
+//        MetalRenderEncoder( MetalRenderEncoderImpl * );
+//        
+//        MetalRenderEncoderImpl *mImpl;
         
     };
     
