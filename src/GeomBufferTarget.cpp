@@ -21,6 +21,7 @@ GeomBufferTargetRef GeomBufferTarget::create( const ci::geom::Source & source,
 GeomBufferTarget::GeomBufferTarget( const ci::geom::Source & source,
                                     const ci::geom::AttribSet &requestedAttribs ) :
 mSource( source.clone() )
+,mRequestedAttribs(requestedAttribs)
 {
     // Is there any reason to keep the source and attribs around?
     mPrimitive = geom::mtlPrimitiveTypeFromGeom( mSource->getPrimitive() );
@@ -33,6 +34,12 @@ void GeomBufferTarget::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_
                                    const float *srcData, // Data representing the attribute ONLY. Not interleaved w/ other attrs
                                    size_t count ) // Number of values
 {
+    // Skip the copy if we don't care about this attr
+    if( mRequestedAttribs.count( attr ) == 0 )
+    {
+        return;
+    }
+
     // When is this not zero? What is the purpose?
     assert( strideBytes == 0 );
     // Are we using stride right?
@@ -93,7 +100,7 @@ void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder )
     idx++;
     for ( auto kvp : mAttributeBuffers )
     {
-//        ci::geom::Attrib attr = kvp.first;
+        ci::geom::Attrib attr = kvp.first;
         MetalBufferRef buffer = kvp.second;
         renderEncoder->setVertexBuffer(buffer, 0, idx);
         idx++;

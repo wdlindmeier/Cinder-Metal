@@ -48,6 +48,7 @@ namespace cinder
 
             ci::mtl::geom::Primitive mPrimitive;
             std::map< ci::geom::Attrib, MetalBufferRef > mAttributeBuffers;
+            ci::geom::AttribSet mRequestedAttribs;
             MetalBufferRef mIndexBuffer;
             ci::geom::SourceRef mSource;
             

@@ -131,7 +131,9 @@ void MetalCubeApp::loadAssets()
     mPipelineLighting = MetalPipeline::create("lighting_vertex", "lighting_fragment",
                                               MetalPipeline::Format().depth(true) );
     
-    mGeomBufferCube = GeomBufferTarget::create( ci::geom::Cube().size(vec3(1.f)),
+    
+    // ci::geom::Teapot()
+    mGeomBufferCube = GeomBufferTarget::create( ci::geom::Teapot(),//ci::geom::Sphere().radius(1.f), //ci::geom::Cube().size(vec3(1.f)),
                                                 {{ ci::geom::POSITION,
                                                    ci::geom::NORMAL }});
     // Create a reusable pipeline state
