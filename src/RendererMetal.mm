@@ -7,7 +7,12 @@ using namespace cinder;
 using namespace cinder::app;
 using namespace cinder::mtl;
     
-RendererMetal::RendererMetal() : mImpl( nullptr ) {}
+RendererMetal::RendererMetal( const Options & options ) :
+mImpl( nullptr )
+,mOptions(options)
+{
+    ci::app::console() << "Creating renderer with " << mOptions.getNumInflightBuffers() << " inflight buffers.\n";
+}
 
 #if defined( CINDER_MAC )
 RendererGl::~RendererGl()
@@ -31,7 +36,8 @@ void RendererMetal::setup( const Area &frame, UIView *cinderView, RendererRef sh
 {
     mImpl = [[RendererMetalImpl alloc] initWithFrame: cocoa::createCgRect( frame )
                                           cinderView: (UIView *)cinderView
-                                            renderer: this];
+                                            renderer: this
+                                             options: mOptions ];
 };
 #endif
 #endif

@@ -54,6 +54,31 @@ vertex ColorInOut lighting_vertex(device vertex_t* vertex_array [[ buffer(BUFFER
     return out;
 }
 
+// Vertex shader function using geom::Source data layout
+// TEST
+vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(BUFFER_INDEX_GEOM_INDICES) ]],
+                                       device packed_float3* verts [[ buffer(BUFFER_INDEX_GEOM_VERTS) ]],
+                                       device packed_float3* normals [[ buffer(BUFFER_INDEX_GEOM_NORMALS) ]],                                       
+                                       constant uniforms_t& uniforms [[ buffer(BUFFER_INDEX_GEOM_UNIFORMS) ]],
+                                       unsigned int vid [[ vertex_id ]])
+{
+    ColorInOut out;
+    
+    unsigned int vertIndex = indices[vid];
+    
+    float4 in_position = float4(verts[vertIndex], 1.0);
+    out.position = uniforms.modelview_projection_matrix * in_position;
+    
+    float3 normal = normals[vertIndex];
+    float4 eye_normal = normalize(uniforms.normal_matrix * float4(normal, 0.0));
+    float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
+    n_dot_l = fmax(0.0, n_dot_l);
+    
+    out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    
+    return out;
+}
+
 // Fragment shader function
 fragment half4 lighting_fragment(ColorInOut in [[stage_in]])
 {

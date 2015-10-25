@@ -10,12 +10,6 @@
 
 #include "cinder/Cinder.h"
 
-#if defined( __OBJC__ )
-@class MetalBlitFormatImpl;
-#else
-class MetalBlitFormatImpl;
-#endif
-
 namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class MetalBlitFormat> MetalBlitFormatRef;
@@ -33,7 +27,8 @@ namespace cinder { namespace mtl {
     protected:
         
         MetalBlitFormat();
-        MetalBlitFormatImpl *mImpl;
+        // TODO: Add some options
+        // MTLBlitOption mImpl;
         
     };
     

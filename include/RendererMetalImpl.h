@@ -25,7 +25,10 @@
 @property (nonatomic, strong) CAMetalLayer *metalLayer;
 
 + (instancetype)sharedRenderer;
-- (instancetype)initWithFrame:(CGRect)frame cinderView:(UIView *)cinderView renderer:(cinder::app::RendererMetal *)renderer;
+- (instancetype)initWithFrame:(CGRect)frame
+                   cinderView:(UIView *)cinderView
+                     renderer:(cinder::app::RendererMetal *)renderer
+                      options:(cinder::app::RendererMetal::Options &)options;
 
 - (void)setFrameSize:(CGSize)newSize;
 

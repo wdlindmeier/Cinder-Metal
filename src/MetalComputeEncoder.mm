@@ -7,7 +7,6 @@
 //
 
 #include "MetalComputeEncoder.h"
-#import "MetalComputeEncoderImpl.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -16,13 +15,14 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-MetalComputeEncoderRef MetalComputeEncoder::create( MetalComputeEncoderImpl * encoderImpl )
+MetalComputeEncoderRef MetalComputeEncoder::create( void * mtlComputeCommandEncoder )
 {
-    return MetalComputeEncoderRef( new MetalComputeEncoder( encoderImpl ) );
+    return MetalComputeEncoderRef( new MetalComputeEncoder( mtlComputeCommandEncoder ) );
 }
 
-MetalComputeEncoder::MetalComputeEncoder( MetalComputeEncoderImpl * encoderImpl )
+MetalComputeEncoder::MetalComputeEncoder( void * mtlComputeCommandEncoder )
 :
-mImpl(encoderImpl)
+mImpl(mtlComputeCommandEncoder)
 {
+    assert([(__bridge id)mtlComputeCommandEncoder conformsToProtocol:@protocol(MTLComputeCommandEncoder)]);
 }

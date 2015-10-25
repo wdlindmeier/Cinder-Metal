@@ -11,76 +11,54 @@
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import "MetalRenderEncoderImpl.h"
 #import "MetalBufferImpl.h"
 #import "MetalPipelineImpl.h"
-
-// TODO: Move this
-static MTLPrimitiveType getMTLPrimitiveType( ci::mtl::geom::Primitive primitive )
-{
-    using namespace ci::mtl::geom;
-    
-    switch ( primitive )
-    {
-        case POINT:
-            return MTLPrimitiveTypePoint;
-        case LINE:
-            return MTLPrimitiveTypeLine;
-        case LINE_STRIP:
-            return MTLPrimitiveTypeLineStrip;
-        case TRIANGLE:
-            return MTLPrimitiveTypeTriangle;
-        case TRIANGLE_STRIP:
-            return MTLPrimitiveTypeTriangleStrip;
-        case NUM_PRIMITIVES:
-            break;
-    }
-    printf( "ERROR: Unknown primitive type %i", primitive );
-    assert( false );
-}
 
 using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-MetalRenderEncoderRef MetalRenderEncoder::create( MetalRenderEncoderImpl * encoderImpl )
+#define IMPL ((__bridge id <MTLRenderCommandEncoder>)mImpl)
+
+MetalRenderEncoderRef MetalRenderEncoder::create( void * encoderImpl )
 {
     return MetalRenderEncoderRef( new MetalRenderEncoder( encoderImpl ) );
 }
 
-MetalRenderEncoder::MetalRenderEncoder( MetalRenderEncoderImpl * encoderImpl )
+MetalRenderEncoder::MetalRenderEncoder( void * encoderImpl )
 :
 mImpl(encoderImpl)
 {
+    assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
 }
 
 void MetalRenderEncoder::setPipeline( MetalPipelineRef pipeline )
 {
-    [mImpl.renderEncoder setDepthStencilState:pipeline->mImpl.depthState];
-    [mImpl.renderEncoder setRenderPipelineState:pipeline->mImpl.pipelineState];
+    [IMPL setDepthStencilState:pipeline->mImpl.depthState];
+    [IMPL setRenderPipelineState:pipeline->mImpl.pipelineState];
 }
 
 void MetalRenderEncoder::pushDebugGroup( const std::string & groupName )
 {
-    [mImpl.renderEncoder pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
+    [IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
 }
 
-void MetalRenderEncoder::setVertexBuffer( MetalBufferRef buffer, int offset, int index)
+void MetalRenderEncoder::setVertexBuffer( MetalBufferRef buffer, size_t bytesOffset, size_t index)
 {
-    [mImpl.renderEncoder setVertexBuffer:buffer->mImpl.buffer
-                                  offset:offset
-                                 atIndex:index];
+    [IMPL setVertexBuffer:buffer->mImpl.buffer
+                   offset:bytesOffset
+                  atIndex:index];
 }
 
-void MetalRenderEncoder::draw( ci::mtl::geom::Primitive primitive, int vertexStart, int vertexCount, int instanceCount )
+void MetalRenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount )
 {
-    [mImpl.renderEncoder drawPrimitives:getMTLPrimitiveType(primitive)
-                            vertexStart:vertexStart
-                            vertexCount:vertexCount
-                          instanceCount:instanceCount];
+    [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+             vertexStart:vertexStart
+             vertexCount:vertexCount
+           instanceCount:instanceCount];
 }
 
 void MetalRenderEncoder::popDebugGroup()
 {
-    [mImpl.renderEncoder popDebugGroup];
+    [IMPL popDebugGroup];
 }

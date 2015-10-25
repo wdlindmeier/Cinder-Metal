@@ -14,7 +14,6 @@
 #import "metal.h"
 #import "RendererMetal.h"
 #import "RendererMetalImpl.h"
-#import "MetalCommandBufferImpl.h"
 
 #import "cinder/app/cocoa/CinderViewCocoaTouch.h"
 
@@ -43,7 +42,10 @@ static RendererMetalImpl * SharedRenderer = nil;
     return SharedRenderer;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame cinderView:(UIView *)cinderView renderer:(cinder::app::RendererMetal *)renderer
+- (instancetype)initWithFrame:(CGRect)frame
+                   cinderView:(UIView *)cinderView
+                     renderer:(cinder::app::RendererMetal *)renderer
+                      options:(cinder::app::RendererMetal::Options &)options
 {
     if ( SharedRenderer )
     {
@@ -59,7 +61,7 @@ static RendererMetalImpl * SharedRenderer = nil;
         // Get the layer
         CAMetalLayer *metalLayer = (CAMetalLayer *)mCinderView.layer;
         assert( [metalLayer isKindOfClass:[CAMetalLayer class]] );
-        [self setupMetal];
+        [self setupMetal:options.getNumInflightBuffers()];
     }
     
     SharedRenderer = self;
@@ -67,7 +69,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     return self;
 }
 
-- (void)setupMetal
+- (void)setupMetal:(int)numInflightBuffers
 {
     self.device = MTLCreateSystemDefaultDevice();
     
@@ -82,7 +84,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     self.metalLayer = [CAMetalLayer layer];
     _metalLayer.device = self.device;
     
-    mInflightSemaphore = dispatch_semaphore_create(MAX_INFLIGHT_BUFFERS);
+    mInflightSemaphore = dispatch_semaphore_create(numInflightBuffers);
 
     // Setup metal layer and add as sub layer to view
 
@@ -122,10 +124,9 @@ static RendererMetalImpl * SharedRenderer = nil;
     // TODO: Pass in an optional name
     commandBuffer.label = @"FrameCommands";
     id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
-    
-    MetalCommandBufferImpl *commandBufferImpl = [[MetalCommandBufferImpl alloc] initWithCommandBuffer:commandBuffer];
-    commandBufferImpl.drawable = drawable;
-    MetalCommandBufferRef ciCommandBuffer = MetalCommandBuffer::create(commandBufferImpl);
+
+    MetalCommandBufferRef ciCommandBuffer = MetalCommandBuffer::create((__bridge void *)commandBuffer,
+                                                                       (__bridge void *)drawable);
     
     commandBlock( ciCommandBuffer );
     

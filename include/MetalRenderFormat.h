@@ -34,13 +34,6 @@ namespace cinder { namespace mtl {
         void setClearColor( const ColorAf clearColor );
         void setClearDepth( float clearDepth );
 
-        // Hmmm...
-        // Can this work w/ smart pointers?
-//        MetalRenderFormat & shouldClear( bool shouldClear );
-//        MetalRenderFormat & clearColor( const ColorAf clearColor );
-//        MetalRenderFormat & clearDepth( float clearDepth );
-        // TODO: Add "has depth" accessor
-        
     protected:
 
         MetalRenderFormat();

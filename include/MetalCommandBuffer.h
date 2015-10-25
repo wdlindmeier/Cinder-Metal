@@ -33,7 +33,7 @@ namespace cinder { namespace mtl {
         
         // TODO
         // Can this be a protected/private friend function w/ RenderMetalImpl?
-        static MetalCommandBufferRef create( MetalCommandBufferImpl * impl );
+        static MetalCommandBufferRef create( void * mtlCommandBuffer, void *mtlDrawable );
         
         virtual ~MetalCommandBuffer(){};
         
@@ -49,9 +49,10 @@ namespace cinder { namespace mtl {
 
     protected:
                 
-        MetalCommandBuffer( MetalCommandBufferImpl * impl );
+        MetalCommandBuffer( void * mtlCommandBuffer, void *mtlDrawable );
         
-        MetalCommandBufferImpl *mImpl;        
+        void * mCommandBuffer;  // <MTLCommandBuffer>
+        void * mDrawable; // <CAMetalDrawable>
     };
     
 } }

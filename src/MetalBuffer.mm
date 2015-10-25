@@ -8,6 +8,8 @@
 
 #include "MetalBuffer.h"
 #include "MetalBufferImpl.h"
+#import "cinder/Log.h"
+#include "cinder/GeomIo.h"
 #import "metal.h"
 
 using namespace cinder;

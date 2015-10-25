@@ -10,12 +10,6 @@
 
 #include "cinder/Cinder.h"
 
-#if defined( __OBJC__ )
-@class MetalComputeEncoderImpl;
-#else
-class MetalComputeEncoderImpl;
-#endif
-
 namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class MetalComputeEncoder> MetalComputeEncoderRef;
@@ -31,11 +25,11 @@ namespace cinder { namespace mtl {
 
     protected:
         
-        static MetalComputeEncoderRef create( MetalComputeEncoderImpl * );
+        static MetalComputeEncoderRef create( void * mtlComputeCommandEncoder );
         
-        MetalComputeEncoder( MetalComputeEncoderImpl * );
+        MetalComputeEncoder( void * mtlComputeCommandEncoder );
         
-        MetalComputeEncoderImpl *mImpl;
+        void * mImpl;
         
     };
     

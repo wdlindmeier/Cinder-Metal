@@ -7,7 +7,6 @@
 //
 
 #include "MetalBlitEncoder.h"
-#import "MetalBlitEncoderImpl.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -16,13 +15,15 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-MetalBlitEncoderRef MetalBlitEncoder::create( MetalBlitEncoderImpl * encoderImpl )
+MetalBlitEncoderRef MetalBlitEncoder::create( void * mtlBlitCommandEncoder )
 {
-    return MetalBlitEncoderRef( new MetalBlitEncoder( encoderImpl ) );
+    return MetalBlitEncoderRef( new MetalBlitEncoder( mtlBlitCommandEncoder ) );
 }
 
-MetalBlitEncoder::MetalBlitEncoder( MetalBlitEncoderImpl * encoderImpl )
+MetalBlitEncoder::MetalBlitEncoder( void * mtlBlitCommandEncoder )
 :
-mImpl(encoderImpl)
+mImpl(mtlBlitCommandEncoder)
 {
+    assert( mtlBlitCommandEncoder != NULL );
+    assert( [(__bridge id)mtlBlitCommandEncoder conformsToProtocol:@protocol(MTLBlitCommandEncoder)] );
 }

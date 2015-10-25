@@ -7,7 +7,6 @@
 //
 
 #include "MetalComputeFormat.h"
-#include "MetalComputeFormatImpl.h"
 
 using namespace ci;
 using namespace ci::mtl;
@@ -19,5 +18,5 @@ MetalComputeFormatRef MetalComputeFormat::create()
 
 MetalComputeFormat::MetalComputeFormat()
 {
-    mImpl = [MetalComputeFormatImpl new];
+//    mImpl = Create some options
 }

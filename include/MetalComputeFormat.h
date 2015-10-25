@@ -10,12 +10,6 @@
 
 #include "cinder/Cinder.h"
 
-#if defined( __OBJC__ )
-@class MetalComputeFormatImpl;
-#else
-class MetalComputeFormatImpl;
-#endif
-
 namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class MetalComputeFormat> MetalComputeFormatRef;
@@ -33,7 +27,7 @@ namespace cinder { namespace mtl {
     protected:
         
         MetalComputeFormat();
-        MetalComputeFormatImpl *mImpl;
+        // TODO: Create some options
         
     };
     

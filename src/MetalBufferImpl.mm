@@ -28,7 +28,7 @@ using namespace cinder::cocoa;
         auto device = [RendererMetalImpl sharedRenderer].device;
         
         // TODO: Let the user pass in options
-        if ( pointer != nullptr )
+        if ( pointer != NULL )
         {
             self.buffer = [device newBufferWithBytes:pointer
                                               length:length

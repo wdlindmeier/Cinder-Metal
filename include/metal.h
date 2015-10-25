@@ -21,14 +21,10 @@
 #include "MetalBlitEncoder.h"
 #include "MetalGeom.h"
 
-namespace cinder {
+#if defined( __OBJC__ )
+#if !__has_feature(objc_arc)
+#error Cinder::Metal requires that ARC is enabled. This can be set in the project "build settings."
+#endif
+#endif
 
-    namespace mtl {
-        
-        // TODO: Make these Options (in the renderer?)
-        
-        // Max number of concurrent command buffers
-        static const int MAX_INFLIGHT_BUFFERS = 3;
-                
-    }
-}
+

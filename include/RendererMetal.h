@@ -14,15 +14,35 @@ class RendererMetalImpl;
 
 namespace cinder {
     
+    namespace mtl {
+        class MetalCommandBuffer;
+    }
+    
     namespace app {
     
         typedef std::shared_ptr<class RendererMetal> RendererMetalRef;
         
+
         class RendererMetal : public Renderer {
             
         public:
             
-            RendererMetal();
+            struct Options
+            {
+            public:
+                
+                Options() : mMaxInflightBuffers(3) {}
+                
+                Options & numInflightBuffers( int numInflightBuffers ){ mMaxInflightBuffers = numInflightBuffers; return *this; };
+                const int getNumInflightBuffers() const { return mMaxInflightBuffers; }
+                
+            protected:
+                
+                int mMaxInflightBuffers;
+                
+            };
+            
+            RendererMetal( const Options & options = Options() );
             virtual ~RendererMetal();
             
             // TODO
@@ -41,16 +61,20 @@ namespace cinder {
 #endif
 #endif
             void setFrameSize( int width, int height )  override;
+            const Options&	getOptions() const { return mOptions; }
             
             Surface8u copyWindowSurface( const Area &area, int32_t windowHeightPixels )  override;
             
             void startDraw() override;
             void finishDraw() override;
+            
 
         protected:
 
             RendererMetalImpl *mImpl;
-            
+
+            Options mOptions;
+
         };
         
     } // app

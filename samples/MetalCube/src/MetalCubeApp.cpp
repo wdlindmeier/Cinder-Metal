@@ -1,11 +1,13 @@
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Camera.h"
+#include "cinder/GeomIo.h"
 
 // Cinder-Metal
 #include "metal.h"
-
+#include "GeomBufferTarget.h"
 #include "BufferConstants.h"
+
 
 using namespace std;
 using namespace ci;
@@ -68,6 +70,8 @@ typedef struct
     mat4 normal_matrix;
 } uniforms_t;
 
+const static int kNumInflightBuffers = 3;
+
 class MetalCubeApp : public App {
   public:
 	void setup() override;
@@ -76,11 +80,13 @@ class MetalCubeApp : public App {
 	void update() override;
 	void draw() override;
 
+    GeomBufferTargetRef mGeomBufferCube;
     MetalBufferRef mVertexBuffer;
     MetalBufferRef mDynamicConstantBuffer;
     uint8_t _constantDataBufferIndex;
 
     MetalPipelineRef mPipelineLighting;
+    MetalPipelineRef mPipelineGeomLighting;
 
     // uniforms
     uniforms_t _uniform_buffer;
@@ -121,10 +127,17 @@ void MetalCubeApp::loadAssets()
 
     // Setup the vertex buffers
     mVertexBuffer = MetalBuffer::create(sizeof(cubeVertexData), cubeVertexData, "Vertices");
-
     // Create a reusable pipeline state
     mPipelineLighting = MetalPipeline::create("lighting_vertex", "lighting_fragment",
-                                               MetalPipeline::Format().depth(true) );
+                                              MetalPipeline::Format().depth(true) );
+    
+    mGeomBufferCube = GeomBufferTarget::create( ci::geom::Cube().size(vec3(1.f)),
+                                                {{ ci::geom::POSITION,
+                                                   ci::geom::NORMAL }});
+    // Create a reusable pipeline state
+    mPipelineGeomLighting = MetalPipeline::create("lighting_vertex_geom", "lighting_fragment",
+                                                   MetalPipeline::Format().depth(true) );
+    
 }
 
 void MetalCubeApp::update()
@@ -148,23 +161,42 @@ void MetalCubeApp::draw()
     {
         commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( MetalRenderEncoderRef encoder )
         {
-            encoder->pushDebugGroup("DrawCube");
+//            encoder->pushDebugGroup("Draw Cube");
+//            
+//            // Set the program
+//            encoder->setPipeline( mPipelineLighting );
+//            
+//            // Set render state & resources
+//            encoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
+//            encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+//                                                                 _constantDataBufferIndex,
+//                                                                 BUFFER_INDEX_UNIFORMS);
+//            // Draw
+//            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+//            encoder->popDebugGroup();
+//            
+//            
+            // TEST: Using Cinder geom to draw the cube
+            // Woohoo!
+            
+            // Geom Target
+            encoder->pushDebugGroup("Draw Cube Geom");
             
             // Set the program
-            encoder->setPipeline( mPipelineLighting );
+            encoder->setPipeline( mPipelineGeomLighting );
             
             // Set render state & resources
-            encoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
+            
             encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
                                                                  _constantDataBufferIndex,
-                                                                 BUFFER_INDEX_UNIFORMS);
-            
+                                                                 BUFFER_INDEX_GEOM_UNIFORMS);
+            mGeomBufferCube->render( encoder );
+
             // Draw
-            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
-            
             encoder->popDebugGroup();
+
         });
-        
+
         commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( MetalComputeEncoderRef encoder )
         {
             // FPO
@@ -176,7 +208,7 @@ void MetalCubeApp::draw()
         });
     });
     
-    _constantDataBufferIndex = (_constantDataBufferIndex + 1) % MAX_INFLIGHT_BUFFERS;
+    _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kNumInflightBuffers;
 }
 
-CINDER_APP( MetalCubeApp, RendererMetal )
+CINDER_APP( MetalCubeApp, RendererMetal( RendererMetal::Options().numInflightBuffers(kNumInflightBuffers) ) )

@@ -13,12 +13,6 @@
 #include "MetalPipeline.h"
 #include "MetalBuffer.h"
 
-#if defined( __OBJC__ )
-@class MetalRenderEncoderImpl;
-#else
-class MetalRenderEncoderImpl;
-#endif
-
 namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class MetalRenderEncoder> MetalRenderEncoderRef;
@@ -36,31 +30,24 @@ namespace cinder { namespace mtl {
         void popDebugGroup();
 
         void setPipeline( MetalPipelineRef pipeline );
-        void setVertexBuffer( MetalBufferRef buffer, int offset, int bufferIndex );
+        void setVertexBuffer( MetalBufferRef buffer, size_t bytesOffset, size_t bufferIndex );
         // A convenience method for setVertexBuffer that takes the inflight buffer index instead of an offset
         template <typename BufferType>
-        void setVertexBufferForInflightIndex( MetalBufferRef buffer, int inflightBufferIndex, int bufferIndex )
+        void setVertexBufferForInflightIndex( MetalBufferRef buffer, size_t inflightBufferIndex, size_t bufferIndex )
         {
             uint offset = (sizeof(BufferType) * inflightBufferIndex);
             this->setVertexBuffer( buffer, offset, bufferIndex);
         }
 
-        void draw( ci::mtl::geom::Primitive primitive, int vertexStart, int vertexCount, int instanceCount );
+        void draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount );
         
     protected:
 
-        static MetalRenderEncoderRef create( id mtlRenderCommandEncoder );
+        static MetalRenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>
         
-        MetalRenderEncoder( id mtlRenderCommandEncoder );
+        MetalRenderEncoder( void * mtlRenderCommandEncoder );
         
-        id mImpl;
-
-//        static MetalRenderEncoderRef create( MetalRenderEncoderImpl * );
-//        
-//        MetalRenderEncoder( MetalRenderEncoderImpl * );
-//        
-//        MetalRenderEncoderImpl *mImpl;
-        
+        void * mImpl;
     };
     
 } }
