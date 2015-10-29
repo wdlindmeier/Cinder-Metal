@@ -20,15 +20,25 @@ namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class MetalBuffer> MetalBufferRef;
     
-    class MetalBuffer// : public ci::geom::Target
+    //template <typename T>
+    class MetalBuffer
     {
         
         friend class MetalRenderEncoder;
         
     public:
         
-        static MetalBufferRef create( unsigned long length, const void * pointer, const std::string & label );
-//        static MetalBufferRef create( const ci::geom::Source & source );
+        // Data stored at pointer will be copied into the buffer
+        // static MetalBufferRef create( unsigned long length, const void * pointer, const std::string & label );
+        static MetalBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Vert Buffer" ){
+            return MetalBufferRef( new MetalBuffer(length, pointer, label) );
+        }
+        
+        template <typename T>
+        static MetalBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Vert Buffer" ){
+            return MetalBufferRef( new MetalBuffer(dataVector, label) );
+        }
+        
         virtual ~MetalBuffer(){};
         
         void * contents();
@@ -39,15 +49,14 @@ namespace cinder { namespace mtl {
             uint8_t *bufferPointer = (uint8_t *)this->contents() + (sizeof(BufferType) * inflightBufferIndex);
             memcpy(bufferPointer, data, sizeof(BufferType));
         }
-        
-//        // geom::Target subclass
-//        void copyAttrib( ci::geom::Attrib attr, uint8_t dims, size_t strideBytes, const float *srcData, size_t count );
-//        void copyIndices( ci::geom::Primitive primitive, const uint32_t *source, size_t numIndices, uint8_t requiredBytesPerIndex );
-//        uint8_t getAttribDims( ci::geom::Attrib attr ) const;
-        
+
     protected:
         
         MetalBuffer( unsigned long length, const void * pointer, const std::string & label );
+        
+        template <typename T>
+        MetalBuffer( const std::vector<T> & dataVector, const std::string & label );
+
         MetalBufferImpl *mImpl;
         
     };

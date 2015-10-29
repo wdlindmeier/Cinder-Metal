@@ -35,9 +35,9 @@ typedef struct {
 } ColorInOut;
 
 // Vertex shader function
-vertex ColorInOut lighting_vertex(device vertex_t* vertex_array [[ buffer(BUFFER_INDEX_VERTS) ]],
-                                  constant uniforms_t& uniforms [[ buffer(BUFFER_INDEX_UNIFORMS) ]],
-                                  unsigned int vid [[ vertex_id ]])
+vertex ColorInOut lighting_vertex_interleaved(device vertex_t* vertex_array [[ buffer(BUFFER_INDEX_VERTS) ]],
+                                              constant uniforms_t& uniforms [[ buffer(BUFFER_INDEX_UNIFORMS) ]],
+                                              unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
     
@@ -55,7 +55,6 @@ vertex ColorInOut lighting_vertex(device vertex_t* vertex_array [[ buffer(BUFFER
 }
 
 // Vertex shader function using geom::Source data layout
-// TEST
 vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(BUFFER_INDEX_GEOM_INDICES) ]],
                                        device packed_float3* verts [[ buffer(BUFFER_INDEX_GEOM_VERTS) ]],
                                        device packed_float3* normals [[ buffer(BUFFER_INDEX_GEOM_NORMALS) ]],                                       
@@ -70,6 +69,27 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(BU
     out.position = uniforms.modelview_projection_matrix * in_position;
     
     float3 normal = normals[vertIndex];
+    float4 eye_normal = normalize(uniforms.normal_matrix * float4(normal, 0.0));
+    float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
+    n_dot_l = fmax(0.0, n_dot_l);
+    
+    out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    
+    return out;
+}
+
+// Vertex shader function using attrib buffers
+vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions [[ buffer(BUFFER_INDEX_ATTRIB_POSITIONS) ]],
+                                                 device packed_float3* normals [[ buffer(BUFFER_INDEX_ATTRIB_NORMALS) ]],
+                                                 constant uniforms_t& uniforms [[ buffer(BUFFER_INDEX_ATTRIB_UNIFORMS) ]],
+                                                 unsigned int vid [[ vertex_id ]])
+{
+    ColorInOut out;
+    
+    float4 in_position = float4(positions[vid], 1.0);
+    out.position = uniforms.modelview_projection_matrix * in_position;
+    
+    float3 normal = normals[vid];
     float4 eye_normal = normalize(uniforms.normal_matrix * float4(normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);

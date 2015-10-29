@@ -12,6 +12,20 @@
 using namespace cinder;
 using namespace cinder::mtl;
 
+GeomBufferTargetRef GeomBufferTarget::create( const ci::geom::AttribSet &requestedAttribs,
+                                              ci::mtl::geom::Primitive primitive )
+{
+    return GeomBufferTargetRef( new GeomBufferTarget( requestedAttribs, primitive ) );
+}
+
+GeomBufferTarget::GeomBufferTarget( const ci::geom::AttribSet &requestedAttribs,
+                                    ci::mtl::geom::Primitive primitive ) :
+mRequestedAttribs(requestedAttribs)
+,mPrimitive(primitive)
+,mVertexLength(0)
+{
+}
+
 GeomBufferTargetRef GeomBufferTarget::create( const ci::geom::Source & source,
                                               const ci::geom::AttribSet &requestedAttribs )
 {
@@ -22,9 +36,11 @@ GeomBufferTarget::GeomBufferTarget( const ci::geom::Source & source,
                                     const ci::geom::AttribSet &requestedAttribs ) :
 mSource( source.clone() )
 ,mRequestedAttribs(requestedAttribs)
+,mVertexLength(0)
 {
     // Is there any reason to keep the source and attribs around?
     mPrimitive = geom::mtlPrimitiveTypeFromGeom( mSource->getPrimitive() );
+    mVertexLength = mSource->getNumIndices();
     mSource->loadInto( this, requestedAttribs );
 }
 
@@ -49,6 +65,12 @@ void GeomBufferTarget::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_
     auto buffer = MetalBuffer::create(length,
                                       srcData,
                                       attrName);
+    setBufferForAttribute(buffer, attr);
+}
+
+void GeomBufferTarget::setBufferForAttribute( MetalBufferRef buffer, const ci::geom::Attrib attr )
+{
+    assert( mRequestedAttribs.count( attr ) != 0 );
     mAttributeBuffers[attr] = buffer;
 }
 
@@ -73,31 +95,44 @@ void GeomBufferTarget::copyIndices( ci::geom::Primitive primitive, const uint32_
         unsigned int idx = source[i];
         *bufferPointer = idx;
     }
-    
-//    // Make sure we've copied correctly
-//    unsigned int *data = (unsigned int *)mIndexBuffer->contents();
-//    for ( size_t i = 0; i < numIndices; ++i )
-//    {
-//        unsigned int d = data[i];
-//        uint32_t s = source[i];
-//        assert(d == s);
-//    }
-
 }
 
 uint8_t GeomBufferTarget::getAttribDims( ci::geom::Attrib attr ) const
 {
-    return mSource->getAttribDims(attr);
+    if ( mSource )
+    {
+        return mSource->getAttribDims(attr);
+    }
+    
+    CI_LOG_E("Requesting attrib dims for a GeomBufferTarget with no source. Returning 0.");
+    
+    return 0;
 }
 
 void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder )
 {
+    if ( mVertexLength == 0 )
+    {
+        CI_LOG_E("Vertex length must be > 0");
+    }
+    assert( mVertexLength > 0 );
+    render( renderEncoder, mVertexLength );
+}
+
+void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder,
+                               size_t vertexLength,
+                               size_t vertexStart,
+                               size_t instanceCount )
+{
     // IMPORTANT: Can we be sure these will stay in the correct order?
     // TODO: Find a cleaner way to define the buffer indexes.
     int idx = 0;
-    renderEncoder->setVertexBuffer(mIndexBuffer, 0, idx);
+    if ( mIndexBuffer )
+    {
+        renderEncoder->setVertexBuffer(mIndexBuffer, 0, idx);
+        idx++;
+    }
     
-    idx++;
     for ( auto kvp : mAttributeBuffers )
     {
         ci::geom::Attrib attr = kvp.first;
@@ -106,10 +141,8 @@ void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder )
         idx++;
     }
     
-    // Just draw them all for now
-    size_t numVerts = mSource->getNumIndices();
     renderEncoder->draw(mPrimitive,
-                        0,
-                        numVerts,
-                        1);
+                        vertexStart,
+                        vertexLength,
+                        instanceCount);
 }
