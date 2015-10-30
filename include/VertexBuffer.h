@@ -18,30 +18,35 @@ namespace cinder
 {
     namespace mtl
     {
-        typedef std::shared_ptr<class GeomBufferTarget> GeomBufferTargetRef;
+        typedef std::shared_ptr<class VertexBuffer> VertexBufferRef;
         
-        // A class that pipes ci::geom Sources into metal buffers
-        
-        class GeomBufferTarget : public ci::geom::Target
+        class VertexBuffer : public ci::geom::Target
         {
             
         public:
 
             // Create a container with no data.
             // Data should be passed in with setBufferForAttribute().
-            static GeomBufferTargetRef create( const ci::geom::AttribSet & requestedAttribs,
-                                               ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
+            static VertexBufferRef create( const ci::geom::AttribSet & requestedAttribs,
+                                           ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
 
             // NOTE: The order that the attribs are passed in is the order that they
             // should appear in the shader.
-            static GeomBufferTargetRef create( const ci::geom::Source & source,
-                                               const ci::geom::AttribSet & requestedAttribs );
-            virtual ~GeomBufferTarget(){}
+            static VertexBufferRef create( const ci::geom::Source & source,
+                                           const ci::geom::AttribSet & requestedAttribs );
+            virtual ~VertexBuffer(){}
             
             ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
             void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
             
             void setBufferForAttribute( MetalBufferRef buffer, const ci::geom::Attrib attr );
+            MetalBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
+            
+            template<typename T>
+            void update( ci::geom::Attrib attr, std::vector<T> vectorData )
+            {
+                getBufferForAttribute(attr)->update(vectorData);
+            }
             
             void setVertexLength( size_t vertLength ){ mVertexLength = vertLength; };
             size_t getVertexLength(){ return mVertexLength; };
@@ -51,8 +56,8 @@ namespace cinder
             
         protected:
             
-            GeomBufferTarget( const ci::geom::Source & source, const ci::geom::AttribSet &requestedAttribs );
-            GeomBufferTarget( const ci::geom::AttribSet &requestedAttribs, ci::mtl::geom::Primitive primitive );
+            VertexBuffer( const ci::geom::Source & source, const ci::geom::AttribSet &requestedAttribs );
+            VertexBuffer( const ci::geom::AttribSet &requestedAttribs, ci::mtl::geom::Primitive primitive );
 
             // geom::Target subclass
             // Only use internally

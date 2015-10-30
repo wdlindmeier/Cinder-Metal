@@ -43,6 +43,19 @@ namespace cinder { namespace mtl {
         
         void * contents();
         
+        template <typename T>
+        void update( const T * newData, const size_t lengthBytes, const size_t offsetBytes = 0 )
+        {
+            uint8_t *bufferPointer = (uint8_t *)this->contents() + offsetBytes;
+            memcpy( bufferPointer, newData, lengthBytes );
+        }
+        
+        template <typename T>
+        void update( const std::vector<T> & vectorData )
+        {
+            update(vectorData.data(), sizeof(T) * vectorData.size());
+        }
+
         template <typename BufferType>
         void setData(BufferType *data, int inflightBufferIndex )
         {

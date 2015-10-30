@@ -16,7 +16,7 @@
 		22F02BB9C5664FB8B79128FD /* MetalCubeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		6906BCA7A507477F8CDF073E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FC99894E58E4A5BB1D605B9 /* LaunchScreen.xib */; };
-		A90BF5AB1BDC29D1002C9257 /* GeomBufferTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5A91BDC29D1002C9257 /* GeomBufferTarget.cpp */; };
+		A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */; };
 		A90BF5AE1BDC3A86002C9257 /* MetalGeom.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */; };
 		A916E3111BD15DA50012573E /* MetalRenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E30F1BD15DA50012573E /* MetalRenderEncoder.mm */; };
 		A916E31B1BD2A51A0012573E /* MetalBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E31A1BD2A51A0012573E /* MetalBuffer.mm */; };
@@ -63,8 +63,8 @@
 		58A30DB574BE41E995F61407 /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = CinderApp_ios.png; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; };
 		5FC99894E58E4A5BB1D605B9 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		65CD774DDC2946EC81C22090 /* MetalCube_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = MetalCube_Prefix.pch; sourceTree = "<group>"; };
-		A90BF5A91BDC29D1002C9257 /* GeomBufferTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeomBufferTarget.cpp; sourceTree = "<group>"; };
-		A90BF5AC1BDC29E7002C9257 /* GeomBufferTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeomBufferTarget.h; sourceTree = "<group>"; };
+		A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexBuffer.cpp; sourceTree = "<group>"; };
+		A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
 		A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalGeom.mm; sourceTree = "<group>"; };
 		A916E30F1BD15DA50012573E /* MetalRenderEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalRenderEncoder.mm; sourceTree = "<group>"; };
 		A916E3121BD15DC10012573E /* MetalRenderEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderEncoder.h; sourceTree = "<group>"; };
@@ -259,7 +259,6 @@
 			isa = PBXGroup;
 			children = (
 				A92044961BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.h */,
-				A90BF5AC1BDC29E7002C9257 /* GeomBufferTarget.h */,
 				A916E3201BD2B0710012573E /* Impls */,
 				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
 				A916E33D1BD318270012573E /* MetalBlitEncoder.h */,
@@ -273,6 +272,7 @@
 				A916E3121BD15DC10012573E /* MetalRenderEncoder.h */,
 				A96C5E5F1BCDD8B5001DD6D3 /* MetalRenderFormat.h */,
 				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
+				A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */,
 			);
 			name = include;
 			path = ../../../include;
@@ -282,7 +282,6 @@
 			isa = PBXGroup;
 			children = (
 				A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */,
-				A90BF5A91BDC29D1002C9257 /* GeomBufferTarget.cpp */,
 				A916E3211BD2B07F0012573E /* Impls */,
 				A916E3421BD3182F0012573E /* MetalBlitEncoder.mm */,
 				A916E3561BD5575B0012573E /* MetalBlitFormat.mm */,
@@ -295,6 +294,7 @@
 				A916E30F1BD15DA50012573E /* MetalRenderEncoder.mm */,
 				A96C5E5A1BCDD87C001DD6D3 /* MetalRenderFormat.mm */,
 				A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */,
+				A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */,
 			);
 			name = src;
 			path = ../../../src;
@@ -369,7 +369,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A90BF5AB1BDC29D1002C9257 /* GeomBufferTarget.cpp in Sources */,
+				A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */,
 				A96C5E5C1BCDD87C001DD6D3 /* MetalRenderFormat.mm in Sources */,
 				22F02BB9C5664FB8B79128FD /* MetalCubeApp.cpp in Sources */,
 				A916E31B1BD2A51A0012573E /* MetalBuffer.mm in Sources */,

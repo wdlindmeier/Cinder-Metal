@@ -6,34 +6,34 @@
 //
 //
 
-#include "GeomBufferTarget.h"
+#include "VertexBuffer.h"
 #include "cinder/Log.h"
 
 using namespace cinder;
 using namespace cinder::mtl;
 
-GeomBufferTargetRef GeomBufferTarget::create( const ci::geom::AttribSet &requestedAttribs,
-                                              ci::mtl::geom::Primitive primitive )
+VertexBufferRef VertexBuffer::create( const ci::geom::AttribSet &requestedAttribs,
+                                      ci::mtl::geom::Primitive primitive )
 {
-    return GeomBufferTargetRef( new GeomBufferTarget( requestedAttribs, primitive ) );
+    return VertexBufferRef( new VertexBuffer( requestedAttribs, primitive ) );
 }
 
-GeomBufferTarget::GeomBufferTarget( const ci::geom::AttribSet &requestedAttribs,
-                                    ci::mtl::geom::Primitive primitive ) :
+VertexBuffer::VertexBuffer( const ci::geom::AttribSet &requestedAttribs,
+                            ci::mtl::geom::Primitive primitive ) :
 mRequestedAttribs(requestedAttribs)
 ,mPrimitive(primitive)
 ,mVertexLength(0)
 {
 }
 
-GeomBufferTargetRef GeomBufferTarget::create( const ci::geom::Source & source,
-                                              const ci::geom::AttribSet &requestedAttribs )
+VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
+                                      const ci::geom::AttribSet &requestedAttribs )
 {
-    return GeomBufferTargetRef( new GeomBufferTarget( source, requestedAttribs) );
+    return VertexBufferRef( new VertexBuffer( source, requestedAttribs) );
 }
 
-GeomBufferTarget::GeomBufferTarget( const ci::geom::Source & source,
-                                    const ci::geom::AttribSet &requestedAttribs ) :
+VertexBuffer::VertexBuffer( const ci::geom::Source & source,
+                            const ci::geom::AttribSet &requestedAttribs ) :
 mSource( source.clone() )
 ,mRequestedAttribs(requestedAttribs)
 ,mVertexLength(0)
@@ -44,11 +44,11 @@ mSource( source.clone() )
     mSource->loadInto( this, requestedAttribs );
 }
 
-void GeomBufferTarget::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 etc
-                                   uint8_t dims, // Number of floats
-                                   size_t strideBytes, // Stride. See srcData
-                                   const float *srcData, // Data representing the attribute ONLY. Not interleaved w/ other attrs
-                                   size_t count ) // Number of values
+void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 etc
+                               uint8_t dims, // Number of floats
+                               size_t strideBytes, // Stride. See srcData
+                               const float *srcData, // Data representing the attribute ONLY. Not interleaved w/ other attrs
+                               size_t count ) // Number of values
 {
     // Skip the copy if we don't care about this attr
     if( mRequestedAttribs.count( attr ) == 0 )
@@ -68,13 +68,19 @@ void GeomBufferTarget::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_
     setBufferForAttribute(buffer, attr);
 }
 
-void GeomBufferTarget::setBufferForAttribute( MetalBufferRef buffer, const ci::geom::Attrib attr )
+MetalBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
+{
+    return mAttributeBuffers[attr];
+}
+
+void VertexBuffer::setBufferForAttribute( MetalBufferRef buffer, const ci::geom::Attrib attr )
 {
     assert( mRequestedAttribs.count( attr ) != 0 );
     mAttributeBuffers[attr] = buffer;
 }
 
-void GeomBufferTarget::copyIndices( ci::geom::Primitive primitive, const uint32_t *source, size_t numIndices, uint8_t requiredBytesPerIndex )
+void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *source,
+                                size_t numIndices, uint8_t requiredBytesPerIndex )
 {
     assert( mPrimitive == mtl::geom::mtlPrimitiveTypeFromGeom(primitive) );
     
@@ -97,7 +103,7 @@ void GeomBufferTarget::copyIndices( ci::geom::Primitive primitive, const uint32_
     }
 }
 
-uint8_t GeomBufferTarget::getAttribDims( ci::geom::Attrib attr ) const
+uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
 {
     if ( mSource )
     {
@@ -109,7 +115,7 @@ uint8_t GeomBufferTarget::getAttribDims( ci::geom::Attrib attr ) const
     return 0;
 }
 
-void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder )
+void VertexBuffer::render( MetalRenderEncoderRef renderEncoder )
 {
     if ( mVertexLength == 0 )
     {
@@ -119,10 +125,10 @@ void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder )
     render( renderEncoder, mVertexLength );
 }
 
-void GeomBufferTarget::render( MetalRenderEncoderRef renderEncoder,
-                               size_t vertexLength,
-                               size_t vertexStart,
-                               size_t instanceCount )
+void VertexBuffer::render( MetalRenderEncoderRef renderEncoder,
+                           size_t vertexLength,
+                           size_t vertexStart,
+                           size_t instanceCount )
 {
     // IMPORTANT: Can we be sure these will stay in the correct order?
     // TODO: Find a cleaner way to define the buffer indexes.
