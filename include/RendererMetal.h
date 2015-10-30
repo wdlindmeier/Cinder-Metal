@@ -15,7 +15,7 @@ class RendererMetalImpl;
 namespace cinder {
     
     namespace mtl {
-        class MetalCommandBuffer;
+        class CommandBuffer;
     }
     
     namespace app {
@@ -81,10 +81,10 @@ namespace cinder {
     
     namespace mtl {
         
-        class MetalRenderEncoder;
-        class MetalCommandBuffer;
+        class RenderEncoder;
+        class CommandBuffer;
         
-        void commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc );
+        void commandBufferBlock( std::function< void ( std::shared_ptr<CommandBuffer> cmdBuffer ) > commandFunc );
         
     }
 }

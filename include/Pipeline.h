@@ -1,5 +1,5 @@
 //
-//  MetalPipeline.hpp
+//  Pipeline.hpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/13/15.
@@ -11,19 +11,19 @@
 #include "cinder/Cinder.h"
 
 #if defined( __OBJC__ )
-@class MetalPipelineImpl;
+@class PipelineImpl;
 #else
-class MetalPipelineImpl;
+class PipelineImpl;
 #endif
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class MetalPipeline> MetalPipelineRef;
+    typedef std::shared_ptr<class Pipeline> PipelineRef;
     
-    class MetalPipeline
+    class Pipeline
     {
         
-        friend class MetalRenderEncoder;
+        friend class RenderEncoder;
         
     public:
         
@@ -49,14 +49,14 @@ namespace cinder { namespace mtl {
             
         };
         
-        static MetalPipelineRef create(  const std::string & vertShaderName, const std::string & fragShaderName, Format format );
-        virtual ~MetalPipeline(){}
+        static PipelineRef create(  const std::string & vertShaderName, const std::string & fragShaderName, Format format );
+        virtual ~Pipeline(){}
 
     protected:
         
-        MetalPipeline( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
+        Pipeline( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
         
-        MetalPipelineImpl *mImpl;
+        PipelineImpl *mImpl;
         Format mFormat;
         
     };

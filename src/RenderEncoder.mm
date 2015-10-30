@@ -1,18 +1,18 @@
 //
-//  MetalRenderEncoder.cpp
+//  RenderEncoder.cpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/16/15.
 //
 //
 
-#include "MetalRenderEncoder.h"
+#include "RenderEncoder.h"
 #include "cinder/cocoa/CinderCocoa.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import "MetalBufferImpl.h"
-#import "MetalPipelineImpl.h"
+#import "BufferImpl.h"
+#import "PipelineImpl.h"
 
 using namespace ci;
 using namespace ci::mtl;
@@ -20,37 +20,37 @@ using namespace ci::cocoa;
 
 #define IMPL ((__bridge id <MTLRenderCommandEncoder>)mImpl)
 
-MetalRenderEncoderRef MetalRenderEncoder::create( void * encoderImpl )
+RenderEncoderRef RenderEncoder::create( void * encoderImpl )
 {
-    return MetalRenderEncoderRef( new MetalRenderEncoder( encoderImpl ) );
+    return RenderEncoderRef( new RenderEncoder( encoderImpl ) );
 }
 
-MetalRenderEncoder::MetalRenderEncoder( void * encoderImpl )
+RenderEncoder::RenderEncoder( void * encoderImpl )
 :
 mImpl(encoderImpl)
 {
     assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
 }
 
-void MetalRenderEncoder::setPipeline( MetalPipelineRef pipeline )
+void RenderEncoder::setPipeline( PipelineRef pipeline )
 {
     [IMPL setDepthStencilState:pipeline->mImpl.depthState];
     [IMPL setRenderPipelineState:pipeline->mImpl.pipelineState];
 }
 
-void MetalRenderEncoder::pushDebugGroup( const std::string & groupName )
+void RenderEncoder::pushDebugGroup( const std::string & groupName )
 {
     [IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
 }
 
-void MetalRenderEncoder::setVertexBuffer( MetalBufferRef buffer, size_t bytesOffset, size_t index)
+void RenderEncoder::setBufferAtIndex( BufferRef buffer, size_t index, size_t bytesOffset )
 {
     [IMPL setVertexBuffer:buffer->mImpl.buffer
                    offset:bytesOffset
                   atIndex:index];
 }
 
-void MetalRenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount )
+void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount )
 {
     [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
              vertexStart:vertexStart
@@ -58,7 +58,7 @@ void MetalRenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertex
            instanceCount:instanceCount];
 }
 
-void MetalRenderEncoder::popDebugGroup()
+void RenderEncoder::popDebugGroup()
 {
     [IMPL popDebugGroup];
 }

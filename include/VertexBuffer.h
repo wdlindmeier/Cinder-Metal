@@ -11,8 +11,8 @@
 #include "cinder/Cinder.h"
 #include "cinder/GeomIo.h"
 #include "MetalGeom.h"
-#include "MetalBuffer.h"
-#include "MetalRenderEncoder.h"
+#include "Buffer.h"
+#include "RenderEncoder.h"
 
 namespace cinder
 {
@@ -39,8 +39,8 @@ namespace cinder
             ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
             void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
             
-            void setBufferForAttribute( MetalBufferRef buffer, const ci::geom::Attrib attr );
-            MetalBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
+            void setBufferForAttribute( BufferRef buffer, const ci::geom::Attrib attr );
+            BufferRef getBufferForAttribute( const ci::geom::Attrib attr );
             
             template<typename T>
             void update( ci::geom::Attrib attr, std::vector<T> vectorData )
@@ -51,8 +51,8 @@ namespace cinder
             void setVertexLength( size_t vertLength ){ mVertexLength = vertLength; };
             size_t getVertexLength(){ return mVertexLength; };
 
-            void render( MetalRenderEncoderRef renderEncoder );
-            void render( MetalRenderEncoderRef renderEncoder, size_t vertexLength, size_t vertexStart = 0, size_t instanceCount = 1 );
+            void render( RenderEncoderRef renderEncoder );
+            void render( RenderEncoderRef renderEncoder, size_t vertexLength, size_t vertexStart = 0, size_t instanceCount = 1 );
             
         protected:
             
@@ -66,9 +66,9 @@ namespace cinder
             uint8_t getAttribDims( ci::geom::Attrib attr ) const;
 
             ci::mtl::geom::Primitive mPrimitive;
-            std::map< ci::geom::Attrib, MetalBufferRef > mAttributeBuffers;
+            std::map< ci::geom::Attrib, BufferRef > mAttributeBuffers;
             ci::geom::AttribSet mRequestedAttribs;
-            MetalBufferRef mIndexBuffer;
+            BufferRef mIndexBuffer;
             ci::geom::SourceRef mSource;
             size_t mVertexLength;
             

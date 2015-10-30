@@ -1,5 +1,5 @@
 //
-//  MetalComputeFormat.hpp
+//  ComputeFormat.hpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/19/15.
@@ -12,21 +12,21 @@
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class MetalComputeFormat> MetalComputeFormatRef;
+    typedef std::shared_ptr<class ComputeFormat> ComputeFormatRef;
     
-    class MetalComputeFormat
+    class ComputeFormat
     {
         
-        friend class MetalCommandBuffer;
+        friend class CommandBuffer;
         
     public:
         
-        static MetalComputeFormatRef create();
-        ~MetalComputeFormat(){};
+        static ComputeFormatRef create();
+        ~ComputeFormat(){};
         
     protected:
         
-        MetalComputeFormat();
+        ComputeFormat();
         // TODO: Create some options
         
     };

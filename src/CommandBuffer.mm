@@ -1,13 +1,13 @@
 //
-//  MetalCommandBuffer.cpp
+//  CommandBuffer.cpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/17/15.
 //
 //
 
-#include "MetalCommandBuffer.h"
-#import "MetalRenderFormatImpl.h"
+#include "CommandBuffer.h"
+#import "RenderFormatImpl.h"
 #import <QuartzCore/CAMetalLayer.h>
 
 using namespace ci;
@@ -16,12 +16,12 @@ using namespace ci::mtl;
 #define CMD_BUFFER ((__bridge id <MTLCommandBuffer>)mCommandBuffer)
 #define DRAWABLE ((__bridge id <CAMetalDrawable>)mDrawable)
 
-MetalCommandBufferRef MetalCommandBuffer::create( void * mtlCommandBuffer, void * mtlDrawable )
+CommandBufferRef CommandBuffer::create( void * mtlCommandBuffer, void * mtlDrawable )
 {
-    return MetalCommandBufferRef( new MetalCommandBuffer( mtlCommandBuffer, mtlDrawable ) );
+    return CommandBufferRef( new CommandBuffer( mtlCommandBuffer, mtlDrawable ) );
 }
 
-MetalCommandBuffer::MetalCommandBuffer( void * mtlCommandBuffer, void * mtlDrawable )
+CommandBuffer::CommandBuffer( void * mtlCommandBuffer, void * mtlDrawable )
 :
 mCommandBuffer(mtlCommandBuffer)
 ,mDrawable(mtlDrawable)
@@ -33,8 +33,8 @@ mCommandBuffer(mtlCommandBuffer)
     assert( [(__bridge id)mtlDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
 }
 
-void MetalCommandBuffer::renderTargetWithFormat( MetalRenderFormatRef format,
-                                                 std::function< void ( MetalRenderEncoderRef renderEncoder ) > renderFunc,
+void CommandBuffer::renderTargetWithFormat( RenderFormatRef format,
+                                                 std::function< void ( RenderEncoderRef renderEncoder ) > renderFunc,
                                                  const std::string encoderName )
 {
     // NOTE: We have to prepare the render description before getting the encoder
@@ -42,35 +42,35 @@ void MetalCommandBuffer::renderTargetWithFormat( MetalRenderFormatRef format,
     
     id <MTLRenderCommandEncoder> renderEncoder = [CMD_BUFFER renderCommandEncoderWithDescriptor:format->mImpl.renderPassDescriptor];
     renderEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
-    MetalRenderEncoderRef encoder = MetalRenderEncoder::create((__bridge void *)renderEncoder);
+    RenderEncoderRef encoder = RenderEncoder::create((__bridge void *)renderEncoder);
     
     renderFunc( encoder );
     
     [renderEncoder endEncoding];
 }
 
-void MetalCommandBuffer::computeTargetWithFormat( MetalComputeFormatRef format,
-                                                  std::function< void ( MetalComputeEncoderRef computeEncoder ) > computeFunc,
+void CommandBuffer::computeTargetWithFormat( ComputeFormatRef format,
+                                                  std::function< void ( ComputeEncoderRef computeEncoder ) > computeFunc,
                                                   const std::string encoderName )
 {
     // TODO: Do we need to prepare the format with the drawable?
     id <MTLComputeCommandEncoder> computeEncoder = [CMD_BUFFER computeCommandEncoder];
     computeEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
-    MetalComputeEncoderRef encoder = MetalComputeEncoder::create((__bridge void *)computeEncoder);
+    ComputeEncoderRef encoder = ComputeEncoder::create((__bridge void *)computeEncoder);
 
     computeFunc( encoder );
     
     [computeEncoder endEncoding];
 }
 
-void MetalCommandBuffer::blitTargetWithFormat( MetalBlitFormatRef format,
-                                               std::function< void ( MetalBlitEncoderRef blitEncoder ) > blitFunc,
+void CommandBuffer::blitTargetWithFormat( BlitFormatRef format,
+                                               std::function< void ( BlitEncoderRef blitEncoder ) > blitFunc,
                                                const std::string encoderName )
 {
     // TODO: Do we need to prepare the format with the drawable?
     id <MTLBlitCommandEncoder> blitEncoder = [CMD_BUFFER blitCommandEncoder];
     blitEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
-    MetalBlitEncoderRef encoder = MetalBlitEncoder::create((__bridge void *)blitEncoder);
+    BlitEncoderRef encoder = BlitEncoder::create((__bridge void *)blitEncoder);
 
     blitFunc( encoder );
     

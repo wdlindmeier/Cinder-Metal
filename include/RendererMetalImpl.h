@@ -10,7 +10,7 @@
 
 #include <Metal/Metal.h>
 #include "RendererMetal.h"
-#include "MetalCommandBuffer.h"
+#include "CommandBuffer.h"
 
 @interface RendererMetalImpl : NSObject
 {
@@ -35,6 +35,6 @@
 - (void)startDraw;
 - (void)finishDraw;
 
-- (void)commandBufferBlock:(void (^)( ci::mtl::MetalCommandBufferRef commandBuffer ))commandBlock;
+- (void)commandBufferBlock:(void (^)( ci::mtl::CommandBufferRef commandBuffer ))commandBlock;
 
 @end

@@ -8,7 +8,6 @@
 #include "VertexBuffer.h"
 #include "BufferConstants.h"
 
-
 using namespace std;
 using namespace ci;
 using namespace ci::app;
@@ -72,6 +71,7 @@ typedef struct
 
 const static int kNumInflightBuffers = 3;
 
+
 class MetalCubeApp : public App {
   public:
 	void setup() override;
@@ -82,22 +82,22 @@ class MetalCubeApp : public App {
 
     VertexBufferRef mGeomBufferTeapot;
     VertexBufferRef mAttribBufferCube;
-    MetalBufferRef mVertexBuffer;
-    MetalBufferRef mDynamicConstantBuffer;
+    mtl::BufferRef mVertexBuffer;
+    mtl::BufferRef mDynamicConstantBuffer;
     uint8_t _constantDataBufferIndex;
 
-    MetalPipelineRef mPipelineInterleavedLighting;
-    MetalPipelineRef mPipelineGeomLighting;
-    MetalPipelineRef mPipelineAttribLighting;
+    PipelineRef mPipelineInterleavedLighting;
+    PipelineRef mPipelineGeomLighting;
+    PipelineRef mPipelineAttribLighting;
 
     // uniforms
     uniforms_t _uniform_buffer;
     float _rotation;
     CameraPersp mCamera;
     
-    MetalRenderFormatRef mRenderFormat;
-    MetalComputeFormatRef mComputeFormat;
-    MetalBlitFormatRef mBlitFormat;
+    RenderFormatRef mRenderFormat;
+    ComputeFormatRef mComputeFormat;
+    BlitFormatRef mBlitFormat;
     
     // TEST
     vector<vec3> mPositions;
@@ -110,12 +110,12 @@ void MetalCubeApp::setup()
     
     // TODO:
     // Use an options-style constructor
-    mRenderFormat = MetalRenderFormat::create();
+    mRenderFormat = RenderFormat::create();
     mRenderFormat->setShouldClear(true);
     mRenderFormat->setClearColor(ColorAf(1.f,0.f,0.f,1.f));
     
-    mComputeFormat = MetalComputeFormat::create();
-    mBlitFormat = MetalBlitFormat::create();
+    mComputeFormat = ComputeFormat::create();
+    mBlitFormat = BlitFormat::create();
 
     loadAssets();
 }
@@ -129,19 +129,19 @@ void MetalCubeApp::resize()
 void MetalCubeApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = MetalBuffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
+    mDynamicConstantBuffer = mtl::Buffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
 
     // EXAMPLE 1
     // Create a buffer from an interleaved c array
     // Setup the vertex buffers
-    mVertexBuffer = MetalBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
+    mVertexBuffer = mtl::Buffer::create(sizeof(cubeVertexData),  // the size of the buffer
                                         cubeVertexData,          // the data
                                         "Interleaved Vertices"); // the name of the buffer
     // Create a reusable pipeline state
     // This is similar to a GlslProg
-    mPipelineInterleavedLighting = MetalPipeline::create("lighting_vertex_interleaved",         // The name of the vertex shader function
+    mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",         // The name of the vertex shader function
                                                          "lighting_fragment",                   // The name of the fragment shader function
-                                                         MetalPipeline::Format().depth(true) ); // Format
+                                                         Pipeline::Format().depth(true) ); // Format
     
     
     // EXAMPLE 2
@@ -149,9 +149,9 @@ void MetalCubeApp::loadAssets()
     mGeomBufferTeapot = VertexBuffer::create( ci::geom::Teapot(),     // The source
                                               {{ ci::geom::POSITION,  // The requested attributes.
                                                  ci::geom::NORMAL }} );
-    mPipelineGeomLighting = MetalPipeline::create("lighting_vertex_geom",
+    mPipelineGeomLighting = Pipeline::create("lighting_vertex_geom",
                                                   "lighting_fragment",
-                                                  MetalPipeline::Format().depth(true) );
+                                                  Pipeline::Format().depth(true) );
 
     
     // Load verts and normals into vectors
@@ -173,26 +173,26 @@ void MetalCubeApp::loadAssets()
     // Use attribtue buffers
     mAttribBufferCube = VertexBuffer::create( {{ ci::geom::POSITION, ci::geom::NORMAL }} );
     mPositions = positions;
-    MetalBufferRef positionBuffer = MetalBuffer::create(mPositions, "positions");
+    mtl::BufferRef positionBuffer = mtl::Buffer::create(mPositions, "positions");
     
     mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
-    MetalBufferRef normalBuffer = MetalBuffer::create(normals, "normals");
+    mtl::BufferRef normalBuffer = mtl::Buffer::create(normals, "normals");
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
-    mPipelineAttribLighting = MetalPipeline::create("lighting_vertex_attrib_buffers",
+    mPipelineAttribLighting = Pipeline::create("lighting_vertex_attrib_buffers",
                                                     "lighting_fragment",
-                                                    MetalPipeline::Format().depth(true) );
+                                                    Pipeline::Format().depth(true) );
     
     // EXAMPLE 4
     // Create an interleaved buffer with from a vector
     // NOTE: This is overwriting the member variables defined in Example 1
-    mVertexBuffer = MetalBuffer::create(sizeof(positionsAndNormals) + sizeof(vec3) * positionsAndNormals.size(),
+    mVertexBuffer = mtl::Buffer::create(sizeof(positionsAndNormals) + sizeof(vec3) * positionsAndNormals.size(),
                                         positionsAndNormals.data(),
                                         "Positions and Normals");
 
-    mPipelineInterleavedLighting = MetalPipeline::create("lighting_vertex_interleaved",
+    mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",
                                                          "lighting_fragment",
-                                                         MetalPipeline::Format().depth(true) );
+                                                         Pipeline::Format().depth(true) );
 
 }
 
@@ -221,9 +221,9 @@ void MetalCubeApp::update()
 
 void MetalCubeApp::draw()
 {
-    commandBufferBlock( [&]( MetalCommandBufferRef commandBuffer )
+    commandBufferBlock( [&]( CommandBufferRef commandBuffer )
     {
-        commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( MetalRenderEncoderRef encoder )
+        commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( RenderEncoderRef encoder )
         {
 //            encoder->pushDebugGroup("Draw Interleaved Cube");
 //            
@@ -231,10 +231,10 @@ void MetalCubeApp::draw()
 //            encoder->setPipeline( mPipelineInterleavedLighting );
 //            
 //            // Set render state & resources
-//            encoder->setVertexBuffer(mVertexBuffer, 0, BUFFER_INDEX_VERTS);
-//            encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-//                                                                 _constantDataBufferIndex,
-//                                                                 BUFFER_INDEX_UNIFORMS);
+//            encoder->setBufferAtIndex(mVertexBuffer, BUFFER_INDEX_VERTS);
+//            encoder->setBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+//                                                           _constantDataBufferIndex,
+//                                                           BUFFER_INDEX_UNIFORMS);
 //            // Draw
 //            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
 //            encoder->popDebugGroup();
@@ -242,48 +242,48 @@ void MetalCubeApp::draw()
             
             // Using Cinder geom to draw the cube
             
-//            // Geom Target
-//            encoder->pushDebugGroup("Draw Teapot");
-//            
-//            // Set the program
-//            encoder->setPipeline( mPipelineGeomLighting );
-//            
-//            // Set render state & resources
-//            encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-//                                                                 _constantDataBufferIndex,
-//                                                                 BUFFER_INDEX_GEOM_UNIFORMS);
-//            mGeomBufferTeapot->render( encoder );
-//
-//            // Draw
-//            encoder->popDebugGroup();
-            
-            
-            // Using attrib buffers to draw the cube
-            
             // Geom Target
-            encoder->pushDebugGroup("Draw Attrib Cube");
+            encoder->pushDebugGroup("Draw Teapot");
             
             // Set the program
-            encoder->setPipeline( mPipelineAttribLighting );
+            encoder->setPipeline( mPipelineGeomLighting );
             
             // Set render state & resources
-            encoder->setVertexBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-                                                                 _constantDataBufferIndex,
-                                                                 BUFFER_INDEX_ATTRIB_UNIFORMS);
-            mAttribBufferCube->render( encoder, 36 );
-            
+            encoder->setBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+                                                           _constantDataBufferIndex,
+                                                           BUFFER_INDEX_GEOM_UNIFORMS);
+            mGeomBufferTeapot->render( encoder );
+
             // Draw
             encoder->popDebugGroup();
+            
+            
+//            // Using attrib buffers to draw the cube
+//            
+//            // Geom Target
+//            encoder->pushDebugGroup("Draw Attrib Cube");
+//            
+//            // Set the program
+//            encoder->setPipeline( mPipelineAttribLighting );
+//            
+//            // Set render state & resources
+//            encoder->setBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
+//                                                           _constantDataBufferIndex,
+//                                                           BUFFER_INDEX_ATTRIB_UNIFORMS);
+//            mAttribBufferCube->render( encoder, 36 );
+//            
+//            // Draw
+//            encoder->popDebugGroup();
 
 
         });
 
-        commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( MetalComputeEncoderRef encoder )
+        commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( ComputeEncoderRef encoder )
         {
             // FPO
         });
         
-        commandBuffer->blitTargetWithFormat( mBlitFormat, [&]( MetalBlitEncoderRef encoder )
+        commandBuffer->blitTargetWithFormat( mBlitFormat, [&]( BlitEncoderRef encoder )
         {
             // FPO
         });

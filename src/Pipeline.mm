@@ -1,32 +1,32 @@
 //
-//  MetalPipeline.cpp
+//  Pipeline.cpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/13/15.
 //
 //
 
-#include "MetalPipeline.h"
-#include "MetalPipelineImpl.h"
+#include "Pipeline.h"
+#include "PipelineImpl.h"
 #import "cinder/cocoa/CinderCocoa.h"
 
 using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-MetalPipelineRef MetalPipeline::create(const std::string & vertShaderName,
+PipelineRef Pipeline::create(const std::string & vertShaderName,
                                        const std::string & fragShaderName,
                                        Format format )
 {
-    return MetalPipelineRef( new MetalPipeline(vertShaderName, fragShaderName, format) );
+    return PipelineRef( new Pipeline(vertShaderName, fragShaderName, format) );
 }
 
-MetalPipeline::MetalPipeline(const std::string & vertShaderName,
+Pipeline::Pipeline(const std::string & vertShaderName,
                              const std::string & fragShaderName,
                              Format format ) :
 mFormat(format)
 {
-    mImpl = [[MetalPipelineImpl alloc] initWithVert:(__bridge NSString *)createCfString(vertShaderName)
+    mImpl = [[PipelineImpl alloc] initWithVert:(__bridge NSString *)createCfString(vertShaderName)
                                                frag:(__bridge NSString *)createCfString(fragShaderName)
                                              format:format];
 }

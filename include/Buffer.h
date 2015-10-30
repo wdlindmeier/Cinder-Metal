@@ -1,5 +1,5 @@
 //
-//  MetalBuffer.hpp
+//  Buffer.hpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/17/15.
@@ -11,35 +11,36 @@
 #include "cinder/Cinder.h"
 
 #if defined( __OBJC__ )
-@class MetalBufferImpl;
+@class BufferImpl;
 #else
-class MetalBufferImpl;
+class BufferImpl;
 #endif
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class MetalBuffer> MetalBufferRef;
+    class Buffer;
     
-    //template <typename T>
-    class MetalBuffer
+    typedef std::shared_ptr<class Buffer> BufferRef;
+    
+    class Buffer
     {
         
-        friend class MetalRenderEncoder;
+        friend class RenderEncoder;
         
     public:
         
         // Data stored at pointer will be copied into the buffer
-        // static MetalBufferRef create( unsigned long length, const void * pointer, const std::string & label );
-        static MetalBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Vert Buffer" ){
-            return MetalBufferRef( new MetalBuffer(length, pointer, label) );
+        // static BufferRef create( unsigned long length, const void * pointer, const std::string & label );
+        static BufferRef create( unsigned long length, const void * pointer, const std::string & label = "Vert Buffer" ){
+            return BufferRef( new mtl::Buffer(length, pointer, label) );
         }
         
         template <typename T>
-        static MetalBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Vert Buffer" ){
-            return MetalBufferRef( new MetalBuffer(dataVector, label) );
+        static BufferRef create( const std::vector<T> & dataVector, const std::string & label = "Vert Buffer" ){
+            return BufferRef( new Buffer(dataVector, label) );
         }
         
-        virtual ~MetalBuffer(){};
+        virtual ~Buffer(){};
         
         void * contents();
         
@@ -65,12 +66,12 @@ namespace cinder { namespace mtl {
 
     protected:
         
-        MetalBuffer( unsigned long length, const void * pointer, const std::string & label );
+        Buffer( unsigned long length, const void * pointer, const std::string & label );
         
         template <typename T>
-        MetalBuffer( const std::vector<T> & dataVector, const std::string & label );
+        Buffer( const std::vector<T> & dataVector, const std::string & label );
 
-        MetalBufferImpl *mImpl;
+        BufferImpl *mImpl;
         
     };
     

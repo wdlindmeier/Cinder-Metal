@@ -1,5 +1,5 @@
 //
-//  MetalBufferImpl.h
+//  BufferImpl.h
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/17/15.
@@ -13,7 +13,7 @@
 #import <Metal/Metal.h>
 #import <simd/simd.h>
 
-@interface MetalBufferImpl : NSObject
+@interface BufferImpl : NSObject
 
 - (instancetype)initWithBytes:(const void *)pointer length:(unsigned long)length label:(NSString *)label;
 

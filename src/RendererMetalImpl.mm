@@ -118,14 +118,14 @@ static RendererMetalImpl * SharedRenderer = nil;
     dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
 }
 
-- (void)commandBufferBlock:(void (^)( ci::mtl::MetalCommandBufferRef commandBuffer ))commandBlock
+- (void)commandBufferBlock:(void (^)( ci::mtl::CommandBufferRef commandBuffer ))commandBlock
 {
     id <MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
     // TODO: Pass in an optional name
     commandBuffer.label = @"FrameCommands";
     id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
 
-    MetalCommandBufferRef ciCommandBuffer = MetalCommandBuffer::create((__bridge void *)commandBuffer,
+    CommandBufferRef ciCommandBuffer = CommandBuffer::create((__bridge void *)commandBuffer,
                                                                        (__bridge void *)drawable);
     
     commandBlock( ciCommandBuffer );

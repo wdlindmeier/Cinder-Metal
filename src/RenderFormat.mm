@@ -6,29 +6,29 @@
 //
 //
 
-#include "MetalRenderFormat.h"
-#include "MetalRenderFormatImpl.h"
+#include "RenderFormat.h"
+#include "RenderFormatImpl.h"
 
 using namespace ci;
 using namespace ci::mtl;
 
-MetalRenderFormatRef MetalRenderFormat::create()
+RenderFormatRef RenderFormat::create()
 {
-    return MetalRenderFormatRef( new MetalRenderFormat() );
+    return RenderFormatRef( new RenderFormat() );
 }
 
-MetalRenderFormat::MetalRenderFormat()
+RenderFormat::RenderFormat()
 {
-    mImpl = [MetalRenderFormatImpl new];
+    mImpl = [RenderFormatImpl new];
 }
 
-void MetalRenderFormat::setShouldClear( bool shouldClear )
+void RenderFormat::setShouldClear( bool shouldClear )
 {
     mImpl.renderPassDescriptor.colorAttachments[0].loadAction = shouldClear ? MTLLoadActionClear : MTLLoadActionDontCare;
     mImpl.renderPassDescriptor.depthAttachment.loadAction = shouldClear ? MTLLoadActionClear : MTLLoadActionDontCare;
 };
 
-void MetalRenderFormat::setClearColor( const ColorAf clearColor )
+void RenderFormat::setClearColor( const ColorAf clearColor )
 {
     mImpl.renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(clearColor.r,
                                                                                   clearColor.g,
@@ -36,7 +36,7 @@ void MetalRenderFormat::setClearColor( const ColorAf clearColor )
                                                                                   clearColor.a);
 };
 
-void MetalRenderFormat::setClearDepth( float clearDepth )
+void RenderFormat::setClearDepth( float clearDepth )
 {
     mImpl.renderPassDescriptor.depthAttachment.clearDepth = clearDepth;
 };

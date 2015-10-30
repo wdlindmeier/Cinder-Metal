@@ -6,7 +6,7 @@
 //
 //
 
-#import "MetalRenderFormatImpl.h"
+#import "RenderFormatImpl.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -15,7 +15,7 @@
 using namespace ci;
 using namespace ci::mtl;
 
-@implementation MetalRenderFormatImpl
+@implementation RenderFormatImpl
 
 - (instancetype)init
 {

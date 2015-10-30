@@ -12,7 +12,7 @@
 #import <Metal/Metal.h>
 #import <simd/simd.h>
 
-@interface MetalRenderFormatImpl : NSObject
+@interface RenderFormatImpl : NSObject
 {
 }
 

@@ -1,12 +1,12 @@
 //
-//  MetalComputeEncoder.cpp
+//  ComputeEncoder.cpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/17/15.
 //
 //
 
-#include "MetalComputeEncoder.h"
+#include "ComputeEncoder.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -15,12 +15,12 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-MetalComputeEncoderRef MetalComputeEncoder::create( void * mtlComputeCommandEncoder )
+ComputeEncoderRef ComputeEncoder::create( void * mtlComputeCommandEncoder )
 {
-    return MetalComputeEncoderRef( new MetalComputeEncoder( mtlComputeCommandEncoder ) );
+    return ComputeEncoderRef( new ComputeEncoder( mtlComputeCommandEncoder ) );
 }
 
-MetalComputeEncoder::MetalComputeEncoder( void * mtlComputeCommandEncoder )
+ComputeEncoder::ComputeEncoder( void * mtlComputeCommandEncoder )
 :
 mImpl(mtlComputeCommandEncoder)
 {

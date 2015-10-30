@@ -1,7 +1,7 @@
 #include "RendererMetal.h"
 #include "CinderViewCocoaTouch+Metal.h"
 #include "RendererMetalImpl.h"
-#include "MetalRenderEncoder.h"
+#include "RenderEncoder.h"
 
 using namespace cinder;
 using namespace cinder::app;
@@ -63,9 +63,9 @@ void RendererMetal::finishDraw()
     [mImpl finishDraw];
 }
 
-void ci::mtl::commandBufferBlock( std::function< void ( std::shared_ptr<MetalCommandBuffer> cmdBuffer ) > commandFunc )
+void ci::mtl::commandBufferBlock( std::function< void ( std::shared_ptr<CommandBuffer> cmdBuffer ) > commandFunc )
 {
-    [[RendererMetalImpl sharedRenderer] commandBufferBlock:^(ci::mtl::MetalCommandBufferRef commandBuffer) {
+    [[RendererMetalImpl sharedRenderer] commandBufferBlock:^(ci::mtl::CommandBufferRef commandBuffer) {
         commandFunc(commandBuffer);
     }];
 }

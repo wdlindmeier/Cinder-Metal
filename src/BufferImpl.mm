@@ -1,13 +1,13 @@
 //
-//  MetalBufferImpl.m
+//  BufferImpl.m
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/17/15.
 //
 //
 
-#import "MetalBufferImpl.h"
-#include "MetalBuffer.h"
+#import "BufferImpl.h"
+#include "Buffer.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -18,7 +18,7 @@ using namespace cinder;
 using namespace cinder::mtl;
 using namespace cinder::cocoa;
 
-@implementation MetalBufferImpl
+@implementation BufferImpl
 
 - (instancetype)initWithBytes:(const void *)pointer length:(unsigned long)length label:(NSString *)label
 {

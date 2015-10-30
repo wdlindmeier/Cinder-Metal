@@ -1,5 +1,5 @@
 //
-//  MetalBlitFormat.hpp
+//  BlitFormat.hpp
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/19/15.
@@ -12,21 +12,21 @@
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class MetalBlitFormat> MetalBlitFormatRef;
+    typedef std::shared_ptr<class BlitFormat> BlitFormatRef;
     
-    class MetalBlitFormat
+    class BlitFormat
     {
         
-        friend class MetalCommandBuffer;
+        friend class CommandBuffer;
         
     public:
         
-        static MetalBlitFormatRef create();
-        ~MetalBlitFormat(){};
+        static BlitFormatRef create();
+        ~BlitFormat(){};
         
     protected:
         
-        MetalBlitFormat();
+        BlitFormat();
         // TODO: Add some options
         // MTLBlitOption mImpl;
         

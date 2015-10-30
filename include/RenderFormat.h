@@ -11,24 +11,24 @@
 #include "cinder/Cinder.h"
 
 #if defined( __OBJC__ )
-@class MetalRenderFormatImpl;
+@class RenderFormatImpl;
 #else
-class MetalRenderFormatImpl;
+class RenderFormatImpl;
 #endif
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class MetalRenderFormat> MetalRenderFormatRef;
+    typedef std::shared_ptr<class RenderFormat> RenderFormatRef;
     
-    class MetalRenderFormat
+    class RenderFormat
     {
         
-        friend class MetalCommandBuffer;
+        friend class CommandBuffer;
         
     public:
         
-        static MetalRenderFormatRef create();
-        ~MetalRenderFormat(){};
+        static RenderFormatRef create();
+        ~RenderFormat(){};
 
         void setShouldClear( bool shouldClear );
         void setClearColor( const ColorAf clearColor );
@@ -36,8 +36,8 @@ namespace cinder { namespace mtl {
 
     protected:
 
-        MetalRenderFormat();
-        MetalRenderFormatImpl *mImpl;
+        RenderFormat();
+        RenderFormatImpl *mImpl;
         
     };
     

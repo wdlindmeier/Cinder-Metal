@@ -1,12 +1,12 @@
 //
-//  MetalPipelineImpl.m
+//  PipelineImpl.m
 //  MetalCube
 //
 //  Created by William Lindmeier on 10/17/15.
 //
 //
 
-#import "MetalPipelineImpl.h"
+#import "PipelineImpl.h"
 
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
@@ -16,12 +16,12 @@
 using namespace ci;
 using namespace ci::mtl;
 
-@implementation MetalPipelineImpl
+@implementation PipelineImpl
 
 // TODO: Add option to enable depth
 - (instancetype)initWithVert:(NSString *)vertShaderName
                         frag:(NSString *)fragShaderName
-                      format:(MetalPipeline::Format &)format
+                      format:(Pipeline::Format &)format
 {
     self = [super init];
     if ( self )

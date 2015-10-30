@@ -62,18 +62,18 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 et
     unsigned long length = (dims * sizeof(float) + strideBytes) * count;
 
     std::string attrName = ci::geom::attribToString( attr );
-    auto buffer = MetalBuffer::create(length,
+    auto buffer = Buffer::create(length,
                                       srcData,
                                       attrName);
     setBufferForAttribute(buffer, attr);
 }
 
-MetalBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
+mtl::BufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
 {
     return mAttributeBuffers[attr];
 }
 
-void VertexBuffer::setBufferForAttribute( MetalBufferRef buffer, const ci::geom::Attrib attr )
+void VertexBuffer::setBufferForAttribute( BufferRef buffer, const ci::geom::Attrib attr )
 {
     assert( mRequestedAttribs.count( attr ) != 0 );
     mAttributeBuffers[attr] = buffer;
@@ -89,7 +89,7 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
     assert(idxBytesRequired >= requiredBytesPerIndex);
     
     unsigned long length = idxBytesRequired * numIndices;
-    mIndexBuffer = MetalBuffer::create(length,
+    mIndexBuffer = Buffer::create(length,
                                        NULL,
                                        "Indices");
     
@@ -115,7 +115,7 @@ uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
     return 0;
 }
 
-void VertexBuffer::render( MetalRenderEncoderRef renderEncoder )
+void VertexBuffer::render( RenderEncoderRef renderEncoder )
 {
     if ( mVertexLength == 0 )
     {
@@ -125,7 +125,7 @@ void VertexBuffer::render( MetalRenderEncoderRef renderEncoder )
     render( renderEncoder, mVertexLength );
 }
 
-void VertexBuffer::render( MetalRenderEncoderRef renderEncoder,
+void VertexBuffer::render( RenderEncoderRef renderEncoder,
                            size_t vertexLength,
                            size_t vertexStart,
                            size_t instanceCount )
@@ -135,15 +135,15 @@ void VertexBuffer::render( MetalRenderEncoderRef renderEncoder,
     int idx = 0;
     if ( mIndexBuffer )
     {
-        renderEncoder->setVertexBuffer(mIndexBuffer, 0, idx);
+        renderEncoder->setBufferAtIndex(mIndexBuffer, idx);
         idx++;
     }
     
     for ( auto kvp : mAttributeBuffers )
     {
         ci::geom::Attrib attr = kvp.first;
-        MetalBufferRef buffer = kvp.second;
-        renderEncoder->setVertexBuffer(buffer, 0, idx);
+        BufferRef buffer = kvp.second;
+        renderEncoder->setBufferAtIndex(buffer, idx);
         idx++;
     }
     
