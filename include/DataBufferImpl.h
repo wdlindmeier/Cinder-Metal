@@ -13,7 +13,7 @@
 #import <Metal/Metal.h>
 #import <simd/simd.h>
 
-@interface BufferImpl : NSObject
+@interface DataBufferImpl : NSObject
 
 - (instancetype)initWithBytes:(const void *)pointer length:(unsigned long)length label:(NSString *)label;
 

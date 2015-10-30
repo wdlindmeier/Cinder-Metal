@@ -12,7 +12,7 @@
 #include "RendererMetal.h"
 #include "Pipeline.h"
 #include "CommandBuffer.h"
-#include "Buffer.h"
+#include "DataBuffer.h"
 #include "RenderFormat.h"
 #include "ComputeFormat.h"
 #include "BlitFormat.h"

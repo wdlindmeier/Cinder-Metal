@@ -11,18 +11,16 @@
 #include "cinder/Cinder.h"
 
 #if defined( __OBJC__ )
-@class BufferImpl;
+@class DataBufferImpl;
 #else
-class BufferImpl;
+class DataBufferImpl;
 #endif
 
 namespace cinder { namespace mtl {
     
-    class Buffer;
+    typedef std::shared_ptr<class DataBuffer> DataBufferRef;
     
-    typedef std::shared_ptr<class Buffer> BufferRef;
-    
-    class Buffer
+    class DataBuffer
     {
         
         friend class RenderEncoder;
@@ -30,17 +28,17 @@ namespace cinder { namespace mtl {
     public:
         
         // Data stored at pointer will be copied into the buffer
-        // static BufferRef create( unsigned long length, const void * pointer, const std::string & label );
-        static BufferRef create( unsigned long length, const void * pointer, const std::string & label = "Vert Buffer" ){
-            return BufferRef( new mtl::Buffer(length, pointer, label) );
+        // static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label );
+        static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Vert Buffer" ){
+            return DataBufferRef( new DataBuffer(length, pointer, label) );
         }
         
         template <typename T>
-        static BufferRef create( const std::vector<T> & dataVector, const std::string & label = "Vert Buffer" ){
-            return BufferRef( new Buffer(dataVector, label) );
+        static DataBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Vert Buffer" ){
+            return DataBufferRef( new DataBuffer(dataVector, label) );
         }
         
-        virtual ~Buffer(){};
+        virtual ~DataBuffer(){};
         
         void * contents();
         
@@ -66,12 +64,12 @@ namespace cinder { namespace mtl {
 
     protected:
         
-        Buffer( unsigned long length, const void * pointer, const std::string & label );
+        DataBuffer( unsigned long length, const void * pointer, const std::string & label );
         
         template <typename T>
-        Buffer( const std::vector<T> & dataVector, const std::string & label );
+        DataBuffer( const std::vector<T> & dataVector, const std::string & label );
 
-        BufferImpl *mImpl;
+        DataBufferImpl *mImpl;
         
     };
     

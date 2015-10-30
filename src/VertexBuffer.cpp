@@ -62,18 +62,18 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 et
     unsigned long length = (dims * sizeof(float) + strideBytes) * count;
 
     std::string attrName = ci::geom::attribToString( attr );
-    auto buffer = Buffer::create(length,
+    auto buffer = DataBuffer::create(length,
                                       srcData,
                                       attrName);
     setBufferForAttribute(buffer, attr);
 }
 
-mtl::BufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
+DataBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
 {
     return mAttributeBuffers[attr];
 }
 
-void VertexBuffer::setBufferForAttribute( BufferRef buffer, const ci::geom::Attrib attr )
+void VertexBuffer::setBufferForAttribute( DataBufferRef buffer, const ci::geom::Attrib attr )
 {
     assert( mRequestedAttribs.count( attr ) != 0 );
     mAttributeBuffers[attr] = buffer;
@@ -89,7 +89,7 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
     assert(idxBytesRequired >= requiredBytesPerIndex);
     
     unsigned long length = idxBytesRequired * numIndices;
-    mIndexBuffer = Buffer::create(length,
+    mIndexBuffer = DataBuffer::create(length,
                                        NULL,
                                        "Indices");
     
@@ -110,7 +110,7 @@ uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
         return mSource->getAttribDims(attr);
     }
     
-    CI_LOG_E("Requesting attrib dims for a GeomBufferTarget with no source. Returning 0.");
+    CI_LOG_E("Requesting attrib dims for a VertexBuffer with no source. Returning 0.");
     
     return 0;
 }
@@ -142,7 +142,7 @@ void VertexBuffer::render( RenderEncoderRef renderEncoder,
     for ( auto kvp : mAttributeBuffers )
     {
         ci::geom::Attrib attr = kvp.first;
-        BufferRef buffer = kvp.second;
+        DataBufferRef buffer = kvp.second;
         renderEncoder->setBufferAtIndex(buffer, idx);
         idx++;
     }

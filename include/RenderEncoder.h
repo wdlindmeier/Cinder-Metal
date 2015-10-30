@@ -11,7 +11,7 @@
 #include "cinder/Cinder.h"
 #include "MetalGeom.h"
 #include "Pipeline.h"
-#include "Buffer.h"
+#include "DataBuffer.h"
 
 namespace cinder { namespace mtl {
     
@@ -30,10 +30,10 @@ namespace cinder { namespace mtl {
         void popDebugGroup();
 
         void setPipeline( PipelineRef pipeline );
-        void setBufferAtIndex( BufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
         // A convenience method for setBuffer that takes the inflight buffer index instead of an offset
         template <typename BufferType>
-        void setBufferForInflightIndex( BufferRef buffer, size_t inflightBufferIndex, size_t bufferIndex )
+        void setBufferForInflightIndex( DataBufferRef buffer, size_t inflightBufferIndex, size_t bufferIndex )
         {
             uint offset = (sizeof(BufferType) * inflightBufferIndex);
             this->setBufferAtIndex( buffer, bufferIndex, offset);

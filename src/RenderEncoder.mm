@@ -11,7 +11,7 @@
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import "BufferImpl.h"
+#import "DataBufferImpl.h"
 #import "PipelineImpl.h"
 
 using namespace ci;
@@ -43,7 +43,7 @@ void RenderEncoder::pushDebugGroup( const std::string & groupName )
     [IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
 }
 
-void RenderEncoder::setBufferAtIndex( BufferRef buffer, size_t index, size_t bytesOffset )
+void RenderEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )
 {
     [IMPL setVertexBuffer:buffer->mImpl.buffer
                    offset:bytesOffset

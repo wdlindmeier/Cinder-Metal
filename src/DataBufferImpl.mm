@@ -6,8 +6,8 @@
 //
 //
 
-#import "BufferImpl.h"
-#include "Buffer.h"
+#import "DataBufferImpl.h"
+#include "DataBuffer.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -18,7 +18,7 @@ using namespace cinder;
 using namespace cinder::mtl;
 using namespace cinder::cocoa;
 
-@implementation BufferImpl
+@implementation DataBufferImpl
 
 - (instancetype)initWithBytes:(const void *)pointer length:(unsigned long)length label:(NSString *)label
 {

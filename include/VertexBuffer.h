@@ -11,7 +11,7 @@
 #include "cinder/Cinder.h"
 #include "cinder/GeomIo.h"
 #include "MetalGeom.h"
-#include "Buffer.h"
+#include "DataBuffer.h"
 #include "RenderEncoder.h"
 
 namespace cinder
@@ -39,8 +39,8 @@ namespace cinder
             ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
             void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
             
-            void setBufferForAttribute( BufferRef buffer, const ci::geom::Attrib attr );
-            BufferRef getBufferForAttribute( const ci::geom::Attrib attr );
+            void setBufferForAttribute( DataBufferRef buffer, const ci::geom::Attrib attr );
+            DataBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
             
             template<typename T>
             void update( ci::geom::Attrib attr, std::vector<T> vectorData )
@@ -66,9 +66,9 @@ namespace cinder
             uint8_t getAttribDims( ci::geom::Attrib attr ) const;
 
             ci::mtl::geom::Primitive mPrimitive;
-            std::map< ci::geom::Attrib, BufferRef > mAttributeBuffers;
+            std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;
             ci::geom::AttribSet mRequestedAttribs;
-            BufferRef mIndexBuffer;
+            DataBufferRef mIndexBuffer;
             ci::geom::SourceRef mSource;
             size_t mVertexLength;
             

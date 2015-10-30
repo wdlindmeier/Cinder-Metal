@@ -82,8 +82,8 @@ class MetalCubeApp : public App {
 
     VertexBufferRef mGeomBufferTeapot;
     VertexBufferRef mAttribBufferCube;
-    mtl::BufferRef mVertexBuffer;
-    mtl::BufferRef mDynamicConstantBuffer;
+    DataBufferRef mVertexBuffer;
+    DataBufferRef mDynamicConstantBuffer;
     uint8_t _constantDataBufferIndex;
 
     PipelineRef mPipelineInterleavedLighting;
@@ -129,12 +129,12 @@ void MetalCubeApp::resize()
 void MetalCubeApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = mtl::Buffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
+    mDynamicConstantBuffer = DataBuffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
 
     // EXAMPLE 1
     // Create a buffer from an interleaved c array
     // Setup the vertex buffers
-    mVertexBuffer = mtl::Buffer::create(sizeof(cubeVertexData),  // the size of the buffer
+    mVertexBuffer = DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
                                         cubeVertexData,          // the data
                                         "Interleaved Vertices"); // the name of the buffer
     // Create a reusable pipeline state
@@ -173,10 +173,10 @@ void MetalCubeApp::loadAssets()
     // Use attribtue buffers
     mAttribBufferCube = VertexBuffer::create( {{ ci::geom::POSITION, ci::geom::NORMAL }} );
     mPositions = positions;
-    mtl::BufferRef positionBuffer = mtl::Buffer::create(mPositions, "positions");
+    DataBufferRef positionBuffer = DataBuffer::create(mPositions, "positions");
     
     mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
-    mtl::BufferRef normalBuffer = mtl::Buffer::create(normals, "normals");
+    DataBufferRef normalBuffer = DataBuffer::create(normals, "normals");
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
     mPipelineAttribLighting = Pipeline::create("lighting_vertex_attrib_buffers",
@@ -186,7 +186,7 @@ void MetalCubeApp::loadAssets()
     // EXAMPLE 4
     // Create an interleaved buffer with from a vector
     // NOTE: This is overwriting the member variables defined in Example 1
-    mVertexBuffer = mtl::Buffer::create(sizeof(positionsAndNormals) + sizeof(vec3) * positionsAndNormals.size(),
+    mVertexBuffer = DataBuffer::create(sizeof(positionsAndNormals) + sizeof(vec3) * positionsAndNormals.size(),
                                         positionsAndNormals.data(),
                                         "Positions and Normals");
 
