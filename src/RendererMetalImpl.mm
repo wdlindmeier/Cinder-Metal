@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
-#import <QuartzCore/CAMetalLayer.h>
 
 #import "metal.h"
 #import "RendererMetal.h"

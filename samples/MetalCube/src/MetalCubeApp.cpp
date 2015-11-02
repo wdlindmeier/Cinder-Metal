@@ -74,13 +74,18 @@ const static int kNumInflightBuffers = 3;
 
 class MetalCubeApp : public App {
   public:
+    
+    MetalCubeApp() :
+    _rotation(0.f)
+    {}
+    
 	void setup() override;
     void loadAssets();
     void resize() override;
 	void update() override;
 	void draw() override;
 
-    VertexBufferRef mGeomBufferTeapot;
+    VertexBufferRef mGeomBufferCube;
     VertexBufferRef mAttribBufferCube;
     DataBufferRef mVertexBuffer;
     DataBufferRef mDynamicConstantBuffer;
@@ -99,14 +104,26 @@ class MetalCubeApp : public App {
     ComputeFormatRef mComputeFormat;
     BlitFormatRef mBlitFormat;
     
-    // TEST
     vector<vec3> mPositions;
-
+    
+    TextureBufferRef mTexture;
 };
 
 void MetalCubeApp::setup()
 {
     _constantDataBufferIndex = 0;
+    
+    /*
+     Calvin's Code:
+     
+    \]]]]]/
+
+    ,.m
+    '/
+    'p[--=-=
+    '/
+    ;==\''''
+    */
     
     // TODO:
     // Use an options-style constructor
@@ -116,6 +133,18 @@ void MetalCubeApp::setup()
     
     mComputeFormat = ComputeFormat::create();
     mBlitFormat = BlitFormat::create();
+    
+    TextureBuffer::Format format;
+    // NOTE: mipmap level doesn't seem to help
+    format.mipmapLevel = 4;
+    
+    // This works:
+    //mTexture = TextureBuffer::create( loadImage( getAssetPath("texture.jpg") ), format );
+
+    // This doesn't, because it doesn't have an alpha channel.
+    // What MTLPixelFormat do we use for RGB??
+    SurfaceRef surf = Surface::create(loadImage( getAssetPath("texture.jpg") ));
+    mTexture = TextureBuffer::create( *surf, format );    
 
     loadAssets();
 }
@@ -139,20 +168,23 @@ void MetalCubeApp::loadAssets()
                                         "Interleaved Vertices"); // the name of the buffer
     // Create a reusable pipeline state
     // This is similar to a GlslProg
-    mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",         // The name of the vertex shader function
-                                                         "lighting_fragment",                   // The name of the fragment shader function
-                                                         Pipeline::Format().depth(true) ); // Format
+    mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",    // The name of the vertex shader function
+                                                    "lighting_fragment",              // The name of the fragment shader function
+                                                    Pipeline::Format().depth(true) ); // Format
     
     
     // EXAMPLE 2
     // Use a geom source
-    mGeomBufferTeapot = VertexBuffer::create( ci::geom::Teapot(),     // The source
-                                              {{ ci::geom::POSITION,  // The requested attributes.
-                                                 ci::geom::NORMAL }} );
+    mGeomBufferCube = VertexBuffer::create( ci::geom::Cube(),     // The source
+                                           // Pass in the requested attributes w/ shader indices.
+                                           // NOTE: We need to specify the vert indices, since they need an explicit shader index.
+                                           {{ci::geom::INDEX, BUFFER_INDEX_GEOM_INDICES },
+                                            {ci::geom::POSITION, BUFFER_INDEX_GEOM_VERTS },
+                                            {ci::geom::NORMAL, BUFFER_INDEX_GEOM_NORMALS },
+                                            {ci::geom::TEX_COORD_0, BUFFER_INDEX_GEOM_TEX_COORDS }});
     mPipelineGeomLighting = Pipeline::create("lighting_vertex_geom",
-                                                  "lighting_fragment",
-                                                  Pipeline::Format().depth(true) );
-
+                                              "lighting_fragment",
+                                              Pipeline::Format().depth(true) );
     
     // Load verts and normals into vectors
     vector<vec3> positions;
@@ -171,17 +203,16 @@ void MetalCubeApp::loadAssets()
     
     // EXAMPLE 3
     // Use attribtue buffers
-    mAttribBufferCube = VertexBuffer::create( {{ ci::geom::POSITION, ci::geom::NORMAL }} );
+    mAttribBufferCube = VertexBuffer::create();
     mPositions = positions;
     DataBufferRef positionBuffer = DataBuffer::create(mPositions, "positions");
-    
-    mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
+    mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION, BUFFER_INDEX_ATTRIB_POSITIONS);
     DataBufferRef normalBuffer = DataBuffer::create(normals, "normals");
-    mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
+    mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL, BUFFER_INDEX_ATTRIB_NORMALS);
     
     mPipelineAttribLighting = Pipeline::create("lighting_vertex_attrib_buffers",
-                                                    "lighting_fragment",
-                                                    Pipeline::Format().depth(true) );
+                                               "lighting_fragment",
+                                               Pipeline::Format().depth(true) );
     
     // EXAMPLE 4
     // Create an interleaved buffer with from a vector
@@ -191,8 +222,8 @@ void MetalCubeApp::loadAssets()
                                         "Positions and Normals");
 
     mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",
-                                                         "lighting_fragment",
-                                                         Pipeline::Format().depth(true) );
+                                                    "lighting_fragment",
+                                                    Pipeline::Format().depth(true) );
 
 }
 
@@ -225,6 +256,9 @@ void MetalCubeApp::draw()
     {
         commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( RenderEncoderRef encoder )
         {
+            uint constantsOffset = (sizeof(uniforms_t) * _constantDataBufferIndex);
+            
+            
 //            encoder->pushDebugGroup("Draw Interleaved Cube");
 //            
 //            // Set the program
@@ -232,32 +266,31 @@ void MetalCubeApp::draw()
 //            
 //            // Set render state & resources
 //            encoder->setBufferAtIndex(mVertexBuffer, BUFFER_INDEX_VERTS);
-//            encoder->setBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-//                                                           _constantDataBufferIndex,
-//                                                           BUFFER_INDEX_UNIFORMS);
+//            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_UNIFORMS, constantsOffset);
+//
 //            // Draw
 //            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
-//            encoder->popDebugGroup();
-            
+//            encoder->popDebugGroup();            
             
             // Using Cinder geom to draw the cube
             
             // Geom Target
-            encoder->pushDebugGroup("Draw Teapot");
+            encoder->pushDebugGroup("Draw Geom Cube");
             
             // Set the program
             encoder->setPipeline( mPipelineGeomLighting );
             
             // Set render state & resources
-            encoder->setBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-                                                           _constantDataBufferIndex,
-                                                           BUFFER_INDEX_GEOM_UNIFORMS);
-            mGeomBufferTeapot->render( encoder );
+            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_GEOM_UNIFORMS, constantsOffset);
+
+            // Set the texture
+            encoder->setTextureAtIndex( mTexture, TEXTURE_INDEX_CUBE );
+
+            mGeomBufferCube->render( encoder );
 
             // Draw
             encoder->popDebugGroup();
-            
-            
+                        
 //            // Using attrib buffers to draw the cube
 //            
 //            // Geom Target
@@ -267,14 +300,12 @@ void MetalCubeApp::draw()
 //            encoder->setPipeline( mPipelineAttribLighting );
 //            
 //            // Set render state & resources
-//            encoder->setBufferForInflightIndex<uniforms_t>(mDynamicConstantBuffer,
-//                                                           _constantDataBufferIndex,
-//                                                           BUFFER_INDEX_ATTRIB_UNIFORMS);
+//            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_ATTRIB_UNIFORMS, constantsOffset);
+//
 //            mAttribBufferCube->render( encoder, 36 );
 //            
 //            // Draw
 //            encoder->popDebugGroup();
-
 
         });
 

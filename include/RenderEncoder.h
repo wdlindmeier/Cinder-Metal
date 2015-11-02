@@ -12,6 +12,7 @@
 #include "MetalGeom.h"
 #include "Pipeline.h"
 #include "DataBuffer.h"
+#include "TextureBuffer.h"
 
 namespace cinder { namespace mtl {
     
@@ -30,14 +31,15 @@ namespace cinder { namespace mtl {
         void popDebugGroup();
 
         void setPipeline( PipelineRef pipeline );
+        void setTextureAtIndex( TextureBufferRef texture, size_t index = 0 );
         void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
-        // A convenience method for setBuffer that takes the inflight buffer index instead of an offset
-        template <typename BufferType>
-        void setBufferForInflightIndex( DataBufferRef buffer, size_t inflightBufferIndex, size_t bufferIndex )
-        {
-            uint offset = (sizeof(BufferType) * inflightBufferIndex);
-            this->setBufferAtIndex( buffer, bufferIndex, offset);
-        }
+//        // A convenience method for setBuffer that takes the inflight buffer index instead of an offset
+//        template <typename BufferType>
+//        void setBufferForInflightIndex( DataBufferRef buffer, size_t inflightBufferIndex, size_t bufferIndex )
+//        {
+//            uint offset = (sizeof(BufferType) * inflightBufferIndex);
+//            this->setBufferAtIndex( buffer, bufferIndex, offset);
+//        }
 
         void draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount );
         

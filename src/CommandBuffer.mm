@@ -34,8 +34,8 @@ mCommandBuffer(mtlCommandBuffer)
 }
 
 void CommandBuffer::renderTargetWithFormat( RenderFormatRef format,
-                                                 std::function< void ( RenderEncoderRef renderEncoder ) > renderFunc,
-                                                 const std::string encoderName )
+                                            std::function< void ( RenderEncoderRef renderEncoder ) > renderFunc,
+                                            const std::string encoderName )
 {
     // NOTE: We have to prepare the render description before getting the encoder
     [format->mImpl prepareForRenderToTexture:DRAWABLE.texture];

@@ -18,6 +18,7 @@
 		6906BCA7A507477F8CDF073E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FC99894E58E4A5BB1D605B9 /* LaunchScreen.xib */; };
 		A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */; };
 		A90BF5AE1BDC3A86002C9257 /* MetalGeom.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */; };
+		A90BF5B31BE42598002C9257 /* TextureBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5B21BE42598002C9257 /* TextureBuffer.mm */; };
 		A916E3111BD15DA50012573E /* RenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E30F1BD15DA50012573E /* RenderEncoder.mm */; };
 		A916E31B1BD2A51A0012573E /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E31A1BD2A51A0012573E /* DataBuffer.mm */; };
 		A916E31E1BD2B0120012573E /* DataBufferImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E31D1BD2B0120012573E /* DataBufferImpl.mm */; };
@@ -66,6 +67,8 @@
 		A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexBuffer.cpp; sourceTree = "<group>"; };
 		A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
 		A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalGeom.mm; sourceTree = "<group>"; };
+		A90BF5B01BE4257B002C9257 /* TextureBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBuffer.h; sourceTree = "<group>"; };
+		A90BF5B21BE42598002C9257 /* TextureBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureBuffer.mm; sourceTree = "<group>"; };
 		A916E30F1BD15DA50012573E /* RenderEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderEncoder.mm; sourceTree = "<group>"; };
 		A916E3121BD15DC10012573E /* RenderEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderEncoder.h; sourceTree = "<group>"; };
 		A916E3161BD2A47F0012573E /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalGeom.h; sourceTree = "<group>"; };
@@ -258,20 +261,21 @@
 		A92044951BCADD5E00CC8AAB /* include */ = {
 			isa = PBXGroup;
 			children = (
-				A92044961BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.h */,
-				A916E3201BD2B0710012573E /* Impls */,
-				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
 				A916E33D1BD318270012573E /* BlitEncoder.h */,
 				A916E3531BD5571A0012573E /* BlitFormat.h */,
-				A916E3181BD2A5080012573E /* DataBuffer.h */,
+				A92044961BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.h */,
 				A916E34C1BD31B5C0012573E /* CommandBuffer.h */,
 				A916E3401BD318270012573E /* ComputeEncoder.h */,
 				A916E3551BD557540012573E /* ComputeFormat.h */,
+				A916E3181BD2A5080012573E /* DataBuffer.h */,
+				A916E3201BD2B0710012573E /* Impls */,
+				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
 				A916E3161BD2A47F0012573E /* MetalGeom.h */,
 				A96C5E5E1BCDD8B5001DD6D3 /* Pipeline.h */,
 				A916E3121BD15DC10012573E /* RenderEncoder.h */,
-				A96C5E5F1BCDD8B5001DD6D3 /* RenderFormat.h */,
 				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
+				A96C5E5F1BCDD8B5001DD6D3 /* RenderFormat.h */,
+				A90BF5B01BE4257B002C9257 /* TextureBuffer.h */,
 				A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */,
 			);
 			name = include;
@@ -281,19 +285,20 @@
 		A92044981BCADD5E00CC8AAB /* src */ = {
 			isa = PBXGroup;
 			children = (
-				A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */,
-				A916E3211BD2B07F0012573E /* Impls */,
 				A916E3421BD3182F0012573E /* BlitEncoder.mm */,
 				A916E3561BD5575B0012573E /* BlitFormat.mm */,
-				A916E31A1BD2A51A0012573E /* DataBuffer.mm */,
+				A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */,
 				A916E34D1BD31B650012573E /* CommandBuffer.mm */,
 				A916E3451BD3182F0012573E /* ComputeEncoder.mm */,
 				A916E34F1BD5570D0012573E /* ComputeFormat.mm */,
+				A916E31A1BD2A51A0012573E /* DataBuffer.mm */,
+				A916E3211BD2B07F0012573E /* Impls */,
 				A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */,
 				A96C5E571BCDD86F001DD6D3 /* Pipeline.mm */,
 				A916E30F1BD15DA50012573E /* RenderEncoder.mm */,
-				A96C5E5A1BCDD87C001DD6D3 /* RenderFormat.mm */,
 				A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */,
+				A96C5E5A1BCDD87C001DD6D3 /* RenderFormat.mm */,
+				A90BF5B21BE42598002C9257 /* TextureBuffer.mm */,
 				A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */,
 			);
 			name = src;
@@ -378,6 +383,7 @@
 				A916E3241BD2B1670012573E /* PipelineImpl.mm in Sources */,
 				A920449C1BCADD5E00CC8AAB /* RendererMetal.mm in Sources */,
 				A96C5E591BCDD86F001DD6D3 /* Pipeline.mm in Sources */,
+				A90BF5B31BE42598002C9257 /* TextureBuffer.mm in Sources */,
 				A916E3571BD5575B0012573E /* BlitFormat.mm in Sources */,
 				A916E3281BD2B2830012573E /* RenderFormatImpl.mm in Sources */,
 				A920449E1BCAE04100CC8AAB /* RendererMetalImpl.mm in Sources */,

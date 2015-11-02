@@ -31,7 +31,9 @@ typedef struct
 
 typedef struct {
     float4 position [[position]];
-    half4  color;
+    float4 color;
+    float2 texCoords;
+    bool sampleTexture;
 } ColorInOut;
 
 // Vertex shader function
@@ -49,7 +51,9 @@ vertex ColorInOut lighting_vertex_interleaved(device vertex_t* vertex_array [[ b
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    //out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    out.color = ambient_color + diffuse_color * n_dot_l;
+    out.sampleTexture = false;
     
     return out;
 }
@@ -57,7 +61,8 @@ vertex ColorInOut lighting_vertex_interleaved(device vertex_t* vertex_array [[ b
 // Vertex shader function using geom::Source data layout
 vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(BUFFER_INDEX_GEOM_INDICES) ]],
                                        device packed_float3* verts [[ buffer(BUFFER_INDEX_GEOM_VERTS) ]],
-                                       device packed_float3* normals [[ buffer(BUFFER_INDEX_GEOM_NORMALS) ]],                                       
+                                       device packed_float3* normals [[ buffer(BUFFER_INDEX_GEOM_NORMALS) ]],
+                                       device packed_float2* texCoords [[ buffer(BUFFER_INDEX_GEOM_TEX_COORDS) ]],
                                        constant uniforms_t& uniforms [[ buffer(BUFFER_INDEX_GEOM_UNIFORMS) ]],
                                        unsigned int vid [[ vertex_id ]])
 {
@@ -73,7 +78,9 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(BU
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    out.color = float4(float4(1.0) * n_dot_l);
+    out.texCoords = texCoords[vertIndex];
+    out.sampleTexture = true;
     
     return out;
 }
@@ -94,13 +101,24 @@ vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    out.color = ambient_color + diffuse_color * n_dot_l;
+    out.sampleTexture = false;
     
     return out;
 }
 
+constexpr sampler samplerFormat(coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
+                                address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
+                                filter::linear); // nearest or linear
+
 // Fragment shader function
-fragment half4 lighting_fragment(ColorInOut in [[stage_in]])
+fragment float4 lighting_fragment( ColorInOut in [[stage_in]],
+                                  texture2d<float> textureCube [[ texture(TEXTURE_INDEX_CUBE) ]] )
 {
+    if ( in.sampleTexture )
+    {
+        float4 texColor = textureCube.sample(samplerFormat, in.texCoords);
+        return float4(texColor.r,texColor.r,texColor.r,1.f) * in.color;
+    }
     return in.color;
 }

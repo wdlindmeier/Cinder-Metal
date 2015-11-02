@@ -11,6 +11,7 @@
 #include <Metal/Metal.h>
 #include "RendererMetal.h"
 #include "CommandBuffer.h"
+#import <QuartzCore/CAMetalLayer.h>
 
 @interface RendererMetalImpl : NSObject
 {

@@ -16,6 +16,12 @@
 
 namespace cinder
 {
+    namespace geom
+    {
+        // Append "INDEX" onto the attrib list so we can assign a buffer and shader index to it like an Attrib
+        static Attrib INDEX = USER_DEFINED;
+    }
+    
     namespace mtl
     {
         typedef std::shared_ptr<class VertexBuffer> VertexBufferRef;
@@ -25,21 +31,19 @@ namespace cinder
             
         public:
 
-            // Create a container with no data.
-            // Data should be passed in with setBufferForAttribute().
-            static VertexBufferRef create( const ci::geom::AttribSet & requestedAttribs,
+            static VertexBufferRef create( const std::map<ci::geom::Attrib, int> & requestedAttribsWithShaderIndex = {{}},
                                            ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
 
-            // NOTE: The order that the attribs are passed in is the order that they
-            // should appear in the shader.
             static VertexBufferRef create( const ci::geom::Source & source,
-                                           const ci::geom::AttribSet & requestedAttribs );
+                                           const std::map<ci::geom::Attrib, int> & requestedAttribsWithShaderIndex = {{}} );
             virtual ~VertexBuffer(){}
             
             ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
             void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
             
-            void setBufferForAttribute( DataBufferRef buffer, const ci::geom::Attrib attr );
+            // Set shaderBufferIndex to something > -1 if you wish to update / assign the shader index for this attribute
+            void setBufferForAttribute( DataBufferRef buffer, const ci::geom::Attrib attr,
+                                        int shaderBufferIndex = -1 );
             DataBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
             
             template<typename T>
@@ -52,12 +56,15 @@ namespace cinder
             size_t getVertexLength(){ return mVertexLength; };
 
             void render( RenderEncoderRef renderEncoder );
-            void render( RenderEncoderRef renderEncoder, size_t vertexLength, size_t vertexStart = 0, size_t instanceCount = 1 );
+            void render( RenderEncoderRef renderEncoder, size_t vertexLength,
+                         size_t vertexStart = 0, size_t instanceCount = 1 );
             
         protected:
             
-            VertexBuffer( const ci::geom::Source & source, const ci::geom::AttribSet &requestedAttribs );
-            VertexBuffer( const ci::geom::AttribSet &requestedAttribs, ci::mtl::geom::Primitive primitive );
+            VertexBuffer( const ci::geom::Source & source,
+                          const std::map<ci::geom::Attrib, int> & requestedAttribsWithShaderIndex );
+            VertexBuffer( const std::map<ci::geom::Attrib, int> & requestedAttribsWithShaderIndex,
+                          ci::mtl::geom::Primitive primitive );
 
             // geom::Target subclass
             // Only use internally
@@ -67,8 +74,9 @@ namespace cinder
 
             ci::mtl::geom::Primitive mPrimitive;
             std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;
-            ci::geom::AttribSet mRequestedAttribs;
-            DataBufferRef mIndexBuffer;
+            
+            std::map<ci::geom::Attrib, int> mRequestedAttribs;
+            //DataBufferRef mIndexBuffer;
             ci::geom::SourceRef mSource;
             size_t mVertexLength;
             

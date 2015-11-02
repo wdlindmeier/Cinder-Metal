@@ -22,7 +22,6 @@ namespace cinder {
     
         typedef std::shared_ptr<class RendererMetal> RendererMetalRef;
         
-
         class RendererMetal : public Renderer {
             
         public:
