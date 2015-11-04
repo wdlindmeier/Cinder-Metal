@@ -12,14 +12,17 @@
 using namespace ci;
 using namespace ci::mtl;
 
-RenderFormatRef RenderFormat::create()
+RenderFormatRef RenderFormat::create( Format format )
 {
-    return RenderFormatRef( new RenderFormat() );
+    return RenderFormatRef( new RenderFormat( format ) );
 }
 
-RenderFormat::RenderFormat()
+RenderFormat::RenderFormat( Format format )
 {
     mImpl = [RenderFormatImpl new];
+    setShouldClear(format.getShouldClear());
+    setClearDepth(format.getClearDepth());
+    setClearColor(format.getClearColor());
 }
 
 void RenderFormat::setShouldClear( bool shouldClear )

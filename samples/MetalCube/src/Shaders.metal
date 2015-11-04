@@ -107,18 +107,22 @@ vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions
     return out;
 }
 
-constexpr sampler samplerFormat(coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
+// NOTE: samplers defined in the shader don't appear to have an anisotropy param
+constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
                                 address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
-                                filter::linear); // nearest or linear
+                                filter::linear, // nearest or linear
+                                mip_filter::linear ); // nearest or linear or none
 
 // Fragment shader function
 fragment float4 lighting_fragment( ColorInOut in [[stage_in]],
-                                  texture2d<float> textureCube [[ texture(TEXTURE_INDEX_CUBE) ]] )
+                                   texture2d<float> textureCube [[ texture(TEXTURE_INDEX_CUBE) ]],// )
+                                   sampler objcSampler [[sampler(0)]] )
 {
     if ( in.sampleTexture )
     {
-        float4 texColor = textureCube.sample(samplerFormat, in.texCoords);
-        return float4(texColor.r,texColor.r,texColor.r,1.f) * in.color;
+        float4 texColor = textureCube.sample(objcSampler, in.texCoords);
+        //float4 texColor = textureCube.sample(shaderSampler, in.texCoords);
+        return float4(texColor.rgb * in.color.rgb, texColor.a);
     }
     return in.color;
 }

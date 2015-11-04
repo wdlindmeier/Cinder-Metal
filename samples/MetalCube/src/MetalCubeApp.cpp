@@ -71,7 +71,6 @@ typedef struct
 
 const static int kNumInflightBuffers = 3;
 
-
 class MetalCubeApp : public App {
   public:
     
@@ -107,6 +106,7 @@ class MetalCubeApp : public App {
     vector<vec3> mPositions;
     
     TextureBufferRef mTexture;
+    TextureBufferRef mTextureB;
 };
 
 void MetalCubeApp::setup()
@@ -125,27 +125,19 @@ void MetalCubeApp::setup()
     ;==\''''
     */
     
-    // TODO:
-    // Use an options-style constructor
-    mRenderFormat = RenderFormat::create();
-    mRenderFormat->setShouldClear(true);
-    mRenderFormat->setClearColor(ColorAf(1.f,0.f,0.f,1.f));
+    mRenderFormat = RenderFormat::create( RenderFormat::Format().clearColor(ColorAf(1.f,0.f,0.f,1.f)) );
     
     mComputeFormat = ComputeFormat::create();
     mBlitFormat = BlitFormat::create();
     
-    TextureBuffer::Format format;
-    // NOTE: mipmap level doesn't seem to help
-    format.mipmapLevel = 4;
+    // Load texture from ImageSource
+    mTexture = TextureBuffer::create( // loadImage( getAssetPath("texture_trans.png") ),
+                                      loadImage( getAssetPath("checker_trans.png") ),
+                                      // loadImage( getAssetPath("texture.jpg") ),
+                                      TextureBuffer::Format().mipmapLevel(4) );
     
-    // This works:
-    //mTexture = TextureBuffer::create( loadImage( getAssetPath("texture.jpg") ), format );
-
-    // This doesn't, because it doesn't have an alpha channel.
-    // What MTLPixelFormat do we use for RGB??
-    SurfaceRef surf = Surface::create(loadImage( getAssetPath("texture.jpg") ));
-    mTexture = TextureBuffer::create( *surf, format );    
-
+    console() << "mTexture.mipmapLevel: " << mTexture->getMipmapLevelCount() << "\n";
+    
     loadAssets();
 }
 
@@ -224,11 +216,12 @@ void MetalCubeApp::loadAssets()
     mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",
                                                     "lighting_fragment",
                                                     Pipeline::Format().depth(true) );
-
 }
 
 void MetalCubeApp::update()
 {
+//    mCamera.lookAt(vec3(0,0,-25 * sin(getElapsedSeconds() * 0.5) ), vec3(0));
+    
     mat4 modelMatrix = glm::rotate(_rotation, vec3(1.0f, 1.0f, 1.0f));
     mat4 normalMatrix = inverse(transpose(modelMatrix));
     mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
@@ -258,7 +251,6 @@ void MetalCubeApp::draw()
         {
             uint constantsOffset = (sizeof(uniforms_t) * _constantDataBufferIndex);
             
-            
 //            encoder->pushDebugGroup("Draw Interleaved Cube");
 //            
 //            // Set the program
@@ -272,7 +264,7 @@ void MetalCubeApp::draw()
 //            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
 //            encoder->popDebugGroup();            
             
-            // Using Cinder geom to draw the cube
+            // Using Cinder geom to draw the cube                    
             
             // Geom Target
             encoder->pushDebugGroup("Draw Geom Cube");
@@ -309,15 +301,15 @@ void MetalCubeApp::draw()
 
         });
 
-        commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( ComputeEncoderRef encoder )
-        {
-            // FPO
-        });
-        
-        commandBuffer->blitTargetWithFormat( mBlitFormat, [&]( BlitEncoderRef encoder )
-        {
-            // FPO
-        });
+//        commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( ComputeEncoderRef encoder )
+//        {
+//            // FPO
+//        });
+//        
+//        commandBuffer->blitTargetWithFormat( mBlitFormat, [&]( BlitEncoderRef encoder )
+//        {
+//            // FPO
+//        });
     });
     
     _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kNumInflightBuffers;

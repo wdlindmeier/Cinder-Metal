@@ -26,17 +26,35 @@ namespace cinder { namespace mtl {
         
     public:
         
-        class Format // Maps to MTLTextureDescriptor
+        struct Format // Maps to MTLTextureDescriptor
         {
-        public:
-            Format(){};
-            int mipmapLevel = 1;
-            int sampleCount = 1;
-            int textureType = 2; // MTLTextureType (defaults to MTLTextureType2D)
-            int pixelFormat = 0; // MTLPixelFormat (defaults to MTLPixelFormatInvalid)
-//            const ImageIo::ChannelOrder channelOrder = ImageIo::RGBA;
-//            const ImageIo::ColorModel colorModel = ImageIo::CM_RGB;
-//            const ImageIo::DataType dataType = ImageIo::UINT8;
+            Format() :
+            mMipmapLevel(1), mSampleCount(1), mTextureType(2), mPixelFormat(0)
+            {};
+            
+            Format& mipmapLevel( int mipmapLevel ) { setMipmapLevel( mipmapLevel ); return *this; }
+            Format& sampleCount( int sampleCount ) { setSampleCount( sampleCount ); return *this; }
+            // MTLTextureType (defaults to MTLTextureType2D)
+            Format& textureType( int textureType ) { setTextureType( textureType ); return *this; }
+            // MTLPixelFormat (defaults to MTLPixelFormatInvalid)
+            Format& pixelFormat( int pixelFormat ) { setPixelFormat( pixelFormat ); return *this; }
+
+            void setMipmapLevel( int mipmapLevel ) { mMipmapLevel = mipmapLevel; }
+            void setSampleCount( int sampleCount ) { mSampleCount = sampleCount; }
+            void setTextureType( int textureType ) { mTextureType = textureType; }
+            void setPixelFormat( int pixelFormat ) { mPixelFormat = pixelFormat; }
+
+            int getMipmapLevel() { return mMipmapLevel; }
+            int getSampleCount() { return mSampleCount; }
+            int getTextureType() { return mTextureType; }
+            int getPixelFormat() { return mPixelFormat; }
+
+        protected:
+            
+            int mMipmapLevel;
+            int mSampleCount;
+            int mTextureType;
+            int mPixelFormat;
         };
         
         static TextureBufferRef create( ImageSourceRef imageSource, Format format = Format() )
@@ -47,12 +65,12 @@ namespace cinder { namespace mtl {
         virtual ~TextureBuffer()
         {}
 
-//        void update( SurfaceRef surface );
+        void update( ImageSourceRef imageSource );
         void setPixelData( void *pixelBytes );
         
         // Getting Data
         void getPixelData( void *pixelBytes );
-        ci::ImageSourceRef	createSource();
+        ci::ImageSourceRef createSource();
 
         // Accessors
         Format      getFormat() const;
@@ -60,12 +78,20 @@ namespace cinder { namespace mtl {
         long		getHeight() const;
         long		getDepth() const;
         ci::ivec2	getSize() const { return ivec2( getWidth(), getHeight() ); }
+        long        getMipmapLevelCount();
+        long        getSampleCount();
+        long        getArrayLength();
+        bool        getFramebufferOnly();
+        int         getUsage(); // return type is MTLTextureUsage
 
     protected:
 
         TextureBuffer( ImageSourceRef imageSource,
                        Format format );
 
+        void updateWidthCGImage( void * );
+        void generateMipmap();
+        
         void *mImpl; // <MTLTexture>
         long mBytesPerRow;
         Format mFormat;
@@ -73,7 +99,17 @@ namespace cinder { namespace mtl {
         ImageIo::ChannelOrder mChannelOrder;
         ImageIo::ColorModel mColorModel;
         ImageIo::DataType mDataType;
-
+        
+//        // TMP
+//        // Testing mipmaps
+//        void * createResizedImageDataForImage( CGImageRef image,
+//                                               CGSize size,
+//                                               void *tintColor,
+//                                               CGImageRef *outImage );
+//        void * generateTintedMipmapsForTexture( void *texture,
+//                                                CGImageRef image);
+//        void * tintColorAtIndex( size_t index );
+//
     };
     
 } }

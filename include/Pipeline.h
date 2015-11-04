@@ -47,6 +47,9 @@ namespace cinder { namespace mtl {
             Format & sampleCount( int numSamples ){ mSampleCount = numSamples; return *this; };
             int sampleCount(){ return mSampleCount; }
             
+            // TODO: Add alpha here
+            //MTLRenderPipelineColorAttachmentDescriptor *renderbufferAttachment = pipelineDescriptor.colorAttachments[0];
+            
         };
         
         static PipelineRef create(  const std::string & vertShaderName, const std::string & fragShaderName, Format format );

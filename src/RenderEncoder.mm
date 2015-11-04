@@ -14,6 +14,9 @@
 #import "DataBufferImpl.h"
 #import "PipelineImpl.h"
 
+// TMP
+#import "RendererMetalImpl.h"
+
 using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
@@ -34,6 +37,18 @@ mImpl(encoderImpl)
 
 void RenderEncoder::setPipeline( PipelineRef pipeline )
 {
+    // TEST
+    MTLSamplerDescriptor *samplerDescriptor = [MTLSamplerDescriptor new];
+    samplerDescriptor.mipFilter = MTLSamplerMipFilterLinear;
+    samplerDescriptor.maxAnisotropy = 3;
+    samplerDescriptor.minFilter = MTLSamplerMinMagFilterLinear;
+    samplerDescriptor.magFilter = MTLSamplerMinMagFilterLinear;
+    samplerDescriptor.sAddressMode = MTLSamplerAddressModeClampToEdge;
+    samplerDescriptor.tAddressMode = MTLSamplerAddressModeClampToEdge;
+    id <MTLSamplerState> linearMipSamplerState = [[RendererMetalImpl sharedRenderer].device
+                                                  newSamplerStateWithDescriptor:samplerDescriptor];
+    [IMPL setFragmentSamplerState:linearMipSamplerState atIndex:0];
+    
     [IMPL setDepthStencilState:pipeline->mImpl.depthState];
     [IMPL setRenderPipelineState:pipeline->mImpl.pipelineState];
 }

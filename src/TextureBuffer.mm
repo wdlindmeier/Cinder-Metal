@@ -35,6 +35,30 @@ static inline int dataSizeForType( ImageIo::DataType dataType )
     }
 }
 
+// Metal textures don't appear to have 3-component formats, so we'll
+// convert RGB image data to RGBA.
+// NOTE: This always adds a 4th component to the end of the order.
+static inline uint8_t* createFourChannelFromThreeChannel(ivec2 imageSize,
+                                                         ImageIo::DataType dataType,
+                                                         const uint8_t* rgbData )
+{
+    const size_t dataSize = dataSizeForType(dataType);
+    const size_t bytesPer3ChannelPx = 3 * dataSize;
+    const size_t bytesPer4ChannelPx = 4 * dataSize;
+    const size_t rowBytes = imageSize.x * bytesPer4ChannelPx;
+    size_t rgbaSize = rowBytes * imageSize.y;
+    uint8_t* rgbaData = new uint8_t[rgbaSize];
+    memset(rgbaData, 0xFF, rgbaSize); // fill with white, alpha = 1
+    size_t pxCount = imageSize.x * imageSize.y;
+    for(size_t i = 0; i < pxCount; ++i)
+    {
+        memcpy(&rgbaData[i * bytesPer4ChannelPx],
+               &((const uint8_t*)rgbData)[i * bytesPer3ChannelPx],
+               bytesPer3ChannelPx);
+    }
+    return rgbaData;
+}
+
 static inline MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
                                                              ImageIo::DataType dataType )
 {
@@ -73,9 +97,8 @@ static inline MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrd
         case ImageIo::BGRX:
             return MTLPixelFormatBGRA8Unorm;
         case ImageIo::RGB:
-            // Odd. MTLPixelFormat doesn't have a standard RGB w/out Alpha.
-            // I guess it just ignores the alpha component...?
-            // TODO: Investigate.
+            // NOTE: MTLPixelFormat doesn't have a standard RGB w/out Alpha.
+            // We need to use a 4-component format and add an additional channel to the data.
             switch (dataType)
             {
                 case ImageIo::UINT8:
@@ -125,8 +148,8 @@ static inline MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrd
     }
 }
 
-
 namespace cinder { namespace mtl {
+    
 class ImageSourceMTLTexture : public ImageSource
 {
 
@@ -177,11 +200,9 @@ public:
 TextureBuffer::TextureBuffer( ImageSourceRef imageSource, Format format ) :
 mFormat(format)
 {
-    CGImageRef imageRef  = cocoa::createCgImage( imageSource, ImageTarget::Options() );
-    
-    mBytesPerRow = CGImageGetBytesPerRow(imageRef);
-    
-    MTLPixelFormat pxFormat = (MTLPixelFormat)mFormat.pixelFormat;
+    CGImageRef imageRef = cocoa::createCgImage( imageSource, ImageTarget::Options() );
+
+    MTLPixelFormat pxFormat = (MTLPixelFormat)mFormat.getPixelFormat();
     
     mChannelOrder = imageSource->getChannelOrder();
     mDataType = imageSource->getDataType();
@@ -190,27 +211,35 @@ mFormat(format)
     if ( pxFormat == MTLPixelFormatInvalid )
     {
         pxFormat = mtlPixelFormatFromChannelOrder(mChannelOrder, mDataType);
-        mFormat.pixelFormat = pxFormat;
+        mFormat.setPixelFormat(pxFormat);
     }
-
-    // Get the image
+    
     NSUInteger width = CGImageGetWidth(imageRef);
     NSUInteger height = CGImageGetHeight(imageRef);
-    CFDataRef imgData = CGDataProviderCopyData( CGImageGetDataProvider(imageRef) );
-    uint8_t *rawData = (uint8_t *) CFDataGetBytePtr(imgData);
-    
+
+    // Get the image data
+    mBytesPerRow = CGImageGetBytesPerRow(imageRef);
+    // NOTE: channelOrderNumChannels can return the wrong number of channels.
+    // int numChannels = ImageIo::channelOrderNumChannels( mChannelOrder );
+    long numCalculatedChannels = mBytesPerRow / width / dataSizeForType(mDataType);
+    if ( numCalculatedChannels == 3 )
+    {
+        // Add another channel to the byte size.
+        mBytesPerRow += mBytesPerRow / 3;
+    }
+
     CI_LOG_I("TODO: Account for non 2D textures.");
-    assert( format.textureType == MTLTextureType2D );
+    assert( format.getTextureType() == MTLTextureType2D );
     MTLTextureDescriptor *desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:pxFormat
                                                                                     width:width
                                                                                    height:height
-                                                                                mipmapped:mFormat.mipmapLevel > 1];
-    desc.mipmapLevelCount = mFormat.mipmapLevel;
-    desc.sampleCount = format.sampleCount;
+                                                                                mipmapped:mFormat.getMipmapLevel() > 1];
+    desc.mipmapLevelCount = mFormat.getMipmapLevel();
+    desc.sampleCount = format.getSampleCount();
 
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device newTextureWithDescriptor:desc];
-    
-    setPixelData(rawData);
+
+    updateWidthCGImage( imageRef );
 }
 
 #pragma mark - Getting data
@@ -231,57 +260,181 @@ void TextureBuffer::getPixelData( void *pixelBytes )
              slice:0];
 }
 
-//#pragma mark - Image Target subclass
-//
-//void * TextureBuffer::getRowPointer( int32_t row )
-//{
-//    size_t rowLength = getWidth() * mFormat.numChannels * mDataSize;
-//    //return mDataBuffer.get() + rowLength * row;
-//    return mDataBuffer + rowLength * row;
-//}
-//
-//// Do I have to do this?
-//// void TextureBuffer::setRow( int32_t row, const void *data )
-//// {
-////     mCpy
-//// }
-//
-//void TextureBuffer::finalize()
-//{
-//    assert( mDataBuffer != NULL );
-//    //setPixelData( mDataBuffer.get() );
-//    setPixelData( mDataBuffer );
-//    free(mDataBuffer);
-////    mDataBuffer = NULL;
-//}
-//
-
 #pragma mark - Setting Data
 
+void TextureBuffer::update( ImageSourceRef imageSource )
+{
+    CGImageRef imageRef = cocoa::createCgImage( imageSource, ImageTarget::Options() );
+    assert(mChannelOrder == imageSource->getChannelOrder());
+    assert(mDataType == imageSource->getDataType());
+    assert(mColorModel == imageSource->getColorModel());
+    updateWidthCGImage( imageRef );
+}
+
+void TextureBuffer::updateWidthCGImage( void * imageRef ) //CGImageRef imageRef )
+{
+    NSUInteger width = CGImageGetWidth((CGImageRef)imageRef);
+    NSUInteger height = CGImageGetHeight((CGImageRef)imageRef);
+    assert(width == getWidth());
+    assert(height == getHeight());
+    
+    CFDataRef imgData = CGDataProviderCopyData( CGImageGetDataProvider( (CGImageRef)imageRef ) );
+    
+    uint8_t *rawData = (uint8_t *) CFDataGetBytePtr(imgData);
+    
+    long bytesPerImageRow = CGImageGetBytesPerRow((CGImageRef)imageRef);
+    long numCalculatedChannels = bytesPerImageRow / width / dataSizeForType(mDataType);
+    if ( numCalculatedChannels == 3 )
+    {
+        uint8_t *newRawData = createFourChannelFromThreeChannel( ivec2(width, height), mDataType, rawData);
+        free( rawData );
+        rawData = newRawData;
+    }
+    
+    setPixelData(rawData);
+    
+//    // TMP / TEST
+//    // Create the tinted mip-map
+//    if ( [IMPL mipmapLevelCount] > 1 )
+//    {
+//        generateTintedMipmapsForTexture(mImpl, (CGImageRef)imageRef);
+//    }
 //
-//void TextureBuffer::update( SurfaceRef surface )
+//    CI_LOG_I("Texture mipmap level: " << [IMPL mipmapLevelCount] );
+    
+    free(rawData);
+    
+    if ( [IMPL mipmapLevelCount] > 1 )
+    {
+        generateMipmap();
+    }
+}
+
+//#include <UIKit/UIKit.h>
+//
+//void * TextureBuffer::generateTintedMipmapsForTexture(void * texture,
+//                                                              CGImageRef image)
 //{
-////    assert( mDataSize == dataSizeForType( imageSource->getDataType() ) );
-////    assert( mDataBuffer == NULL );
+//    NSUInteger level = 1;
+//    NSUInteger mipWidth = [(__bridge id<MTLTexture>)texture width] / 2;
+//    NSUInteger mipHeight = [(__bridge id<MTLTexture>)texture height] / 2;
+//    CGImageRef scaledImage;
+//    CGImageRetain(image);
 //    
-////    auto surfRef = Surface::create(imageSource);
-//    setPixelData( surface->getData() );
+//    const NSUInteger bitsPerComponent = 8;
+//    const NSUInteger bytesPerPixel = 4;
+////    const NSUInteger bytesPerRow = bytesPerPixel * size.width;
 //
-////    // We're temporarily storing the data in a buffer, because the memory layout
-////    // of the MTLTexture isn't exposed to us. Once we store it, we'll
-////    // pass the buffer into setPixelData and then free it.
-////    // This may be inefficient since the data might already exist in a buffer if
-////    // it's in a Channel or Surface, but we want to handle it in a generic way.
-////    size_t rowBytes = getWidth() * mFormat.numChannels * mDataSize;
-////    mDataBuffer = new uint8_t[rowBytes * getHeight()];
-////    //mDataBuffer = unique_ptr<uint8_t[]>( new uint8_t[rowBytes * getHeight()] );
-////    
-////
-////    auto ptr = std::shared_ptr<ImageTarget>( this, [](TextureBuffer*){} );
-////    //imageSource->load( ImageTargetRef( ptr ) );
-////    imageSource->load( shared_from_this() );//ImageTargetRef( shared_from_this() ) );
+//    
+//    while ( level < getMipmapLevelCount() )//mipWidth >= 1 && mipHeight >= 1)
+//    {
+//        NSUInteger mipBytesPerRow = bytesPerPixel * mipWidth;
+//        
+//        UIColor *tintColor = (__bridge UIColor *)tintColorAtIndex(level - 1);
+//        
+//        NSData *mipData = (__bridge NSData *)createResizedImageDataForImage(image,
+//                                                                   CGSizeMake(mipWidth, mipHeight),
+//                                                                   (__bridge void *)tintColor,
+//                                                                   &scaledImage);
+//        
+//        CGImageRelease(image);
+//        image = scaledImage;
+//        
+//        MTLRegion region = MTLRegionMake2D(0, 0, mipWidth, mipHeight);
+//        [(__bridge id<MTLTexture>)texture replaceRegion:region mipmapLevel:level withBytes:[mipData bytes] bytesPerRow:mipBytesPerRow];
+//        
+//        mipWidth /= 2;
+//        mipHeight /= 2;
+//        ++level;
+//    }
+//    
+//    CGImageRelease(image);
+//    
+//    return texture;
 //}
 //
+//void * TextureBuffer::createResizedImageDataForImage( CGImageRef image,
+//                                                      CGSize size,
+//                                                      void *tintColor,
+//                                                      CGImageRef *outImage )
+//{
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    size_t dataLength = size.height * size.width * 4;
+//    uint8_t *data = (uint8_t *)calloc(dataLength, sizeof(uint8_t));
+//    const NSUInteger bitsPerComponent = 8;
+//    const NSUInteger bytesPerPixel = 4;
+//    const NSUInteger bytesPerRow = bytesPerPixel * size.width;
+//    
+//    CGContextRef context = CGBitmapContextCreate(data,
+//                                                 size.width,
+//                                                 size.height,
+//                                                 bitsPerComponent,
+//                                                 bytesPerRow,
+//                                                 colorSpace,
+//                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+//    
+//    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+//    
+//    CGRect targetRect = CGRectMake(0, 0, size.width, size.height);
+//    CGContextDrawImage(context, targetRect, image);
+//    
+//    if (outImage)
+//    {
+//        *outImage = CGBitmapContextCreateImage(context);
+//    }
+//    
+//    if (tintColor)
+//    {
+//        CGFloat r, g, b, a;
+//        [(__bridge UIColor *)tintColor getRed:&r green:&g blue:&b alpha:&a];
+//        CGContextSetRGBFillColor(context, r, g, b, 1);
+//        CGContextSetBlendMode (context, kCGBlendModeMultiply);
+//        CGContextFillRect (context, targetRect);
+//    }
+//    
+//    CFRelease(colorSpace);
+//    CFRelease(context);
+//    
+//    return (__bridge void *)[NSData dataWithBytesNoCopy:data length:dataLength freeWhenDone:YES];
+//}
+//
+//void * TextureBuffer::tintColorAtIndex(size_t index)
+//{
+//    switch (index % 7) {
+//        case 0:
+//            return (__bridge void *)[UIColor redColor];
+//        case 1:
+//            return (__bridge void *)[UIColor orangeColor];
+//        case 2:
+//            return (__bridge void *)[UIColor yellowColor];
+//        case 3:
+//            return (__bridge void *)[UIColor greenColor];
+//        case 4:
+//            return (__bridge void *)[UIColor blueColor];
+//        case 5:
+//            return (__bridge void *)[UIColor colorWithRed:0.5 green:0.0 blue:1.0 alpha:1.0]; // indigo
+//        case 6:
+//        default:
+//            return (__bridge void *)[UIColor purpleColor];
+//    }
+//}
+//
+
+void TextureBuffer::generateMipmap()
+{
+    id<MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
+    id<MTLCommandQueue> commandQueue = [device newCommandQueue];
+    id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
+    id<MTLBlitCommandEncoder> commandEncoder = [commandBuffer blitCommandEncoder];
+//    MTLStorageMode storageMode = [IMPL storageMode];     
+    [commandEncoder generateMipmapsForTexture:IMPL];
+    [commandEncoder endEncoding];
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
+        CI_LOG_I("Mipmapping Complete");
+    }];
+    [commandBuffer commit];
+}
+
 void TextureBuffer::setPixelData( void *pixelBytes )
 {
     ivec2 size = getSize();
@@ -318,11 +471,31 @@ long TextureBuffer::getDepth() const
     return [IMPL depth];
 }
 
-// Unimplemented for now
+long TextureBuffer::getMipmapLevelCount()
+{
+    return [IMPL mipmapLevelCount];
+}
 
-//mipmapLevelCount
-//arrayLength
-//sampleCount
-//framebufferOnly
-//rootResource
-//usage
+long TextureBuffer::getSampleCount()
+{
+    return [IMPL sampleCount];
+}
+
+long TextureBuffer::getArrayLength()
+{
+    return [IMPL arrayLength];
+}
+
+bool TextureBuffer::getFramebufferOnly()
+{
+    return [IMPL isFramebufferOnly];
+}
+
+int TextureBuffer::getUsage() // AKA MTLTextureUsage
+{
+    return (int)[IMPL usage];
+}
+
+// Not implemented
+// rootResource
+

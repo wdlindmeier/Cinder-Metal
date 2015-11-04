@@ -27,6 +27,6 @@ Pipeline::Pipeline(const std::string & vertShaderName,
 mFormat(format)
 {
     mImpl = [[PipelineImpl alloc] initWithVert:(__bridge NSString *)createCfString(vertShaderName)
-                                               frag:(__bridge NSString *)createCfString(fragShaderName)
-                                             format:format];
+                                          frag:(__bridge NSString *)createCfString(fragShaderName)
+                                        format:format];
 }

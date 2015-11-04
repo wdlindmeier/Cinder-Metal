@@ -27,7 +27,32 @@ namespace cinder { namespace mtl {
         
     public:
         
-        static RenderFormatRef create();
+        struct Format
+        {
+            Format() :
+            mShouldClear(true), mClearColor(0.f,0.f,0.f,1.f), mClearDepth(1.f)
+            {};
+            
+            Format& shouldClear( bool shouldClear ) { setShouldClear( shouldClear ); return *this; }
+            Format& clearColor( ci::ColorAf clearColor ) { setClearColor( clearColor ); return *this; }
+            Format& clearDepth( float clearDepth ) { setClearDepth( clearDepth ); return *this; }
+
+            void setShouldClear( bool clear ) { mShouldClear = clear; }
+            void setClearColor( ci::ColorAf color ) { mClearColor = color; }
+            void setClearDepth( float depth ) { mClearDepth = depth; }
+            
+            bool getShouldClear() { return mShouldClear; }
+            ci::ColorAf getClearColor() { return mClearColor; }
+            float getClearDepth() { return mClearDepth; }
+            
+        protected:
+            
+            bool mShouldClear;
+            ci::ColorAf mClearColor;
+            float mClearDepth;
+        };
+        
+        static RenderFormatRef create( Format format = Format() );
         ~RenderFormat(){};
 
         void setShouldClear( bool shouldClear );
@@ -36,7 +61,7 @@ namespace cinder { namespace mtl {
 
     protected:
 
-        RenderFormat();
+        RenderFormat( Format format );
         RenderFormatImpl *mImpl;
         
     };

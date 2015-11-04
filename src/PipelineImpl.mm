@@ -42,11 +42,22 @@ using namespace ci::mtl;
         [pipelineStateDescriptor setSampleCount: format.sampleCount()];
         [pipelineStateDescriptor setVertexFunction:vertexProgram];
         [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
+        
         // TODO: Add to format
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
         // TODO: Add to format
         pipelineStateDescriptor.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
-        
+        // TEST
+        // TODO: Add to format
+        MTLRenderPipelineColorAttachmentDescriptor *renderbufferAttachment = pipelineStateDescriptor.colorAttachments[0];
+        renderbufferAttachment.blendingEnabled = YES;
+        renderbufferAttachment.rgbBlendOperation = MTLBlendOperationAdd;
+        renderbufferAttachment.alphaBlendOperation = MTLBlendOperationAdd;
+        renderbufferAttachment.sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+        renderbufferAttachment.sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+        renderbufferAttachment.destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        renderbufferAttachment.destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+
         NSError* error = NULL;
         self.pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
         if (!_pipelineState) {
@@ -57,6 +68,7 @@ using namespace ci::mtl;
         depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
         depthStateDesc.depthWriteEnabled = format.depth();
         self.depthState = [device newDepthStencilStateWithDescriptor:depthStateDesc];
+        
     }
     
     return self;

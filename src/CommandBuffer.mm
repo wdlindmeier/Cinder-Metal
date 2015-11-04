@@ -44,6 +44,10 @@ void CommandBuffer::renderTargetWithFormat( RenderFormatRef format,
     renderEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
     RenderEncoderRef encoder = RenderEncoder::create((__bridge void *)renderEncoder);
     
+    // TMP
+    // Test overriding the sampler state
+
+    
     renderFunc( encoder );
     
     [renderEncoder endEncoding];
@@ -53,7 +57,7 @@ void CommandBuffer::computeTargetWithFormat( ComputeFormatRef format,
                                                   std::function< void ( ComputeEncoderRef computeEncoder ) > computeFunc,
                                                   const std::string encoderName )
 {
-    // TODO: Do we need to prepare the format with the drawable?
+    // Drawable isn't used here
     id <MTLComputeCommandEncoder> computeEncoder = [CMD_BUFFER computeCommandEncoder];
     computeEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
     ComputeEncoderRef encoder = ComputeEncoder::create((__bridge void *)computeEncoder);
@@ -67,7 +71,7 @@ void CommandBuffer::blitTargetWithFormat( BlitFormatRef format,
                                                std::function< void ( BlitEncoderRef blitEncoder ) > blitFunc,
                                                const std::string encoderName )
 {
-    // TODO: Do we need to prepare the format with the drawable?
+    // Drawable isn't used here
     id <MTLBlitCommandEncoder> blitEncoder = [CMD_BUFFER blitCommandEncoder];
     blitEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
     BlitEncoderRef encoder = BlitEncoder::create((__bridge void *)blitEncoder);

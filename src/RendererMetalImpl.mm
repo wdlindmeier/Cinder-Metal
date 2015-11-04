@@ -125,7 +125,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
 
     CommandBufferRef ciCommandBuffer = CommandBuffer::create((__bridge void *)commandBuffer,
-                                                                       (__bridge void *)drawable);
+                                                             (__bridge void *)drawable);
     
     commandBlock( ciCommandBuffer );
     
