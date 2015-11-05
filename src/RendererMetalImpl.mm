@@ -41,6 +41,11 @@ static RendererMetalImpl * SharedRenderer = nil;
     return SharedRenderer;
 }
 
+- (dispatch_semaphore_t)inflightSemaphore
+{
+    return mInflightSemaphore;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
                    cinderView:(UIView *)cinderView
                      renderer:(cinder::app::RendererMetal *)renderer
@@ -55,7 +60,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     
     if ( self )
     {
-        _layerSizeDidUpdate = true;
+        mLayerSizeDidUpdate = true;
         mCinderView = cinderView;
         // Get the layer
         CAMetalLayer *metalLayer = (CAMetalLayer *)mCinderView.layer;
@@ -102,7 +107,7 @@ static RendererMetalImpl * SharedRenderer = nil;
 - (void)setFrameSize:(CGSize)newSize
 {
     self.metalLayer.frame = CGRectMake(0, 0, newSize.width, newSize.height);
-    _layerSizeDidUpdate = YES;
+    mLayerSizeDidUpdate = YES;
 }
 
 - (void)startDraw
@@ -112,7 +117,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     drawableSize.width *= nativeScale;
     drawableSize.height *= nativeScale;
     self.metalLayer.drawableSize = drawableSize;
-    _layerSizeDidUpdate = NO;
+    mLayerSizeDidUpdate = NO;
 
     dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
 }

@@ -7,6 +7,7 @@
 #include "metal.h"
 #include "VertexBuffer.h"
 #include "BufferConstants.h"
+#include "Scope.h"
 
 using namespace std;
 using namespace ci;
@@ -100,8 +101,6 @@ class MetalCubeApp : public App {
     CameraPersp mCamera;
     
     RenderFormatRef mRenderFormat;
-    ComputeFormatRef mComputeFormat;
-    BlitFormatRef mBlitFormat;
     
     vector<vec3> mPositions;
     
@@ -126,10 +125,7 @@ void MetalCubeApp::setup()
     */
     
     mRenderFormat = RenderFormat::create( RenderFormat::Format().clearColor(ColorAf(1.f,0.f,0.f,1.f)) );
-    
-    mComputeFormat = ComputeFormat::create();
-    mBlitFormat = BlitFormat::create();
-    
+
     // Load texture from ImageSource
     mTexture = TextureBuffer::create( // loadImage( getAssetPath("texture_trans.png") ),
                                       loadImage( getAssetPath("checker_trans.png") ),
@@ -220,8 +216,6 @@ void MetalCubeApp::loadAssets()
 
 void MetalCubeApp::update()
 {
-//    mCamera.lookAt(vec3(0,0,-25 * sin(getElapsedSeconds() * 0.5) ), vec3(0));
-    
     mat4 modelMatrix = glm::rotate(_rotation, vec3(1.0f, 1.0f, 1.0f));
     mat4 normalMatrix = inverse(transpose(modelMatrix));
     mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
@@ -244,11 +238,13 @@ void MetalCubeApp::update()
 }
 
 void MetalCubeApp::draw()
-{
-    commandBufferBlock( [&]( CommandBufferRef commandBuffer )
+{    
     {
-        commandBuffer->renderTargetWithFormat( mRenderFormat, [&]( RenderEncoderRef encoder )
+        ScopedCommandBuffer commandBuffer;
+        
         {
+            ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderFormat);
+            
             uint constantsOffset = (sizeof(uniforms_t) * _constantDataBufferIndex);
             
 //            encoder->pushDebugGroup("Draw Interleaved Cube");
@@ -267,21 +263,21 @@ void MetalCubeApp::draw()
             // Using Cinder geom to draw the cube                    
             
             // Geom Target
-            encoder->pushDebugGroup("Draw Geom Cube");
+            renderEncoder()->pushDebugGroup("Draw Geom Cube");
             
             // Set the program
-            encoder->setPipeline( mPipelineGeomLighting );
+            renderEncoder()->setPipeline( mPipelineGeomLighting );
             
             // Set render state & resources
-            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_GEOM_UNIFORMS, constantsOffset);
+            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_GEOM_UNIFORMS, constantsOffset);
 
             // Set the texture
-            encoder->setTextureAtIndex( mTexture, TEXTURE_INDEX_CUBE );
+            renderEncoder()->setTextureAtIndex( mTexture, TEXTURE_INDEX_CUBE );
 
-            mGeomBufferCube->render( encoder );
+            mGeomBufferCube->render( renderEncoder() );
 
             // Draw
-            encoder->popDebugGroup();
+            renderEncoder()->popDebugGroup();
                         
 //            // Using attrib buffers to draw the cube
 //            
@@ -299,18 +295,19 @@ void MetalCubeApp::draw()
 //            // Draw
 //            encoder->popDebugGroup();
 
-        });
+        } // scoped render encoder
+        
+        {
+            ScopedComputeEncoder computeEncoder(commandBuffer());
+//            computeEncoder()-> ...
+        } // scoped compute
 
-//        commandBuffer->computeTargetWithFormat( mComputeFormat, [&]( ComputeEncoderRef encoder )
-//        {
-//            // FPO
-//        });
-//        
-//        commandBuffer->blitTargetWithFormat( mBlitFormat, [&]( BlitEncoderRef encoder )
-//        {
-//            // FPO
-//        });
-    });
+        {
+            ScopedBlitEncoder blitEncoder(commandBuffer());
+//            blitEncoder()-> ...
+        } // scoped blit
+        
+    } // scoped command buffer
     
     _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kNumInflightBuffers;
 }

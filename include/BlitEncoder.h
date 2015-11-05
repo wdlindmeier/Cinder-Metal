@@ -17,7 +17,8 @@ namespace cinder { namespace mtl {
     class BlitEncoder
     {
         
-        friend class CommandBuffer;
+//        friend class CommandBuffer;
+        friend class ScopedBlitEncoder;
         
     public:
 

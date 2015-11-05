@@ -17,7 +17,8 @@ namespace cinder { namespace mtl {
     class ComputeEncoder
     {
      
-        friend class CommandBuffer;
+        //friend class CommandBuffer;
+        friend struct ScopedComputeEncoder;
         
     public:
         

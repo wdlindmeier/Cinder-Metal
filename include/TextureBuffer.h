@@ -10,7 +10,6 @@
 
 #include "cinder/Cinder.h"
 #include "cinder/ImageIo.h"
-//#include <boost/enable_shared_from_this.hpp>
 
 namespace cinder { namespace mtl {
     
@@ -99,17 +98,7 @@ namespace cinder { namespace mtl {
         ImageIo::ChannelOrder mChannelOrder;
         ImageIo::ColorModel mColorModel;
         ImageIo::DataType mDataType;
-        
-//        // TMP
-//        // Testing mipmaps
-//        void * createResizedImageDataForImage( CGImageRef image,
-//                                               CGSize size,
-//                                               void *tintColor,
-//                                               CGImageRef *outImage );
-//        void * generateTintedMipmapsForTexture( void *texture,
-//                                                CGImageRef image);
-//        void * tintColorAtIndex( size_t index );
-//
+
     };
     
 } }

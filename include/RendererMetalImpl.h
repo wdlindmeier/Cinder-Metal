@@ -15,7 +15,7 @@
 
 @interface RendererMetalImpl : NSObject
 {
-    BOOL _layerSizeDidUpdate;
+    BOOL mLayerSizeDidUpdate;
     cinder::app::RendererMetal  *mRenderer;
     UIView  *mCinderView;
 }
@@ -35,6 +35,7 @@
 
 - (void)startDraw;
 - (void)finishDraw;
+- (dispatch_semaphore_t)inflightSemaphore;
 
 - (void)commandBufferBlock:(void (^)( ci::mtl::CommandBufferRef commandBuffer ))commandBlock;
 

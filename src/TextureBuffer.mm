@@ -271,7 +271,7 @@ void TextureBuffer::update( ImageSourceRef imageSource )
     updateWidthCGImage( imageRef );
 }
 
-void TextureBuffer::updateWidthCGImage( void * imageRef ) //CGImageRef imageRef )
+void TextureBuffer::updateWidthCGImage( void * imageRef ) // CGImageRef
 {
     NSUInteger width = CGImageGetWidth((CGImageRef)imageRef);
     NSUInteger height = CGImageGetHeight((CGImageRef)imageRef);
@@ -293,15 +293,6 @@ void TextureBuffer::updateWidthCGImage( void * imageRef ) //CGImageRef imageRef 
     
     setPixelData(rawData);
     
-//    // TMP / TEST
-//    // Create the tinted mip-map
-//    if ( [IMPL mipmapLevelCount] > 1 )
-//    {
-//        generateTintedMipmapsForTexture(mImpl, (CGImageRef)imageRef);
-//    }
-//
-//    CI_LOG_I("Texture mipmap level: " << [IMPL mipmapLevelCount] );
-    
     free(rawData);
     
     if ( [IMPL mipmapLevelCount] > 1 )
@@ -310,128 +301,17 @@ void TextureBuffer::updateWidthCGImage( void * imageRef ) //CGImageRef imageRef 
     }
 }
 
-//#include <UIKit/UIKit.h>
-//
-//void * TextureBuffer::generateTintedMipmapsForTexture(void * texture,
-//                                                              CGImageRef image)
-//{
-//    NSUInteger level = 1;
-//    NSUInteger mipWidth = [(__bridge id<MTLTexture>)texture width] / 2;
-//    NSUInteger mipHeight = [(__bridge id<MTLTexture>)texture height] / 2;
-//    CGImageRef scaledImage;
-//    CGImageRetain(image);
-//    
-//    const NSUInteger bitsPerComponent = 8;
-//    const NSUInteger bytesPerPixel = 4;
-////    const NSUInteger bytesPerRow = bytesPerPixel * size.width;
-//
-//    
-//    while ( level < getMipmapLevelCount() )//mipWidth >= 1 && mipHeight >= 1)
-//    {
-//        NSUInteger mipBytesPerRow = bytesPerPixel * mipWidth;
-//        
-//        UIColor *tintColor = (__bridge UIColor *)tintColorAtIndex(level - 1);
-//        
-//        NSData *mipData = (__bridge NSData *)createResizedImageDataForImage(image,
-//                                                                   CGSizeMake(mipWidth, mipHeight),
-//                                                                   (__bridge void *)tintColor,
-//                                                                   &scaledImage);
-//        
-//        CGImageRelease(image);
-//        image = scaledImage;
-//        
-//        MTLRegion region = MTLRegionMake2D(0, 0, mipWidth, mipHeight);
-//        [(__bridge id<MTLTexture>)texture replaceRegion:region mipmapLevel:level withBytes:[mipData bytes] bytesPerRow:mipBytesPerRow];
-//        
-//        mipWidth /= 2;
-//        mipHeight /= 2;
-//        ++level;
-//    }
-//    
-//    CGImageRelease(image);
-//    
-//    return texture;
-//}
-//
-//void * TextureBuffer::createResizedImageDataForImage( CGImageRef image,
-//                                                      CGSize size,
-//                                                      void *tintColor,
-//                                                      CGImageRef *outImage )
-//{
-//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-//    size_t dataLength = size.height * size.width * 4;
-//    uint8_t *data = (uint8_t *)calloc(dataLength, sizeof(uint8_t));
-//    const NSUInteger bitsPerComponent = 8;
-//    const NSUInteger bytesPerPixel = 4;
-//    const NSUInteger bytesPerRow = bytesPerPixel * size.width;
-//    
-//    CGContextRef context = CGBitmapContextCreate(data,
-//                                                 size.width,
-//                                                 size.height,
-//                                                 bitsPerComponent,
-//                                                 bytesPerRow,
-//                                                 colorSpace,
-//                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-//    
-//    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-//    
-//    CGRect targetRect = CGRectMake(0, 0, size.width, size.height);
-//    CGContextDrawImage(context, targetRect, image);
-//    
-//    if (outImage)
-//    {
-//        *outImage = CGBitmapContextCreateImage(context);
-//    }
-//    
-//    if (tintColor)
-//    {
-//        CGFloat r, g, b, a;
-//        [(__bridge UIColor *)tintColor getRed:&r green:&g blue:&b alpha:&a];
-//        CGContextSetRGBFillColor(context, r, g, b, 1);
-//        CGContextSetBlendMode (context, kCGBlendModeMultiply);
-//        CGContextFillRect (context, targetRect);
-//    }
-//    
-//    CFRelease(colorSpace);
-//    CFRelease(context);
-//    
-//    return (__bridge void *)[NSData dataWithBytesNoCopy:data length:dataLength freeWhenDone:YES];
-//}
-//
-//void * TextureBuffer::tintColorAtIndex(size_t index)
-//{
-//    switch (index % 7) {
-//        case 0:
-//            return (__bridge void *)[UIColor redColor];
-//        case 1:
-//            return (__bridge void *)[UIColor orangeColor];
-//        case 2:
-//            return (__bridge void *)[UIColor yellowColor];
-//        case 3:
-//            return (__bridge void *)[UIColor greenColor];
-//        case 4:
-//            return (__bridge void *)[UIColor blueColor];
-//        case 5:
-//            return (__bridge void *)[UIColor colorWithRed:0.5 green:0.0 blue:1.0 alpha:1.0]; // indigo
-//        case 6:
-//        default:
-//            return (__bridge void *)[UIColor purpleColor];
-//    }
-//}
-//
-
 void TextureBuffer::generateMipmap()
 {
     id<MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
     id<MTLCommandQueue> commandQueue = [device newCommandQueue];
     id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
     id<MTLBlitCommandEncoder> commandEncoder = [commandBuffer blitCommandEncoder];
-//    MTLStorageMode storageMode = [IMPL storageMode];     
     [commandEncoder generateMipmapsForTexture:IMPL];
     [commandEncoder endEncoding];
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
-        CI_LOG_I("Mipmapping Complete");
-    }];
+//    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
+//        CI_LOG_I("Mipmapping Complete");
+//    }];
     [commandBuffer commit];
 }
 
