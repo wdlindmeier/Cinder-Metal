@@ -19,7 +19,6 @@
 		A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */; };
 		A90BF5AE1BDC3A86002C9257 /* MetalGeom.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */; };
 		A90BF5B31BE42598002C9257 /* TextureBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5B21BE42598002C9257 /* TextureBuffer.mm */; };
-		A90BF5D61BE99792002C9257 /* MBETextureGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5D51BE99791002C9257 /* MBETextureGenerator.m */; };
 		A90BF5DB1BEA6E09002C9257 /* Scope.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5DA1BEA6E09002C9257 /* Scope.mm */; };
 		A916E3111BD15DA50012573E /* RenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E30F1BD15DA50012573E /* RenderEncoder.mm */; };
 		A916E31B1BD2A51A0012573E /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A916E31A1BD2A51A0012573E /* DataBuffer.mm */; };
@@ -69,8 +68,6 @@
 		A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalGeom.mm; sourceTree = "<group>"; };
 		A90BF5B01BE4257B002C9257 /* TextureBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBuffer.h; sourceTree = "<group>"; };
 		A90BF5B21BE42598002C9257 /* TextureBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureBuffer.mm; sourceTree = "<group>"; };
-		A90BF5D41BE99791002C9257 /* MBETextureGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBETextureGenerator.h; path = ../../../../../../../Downloads/Mipmapping/Mipmapping/MBETextureGenerator.h; sourceTree = "<group>"; };
-		A90BF5D51BE99791002C9257 /* MBETextureGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBETextureGenerator.m; path = ../../../../../../../Downloads/Mipmapping/Mipmapping/MBETextureGenerator.m; sourceTree = "<group>"; };
 		A90BF5D81BEA6DF5002C9257 /* Scope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scope.h; sourceTree = "<group>"; };
 		A90BF5DA1BEA6E09002C9257 /* Scope.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Scope.mm; sourceTree = "<group>"; };
 		A916E30F1BD15DA50012573E /* RenderEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderEncoder.mm; sourceTree = "<group>"; };
@@ -191,8 +188,6 @@
 		00692BD914FF149000D0A05E /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				A90BF5D41BE99791002C9257 /* MBETextureGenerator.h */,
-				A90BF5D51BE99791002C9257 /* MBETextureGenerator.m */,
 				A92044A01BCB0AD000CC8AAB /* Shaders.metal */,
 				E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */,
 				A916E32A1BD2B8D60012573E /* BufferConstants.h */,
@@ -382,7 +377,6 @@
 				A916E3471BD3182F0012573E /* BlitEncoder.mm in Sources */,
 				A916E3241BD2B1670012573E /* PipelineImpl.mm in Sources */,
 				A920449C1BCADD5E00CC8AAB /* RendererMetal.mm in Sources */,
-				A90BF5D61BE99792002C9257 /* MBETextureGenerator.m in Sources */,
 				A96C5E591BCDD86F001DD6D3 /* Pipeline.mm in Sources */,
 				A90BF5B31BE42598002C9257 /* TextureBuffer.mm in Sources */,
 				A916E3281BD2B2830012573E /* RenderFormatImpl.mm in Sources */,
