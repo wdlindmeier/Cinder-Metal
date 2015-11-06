@@ -30,3 +30,20 @@ mFormat(format)
                                           frag:(__bridge NSString *)createCfString(fragShaderName)
                                         format:format];
 }
+
+void * Pipeline::getNative()
+{
+    return (__bridge void *)mImpl.pipelineState;
+}
+
+void * Pipeline::getPipelineState()
+{
+    printf("TOOD: Remove getPipelineState()\n");
+    return (__bridge void *)mImpl.pipelineState;
+}
+
+void * Pipeline::getDepthState()
+{
+    printf("TOOD: Remove getDepthState()\n");
+    return (__bridge void *)mImpl.depthState;
+}

@@ -70,6 +70,7 @@
 		A90BF5B21BE42598002C9257 /* TextureBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureBuffer.mm; sourceTree = "<group>"; };
 		A90BF5D81BEA6DF5002C9257 /* Scope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scope.h; sourceTree = "<group>"; };
 		A90BF5DA1BEA6E09002C9257 /* Scope.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Scope.mm; sourceTree = "<group>"; };
+		A90BF5FF1BEAEFA8002C9257 /* MetalHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MetalHelpers.hpp; sourceTree = "<group>"; };
 		A916E30F1BD15DA50012573E /* RenderEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderEncoder.mm; sourceTree = "<group>"; };
 		A916E3121BD15DC10012573E /* RenderEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderEncoder.h; sourceTree = "<group>"; };
 		A916E3161BD2A47F0012573E /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalGeom.h; sourceTree = "<group>"; };
@@ -266,13 +267,14 @@
 				A916E3201BD2B0710012573E /* Impls */,
 				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
 				A916E3161BD2A47F0012573E /* MetalGeom.h */,
+				A90BF5FF1BEAEFA8002C9257 /* MetalHelpers.hpp */,
 				A96C5E5E1BCDD8B5001DD6D3 /* Pipeline.h */,
 				A916E3121BD15DC10012573E /* RenderEncoder.h */,
 				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
 				A96C5E5F1BCDD8B5001DD6D3 /* RenderFormat.h */,
+				A90BF5D81BEA6DF5002C9257 /* Scope.h */,
 				A90BF5B01BE4257B002C9257 /* TextureBuffer.h */,
 				A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */,
-				A90BF5D81BEA6DF5002C9257 /* Scope.h */,
 			);
 			name = include;
 			path = ../../../include;

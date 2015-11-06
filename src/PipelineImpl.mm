@@ -39,7 +39,7 @@ using namespace ci::mtl;
         MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
         // TODO: Add to format
         pipelineStateDescriptor.label = @"MyPipeline";
-        [pipelineStateDescriptor setSampleCount: format.sampleCount()];
+        [pipelineStateDescriptor setSampleCount: format.getSampleCount()];
         [pipelineStateDescriptor setVertexFunction:vertexProgram];
         [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
         
@@ -66,7 +66,7 @@ using namespace ci::mtl;
         
         MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
         depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
-        depthStateDesc.depthWriteEnabled = format.depth();
+        depthStateDesc.depthWriteEnabled = format.getDepthEnabled();
         self.depthState = [device newDepthStencilStateWithDescriptor:depthStateDesc];
         
     }

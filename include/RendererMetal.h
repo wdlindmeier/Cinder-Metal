@@ -67,7 +67,6 @@ namespace cinder {
             void startDraw() override;
             void finishDraw() override;
             
-
         protected:
 
             RendererMetalImpl *mImpl;
@@ -76,15 +75,6 @@ namespace cinder {
 
         };
         
-    } // app
-    
-    namespace mtl {
-        
-        class RenderEncoder;
-        class CommandBuffer;
-        
-        void commandBufferBlock( std::function< void ( std::shared_ptr<CommandBuffer> cmdBuffer ) > commandFunc );
-        
-    }
+    } // app    
 }
 

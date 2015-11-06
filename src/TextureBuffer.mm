@@ -237,9 +237,15 @@ mFormat(format)
     desc.mipmapLevelCount = mFormat.getMipmapLevel();
     desc.sampleCount = format.getSampleCount();
 
+    // Does this need to be CFRetained?
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device newTextureWithDescriptor:desc];
-
+    
     updateWidthCGImage( imageRef );
+}
+
+TextureBuffer::~TextureBuffer()
+{
+    CFRelease(mImpl);
 }
 
 #pragma mark - Getting data

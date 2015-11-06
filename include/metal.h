@@ -14,8 +14,6 @@
 #include "CommandBuffer.h"
 #include "DataBuffer.h"
 #include "RenderFormat.h"
-//#include "ComputeFormat.h"
-//#include "BlitFormat.h"
 #include "RenderEncoder.h"
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"
@@ -27,5 +25,3 @@
 #error Cinder::Metal requires that ARC is enabled. This can be set in the project "build settings."
 #endif
 #endif
-
-

@@ -26,4 +26,15 @@ mImpl(mtlBlitCommandEncoder)
 {
     assert( mtlBlitCommandEncoder != NULL );
     assert( [(__bridge id)mtlBlitCommandEncoder conformsToProtocol:@protocol(MTLBlitCommandEncoder)] );
+    CFRetain(mImpl);
+}
+
+BlitEncoder::~BlitEncoder()
+{
+    CFRelease(mImpl);
+}
+
+void BlitEncoder::endEncoding()
+{
+    [(__bridge id<MTLBlitCommandEncoder>)mImpl endEncoding];
 }

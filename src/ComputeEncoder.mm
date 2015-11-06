@@ -24,5 +24,16 @@ ComputeEncoder::ComputeEncoder( void * mtlComputeCommandEncoder )
 :
 mImpl(mtlComputeCommandEncoder)
 {
+    CFRetain(mImpl);
     assert([(__bridge id)mtlComputeCommandEncoder conformsToProtocol:@protocol(MTLComputeCommandEncoder)]);
+}
+
+ComputeEncoder::~ComputeEncoder()
+{
+    CFRelease(mImpl);
+}
+
+void ComputeEncoder::endEncoding()
+{
+    [(__bridge id<MTLComputeCommandEncoder>)mImpl endEncoding];
 }

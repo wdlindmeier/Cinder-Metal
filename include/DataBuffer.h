@@ -23,7 +23,7 @@ namespace cinder { namespace mtl {
     class DataBuffer
     {
         
-        friend class RenderEncoder;
+        // friend class RenderEncoder;
         
     public:
         
@@ -61,6 +61,8 @@ namespace cinder { namespace mtl {
             uint8_t *bufferPointer = (uint8_t *)this->contents() + (sizeof(BufferType) * inflightBufferIndex);
             memcpy(bufferPointer, data, sizeof(BufferType));
         }
+                
+        void * getNative(); // <MTLBuffer>
 
     protected:
         

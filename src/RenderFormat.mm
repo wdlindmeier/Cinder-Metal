@@ -43,3 +43,13 @@ void RenderFormat::setClearDepth( float clearDepth )
 {
     mImpl.renderPassDescriptor.depthAttachment.clearDepth = clearDepth;
 };
+
+void RenderFormat::prepareForTexture( void * texture )
+{
+    [mImpl prepareForRenderToTexture:(__bridge id<MTLTexture>)texture];
+}
+     
+void * RenderFormat::getNative()
+{
+    return (__bridge void *)mImpl.renderPassDescriptor;
+}

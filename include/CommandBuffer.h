@@ -27,18 +27,20 @@ namespace cinder { namespace mtl {
     class CommandBuffer
     {
         
-        friend struct ScopedCommandBuffer;
-        friend struct ScopedRenderEncoder;
-        friend struct ScopedComputeEncoder;
-        friend struct ScopedBlitEncoder;
-        
     public:
-        
-        // TODO
-        // Can this be a protected/private friend function w/ RenderMetalImpl?
-        static CommandBufferRef create( void * mtlCommandBuffer, void *mtlDrawable );        
-        virtual ~CommandBuffer(){};
 
+        static CommandBufferRef createForRenderLoop( const std::string & bufferName );
+        virtual ~CommandBuffer();
+
+        void commitAndPresentForRendererLoop();
+
+        void * getNative(){ return mCommandBuffer; }
+
+        RenderEncoderRef createRenderEncoderWithFormat( RenderFormatRef renderFormat,
+                                                        const std::string & encoderName = "Render Encoder" );
+        ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Compute Encoder" );
+        BlitEncoderRef createBlitEncoder( const std::string & encoderName = "Blit Encoder" );
+        
     protected:
                 
         CommandBuffer( void * mtlCommandBuffer, void *mtlDrawable );

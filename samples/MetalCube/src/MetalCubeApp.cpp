@@ -124,7 +124,7 @@ void MetalCubeApp::setup()
     ;==\''''
     */
     
-    mRenderFormat = RenderFormat::create( RenderFormat::Format().clearColor(ColorAf(1.f,0.f,0.f,1.f)) );
+    mRenderFormat = RenderFormat::create( RenderFormat::Format().clearColor( ColorAf(1.f,0.f,0.f,1.f) ) );
 
     // Load texture from ImageSource
     mTexture = TextureBuffer::create( // loadImage( getAssetPath("texture_trans.png") ),
@@ -158,7 +158,7 @@ void MetalCubeApp::loadAssets()
     // This is similar to a GlslProg
     mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",    // The name of the vertex shader function
                                                     "lighting_fragment",              // The name of the fragment shader function
-                                                    Pipeline::Format().depth(true) ); // Format
+                                                    Pipeline::Format().depthEnabled(true).blendingEnabled(true) ); // Format
     
     
     // EXAMPLE 2
@@ -172,7 +172,7 @@ void MetalCubeApp::loadAssets()
                                             {ci::geom::TEX_COORD_0, BUFFER_INDEX_GEOM_TEX_COORDS }});
     mPipelineGeomLighting = Pipeline::create("lighting_vertex_geom",
                                               "lighting_fragment",
-                                              Pipeline::Format().depth(true) );
+                                              Pipeline::Format().depthEnabled(true).blendingEnabled(true) );
     
     // Load verts and normals into vectors
     vector<vec3> positions;
@@ -200,7 +200,7 @@ void MetalCubeApp::loadAssets()
     
     mPipelineAttribLighting = Pipeline::create("lighting_vertex_attrib_buffers",
                                                "lighting_fragment",
-                                               Pipeline::Format().depth(true) );
+                                               Pipeline::Format().depthEnabled(true).blendingEnabled(true) );
     
     // EXAMPLE 4
     // Create an interleaved buffer with from a vector
@@ -211,7 +211,7 @@ void MetalCubeApp::loadAssets()
 
     mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",
                                                     "lighting_fragment",
-                                                    Pipeline::Format().depth(true) );
+                                                    Pipeline::Format().depthEnabled(true).blendingEnabled(true) );
 }
 
 void MetalCubeApp::update()
@@ -241,6 +241,17 @@ void MetalCubeApp::draw()
 {    
     {
         ScopedCommandBuffer commandBuffer;
+        
+        {
+            ScopedComputeEncoder computeEncoder(commandBuffer());
+            //            computeEncoder()-> ...
+        } // scoped compute
+        
+        {
+            ScopedBlitEncoder blitEncoder(commandBuffer());
+            //            blitEncoder()-> ...
+        } // scoped blit
+
         
         {
             ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderFormat);
@@ -295,17 +306,7 @@ void MetalCubeApp::draw()
 //            // Draw
 //            encoder->popDebugGroup();
 
-        } // scoped render encoder
-        
-        {
-            ScopedComputeEncoder computeEncoder(commandBuffer());
-//            computeEncoder()-> ...
-        } // scoped compute
-
-        {
-            ScopedBlitEncoder blitEncoder(commandBuffer());
-//            blitEncoder()-> ...
-        } // scoped blit
+        } // scoped render encoder    
         
     } // scoped command buffer
     

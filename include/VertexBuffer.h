@@ -76,7 +76,6 @@ namespace cinder
             std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;
             
             std::map<ci::geom::Attrib, int> mRequestedAttribs;
-            //DataBufferRef mIndexBuffer;
             ci::geom::SourceRef mSource;
             size_t mVertexLength;
             

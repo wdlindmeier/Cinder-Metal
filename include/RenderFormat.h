@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cinder/Cinder.h"
+#include "MetalHelpers.hpp"
 
 #if defined( __OBJC__ )
 @class RenderFormatImpl;
@@ -24,43 +25,34 @@ namespace cinder { namespace mtl {
     {
         
         friend class CommandBuffer;
-        friend class ScopedRenderEncoder;
         
     public:
         
         struct Format
         {
             Format() :
-            mShouldClear(true), mClearColor(0.f,0.f,0.f,1.f), mClearDepth(1.f)
+            mShouldClear(true)
+            ,mClearColor(0.f,0.f,0.f,1.f)
+            ,mClearDepth(1.f)
             {};
             
-            Format& shouldClear( bool shouldClear ) { setShouldClear( shouldClear ); return *this; }
-            Format& clearColor( ci::ColorAf clearColor ) { setClearColor( clearColor ); return *this; }
-            Format& clearDepth( float clearDepth ) { setClearDepth( clearDepth ); return *this; }
-
-            void setShouldClear( bool clear ) { mShouldClear = clear; }
-            void setClearColor( ci::ColorAf color ) { mClearColor = color; }
-            void setClearDepth( float depth ) { mClearDepth = depth; }
-            
-            bool getShouldClear() { return mShouldClear; }
-            ci::ColorAf getClearColor() { return mClearColor; }
-            float getClearDepth() { return mClearDepth; }
-            
-        protected:
-            
-            bool mShouldClear;
-            ci::ColorAf mClearColor;
-            float mClearDepth;
+            FORMAT_OPTION(shouldClear, ShouldClear, bool)
+            FORMAT_OPTION(clearColor, ClearColor, ci::ColorAf)
+            FORMAT_OPTION(clearDepth, ClearDepth, float)
         };
         
         static RenderFormatRef create( Format format = Format() );
         ~RenderFormat(){};
+        
+        void * getNative(); // MTLRenderPassDescriptor *
+        
+    protected:
 
+        void prepareForTexture( void * texture ); // <MTLTexture>
+        
         void setShouldClear( bool shouldClear );
         void setClearColor( const ColorAf clearColor );
         void setClearDepth( float clearDepth );
-
-    protected:
 
         RenderFormat( Format format );
         RenderFormatImpl *mImpl;

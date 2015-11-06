@@ -122,29 +122,6 @@ static RendererMetalImpl * SharedRenderer = nil;
     dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
 }
 
-- (void)commandBufferBlock:(void (^)( ci::mtl::CommandBufferRef commandBuffer ))commandBlock
-{
-    id <MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
-    // TODO: Pass in an optional name
-    commandBuffer.label = @"FrameCommands";
-    id <CAMetalDrawable> drawable = [self.metalLayer nextDrawable];
-
-    CommandBufferRef ciCommandBuffer = CommandBuffer::create((__bridge void *)commandBuffer,
-                                                             (__bridge void *)drawable);
-    
-    commandBlock( ciCommandBuffer );
-    
-    __block dispatch_semaphore_t block_sema = mInflightSemaphore;
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
-        dispatch_semaphore_signal(block_sema);
-    }];
-    
-    [commandBuffer presentDrawable:drawable];
-    
-    // Finalize rendering here & push the command buffer to the GPU
-    [commandBuffer commit];
-}
-
 - (void)finishDraw
 {
     //...

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cinder/Cinder.h"
+//#include "CommandBuffer.h"
 
 namespace cinder { namespace mtl {
     
@@ -17,12 +18,15 @@ namespace cinder { namespace mtl {
     class ComputeEncoder
     {
      
-        //friend class CommandBuffer;
-        friend struct ScopedComputeEncoder;
+        friend class CommandBuffer;
         
     public:
+
+        virtual ~ComputeEncoder();
         
-        virtual ~ComputeEncoder(){}
+        void * getNative(){ return mImpl; }
+        
+        void endEncoding();
 
     protected:
         
@@ -30,7 +34,7 @@ namespace cinder { namespace mtl {
         
         ComputeEncoder( void * mtlComputeCommandEncoder );
         
-        void * mImpl;
+        void * mImpl; // <MTLComputeCommandEncoder>
         
     };
     

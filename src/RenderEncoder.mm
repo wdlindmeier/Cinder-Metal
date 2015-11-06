@@ -33,11 +33,17 @@ RenderEncoder::RenderEncoder( void * encoderImpl )
 mImpl(encoderImpl)
 {
     assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
+    CFRetain(mImpl);
+}
+
+RenderEncoder::~RenderEncoder()
+{
+    CFRelease(mImpl);
 }
 
 void RenderEncoder::setPipeline( PipelineRef pipeline )
 {
-    // TEST
+    // TODO:Refactor
     MTLSamplerDescriptor *samplerDescriptor = [MTLSamplerDescriptor new];
     samplerDescriptor.mipFilter = MTLSamplerMipFilterLinear;
     samplerDescriptor.maxAnisotropy = 3;
@@ -49,8 +55,9 @@ void RenderEncoder::setPipeline( PipelineRef pipeline )
                                                   newSamplerStateWithDescriptor:samplerDescriptor];
     [IMPL setFragmentSamplerState:linearMipSamplerState atIndex:0];
     
-    [IMPL setDepthStencilState:pipeline->mImpl.depthState];
-    [IMPL setRenderPipelineState:pipeline->mImpl.pipelineState];
+    // TODO: Refactor
+    [IMPL setDepthStencilState:(__bridge id <MTLDepthStencilState>)pipeline->getDepthState()];
+    [IMPL setRenderPipelineState:(__bridge id <MTLRenderPipelineState>)pipeline->getPipelineState()];
 }
 
 void RenderEncoder::pushDebugGroup( const std::string & groupName )
@@ -60,13 +67,13 @@ void RenderEncoder::pushDebugGroup( const std::string & groupName )
 
 void RenderEncoder::setTextureAtIndex( TextureBufferRef texture, size_t index )
 {
-    [IMPL setFragmentTexture:(__bridge id <MTLTexture>)texture->mImpl
+    [IMPL setFragmentTexture:(__bridge id <MTLTexture>)texture->getNative()
                      atIndex:index];
 }
 
 void RenderEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )
 {
-    [IMPL setVertexBuffer:buffer->mImpl.buffer
+    [IMPL setVertexBuffer:(__bridge id <MTLBuffer>)buffer->getNative()
                    offset:bytesOffset
                   atIndex:index];
 }
@@ -77,6 +84,11 @@ void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexStart
              vertexStart:vertexStart
              vertexCount:vertexCount
            instanceCount:instanceCount];
+}
+
+void RenderEncoder::endEncoding()
+{
+    [(__bridge id<MTLRenderCommandEncoder>)mImpl endEncoding];
 }
 
 void RenderEncoder::popDebugGroup()

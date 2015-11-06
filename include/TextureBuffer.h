@@ -10,6 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "cinder/ImageIo.h"
+#include "MetalHelpers.hpp"
 
 namespace cinder { namespace mtl {
     
@@ -20,40 +21,24 @@ namespace cinder { namespace mtl {
     class TextureBuffer
     {
         
-        friend class RenderEncoder;
+//        friend class RenderEncoder;
         friend class ImageSourceMTLTexture;
         
     public:
         
-        struct Format // Maps to MTLTextureDescriptor
+        struct Format
         {
             Format() :
-            mMipmapLevel(1), mSampleCount(1), mTextureType(2), mPixelFormat(0)
+            mMipmapLevel(1),
+            mSampleCount(1),
+            mTextureType(2), // defaults to MTLTextureType2D
+            mPixelFormat(0) // defaults to MTLPixelFormatInvalid
             {};
             
-            Format& mipmapLevel( int mipmapLevel ) { setMipmapLevel( mipmapLevel ); return *this; }
-            Format& sampleCount( int sampleCount ) { setSampleCount( sampleCount ); return *this; }
-            // MTLTextureType (defaults to MTLTextureType2D)
-            Format& textureType( int textureType ) { setTextureType( textureType ); return *this; }
-            // MTLPixelFormat (defaults to MTLPixelFormatInvalid)
-            Format& pixelFormat( int pixelFormat ) { setPixelFormat( pixelFormat ); return *this; }
-
-            void setMipmapLevel( int mipmapLevel ) { mMipmapLevel = mipmapLevel; }
-            void setSampleCount( int sampleCount ) { mSampleCount = sampleCount; }
-            void setTextureType( int textureType ) { mTextureType = textureType; }
-            void setPixelFormat( int pixelFormat ) { mPixelFormat = pixelFormat; }
-
-            int getMipmapLevel() { return mMipmapLevel; }
-            int getSampleCount() { return mSampleCount; }
-            int getTextureType() { return mTextureType; }
-            int getPixelFormat() { return mPixelFormat; }
-
-        protected:
-            
-            int mMipmapLevel;
-            int mSampleCount;
-            int mTextureType;
-            int mPixelFormat;
+            FORMAT_OPTION(mipmapLevel, MipmapLevel, int)
+            FORMAT_OPTION(sampleCount, SampleCount, int)
+            FORMAT_OPTION(textureType, TextureType, int) // MTLTextureType
+            FORMAT_OPTION(pixelFormat, PixelFormat, int) // MTLPixelFormat
         };
         
         static TextureBufferRef create( ImageSourceRef imageSource, Format format = Format() )
@@ -61,8 +46,7 @@ namespace cinder { namespace mtl {
             return TextureBufferRef( new TextureBuffer(imageSource, format) );
         }
 
-        virtual ~TextureBuffer()
-        {}
+        virtual ~TextureBuffer();
 
         void update( ImageSourceRef imageSource );
         void setPixelData( void *pixelBytes );
@@ -81,7 +65,9 @@ namespace cinder { namespace mtl {
         long        getSampleCount();
         long        getArrayLength();
         bool        getFramebufferOnly();
-        int         getUsage(); // return type is MTLTextureUsage
+        int         getUsage(); // <MTLTextureUsage>
+        
+        void *      getNative(){ return mImpl; };
 
     protected:
 

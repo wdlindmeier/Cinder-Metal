@@ -43,3 +43,8 @@ void * DataBuffer::contents()
     return [mImpl.buffer contents];
 }
 
+void * DataBuffer::getNative()
+{
+    return (__bridge void *)mImpl.buffer;
+}
+

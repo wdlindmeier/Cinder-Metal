@@ -21,12 +21,11 @@ namespace cinder { namespace mtl {
     class RenderEncoder
     {
 
-        //friend class CommandBuffer;
-        friend struct ScopedRenderEncoder;
+        friend class CommandBuffer;
         
     public:
 
-        virtual ~RenderEncoder(){}
+        virtual ~RenderEncoder();
         
         void pushDebugGroup( const std::string & groupName);
         void popDebugGroup();
@@ -37,13 +36,17 @@ namespace cinder { namespace mtl {
 
         void draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount );
         
+        void endEncoding();
+        
+        void * getNative(){ return mImpl; }
+        
     protected:
 
         static RenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>
         
         RenderEncoder( void * mtlRenderCommandEncoder );
         
-        void * mImpl;
+        void * mImpl; // <MTLRenderCommandEncoder>
     };
     
 } }

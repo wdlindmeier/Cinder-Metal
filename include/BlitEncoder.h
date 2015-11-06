@@ -17,12 +17,15 @@ namespace cinder { namespace mtl {
     class BlitEncoder
     {
         
-//        friend class CommandBuffer;
-        friend class ScopedBlitEncoder;
+        friend class CommandBuffer;
         
     public:
 
-        virtual ~BlitEncoder(){}
+        virtual ~BlitEncoder();
+        
+        void * getNative(){ return mImpl; }
+        
+        void endEncoding();
 
     protected:
         
@@ -30,7 +33,7 @@ namespace cinder { namespace mtl {
         
         BlitEncoder( void * mtlBlitCommandEncoder );
         
-        void * mImpl;
+        void * mImpl; // <MTLBlitCommandEncoder>
         
     };
     

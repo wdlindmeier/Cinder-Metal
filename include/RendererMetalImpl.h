@@ -37,6 +37,4 @@
 - (void)finishDraw;
 - (dispatch_semaphore_t)inflightSemaphore;
 
-- (void)commandBufferBlock:(void (^)( ci::mtl::CommandBufferRef commandBuffer ))commandBlock;
-
 @end

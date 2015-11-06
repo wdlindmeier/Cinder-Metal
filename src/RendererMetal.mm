@@ -62,10 +62,3 @@ void RendererMetal::finishDraw()
 {
     [mImpl finishDraw];
 }
-
-void ci::mtl::commandBufferBlock( std::function< void ( std::shared_ptr<CommandBuffer> cmdBuffer ) > commandFunc )
-{
-    [[RendererMetalImpl sharedRenderer] commandBufferBlock:^(ci::mtl::CommandBufferRef commandBuffer) {
-        commandFunc(commandBuffer);
-    }];
-}
