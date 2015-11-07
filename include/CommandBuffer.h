@@ -12,7 +12,7 @@
 #include "RenderEncoder.h"
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"
-#include "RenderFormat.h"
+#include "RenderPassDescriptor.h"
 
 #if defined( __OBJC__ )
 @class CommandBufferImpl;
@@ -36,10 +36,10 @@ namespace cinder { namespace mtl {
 
         void * getNative(){ return mCommandBuffer; }
 
-        RenderEncoderRef createRenderEncoderWithFormat( RenderFormatRef renderFormat,
-                                                        const std::string & encoderName = "Render Encoder" );
-        ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Compute Encoder" );
-        BlitEncoderRef createBlitEncoder( const std::string & encoderName = "Blit Encoder" );
+        RenderEncoderRef createRenderEncoderWithDescriptor( RenderPassDescriptorRef renderDescriptor,
+                                                            const std::string & encoderName = "Default Render Encoder" );
+        ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Default Compute Encoder" );
+        BlitEncoderRef createBlitEncoder( const std::string & encoderName = "Default Blit Encoder" );
         
     protected:
                 

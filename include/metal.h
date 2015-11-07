@@ -13,7 +13,7 @@
 #include "Pipeline.h"
 #include "CommandBuffer.h"
 #include "DataBuffer.h"
-#include "RenderFormat.h"
+#include "RenderPassDescriptor.h"
 #include "RenderEncoder.h"
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"

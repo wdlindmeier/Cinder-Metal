@@ -7,7 +7,6 @@
 //
 
 #include "CommandBuffer.h"
-#import "RenderFormatImpl.h"
 #include "RendererMetalImpl.h"
 #import <QuartzCore/CAMetalLayer.h>
 
@@ -46,12 +45,13 @@ CommandBuffer::~CommandBuffer()
     CFRelease(mCommandBuffer);
 }
 
-RenderEncoderRef CommandBuffer::createRenderEncoderWithFormat( RenderFormatRef format, const std::string & encoderName )
+RenderEncoderRef CommandBuffer::createRenderEncoderWithDescriptor( RenderPassDescriptorRef descriptor,
+                                                                   const std::string & encoderName )
 {
-    format->prepareForTexture((__bridge void *)DRAWABLE.texture);
+    descriptor->applyToDrawableTexture((__bridge void *)DRAWABLE.texture);
 
     id <MTLRenderCommandEncoder> renderEncoder = [CMD_BUFFER renderCommandEncoderWithDescriptor:
-                                                  (__bridge MTLRenderPassDescriptor *)format->getNative()];
+                                                  (__bridge MTLRenderPassDescriptor *)descriptor->getNative()];
 
     renderEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
     

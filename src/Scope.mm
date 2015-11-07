@@ -8,8 +8,7 @@
 
 #include "Scope.h"
 #include "RendererMetalImpl.h"
-#include "RenderFormat.h"
-#include "RenderFormatImpl.h"
+#include "RenderPassDescriptor.h"
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"
 
@@ -27,10 +26,10 @@ ScopedCommandBuffer::~ScopedCommandBuffer()
 };
 
 ScopedRenderEncoder::ScopedRenderEncoder( CommandBufferRef commandBuffer,
-                                          const RenderFormatRef format,
+                                          const RenderPassDescriptorRef descriptor,
                                           const std::string & encoderName )
 {
-    mInstance = commandBuffer->createRenderEncoderWithFormat(format, encoderName);
+    mInstance = commandBuffer->createRenderEncoderWithDescriptor(descriptor, encoderName);
 }
 
 ScopedRenderEncoder::~ScopedRenderEncoder()

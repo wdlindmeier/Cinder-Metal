@@ -10,11 +10,11 @@
 
 #include "cinder/Cinder.h"
 
-#if defined( __OBJC__ )
-@class DataBufferImpl;
-#else
-class DataBufferImpl;
-#endif
+//#if defined( __OBJC__ )
+//@class DataBufferImpl;
+//#else
+//class DataBufferImpl;
+//#endif
 
 namespace cinder { namespace mtl {
     
@@ -29,16 +29,16 @@ namespace cinder { namespace mtl {
         
         // Data stored at pointer will be copied into the buffer
         // static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label );
-        static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Vert Buffer" ){
+        static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Default Vert Buffer" ){
             return DataBufferRef( new DataBuffer(length, pointer, label) );
         }
         
         template <typename T>
-        static DataBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Vert Buffer" ){
+        static DataBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Default Vert Buffer" ){
             return DataBufferRef( new DataBuffer(dataVector, label) );
         }
         
-        virtual ~DataBuffer(){};
+        virtual ~DataBuffer();
         
         void * contents();
         
@@ -62,16 +62,16 @@ namespace cinder { namespace mtl {
             memcpy(bufferPointer, data, sizeof(BufferType));
         }
                 
-        void * getNative(); // <MTLBuffer>
+        void * getNative(){ return mImpl; }
 
     protected:
         
         DataBuffer( unsigned long length, const void * pointer, const std::string & label );
-        
+        void init( unsigned long length, const void * pointer, const std::string & label );
         template <typename T>
         DataBuffer( const std::vector<T> & dataVector, const std::string & label );
 
-        DataBufferImpl *mImpl;
+        void * mImpl; // <MTLBuffer>
         
     };
     

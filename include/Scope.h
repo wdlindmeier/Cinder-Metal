@@ -30,7 +30,7 @@ namespace cinder { namespace mtl {
 
     struct ScopedRenderEncoder : public ScopedT< RenderEncoderRef > {
         ScopedRenderEncoder( CommandBufferRef commandBuffer,
-                             const RenderFormatRef format = RenderFormatRef(),
+                             const RenderPassDescriptorRef descriptor,
                              const std::string & encoderName = "Scoped Render Encoder" );
         ~ScopedRenderEncoder();
     };

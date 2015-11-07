@@ -100,7 +100,7 @@ class MetalCubeApp : public App {
     float _rotation;
     CameraPersp mCamera;
     
-    RenderFormatRef mRenderFormat;
+    RenderPassDescriptorRef mRenderDescriptor;
     
     vector<vec3> mPositions;
     
@@ -124,7 +124,7 @@ void MetalCubeApp::setup()
     ;==\''''
     */
     
-    mRenderFormat = RenderFormat::create( RenderFormat::Format().clearColor( ColorAf(1.f,0.f,0.f,1.f) ) );
+    mRenderDescriptor = RenderPassDescriptor::create( RenderPassDescriptor::Format().clearColor( ColorAf(1.f,0.f,0.f,1.f) ) );
 
     // Load texture from ImageSource
     mTexture = TextureBuffer::create( // loadImage( getAssetPath("texture_trans.png") ),
@@ -254,7 +254,7 @@ void MetalCubeApp::draw()
 
         
         {
-            ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderFormat);
+            ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderDescriptor);
             
             uint constantsOffset = (sizeof(uniforms_t) * _constantDataBufferIndex);
             
@@ -277,7 +277,7 @@ void MetalCubeApp::draw()
             renderEncoder()->pushDebugGroup("Draw Geom Cube");
             
             // Set the program
-            renderEncoder()->setPipeline( mPipelineGeomLighting );
+            renderEncoder()->setPipelineState( mPipelineGeomLighting );
             
             // Set render state & resources
             renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_GEOM_UNIFORMS, constantsOffset);
@@ -296,7 +296,7 @@ void MetalCubeApp::draw()
 //            encoder->pushDebugGroup("Draw Attrib Cube");
 //            
 //            // Set the program
-//            encoder->setPipeline( mPipelineAttribLighting );
+//            encoder->setPipelineState( mPipelineAttribLighting );
 //            
 //            // Set render state & resources
 //            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_ATTRIB_UNIFORMS, constantsOffset);

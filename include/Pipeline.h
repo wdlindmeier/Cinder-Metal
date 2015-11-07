@@ -11,20 +11,12 @@
 #include "cinder/Cinder.h"
 #include "MetalHelpers.hpp"
 
-#if defined( __OBJC__ )
-@class PipelineImpl;
-#else
-class PipelineImpl;
-#endif
-
 namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class Pipeline> PipelineRef;
     
     class Pipeline
     {
-        
-//        friend class RenderEncoder;
         
     public:
         
@@ -40,8 +32,9 @@ namespace cinder { namespace mtl {
             ,mSrcAlphaBlendFactor(4) // MTLBlendFactorSourceAlpha
             ,mDstColorBlendFactor(5) // MTLBlendFactorOneMinusSourceAlpha
             ,mDstAlphaBlendFactor(5) // MTLBlendFactorOneMinusSourceAlpha
+            ,mLabel("Default Pipeline")
+            ,mPixelFormat(80) //MTLPixelFormatBGRA8Unorm
             {}
-            ~Format(){}
 
             FORMAT_OPTION(sampleCount, SampleCount, int)
             FORMAT_OPTION(depthEnabled, DepthEnabled, bool)
@@ -52,24 +45,22 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(srcAlphaBlendFactor, SrcAlphaBlendFactor, int)
             FORMAT_OPTION(dstColorBlendFactor, DstColorBlendFactor, int)
             FORMAT_OPTION(dstAlphaBlendFactor, DstAlphaBlendFactor, int)
+            FORMAT_OPTION(label, Label, std::string)
+            FORMAT_OPTION(pixelFormat, PixelFormat, int) // MTLPixelFormat
         };
         
-        static PipelineRef create(  const std::string & vertShaderName, const std::string & fragShaderName, Format format );
-        virtual ~Pipeline(){}
+        static PipelineRef create( const std::string & vertShaderName,
+                                   const std::string & fragShaderName,
+                                   Format format );
+        virtual ~Pipeline();
         
-        void * getNative(); // <MTLRenderPipelineState>
-        
-        
-        // TODO: Refactor
-        // TODO: Remove these
-        void * getPipelineState(); // <MTLRenderPipelineState>
-        void * getDepthState(); // <MTLRenderDepthStencilState>
+        void * getNative(){ return mImpl; }
 
     protected:
         
         Pipeline( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
-        
-        PipelineImpl *mImpl;
+
+        void * mImpl;  // <MTLRenderPipelineState>
         Format mFormat;
         
     };
