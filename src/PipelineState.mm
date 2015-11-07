@@ -68,5 +68,8 @@ mFormat(format)
 
 PipelineState::~PipelineState()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }

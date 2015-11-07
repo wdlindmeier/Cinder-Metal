@@ -33,7 +33,7 @@ namespace cinder { namespace mtl {
         
         BlitEncoder( void * mtlBlitCommandEncoder );
         
-        void * mImpl; // <MTLBlitCommandEncoder>
+        void * mImpl = NULL; // <MTLBlitCommandEncoder>
         
     };
     

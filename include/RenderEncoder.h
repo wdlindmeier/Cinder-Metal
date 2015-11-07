@@ -52,7 +52,7 @@ namespace cinder { namespace mtl {
         
         RenderEncoder( void * mtlRenderCommandEncoder );
         
-        void * mImpl; // <MTLRenderCommandEncoder>
+        void * mImpl = NULL; // <MTLRenderCommandEncoder>
     };
     
 } }

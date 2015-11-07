@@ -60,7 +60,7 @@ namespace cinder { namespace mtl {
         
         PipelineState( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
 
-        void * mImpl;  // <MTLRenderPipelineState>
+        void * mImpl = NULL;  // <MTLRenderPipelineState>
         Format mFormat;
         
     };

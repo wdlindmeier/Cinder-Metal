@@ -50,7 +50,7 @@ namespace cinder { namespace mtl {
         
         DepthState( Format format );
         
-        void * mImpl; // <MTLDepthStencilState>
+        void * mImpl = NULL; // <MTLDepthStencilState>
         Format mFormat;
         
     };

@@ -94,6 +94,9 @@ class MetalCubeApp : public App {
     PipelineStateRef mPipelineInterleavedLighting;
     PipelineStateRef mPipelineGeomLighting;
     PipelineStateRef mPipelineAttribLighting;
+    
+    DepthStateRef mDepthStateDisabled;
+    DepthStateRef mDepthStateEnabled;
 
     // uniforms
     uniforms_t _uniform_buffer;
@@ -123,6 +126,11 @@ void MetalCubeApp::setup()
     '/
     ;==\''''
     */
+    
+    
+    // TEST
+    mDepthStateDisabled = DepthState::create(DepthState::Format().depthWriteEnabled(false));
+    mDepthStateEnabled = DepthState::create();
     
     mRenderDescriptor = RenderPassDescriptor::create( RenderPassDescriptor::Format().clearColor( ColorAf(1.f,0.f,0.f,1.f) ) );
 
@@ -160,7 +168,6 @@ void MetalCubeApp::loadAssets()
                                                          "lighting_fragment",              // The name of the fragment shader function
                                                          PipelineState::Format().depthEnabled(true).blendingEnabled(true) ); // Format
     
-    
     // EXAMPLE 2
     // Use a geom source
     mGeomBufferCube = VertexBuffer::create( ci::geom::Cube(),     // The source
@@ -171,8 +178,8 @@ void MetalCubeApp::loadAssets()
                                             {ci::geom::NORMAL, BUFFER_INDEX_GEOM_NORMALS },
                                             {ci::geom::TEX_COORD_0, BUFFER_INDEX_GEOM_TEX_COORDS }});
     mPipelineGeomLighting = PipelineState::create("lighting_vertex_geom",
-                                              "lighting_fragment",
-                                              PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
+                                                  "lighting_texture_fragment",
+                                                  PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
     
     // Load verts and normals into vectors
     vector<vec3> positions;
@@ -223,16 +230,20 @@ void MetalCubeApp::update()
 
     _uniform_buffer.normal_matrix = normalMatrix;
     _uniform_buffer.modelview_projection_matrix = modelViewProjectionMatrix;
-
+    
     mDynamicConstantBuffer->setData( &_uniform_buffer, _constantDataBufferIndex );
-
+    
     _rotation += 0.01f;
 
     // Update the verts
     vector<vec3> newPositions;
     for ( vec3 & v : mPositions )
     {
-        newPositions.push_back( v * (1.f + (float(1.0f + sin(getElapsedSeconds())) * 0.5f ) ) );
+        // TMP
+        // newPositions.push_back( v * (1.f + (float(1.0f + sin(getElapsedSeconds())) * 0.5f ) ) );
+        
+        newPositions.push_back( (v + vec3(0,1,0)) // offset along Y
+                                * (1.f + (float(1.0f + sin(getElapsedSeconds())) * 0.5f ) ) );
     }
     mAttribBufferCube->update(ci::geom::POSITION, newPositions);
 }
@@ -258,18 +269,23 @@ void MetalCubeApp::draw()
             
             uint constantsOffset = (sizeof(uniforms_t) * _constantDataBufferIndex);
             
-//            encoder->pushDebugGroup("Draw Interleaved Cube");
+//            renderEncoder()->pushDebugGroup("Draw Interleaved Cube");
 //            
 //            // Set the program
-//            encoder->setPipelineState( mPipelineInterleavedLighting );
+//            renderEncoder()->setPipelineState( mPipelineInterleavedLighting );
 //            
 //            // Set render state & resources
-//            encoder->setBufferAtIndex(mVertexBuffer, BUFFER_INDEX_VERTS);
-//            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_UNIFORMS, constantsOffset);
+//            renderEncoder()->setBufferAtIndex(mVertexBuffer, BUFFER_INDEX_VERTS);
+//            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_UNIFORMS, constantsOffset);
 //
 //            // Draw
-//            encoder->draw(mtl::geom::TRIANGLE, 0, 36, 1);
-//            encoder->popDebugGroup();            
+//            renderEncoder()->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+//            renderEncoder()->popDebugGroup();
+            
+
+            // TEST: Disable depth testing, mid-encoder.
+            // renderEncoder()->setDepthStencilState(mDepthStateDisabled);
+
             
             // Using Cinder geom to draw the cube                    
             
@@ -278,6 +294,7 @@ void MetalCubeApp::draw()
             
             // Set the program
             renderEncoder()->setPipelineState( mPipelineGeomLighting );
+            
             
             // Set render state & resources
             renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_GEOM_UNIFORMS, constantsOffset);
@@ -289,24 +306,30 @@ void MetalCubeApp::draw()
 
             // Draw
             renderEncoder()->popDebugGroup();
-                        
-//            // Using attrib buffers to draw the cube
-//            
-//            // Geom Target
-//            encoder->pushDebugGroup("Draw Attrib Cube");
-//            
-//            // Set the program
-//            encoder->setPipelineState( mPipelineAttribLighting );
-//            
-//            // Set render state & resources
-//            encoder->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_ATTRIB_UNIFORMS, constantsOffset);
-//
-//            mAttribBufferCube->render( encoder, 36 );
-//            
-//            // Draw
-//            encoder->popDebugGroup();
+            
 
-        } // scoped render encoder    
+            
+            // TEST: Re-enable depth testing.
+            // renderEncoder()->setDepthStencilState(mDepthStateEnabled);
+            
+            
+            // Using attrib buffers to draw the cube
+            
+            // Geom Target
+            renderEncoder()->pushDebugGroup("Draw Attrib Cube");
+            
+            // Set the program
+            renderEncoder()->setPipelineState( mPipelineAttribLighting );
+            
+            // Set render state & resources
+            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, BUFFER_INDEX_ATTRIB_UNIFORMS, constantsOffset);
+            
+            mAttribBufferCube->render( renderEncoder(), 36 );
+            
+            // Draw
+            renderEncoder()->popDebugGroup();
+
+        } // scoped render encoder
         
     } // scoped command buffer
     

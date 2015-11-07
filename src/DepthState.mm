@@ -32,5 +32,8 @@ DepthState::DepthState( Format format )
 
 DepthState::~DepthState()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }

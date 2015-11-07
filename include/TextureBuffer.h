@@ -21,7 +21,6 @@ namespace cinder { namespace mtl {
     class TextureBuffer
     {
         
-//        friend class RenderEncoder;
         friend class ImageSourceMTLTexture;
         
     public:
@@ -77,7 +76,7 @@ namespace cinder { namespace mtl {
         void updateWidthCGImage( void * );
         void generateMipmap();
         
-        void *mImpl; // <MTLTexture>
+        void *mImpl = NULL; // <MTLTexture>
         long mBytesPerRow;
         Format mFormat;
         

@@ -35,5 +35,8 @@ SamplerState::SamplerState( Format format )
 
 SamplerState::~SamplerState()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }

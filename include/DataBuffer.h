@@ -71,7 +71,7 @@ namespace cinder { namespace mtl {
         template <typename T>
         DataBuffer( const std::vector<T> & dataVector, const std::string & label );
 
-        void * mImpl; // <MTLBuffer>
+        void * mImpl = NULL; // <MTLBuffer>
         
     };
     

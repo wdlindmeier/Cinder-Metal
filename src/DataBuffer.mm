@@ -59,7 +59,10 @@ void DataBuffer::init( unsigned long length, const void * pointer, const std::st
 
 DataBuffer::~DataBuffer()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }
 
 void * DataBuffer::contents()

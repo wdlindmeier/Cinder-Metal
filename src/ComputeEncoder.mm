@@ -30,7 +30,10 @@ mImpl(mtlComputeCommandEncoder)
 
 ComputeEncoder::~ComputeEncoder()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }
 
 void ComputeEncoder::endEncoding()

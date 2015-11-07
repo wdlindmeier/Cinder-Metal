@@ -34,7 +34,7 @@ namespace cinder { namespace mtl {
         
         ComputeEncoder( void * mtlComputeCommandEncoder );
         
-        void * mImpl; // <MTLComputeCommandEncoder>
+        void * mImpl = NULL; // <MTLComputeCommandEncoder>
         
     };
     

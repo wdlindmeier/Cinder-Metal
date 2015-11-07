@@ -33,7 +33,7 @@ typedef struct {
     float4 position [[position]];
     float4 color;
     float2 texCoords;
-    bool sampleTexture;
+//    bool sampleTexture;
 } ColorInOut;
 
 // Vertex shader function
@@ -53,7 +53,7 @@ vertex ColorInOut lighting_vertex_interleaved(device vertex_t* vertex_array [[ b
     
     //out.color = half4(ambient_color + diffuse_color * n_dot_l);
     out.color = ambient_color + diffuse_color * n_dot_l;
-    out.sampleTexture = false;
+//    out.sampleTexture = false;
     
     return out;
 }
@@ -80,7 +80,7 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(BU
     
     out.color = float4(float4(1.0) * n_dot_l);
     out.texCoords = texCoords[vertIndex];
-    out.sampleTexture = true;
+//    out.sampleTexture = true;
     
     return out;
 }
@@ -102,7 +102,7 @@ vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions
     n_dot_l = fmax(0.0, n_dot_l);
     
     out.color = ambient_color + diffuse_color * n_dot_l;
-    out.sampleTexture = false;
+//    out.sampleTexture = false;
     
     return out;
 }
@@ -114,15 +114,18 @@ constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord:
                                 mip_filter::linear ); // nearest or linear or none
 
 // Fragment shader function
-fragment float4 lighting_fragment( ColorInOut in [[stage_in]],
-                                   texture2d<float> textureCube [[ texture(TEXTURE_INDEX_CUBE) ]],// )
-                                   sampler objcSampler [[sampler(0)]] )
+fragment float4 lighting_texture_fragment( ColorInOut in [[stage_in]],
+                                          texture2d<float> textureCube [[ texture(TEXTURE_INDEX_CUBE) ]],// )
+                                          sampler objcSampler [[sampler(0)]] )
 {
-    if ( in.sampleTexture )
-    {
-        float4 texColor = textureCube.sample(objcSampler, in.texCoords);
-        //float4 texColor = textureCube.sample(shaderSampler, in.texCoords);
-        return float4(texColor.rgb * in.color.rgb, texColor.a);
-    }
+    float4 texColor = textureCube.sample(objcSampler, in.texCoords);
+    //float4 texColor = textureCube.sample(shaderSampler, in.texCoords);
+    return float4(texColor.rgb * in.color.rgb, texColor.a);
+}
+
+fragment float4 lighting_fragment( ColorInOut in [[stage_in]] )
+{
     return in.color;
 }
+
+

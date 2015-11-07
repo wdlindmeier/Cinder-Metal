@@ -65,7 +65,7 @@ namespace cinder { namespace mtl {
         
         SamplerState( Format format );
         
-        void * mImpl; // <MTLSamplerState>
+        void * mImpl = NULL; // <MTLSamplerState>
         Format mFormat;
         
     };

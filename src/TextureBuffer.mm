@@ -245,7 +245,10 @@ mFormat(format)
 
 TextureBuffer::~TextureBuffer()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }
 
 #pragma mark - Getting data

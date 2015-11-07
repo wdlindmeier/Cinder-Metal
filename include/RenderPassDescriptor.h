@@ -59,8 +59,8 @@ namespace cinder { namespace mtl {
         void setClearDepth( float clearDepth );
         void setDepthStoreAction( int storeAction ); // MTLStoreAction
 
-        void * mImpl; // MTLRenderPassDescriptor *
-        void * mDepthTexture; // <MTLTexture>
+        void * mImpl = NULL; // MTLRenderPassDescriptor *
+        void * mDepthTexture = NULL; // <MTLTexture>
         
     };
     

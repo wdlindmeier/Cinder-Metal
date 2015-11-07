@@ -31,7 +31,10 @@ mImpl(mtlBlitCommandEncoder)
 
 BlitEncoder::~BlitEncoder()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }
 
 void BlitEncoder::endEncoding()

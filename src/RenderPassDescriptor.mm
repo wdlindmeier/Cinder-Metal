@@ -38,8 +38,11 @@ mDepthTexture(nullptr)
 
 RenderPassDescriptor::~RenderPassDescriptor()
 {
-    CFRelease(mImpl);    
-    if ( mDepthTexture != nullptr )
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
+    if ( mDepthTexture )
     {
         CFRelease(mDepthTexture);
     }

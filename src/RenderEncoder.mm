@@ -39,7 +39,10 @@ mImpl(encoderImpl)
 
 RenderEncoder::~RenderEncoder()
 {
-    CFRelease(mImpl);
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+    }
 }
 
 void RenderEncoder::setDepthStencilState( DepthStateRef depthState )
