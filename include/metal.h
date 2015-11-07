@@ -10,7 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "RendererMetal.h"
-#include "Pipeline.h"
+#include "PipelineState.h"
 #include "CommandBuffer.h"
 #include "DataBuffer.h"
 #include "RenderPassDescriptor.h"

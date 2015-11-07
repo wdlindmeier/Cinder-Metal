@@ -91,9 +91,9 @@ class MetalCubeApp : public App {
     DataBufferRef mDynamicConstantBuffer;
     uint8_t _constantDataBufferIndex;
 
-    PipelineRef mPipelineInterleavedLighting;
-    PipelineRef mPipelineGeomLighting;
-    PipelineRef mPipelineAttribLighting;
+    PipelineStateRef mPipelineInterleavedLighting;
+    PipelineStateRef mPipelineGeomLighting;
+    PipelineStateRef mPipelineAttribLighting;
 
     // uniforms
     uniforms_t _uniform_buffer;
@@ -156,9 +156,9 @@ void MetalCubeApp::loadAssets()
                                         "Interleaved Vertices"); // the name of the buffer
     // Create a reusable pipeline state
     // This is similar to a GlslProg
-    mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",    // The name of the vertex shader function
-                                                    "lighting_fragment",              // The name of the fragment shader function
-                                                    Pipeline::Format().depthEnabled(true).blendingEnabled(true) ); // Format
+    mPipelineInterleavedLighting = PipelineState::create("lighting_vertex_interleaved",    // The name of the vertex shader function
+                                                         "lighting_fragment",              // The name of the fragment shader function
+                                                         PipelineState::Format().depthEnabled(true).blendingEnabled(true) ); // Format
     
     
     // EXAMPLE 2
@@ -170,9 +170,9 @@ void MetalCubeApp::loadAssets()
                                             {ci::geom::POSITION, BUFFER_INDEX_GEOM_VERTS },
                                             {ci::geom::NORMAL, BUFFER_INDEX_GEOM_NORMALS },
                                             {ci::geom::TEX_COORD_0, BUFFER_INDEX_GEOM_TEX_COORDS }});
-    mPipelineGeomLighting = Pipeline::create("lighting_vertex_geom",
+    mPipelineGeomLighting = PipelineState::create("lighting_vertex_geom",
                                               "lighting_fragment",
-                                              Pipeline::Format().depthEnabled(true).blendingEnabled(true) );
+                                              PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
     
     // Load verts and normals into vectors
     vector<vec3> positions;
@@ -198,9 +198,9 @@ void MetalCubeApp::loadAssets()
     DataBufferRef normalBuffer = DataBuffer::create(normals, "normals");
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL, BUFFER_INDEX_ATTRIB_NORMALS);
     
-    mPipelineAttribLighting = Pipeline::create("lighting_vertex_attrib_buffers",
-                                               "lighting_fragment",
-                                               Pipeline::Format().depthEnabled(true).blendingEnabled(true) );
+    mPipelineAttribLighting = PipelineState::create("lighting_vertex_attrib_buffers",
+                                                    "lighting_fragment",
+                                                    PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
     
     // EXAMPLE 4
     // Create an interleaved buffer with from a vector
@@ -209,9 +209,9 @@ void MetalCubeApp::loadAssets()
                                         positionsAndNormals.data(),
                                         "Positions and Normals");
 
-    mPipelineInterleavedLighting = Pipeline::create("lighting_vertex_interleaved",
-                                                    "lighting_fragment",
-                                                    Pipeline::Format().depthEnabled(true).blendingEnabled(true) );
+    mPipelineInterleavedLighting = PipelineState::create("lighting_vertex_interleaved",
+                                                         "lighting_fragment",
+                                                         PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
 }
 
 void MetalCubeApp::update()
@@ -261,7 +261,7 @@ void MetalCubeApp::draw()
 //            encoder->pushDebugGroup("Draw Interleaved Cube");
 //            
 //            // Set the program
-//            encoder->setPipeline( mPipelineInterleavedLighting );
+//            encoder->setPipelineState( mPipelineInterleavedLighting );
 //            
 //            // Set render state & resources
 //            encoder->setBufferAtIndex(mVertexBuffer, BUFFER_INDEX_VERTS);

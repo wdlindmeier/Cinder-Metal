@@ -31,8 +31,8 @@ mImpl(encoderImpl)
     assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
 
     // Set some defaults so the user doesnt have to call these
-    setFragSamplerState( SamplerState() );
-    setDepthStencilState( DepthState() );
+    setFragSamplerState( SamplerState::create() );
+    setDepthStencilState( DepthState::create() );
 
     CFRetain(mImpl);
 }
@@ -42,46 +42,18 @@ RenderEncoder::~RenderEncoder()
     CFRelease(mImpl);
 }
 
-void RenderEncoder::setDepthStencilState( const DepthState & depthState )
+void RenderEncoder::setDepthStencilState( DepthStateRef depthState )
 {
-    MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
-    depthStateDesc.depthCompareFunction = (MTLCompareFunction)depthState.depthCompareFunction;
-    depthStateDesc.depthWriteEnabled = depthState.depthWriteEnabled;
-    if ( depthState.frontFaceStencil != nullptr )
-    {
-        depthStateDesc.frontFaceStencil = (__bridge MTLStencilDescriptor *)depthState.frontFaceStencil;
-    }
-    if ( depthState.backFaceStencil != nullptr )
-    {
-        depthStateDesc.backFaceStencil = (__bridge MTLStencilDescriptor *)depthState.backFaceStencil;
-    }
-    id<MTLDepthStencilState> mtlDepthState = [[RendererMetalImpl sharedRenderer].device
-                                            newDepthStencilStateWithDescriptor:depthStateDesc];
-    [IMPL setDepthStencilState:mtlDepthState];
+    [IMPL setDepthStencilState:(__bridge id<MTLDepthStencilState>)depthState->getNative()];
 }
 
-void RenderEncoder::setFragSamplerState( const SamplerState & samplerState, int samplerIndex )
+void RenderEncoder::setFragSamplerState( SamplerStateRef samplerState, int samplerIndex )
 {
-    MTLSamplerDescriptor *samplerDescriptor = [MTLSamplerDescriptor new];
-    samplerDescriptor.mipFilter = (MTLSamplerMipFilter)samplerState.mipFilter;
-    samplerDescriptor.maxAnisotropy = samplerState.maxAnisotropy;// 3;
-    samplerDescriptor.minFilter = (MTLSamplerMinMagFilter)samplerState.minFilter;
-    samplerDescriptor.magFilter = (MTLSamplerMinMagFilter)samplerState.magFilter;
-    samplerDescriptor.sAddressMode = (MTLSamplerAddressMode)samplerState.sAddressMode;
-    samplerDescriptor.tAddressMode = (MTLSamplerAddressMode)samplerState.tAddressMode;
-    samplerDescriptor.rAddressMode = (MTLSamplerAddressMode)samplerState.rAddressMode;
-    samplerDescriptor.normalizedCoordinates = samplerState.normalizedCoordinates;
-    samplerDescriptor.lodMinClamp = samplerState.lodMinClamp;
-    samplerDescriptor.lodMaxClamp = samplerState.lodMaxClamp;
-    samplerDescriptor.lodAverage = samplerState.lodAverage;
-    samplerDescriptor.compareFunction = (MTLCompareFunction)samplerState.compareFunction;
-
-    id <MTLSamplerState> linearMipSamplerState = [[RendererMetalImpl sharedRenderer].device
-                                                  newSamplerStateWithDescriptor:samplerDescriptor];
-    [IMPL setFragmentSamplerState:linearMipSamplerState atIndex:samplerIndex];
+    [IMPL setFragmentSamplerState:(__bridge id<MTLSamplerState>)samplerState->getNative()
+                          atIndex:samplerIndex];
 }
 
-void RenderEncoder::setPipelineState( PipelineRef pipeline )
+void RenderEncoder::setPipelineState( PipelineStateRef pipeline )
 {
     [IMPL setRenderPipelineState:(__bridge id <MTLRenderPipelineState>)pipeline->getNative()];
 }
