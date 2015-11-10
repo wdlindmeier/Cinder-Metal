@@ -8,11 +8,9 @@
 
 #include <metal_stdlib>
 #include <simd/simd.h>
-//#include "BufferConstants.h"
 #include "MetalConstants.h"
 
 using namespace metal;
-//using namespace cinder::mtl;
 
 // Variables in constant address space
 constant float3 light_position = float3(0.0, 1.0, -1.0);
@@ -23,12 +21,6 @@ constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord:
                                 address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
                                 filter::linear, // nearest or linear
                                 mip_filter::linear ); // nearest or linear or none
-
-typedef struct
-{
-    matrix_float4x4 modelview_projection_matrix;
-    matrix_float4x4 normal_matrix;
-} uniforms_t;
 
 typedef struct
 {
@@ -44,16 +36,16 @@ typedef struct {
 
 // Vertex shader function
 vertex ColorInOut lighting_vertex_interleaved(device vertex_t* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                              constant uniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                              constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                               unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
     
     float4 in_position = float4(float3(vertex_array[vid].position), 1.0);
-    out.position = uniforms.modelview_projection_matrix * in_position;
+    out.position = uniforms.modelViewProjectionMatrix * in_position;
     
     float3 normal = vertex_array[vid].normal;
-    float4 eye_normal = normalize(uniforms.normal_matrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.normalMatrix * float4(normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -67,7 +59,7 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(ci
                                        device packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
                                        device packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
                                        device packed_float2* texCoords [[ buffer(ciBufferIndexTexCoords0) ]],
-                                       constant uniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                       constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                        unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
@@ -75,10 +67,10 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(ci
     unsigned int vertIndex = indices[vid];
     
     float4 in_position = float4(positions[vertIndex], 1.0);
-    out.position = uniforms.modelview_projection_matrix * in_position;
+    out.position = uniforms.modelViewProjectionMatrix * in_position;
     
     float3 normal = normals[vertIndex];
-    float4 eye_normal = normalize(uniforms.normal_matrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.normalMatrix * float4(normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -91,16 +83,16 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(ci
 // Vertex shader function using attrib buffers
 vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
                                                  device packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
-                                                 constant uniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                 constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                  unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
     
     float4 in_position = float4(positions[vid], 1.0);
-    out.position = uniforms.modelview_projection_matrix * in_position;
+    out.position = uniforms.modelViewProjectionMatrix * in_position;
     
     float3 normal = normals[vid];
-    float4 eye_normal = normalize(uniforms.normal_matrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.normalMatrix * float4(normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     

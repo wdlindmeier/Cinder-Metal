@@ -15,6 +15,7 @@
 #include "TextureBuffer.h"
 #include "DepthState.h"
 #include "SamplerState.h"
+#include "MetalConstants.h"
 
 namespace cinder { namespace mtl {
     
@@ -39,8 +40,9 @@ namespace cinder { namespace mtl {
         void setFragSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
         void setDepthStencilState( DepthStateRef depthState );
 
-        void setTextureAtIndex( TextureBufferRef texture, size_t index = 0 );
+        void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 );
         void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
 
         void draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount,
                    size_t instanceCount );

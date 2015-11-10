@@ -66,10 +66,15 @@ void RenderEncoder::pushDebugGroup( const std::string & groupName )
     [IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
 }
 
-void RenderEncoder::setTextureAtIndex( TextureBufferRef texture, size_t index )
+void RenderEncoder::setTexture( TextureBufferRef texture, size_t index )
 {
     [IMPL setFragmentTexture:(__bridge id <MTLTexture>)texture->getNative()
                      atIndex:index];
+}
+
+void RenderEncoder::setUniforms( DataBufferRef buffer, size_t bytesOffset, size_t bufferIndex )
+{
+    setBufferAtIndex(buffer, bufferIndex, bytesOffset);
 }
 
 void RenderEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )

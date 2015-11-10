@@ -7,6 +7,7 @@
 //
 
 #pragma once
+//#include "MetalHelpers.hpp"
 
 // Default Metal shader indices
 
@@ -42,3 +43,15 @@
 #define ciTextureIndex0                 0
 #define ciTextureIndex1                 1
 #define ciTextureIndex2                 2
+
+#include <simd/simd.h>
+typedef struct
+{
+    float elapsedSeconds;
+    matrix_float4x4 projectionMatrix;
+    matrix_float4x4 viewMatrix;
+    matrix_float4x4 modelViewMatrix;
+    matrix_float4x4 modelViewProjectionMatrix;
+    matrix_float4x4 normalMatrix;
+    matrix_float4x4 inverseViewMatrix;
+} ciUniforms_t;

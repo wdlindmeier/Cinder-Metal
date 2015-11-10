@@ -20,6 +20,7 @@
 #include "BlitEncoder.h"
 #include "MetalGeom.h"
 #include "TextureBuffer.h"
+#include "MetalHelpers.hpp"
 
 #if defined( __OBJC__ )
 #if !__has_feature(objc_arc)

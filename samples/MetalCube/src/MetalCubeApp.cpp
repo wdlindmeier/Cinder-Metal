@@ -23,11 +23,15 @@ float cubeVertexData[216] =
     0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, 0.5, 0.0, -1.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, 0.5, 1.0,  0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 0.5, 0.5, -0.5, 1.0, 0.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, 0.5, -1.0, 0.0,  0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, -0.5, -0.5, -0.5,  -1.0,  0.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, 0.5, -0.5, 0.5, 0.0,  0.0,  1.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, -0.5, -0.5, 0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0
 };
 
-typedef struct
-{
-    mat4 modelviewProjectionMatrix;
-    mat4 normalMatrix;
-} uniforms_t;
+//typedef struct
+//{
+//    mat4 modelviewProjectionMatrix;
+//    mat4 normalMatrix;
+//} uniforms_t;
+//
+// typedef mat4 matrix_float4x4;
+
+
 
 const static int kNumInflightBuffers = 3;
 
@@ -56,7 +60,7 @@ class MetalCubeApp : public App {
     SamplerStateRef mSamplerMipMapped;
     DepthStateRef mDepthEnabled;
     
-    uniforms_t mUniforms;
+    ciUniforms_t mUniforms;
     DataBufferRef mDynamicConstantBuffer;
     uint8_t mConstantDataBufferIndex;
     
@@ -148,9 +152,10 @@ void MetalCubeApp::update()
     mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
     mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
 
-    mUniforms.normalMatrix = normalMatrix;
-    mUniforms.modelviewProjectionMatrix = modelViewProjectionMatrix;
-    
+    // Is there a clean way to automatically wrap these up?
+    mUniforms.normalMatrix = toMtl(normalMatrix);
+    mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+    mUniforms.elapsedSeconds = getElapsedSeconds();
     mDynamicConstantBuffer->setData( &mUniforms, mConstantDataBufferIndex );
     
     mRotation += 0.01f;
@@ -190,8 +195,8 @@ void MetalCubeApp::draw()
             // Enable mip-mapping
             renderEncoder()->setFragSamplerState(mSamplerMipMapped);
             
-            uint constantsOffset = (sizeof(uniforms_t) * mConstantDataBufferIndex);
-
+            uint constantsOffset = (sizeof(ciUniforms_t) * mConstantDataBufferIndex);
+            renderEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
             
             // EXAMPLE 1
             // Using interleaved data
@@ -217,13 +222,9 @@ void MetalCubeApp::draw()
             
             // Set the program
             renderEncoder()->setPipelineState( mPipelineGeomLighting );
-            
-                        
-            // Set render state & resources
-            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
 
             // Set the texture
-            renderEncoder()->setTextureAtIndex( mTexture, ciTextureIndex0 );
+            renderEncoder()->setTexture( mTexture );
 
             // Draw
             mGeomBufferCube->draw( renderEncoder() );
@@ -239,10 +240,7 @@ void MetalCubeApp::draw()
             
             // Set the program
             renderEncoder()->setPipelineState( mPipelineAttribLighting );
-            
-            // Set render state & resources
-            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
-            
+
             mAttribBufferCube->draw( renderEncoder(), 36 );
             
             renderEncoder()->popDebugGroup();
