@@ -12,6 +12,7 @@
 #import <Metal/Metal.h>
 #import <simd/simd.h>
 #import "RendererMetalImpl.h"
+#import "VertexBuffer.h"
 
 using namespace ci;
 using namespace ci::mtl;
@@ -30,9 +31,8 @@ mImpl(encoderImpl)
 {
     assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
 
-    // Set some defaults so the user doesnt have to call these
-    setFragSamplerState( SamplerState::create() );
-    setDepthStencilState( DepthState::create() );
+    // Set some defaults so the user doesnt have to call these.
+    // NOTE: This is probably inefficient since we're creating them for every render encoder.
 
     CFRetain(mImpl);
 }

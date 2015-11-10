@@ -20,6 +20,9 @@ namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class RenderEncoder> RenderEncoderRef;
     
+    class VertexBuffer;
+    typedef std::shared_ptr<VertexBuffer> VertexBufferRef;
+    
     class RenderEncoder
     {
 
@@ -29,7 +32,7 @@ namespace cinder { namespace mtl {
         
         virtual ~RenderEncoder();
         
-        void pushDebugGroup( const std::string & groupName);
+        void pushDebugGroup( const std::string & groupName );
         void popDebugGroup();
 
         void setPipelineState( PipelineStateRef pipeline );
@@ -41,11 +44,11 @@ namespace cinder { namespace mtl {
 
         void draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount,
                    size_t instanceCount );
-        
+
         void endEncoding();
         
         void * getNative(){ return mImpl; }
-        
+
     protected:
 
         static RenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>

@@ -8,36 +8,38 @@
 
 #include "VertexBuffer.h"
 #include "cinder/Log.h"
+#include "MetalGeom.h"
 
 using namespace cinder;
 using namespace cinder::mtl;
 
-VertexBufferRef VertexBuffer::create( const std::map<ci::geom::Attrib, int> & requestedAttribs,
+VertexBufferRef VertexBuffer::create( const ci::geom::AttribSet & requestedAttribs,
                                       ci::mtl::geom::Primitive primitive )
 {
     return VertexBufferRef( new VertexBuffer( requestedAttribs, primitive ) );
 }
 
-VertexBuffer::VertexBuffer( const std::map<ci::geom::Attrib, int> & requestedAttribs,
+VertexBuffer::VertexBuffer( const ci::geom::AttribSet & requestedAttribs,
                             ci::mtl::geom::Primitive primitive ) :
-mRequestedAttribs(requestedAttribs)
-,mPrimitive(primitive)
+mPrimitive(primitive)
 ,mVertexLength(0)
 {
+    setDefaultAttribIndices( requestedAttribs );
 }
 
 VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
-                                      const std::map<ci::geom::Attrib, int> & requestedAttribs )
+                                      const ci::geom::AttribSet & requestedAttribs )
 {
     return VertexBufferRef( new VertexBuffer( source, requestedAttribs ) );
 }
 
 VertexBuffer::VertexBuffer( const ci::geom::Source & source,
-                            const std::map<ci::geom::Attrib, int> & requestedAttribs ) :
+                            const ci::geom::AttribSet & requestedAttribs ) :
 mSource( source.clone() )
-,mRequestedAttribs(requestedAttribs)
 ,mVertexLength(0)
 {
+    setDefaultAttribIndices( requestedAttribs );
+    
     // Is there any reason to keep the source and attribs around?
     mPrimitive = geom::mtlPrimitiveTypeFromGeom( mSource->getPrimitive() );
     mVertexLength = mSource->getNumIndices();
@@ -51,13 +53,15 @@ mSource( source.clone() )
         assert( requestedAttribs.count(ci::geom::INDEX) > 0 );
     }
     
-    ci::geom::AttribSet attribSet;
-    for ( auto kvp : requestedAttribs )
+    mSource->loadInto( this, requestedAttribs );
+}
+
+void VertexBuffer::setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs )
+{
+    for ( ci::geom::Attrib a : requestedAttribs )
     {
-        attribSet.insert( kvp.first );
+        mRequestedAttribs[a] = geom::defaultShaderIndexForAttribute(a);
     }
-    
-    mSource->loadInto( this, attribSet );
 }
 
 DataBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
@@ -71,13 +75,18 @@ void VertexBuffer::setBufferForAttribute( DataBufferRef buffer, const ci::geom::
     
     if ( shaderBufferIndex != -1 )
     {
-        mRequestedAttribs[attr] = shaderBufferIndex;
+        setAttributeShaderIndex(attr, shaderBufferIndex);
     }
-    else
+    else if ( mRequestedAttribs.count(attr) == 0 )
     {
-        // Make sure we've got an index for this attribute
-        assert( mRequestedAttribs.count(attr) > 0 );
+        // If we don't have an index, use the default
+        setAttributeShaderIndex(attr, geom::defaultShaderIndexForAttribute(attr));
     }
+}
+
+void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, int shaderBufferIndex )
+{
+    mRequestedAttribs[attr] = shaderBufferIndex;
 }
 
 void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 etc
@@ -148,20 +157,20 @@ uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
     return 0;
 }
 
-void VertexBuffer::render( RenderEncoderRef renderEncoder )
+void VertexBuffer::draw( RenderEncoderRef renderEncoder )
 {
     if ( mVertexLength == 0 )
     {
         CI_LOG_E("Vertex length must be > 0");
     }
     assert( mVertexLength > 0 );
-    render( renderEncoder, mVertexLength );
+    draw( renderEncoder, mVertexLength );
 }
 
-void VertexBuffer::render( RenderEncoderRef renderEncoder,
-                           size_t vertexLength,
-                           size_t vertexStart,
-                           size_t instanceCount )
+void VertexBuffer::draw( RenderEncoderRef renderEncoder,
+                         size_t vertexLength,
+                         size_t vertexStart,
+                         size_t instanceCount )
 {
     for ( auto kvp : mRequestedAttribs )
     {

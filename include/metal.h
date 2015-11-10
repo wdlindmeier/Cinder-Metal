@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cinder/Cinder.h"
+#include "MetalConstants.h"
 #include "RendererMetal.h"
 #include "PipelineState.h"
 #include "CommandBuffer.h"

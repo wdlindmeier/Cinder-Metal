@@ -12,6 +12,11 @@
 
 namespace cinder {
     
+    namespace geom {
+        // Append "INDEX" onto the attrib list so we can assign a buffer and shader index to it like an Attrib
+        const static Attrib INDEX = USER_DEFINED;
+    }
+    
     namespace mtl {
         
         namespace geom {
@@ -21,14 +26,17 @@ namespace cinder {
             
             // Converts ci::geom::Primitive into (ObjC) MTLPrimitiveType
             // Returns MTLPrimitiveType (must be cast)
-            int nativeMTLPrimativeTypeFromGeom( ci::geom::Primitive geomPrimitive );
+            int nativeMTLPrimativeTypeFromGeom( const ci::geom::Primitive geomPrimitive );
 
             // Converts ci::mtl::geom::Primitive into (ObjC) MTLPrimitiveType
             // Returns MTLPrimitiveType (must be cast)
-            int nativeMTLPrimitiveType( ci::mtl::geom::Primitive primitive );
+            int nativeMTLPrimitiveType( const ci::mtl::geom::Primitive primitive );
             
             // Converts ci::geom::Primitive into a mtl::geom::Primitive
-            Primitive mtlPrimitiveTypeFromGeom( ci::geom::Primitive primitive );
+            Primitive mtlPrimitiveTypeFromGeom( const ci::geom::Primitive primitive );
+            
+            // Returns the shader index associated with a given attribute
+            int defaultShaderIndexForAttribute( const ci::geom::Attrib attr );
         }
     }
 }
