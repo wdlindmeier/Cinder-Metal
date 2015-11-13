@@ -13,9 +13,9 @@
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class PipelineState> PipelineStateRef;
+    typedef std::shared_ptr<class RenderPipelineState> RenderPipelineStateRef;
     
-    class PipelineState
+    class RenderPipelineState
     {
         
     public:
@@ -49,16 +49,16 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(pixelFormat, PixelFormat, int) // MTLPixelFormat
         };
         
-        static PipelineStateRef create( const std::string & vertShaderName,
-                                        const std::string & fragShaderName,
-                                        Format format );
-        virtual ~PipelineState();
+        static RenderPipelineStateRef create( const std::string & vertShaderName,
+                                             const std::string & fragShaderName,
+                                             Format format = Format() );
+        virtual ~RenderPipelineState();
         
         void * getNative(){ return mImpl; }
 
     protected:
         
-        PipelineState( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
+        RenderPipelineState( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
 
         void * mImpl = NULL;  // <MTLRenderPipelineState>
         Format mFormat;

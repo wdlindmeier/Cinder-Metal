@@ -18,21 +18,21 @@ using namespace cinder::cocoa;
 
 #define IMPL ((__bridge id <MTLBuffer>)mImpl)
 
-template <typename T>
-DataBuffer::DataBuffer( const std::vector<T> & dataVector, const std::string & label )
-{
-    unsigned long vectorSize = sizeof(dataVector) + (sizeof(T) * dataVector.size());
-    init(vectorSize, dataVector.data(), label);
-}
-
-// Allowed specializations
-template DataBuffer::DataBuffer( const std::vector<vec2> & dataVector, const std::string & label );
-template DataBuffer::DataBuffer( const std::vector<vec3> & dataVector, const std::string & label );
-template DataBuffer::DataBuffer( const std::vector<vec4> & dataVector, const std::string & label );
-template DataBuffer::DataBuffer( const std::vector<unsigned int> & dataVector, const std::string & label );
-template DataBuffer::DataBuffer( const std::vector<float> & dataVector, const std::string & label );
-template DataBuffer::DataBuffer( const std::vector<mat3> & dataVector, const std::string & label );
-template DataBuffer::DataBuffer( const std::vector<mat4> & dataVector, const std::string & label );
+//template <typename T>
+//DataBuffer::DataBuffer( const std::vector<T> & dataVector, const std::string & label )
+//{
+//    unsigned long vectorSize = sizeof(dataVector) + (sizeof(T) * dataVector.size());
+//    init(vectorSize, dataVector.data(), label);
+//}
+//
+//// Allowed specializations
+//template DataBuffer::DataBuffer( const std::vector<vec2> & dataVector, const std::string & label );
+//template DataBuffer::DataBuffer( const std::vector<vec3> & dataVector, const std::string & label );
+//template DataBuffer::DataBuffer( const std::vector<vec4> & dataVector, const std::string & label );
+//template DataBuffer::DataBuffer( const std::vector<unsigned int> & dataVector, const std::string & label );
+//template DataBuffer::DataBuffer( const std::vector<float> & dataVector, const std::string & label );
+//template DataBuffer::DataBuffer( const std::vector<mat3> & dataVector, const std::string & label );
+//template DataBuffer::DataBuffer( const std::vector<mat4> & dataVector, const std::string & label );
 
 DataBuffer::DataBuffer( unsigned long length, const void * pointer, const std::string & label )
 {

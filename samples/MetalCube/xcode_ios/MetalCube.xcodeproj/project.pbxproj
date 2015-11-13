@@ -468,7 +468,7 @@
 				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_HEADER_SEARCH_PATHS = "$(inherited) $(CINDER_PATH)/include";
+				MTL_HEADER_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
@@ -493,7 +493,7 @@
 				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_HEADER_SEARCH_PATHS = "$(inherited) $(CINDER_PATH)/include";
+				MTL_HEADER_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",

@@ -15,6 +15,8 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
+#define IMPL ((__bridge id <MTLComputeCommandEncoder>)mImpl)
+
 ComputeEncoderRef ComputeEncoder::create( void * mtlComputeCommandEncoder )
 {
     return ComputeEncoderRef( new ComputeEncoder( mtlComputeCommandEncoder ) );
@@ -22,21 +24,46 @@ ComputeEncoderRef ComputeEncoder::create( void * mtlComputeCommandEncoder )
 
 ComputeEncoder::ComputeEncoder( void * mtlComputeCommandEncoder )
 :
-mImpl(mtlComputeCommandEncoder)
+CommandEncoder::CommandEncoder(mtlComputeCommandEncoder)
 {
-    CFRetain(mImpl);
     assert([(__bridge id)mtlComputeCommandEncoder conformsToProtocol:@protocol(MTLComputeCommandEncoder)]);
 }
 
-ComputeEncoder::~ComputeEncoder()
+void ComputeEncoder::setPipelineState( ComputePipelineStateRef pipeline )
 {
-    if ( mImpl )
-    {
-        CFRelease(mImpl);
-    }
+    [IMPL setComputePipelineState:(__bridge id <MTLComputePipelineState>)pipeline->getNative()];
+};
+
+void ComputeEncoder::setSamplerState( SamplerStateRef samplerState, int samplerIndex )
+{
+    [IMPL setSamplerState:(__bridge id<MTLSamplerState>)samplerState->getNative()
+                  atIndex:samplerIndex];
 }
 
-void ComputeEncoder::endEncoding()
+void ComputeEncoder::setTexture( TextureBufferRef texture, size_t index )
 {
-    [(__bridge id<MTLComputeCommandEncoder>)mImpl endEncoding];
+    [IMPL setTexture:(__bridge id <MTLTexture>)texture->getNative()
+             atIndex:index];
+}
+
+void ComputeEncoder::setUniforms( DataBufferRef buffer, size_t bytesOffset, size_t bufferIndex )
+{
+    setBufferAtIndex(buffer, bufferIndex, bytesOffset);
+}
+
+void ComputeEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )
+{
+    [IMPL setBuffer:(__bridge id <MTLBuffer>)buffer->getNative()
+             offset:bytesOffset
+            atIndex:index];
+}
+
+void ComputeEncoder::dispatch( ivec3 dataDimensions, ivec3 threadDimensions )
+{
+    MTLSize threadgroupCounts = MTLSizeMake(threadDimensions.x, threadDimensions.y, threadDimensions.z);
+    MTLSize threadgroups = MTLSizeMake( dataDimensions.x / threadDimensions.x,
+                                        dataDimensions.y / threadDimensions.y,
+                                        dataDimensions.z / threadDimensions.z );
+
+    [IMPL dispatchThreadgroups:threadgroups threadsPerThreadgroup:threadgroupCounts];
 }

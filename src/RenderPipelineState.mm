@@ -6,8 +6,7 @@
 //
 //
 
-#include "PipelineState.h"
-//#include "PipelineImpl.h"
+#include "RenderPipelineState.h"
 #include "RendererMetalImpl.h"
 #import "cinder/cocoa/CinderCocoa.h"
 
@@ -15,14 +14,14 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-PipelineStateRef PipelineState::create(const std::string & vertShaderName,
-                                       const std::string & fragShaderName,
-                                       Format format )
+RenderPipelineStateRef RenderPipelineState::create(const std::string & vertShaderName,
+                                                   const std::string & fragShaderName,
+                                                   Format format )
 {
-    return PipelineStateRef( new PipelineState(vertShaderName, fragShaderName, format) );
+    return RenderPipelineStateRef( new RenderPipelineState(vertShaderName, fragShaderName, format) );
 }
 
-PipelineState::PipelineState(const std::string & vertShaderName,
+RenderPipelineState::RenderPipelineState(const std::string & vertShaderName,
                              const std::string & fragShaderName,
                              Format format ) :
 mFormat(format)
@@ -66,7 +65,7 @@ mFormat(format)
     }
 }
 
-PipelineState::~PipelineState()
+RenderPipelineState::~RenderPipelineState()
 {
     if ( mImpl )
     {

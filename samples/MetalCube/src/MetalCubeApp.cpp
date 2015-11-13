@@ -6,8 +6,6 @@
 // Cinder-Metal
 #include "metal.h"
 #include "VertexBuffer.h"
-#include "MetalConstants.h"
-#include "Scope.h"
 
 using namespace std;
 using namespace ci;
@@ -22,16 +20,6 @@ float cubeVertexData[216] =
 {
     0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, 0.5, 0.0, -1.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, 0.5, 1.0,  0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 0.5, 0.5, -0.5, 1.0, 0.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, 0.5, -1.0, 0.0,  0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, -0.5, -0.5, -0.5,  -1.0,  0.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, 0.5, -0.5, 0.5, 0.0,  0.0,  1.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, -0.5, -0.5, 0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0
 };
-
-//typedef struct
-//{
-//    mat4 modelviewProjectionMatrix;
-//    mat4 normalMatrix;
-//} uniforms_t;
-//
-// typedef mat4 matrix_float4x4;
-
-
 
 const static int kNumInflightBuffers = 3;
 
@@ -174,18 +162,7 @@ void MetalCubeApp::draw()
 {    
     {
         ScopedCommandBuffer commandBuffer;
-        
-        {
-            ScopedComputeEncoder computeEncoder(commandBuffer());
-            //            computeEncoder()-> ...
-        } // scoped compute
-        
-        {
-            ScopedBlitEncoder blitEncoder(commandBuffer());
-            //            blitEncoder()-> ...
-        } // scoped blit
-
-        
+                
         {
             ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderDescriptor);
             
@@ -210,7 +187,7 @@ void MetalCubeApp::draw()
 //            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
 //
 //            // Draw
-//            renderEncoder()->draw(mtl::geom::TRIANGLE, 0, 36, 1);
+//            renderEncoder()->draw(mtl::geom::TRIANGLE, 36);
 //            renderEncoder()->popDebugGroup();
 
             

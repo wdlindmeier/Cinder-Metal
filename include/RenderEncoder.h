@@ -10,12 +10,13 @@
 
 #include "cinder/Cinder.h"
 #include "MetalGeom.h"
-#include "PipelineState.h"
+#include "RenderPipelineState.h"
 #include "DataBuffer.h"
 #include "TextureBuffer.h"
 #include "DepthState.h"
 #include "SamplerState.h"
 #include "MetalConstants.h"
+#include "CommandEncoder.h"
 
 namespace cinder { namespace mtl {
     
@@ -24,40 +25,32 @@ namespace cinder { namespace mtl {
     class VertexBuffer;
     typedef std::shared_ptr<VertexBuffer> VertexBufferRef;
     
-    class RenderEncoder
+    class RenderEncoder : public CommandEncoder
     {
 
         friend class CommandBuffer;
         
     public:
         
-        virtual ~RenderEncoder();
+        virtual ~RenderEncoder(){};
         
-        void pushDebugGroup( const std::string & groupName );
-        void popDebugGroup();
+        virtual void setPipelineState( RenderPipelineStateRef pipeline );
+        virtual void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 );
+        virtual void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        virtual void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
 
-        void setPipelineState( PipelineStateRef pipeline );
         void setFragSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
         void setDepthStencilState( DepthStateRef depthState );
 
-        void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 );
-        void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
-        void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
-
-        void draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount,
-                   size_t instanceCount );
-
-        void endEncoding();
-        
-        void * getNative(){ return mImpl; }
+        void draw( ci::mtl::geom::Primitive primitive, size_t vertexCount, size_t vertexStart = 0,
+                   size_t instanceCount = 1);
 
     protected:
 
         static RenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>
         
         RenderEncoder( void * mtlRenderCommandEncoder );
-        
-        void * mImpl = NULL; // <MTLRenderCommandEncoder>
+
     };
     
 } }

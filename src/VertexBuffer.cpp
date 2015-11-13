@@ -90,15 +90,15 @@ void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, int sha
 }
 
 void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 etc
-                              uint8_t dims, // Number of floats
-                              size_t strideBytes, // Stride. See srcData
-                              const float *srcData, // Data representing the attribute ONLY. Not interleaved w/ other attrs
-                              size_t count ) // Number of values
+                               uint8_t dims, // Number of floats
+                               size_t strideBytes, // Stride. See srcData
+                               const float *srcData, // Data representing the attribute ONLY. Not interleaved w/ other attrs
+                               size_t count ) // Number of values
 {
     // Skip the copy if we don't care about this attr
     if ( mRequestedAttribs.find( attr ) == mRequestedAttribs.end() )
     {
-        CI_LOG_I("Skipping attr " << attr << ". Not found in requested attributes: " << mRequestedAttribs[attr] );
+        CI_LOG_I("Skipping attr " << attr << ". Not found in requested attributes." );
         return;
     }
     
@@ -181,7 +181,7 @@ void VertexBuffer::draw( RenderEncoderRef renderEncoder,
     }
     
     renderEncoder->draw(mPrimitive,
-                        vertexStart,
                         vertexLength,
+                        vertexStart,
                         instanceCount);
 }

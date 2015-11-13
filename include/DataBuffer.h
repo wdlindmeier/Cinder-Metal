@@ -68,8 +68,16 @@ namespace cinder { namespace mtl {
         
         DataBuffer( unsigned long length, const void * pointer, const std::string & label );
         void init( unsigned long length, const void * pointer, const std::string & label );
+//        template <typename T>
+//        DataBuffer( const std::vector<T> & dataVector, const std::string & label );
+        
         template <typename T>
-        DataBuffer( const std::vector<T> & dataVector, const std::string & label );
+        DataBuffer( const std::vector<T> & dataVector, const std::string & label )
+        {
+            unsigned long vectorSize = sizeof(dataVector) + (sizeof(T) * dataVector.size());
+            init(vectorSize, dataVector.data(), label);
+        }
+
 
         void * mImpl = NULL; // <MTLBuffer>
         

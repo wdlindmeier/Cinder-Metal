@@ -50,6 +50,8 @@ typedef struct
     float elapsedSeconds;
     matrix_float4x4 projectionMatrix;
     matrix_float4x4 viewMatrix;
+    matrix_float4x4 modelMatrix;
+    matrix_float4x4 inverseModelMatrix;
     matrix_float4x4 modelViewMatrix;
     matrix_float4x4 modelViewProjectionMatrix;
     matrix_float4x4 normalMatrix;

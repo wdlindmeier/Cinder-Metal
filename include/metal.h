@@ -11,7 +11,7 @@
 #include "cinder/Cinder.h"
 #include "MetalConstants.h"
 #include "RendererMetal.h"
-#include "PipelineState.h"
+#include "RenderPipelineState.h"
 #include "CommandBuffer.h"
 #include "DataBuffer.h"
 #include "RenderPassDescriptor.h"
@@ -21,6 +21,7 @@
 #include "MetalGeom.h"
 #include "TextureBuffer.h"
 #include "MetalHelpers.hpp"
+#include "Scope.h"
 
 #if defined( __OBJC__ )
 #if !__has_feature(objc_arc)

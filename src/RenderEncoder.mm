@@ -27,22 +27,9 @@ RenderEncoderRef RenderEncoder::create( void * encoderImpl )
 
 RenderEncoder::RenderEncoder( void * encoderImpl )
 :
-mImpl(encoderImpl)
+CommandEncoder( encoderImpl )
 {
     assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
-
-    // Set some defaults so the user doesnt have to call these.
-    // NOTE: This is probably inefficient since we're creating them for every render encoder.
-
-    CFRetain(mImpl);
-}
-
-RenderEncoder::~RenderEncoder()
-{
-    if ( mImpl )
-    {
-        CFRelease(mImpl);
-    }
 }
 
 void RenderEncoder::setDepthStencilState( DepthStateRef depthState )
@@ -56,14 +43,9 @@ void RenderEncoder::setFragSamplerState( SamplerStateRef samplerState, int sampl
                           atIndex:samplerIndex];
 }
 
-void RenderEncoder::setPipelineState( PipelineStateRef pipeline )
+void RenderEncoder::setPipelineState( RenderPipelineStateRef pipeline )
 {
     [IMPL setRenderPipelineState:(__bridge id <MTLRenderPipelineState>)pipeline->getNative()];
-}
-
-void RenderEncoder::pushDebugGroup( const std::string & groupName )
-{
-    [IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
 }
 
 void RenderEncoder::setTexture( TextureBufferRef texture, size_t index )
@@ -84,20 +66,13 @@ void RenderEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t
                   atIndex:index];
 }
 
-void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexStart, size_t vertexCount, size_t instanceCount )
+void RenderEncoder::draw( ci::mtl::geom::Primitive primitive,
+                          size_t vertexCount,
+                          size_t vertexStart,
+                          size_t instanceCount )
 {
     [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
              vertexStart:vertexStart
              vertexCount:vertexCount
            instanceCount:instanceCount];
-}
-
-void RenderEncoder::endEncoding()
-{
-    [(__bridge id<MTLRenderCommandEncoder>)mImpl endEncoding];
-}
-
-void RenderEncoder::popDebugGroup()
-{
-    [IMPL popDebugGroup];
 }
