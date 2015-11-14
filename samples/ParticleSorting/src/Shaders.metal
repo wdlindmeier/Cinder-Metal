@@ -9,6 +9,7 @@
 #include <metal_stdlib>
 #include <simd/simd.h>
 #include "MetalConstants.h"
+#include "SharedData.h"
 
 using namespace metal;
 
@@ -35,19 +36,19 @@ typedef struct {
     packed_float3 velocity;
 } Particle;
 
-// A simple sort pass on every particle
+// A naive sort pass on every particle
 kernel void kernel_sort(const device Particle* inPositions [[ buffer(1) ]],
                         device int *outIndices [[ buffer(2) ]],
-                        constant ciUniforms_t& uniforms [[ buffer(0) ]],
+                        constant myUniforms_t& uniforms [[ buffer(0) ]],
                         uint2 gid [[thread_position_in_grid]]) // global id is x,y
 {
-    int index = (gid[1] * 32) + gid[0];
+    int index = (gid[1] * kParticleDimension) + gid[0];
 
     Particle p = inPositions[index];
     float4 viewPosition = uniforms.modelMatrix * float4(p.position, 0.0f);
     float viewZ = viewPosition[2];
     int numAfter = 0;
-    for ( int i = 0; i < 1024; ++i )
+    for ( int i = 0; i < (int)uniforms.numParticles; ++i )
     {
         if ( i != index )
         {
@@ -65,14 +66,14 @@ kernel void kernel_sort(const device Particle* inPositions [[ buffer(1) ]],
 }
 
 vertex ColorInOut vertex_particles(device Particle * particles [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                   constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                   constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                    device int *sortedIndices [[ buffer(ciBufferIndexIndicies) ]],
                                    unsigned int vid [[ vertex_id ]] )
 {
     ColorInOut out;
     
     int sortedIndex = sortedIndices[vid];
-    float scalarSort = float(vid) / 1024.f;
+    float scalarSort = float(vid) / uniforms.numParticles;
     
     Particle p = particles[sortedIndex];
     
@@ -80,12 +81,12 @@ vertex ColorInOut vertex_particles(device Particle * particles [[ buffer(ciBuffe
     out.position = uniforms.modelViewProjectionMatrix * in_position;
     
     // Make the rear particles smaller 
-    out.pointSize = 20.f + (scalarSort * 20.f);//40.f;
+    out.pointSize = 20.f + (scalarSort * 40.f);
     float4 viewPosition = uniforms.modelMatrix * float4(p.position, 1.0f);
     float scalarZ = (1.0 + viewPosition[2]) / 2.f;
-    out.color = float4(scalarZ,
-                       1.f-scalarZ,
-                       0.f,
+    out.color = float4(1.0-scalarZ,
+                       1.0-scalarZ,//1.f-scalarZ,
+                       1.0-scalarZ,//0.f,
                        0.5f);
     
     return out;
@@ -94,7 +95,7 @@ vertex ColorInOut vertex_particles(device Particle * particles [[ buffer(ciBuffe
 vertex ColorInOut vertex_lighting_geom(device unsigned int* indices [[ buffer(ciBufferIndexIndicies) ]],
                                        device packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
                                        device packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
-                                       constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                       constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                        unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
@@ -118,6 +119,22 @@ vertex ColorInOut vertex_lighting_geom(device unsigned int* indices [[ buffer(ci
 fragment float4 fragment_color( ColorInOut in [[stage_in]] )
 {
     return in.color;
+}
+
+// NOTE: samplers defined in the shader don't appear to have an anisotropy param
+constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
+                                address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
+                                filter::linear, // nearest or linear
+                                mip_filter::linear ); // nearest or linear or none
+
+fragment float4 fragment_point_texture( ColorInOut in [[stage_in]],
+                                        texture2d<float> textureParticle [[ texture(ciTextureIndex0) ]],
+                                        float2 pointTexCoord [[ point_coord ]] )
+{
+    float4 texColor = textureParticle.sample(shaderSampler, pointTexCoord);
+    float4 inColor = in.color;
+    inColor[3] *= texColor[3];
+    return inColor;
 }
 
 

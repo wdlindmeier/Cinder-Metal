@@ -101,6 +101,7 @@
 		A99166D11BF4FAC1006F710D /* CommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandEncoder.mm; sourceTree = "<group>"; };
 		A9C4747B1BF653530015B236 /* ComputePipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputePipelineState.h; sourceTree = "<group>"; };
 		A9C4747C1BF653580015B236 /* ComputePipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputePipelineState.mm; sourceTree = "<group>"; };
+		A9C4747E1BF6D02B0015B236 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedData.h; path = ../include/SharedData.h; sourceTree = "<group>"; };
 		B42A687E01D8407A96A943A3 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		B6ACE75793074184AF48202D /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = CinderApp_ios.png; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; };
 		B82FC18285ED4AEBB1D9B7C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -184,6 +185,7 @@
 			children = (
 				A99166CA1BF2CFEC006F710D /* Shaders.metal */,
 				E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.mm */,
+				A9C4747E1BF6D02B0015B236 /* SharedData.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -400,7 +402,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MTL_HEADER_SEARCH_PATHS = "$(inherited) $(CINDER_PATH)/blocks/Cinder-Metal/include";
+				MTL_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../include $(CINDER_PATH)/blocks/Cinder-Metal/include";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include";
@@ -431,7 +433,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MTL_HEADER_SEARCH_PATHS = "$(inherited) $(CINDER_PATH)/blocks/Cinder-Metal/include";
+				MTL_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../include $(CINDER_PATH)/blocks/Cinder-Metal/include";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

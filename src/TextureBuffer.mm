@@ -290,19 +290,28 @@ void TextureBuffer::updateWidthCGImage( void * imageRef ) // CGImageRef
     CFDataRef imgData = CGDataProviderCopyData( CGImageGetDataProvider( (CGImageRef)imageRef ) );
     
     uint8_t *rawData = (uint8_t *) CFDataGetBytePtr(imgData);
+    bool shouldFreeData = false;
     
     long bytesPerImageRow = CGImageGetBytesPerRow((CGImageRef)imageRef);
     long numCalculatedChannels = bytesPerImageRow / width / dataSizeForType(mDataType);
     if ( numCalculatedChannels == 3 )
     {
         uint8_t *newRawData = createFourChannelFromThreeChannel( ivec2(width, height), mDataType, rawData);
-        free( rawData );
+        CFRelease(imgData); // nee free( rawData );
+        shouldFreeData = true;
         rawData = newRawData;
     }
     
     setPixelData(rawData);
     
-    free(rawData);
+    if ( shouldFreeData )
+    {
+        free(rawData);
+    }
+    else
+    {
+        CFRelease(imgData);
+    }
     
     if ( [IMPL mipmapLevelCount] > 1 )
     {

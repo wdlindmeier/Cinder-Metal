@@ -4,11 +4,7 @@
 // Cinder-Metal
 #include "metal.h"
 #include "VertexBuffer.h"
-
-// TMP
-#include <Metal/Metal.h>
-#include "RendererMetalImpl.h"
-
+#include "SharedData.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -16,9 +12,7 @@ using namespace std;
 using namespace cinder::mtl;
 
 static const size_t MAX_BYTES_PER_FRAME = 1024*1024;
-
 const static int kNumInflightBuffers = 3;
-const static int kParticleDimension = 32;
 
 typedef struct {
     vec3 position;
@@ -42,7 +36,8 @@ public:
     SamplerStateRef mSamplerMipMapped;
     DepthStateRef mDepthEnabled;
     
-    ciUniforms_t mUniforms;
+    //ciUniforms_t mUniforms;
+    myUniforms_t mUniforms;
     DataBufferRef mDynamicConstantBuffer;
     uint8_t mConstantDataBufferIndex;
     
@@ -58,6 +53,7 @@ public:
     DataBufferRef mParticleIndicesBuffer;
     RenderPassDescriptorRef mRenderDescriptor;
     RenderPipelineStateRef mPipelineParticles;
+    TextureBufferRef mTextureParticle;
     
     // Sort pass
     ComputePipelineStateRef mPipelineSorting;
@@ -115,10 +111,12 @@ void ParticleSortingApp::loadAssets()
     }
     mParticleBuffer = DataBuffer::create(particles);
     mParticleIndicesBuffer = DataBuffer::create(indices);
-    mPipelineParticles = RenderPipelineState::create("vertex_particles", "fragment_color",
+    mPipelineParticles = RenderPipelineState::create("vertex_particles", "fragment_point_texture",
                                                      RenderPipelineState::Format()
                                                      .depthEnabled(true)
                                                      .blendingEnabled(true));
+    
+    mTextureParticle = TextureBuffer::create(loadImage(getAssetPath("particle.png")));
     
     mPipelineSorting = ComputePipelineState::create("kernel_sort");
 }
@@ -138,7 +136,7 @@ void ParticleSortingApp::update()
     mUniforms.inverseModelMatrix = toMtl(inverse(modelMatrix));
     mUniforms.modelMatrix = toMtl(modelMatrix);
     mUniforms.modelViewMatrix = toMtl(modelViewMatrix);
-    mUniforms.elapsedSeconds = getElapsedSeconds();
+    //mUniforms.elapsedSeconds = getElapsedSeconds();
     mDynamicConstantBuffer->setData( &mUniforms, mConstantDataBufferIndex );
 
     mRotation += 0.0015f;
@@ -146,11 +144,9 @@ void ParticleSortingApp::update()
 
 void ParticleSortingApp::draw()
 {
-    uint constantsOffset = (sizeof(ciUniforms_t) * mConstantDataBufferIndex);
-
+    uint constantsOffset = (sizeof(myUniforms_t) * mConstantDataBufferIndex);
     {
         ScopedCommandBuffer commandBuffer;
-        
         {
             ScopedComputeEncoder computeEncoder(commandBuffer());
             
@@ -159,6 +155,13 @@ void ParticleSortingApp::draw()
             computeEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
             computeEncoder()->setBufferAtIndex( mParticleBuffer, 1 );
             computeEncoder()->setBufferAtIndex( mParticleIndicesBuffer, 2 );
+
+            // This feels odd...
+            // TODO: Make this more better
+            // This should be a uniform
+//            long numParticles = kParticleDimension * kParticleDimension;
+//            DataBufferRef b = DataBuffer::create( sizeof(long), &numParticles );
+//            computeEncoder()->setBufferAtIndex( b, 3 );
             
             computeEncoder()->dispatch( ivec3( kParticleDimension, kParticleDimension, 1 ) );
 
@@ -198,7 +201,8 @@ void ParticleSortingApp::draw()
             
             // Send in the sorted indices
             renderEncoder()->setBufferAtIndex( mParticleIndicesBuffer, ciBufferIndexIndicies );
-            //renderEncoder()->setBufferAtIndex( particleIndicesBuffer, ciBufferIndexIndicies );
+            
+            renderEncoder()->setTexture(mTextureParticle);
             
             renderEncoder()->draw( mtl::geom::POINT, kParticleDimension * kParticleDimension );
 

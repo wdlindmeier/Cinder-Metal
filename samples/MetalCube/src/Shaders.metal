@@ -103,8 +103,8 @@ vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions
 
 // Fragment shader function
 fragment float4 lighting_texture_fragment( ColorInOut in [[stage_in]],
-                                          texture2d<float> textureCube [[ texture(ciTextureIndex0) ]],// )
-                                          sampler objcSampler [[sampler(ciSamplerIndex0)]] )
+                                           texture2d<float> textureCube [[ texture(ciTextureIndex0) ]],
+                                           sampler objcSampler [[sampler(ciSamplerIndex0)]] )
 {
     // float4 texColor = textureCube.sample(shaderSampler, in.texCoords);
     // Use the sampler passed in from the app:
