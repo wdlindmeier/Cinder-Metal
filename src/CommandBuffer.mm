@@ -13,76 +13,72 @@
 using namespace ci;
 using namespace ci::mtl;
 
-#define CMD_BUFFER ((__bridge id <MTLCommandBuffer>)mCommandBuffer)
-#define DRAWABLE ((__bridge id <CAMetalDrawable>)mDrawable)
+#define IMPL ((__bridge id <MTLCommandBuffer>)mImpl)
 
-CommandBufferRef CommandBuffer::createForRenderLoop( const std::string & bufferName )
+CommandBufferRef CommandBuffer::create( const std::string & bufferName )
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
     // instantiate a command buffer
     id <MTLCommandBuffer> commandBuffer = [renderer.commandQueue commandBuffer];
-    commandBuffer.label = (__bridge NSString *)cocoa::createCfString(bufferName);
-    id <CAMetalDrawable> drawable = [renderer.metalLayer nextDrawable];
-    return CommandBufferRef( new CommandBuffer( (__bridge void *)commandBuffer,
-                                                (__bridge void *)drawable ) );
+    commandBuffer.label = [NSString stringWithUTF8String:bufferName.c_str()];
+    return CommandBufferRef( new CommandBuffer( (__bridge void *)commandBuffer ) );
 }
 
-CommandBuffer::CommandBuffer( void * mtlCommandBuffer, void * mtlDrawable )
+CommandBuffer::CommandBuffer( void * mtlCommandBuffer )
 :
-mCommandBuffer(mtlCommandBuffer)
-,mDrawable(mtlDrawable)
+mImpl(mtlCommandBuffer)
 {
      // <MTLCommandBuffer>
     assert( mtlCommandBuffer != NULL );
     assert( [(__bridge id)mtlCommandBuffer conformsToProtocol:@protocol(MTLCommandBuffer)] );
-    CFRetain(mCommandBuffer);
-    assert( mtlDrawable != NULL );
-    assert( [(__bridge id)mtlDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
+    CFRetain(mImpl);
 }
 
 CommandBuffer::~CommandBuffer()
 {
-    CFRelease(mCommandBuffer);
+    CFRelease(mImpl);
 }
 
 RenderEncoderRef CommandBuffer::createRenderEncoderWithDescriptor( RenderPassDescriptorRef descriptor,
+                                                                   void *drawableTexture,
                                                                    const std::string & encoderName )
 {
-    descriptor->applyToDrawableTexture((__bridge void *)DRAWABLE.texture);
+    descriptor->applyToDrawableTexture(drawableTexture);
 
-    id <MTLRenderCommandEncoder> renderEncoder = [CMD_BUFFER renderCommandEncoderWithDescriptor:
+    id <MTLRenderCommandEncoder> renderEncoder = [IMPL renderCommandEncoderWithDescriptor:
                                                   (__bridge MTLRenderPassDescriptor *)descriptor->getNative()];
 
-    renderEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
-    
+    renderEncoder.label = [NSString stringWithUTF8String:encoderName.c_str()];
     return RenderEncoder::create((__bridge void *)renderEncoder);
+}
+
+void CommandBuffer::waitUntilCompleted()
+{
+    [IMPL waitUntilCompleted];
 }
 
 ComputeEncoderRef CommandBuffer::createComputeEncoder( const std::string & encoderName )
 {
-    id <MTLComputeCommandEncoder> computeEncoder = [CMD_BUFFER computeCommandEncoder];
-    computeEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
+    id <MTLComputeCommandEncoder> computeEncoder = [IMPL computeCommandEncoder];
+    computeEncoder.label = [NSString stringWithUTF8String:encoderName.c_str()];
     return ComputeEncoder::create((__bridge void *)computeEncoder);
 }
 
 BlitEncoderRef CommandBuffer::createBlitEncoder( const std::string & encoderName )
 {
-    id <MTLBlitCommandEncoder> blitEncoder = [CMD_BUFFER blitCommandEncoder];
-    blitEncoder.label = (__bridge NSString *)cocoa::createCfString(encoderName);
+    id <MTLBlitCommandEncoder> blitEncoder = [IMPL blitCommandEncoder];
+    blitEncoder.label = [NSString stringWithUTF8String:encoderName.c_str()];
     return BlitEncoder::create((__bridge void *)blitEncoder);
 }
 
-void CommandBuffer::commitAndPresentForRendererLoop()
+void CommandBuffer::commit( std::function< void( void * mtlCommandBuffer) > completionHandler )
 {
-    RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
-    // clean up the command buffer
-    __block dispatch_semaphore_t block_sema = [renderer inflightSemaphore];
-    [CMD_BUFFER addCompletedHandler:^(id<MTLCommandBuffer> buffer)
-     {
-         dispatch_semaphore_signal(block_sema);
-     }];
-    [CMD_BUFFER presentDrawable:DRAWABLE];
-    // Finalize rendering here & push the command buffer to the GPU
-    [CMD_BUFFER commit];
-
+    if ( completionHandler != NULL )
+    {
+        [IMPL addCompletedHandler:^(id<MTLCommandBuffer> buffer)
+         {
+             completionHandler( (__bridge void *) buffer );
+         }];
+    }
+    [IMPL commit];
 }

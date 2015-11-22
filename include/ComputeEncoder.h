@@ -31,6 +31,7 @@ namespace cinder { namespace mtl {
         virtual void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
 
         void setSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
+        void setThreadgroupMemoryLength( size_t byteLength, size_t groupMemoryIndex );
         
         void dispatch( ivec3 dataDimensions, ivec3 threadDimensions = ivec3(8,8,1) );
         

@@ -11,6 +11,7 @@
 #include "cinder/Cinder.h"
 #include "cinder/Noncopyable.h"
 #include "CommandBuffer.h"
+#include "RenderBuffer.h"
 
 namespace cinder { namespace mtl {
 
@@ -24,12 +25,27 @@ namespace cinder { namespace mtl {
     };
     
     struct ScopedCommandBuffer : public ScopedT< CommandBufferRef > {
-        ScopedCommandBuffer( const std::string & bufferName = "Scoped Command Buffer" );
-        ~ScopedCommandBuffer();        
+        ScopedCommandBuffer( bool waitUntilCompleted = false,
+                             const std::string & bufferName = "Scoped Command Buffer" );
+        ~ScopedCommandBuffer();
+        void addCompletionHandler( std::function< void( void * mtlCommandBuffer) > handler ){
+            mCompletionHandler = handler;
+        }
+    private:
+        bool mWaitUntilCompleted;
+        std::function< void( void * mtlCommandBuffer) > mCompletionHandler;
+    };
+
+    struct ScopedRenderBuffer : public ScopedT< RenderBufferRef > {
+        ScopedRenderBuffer( bool waitUntilCompleted = false,
+                            const std::string & bufferName = "Scoped Render Buffer" );
+        ~ScopedRenderBuffer();
+    private:
+        bool mWaitUntilCompleted;
     };
 
     struct ScopedRenderEncoder : public ScopedT< RenderEncoderRef > {
-        ScopedRenderEncoder( CommandBufferRef commandBuffer,
+        ScopedRenderEncoder( RenderBufferRef renderBuffer,
                              const RenderPassDescriptorRef descriptor,
                              const std::string & encoderName = "Scoped Render Encoder" );
         ~ScopedRenderEncoder();

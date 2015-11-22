@@ -241,6 +241,8 @@ mFormat(format)
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device newTextureWithDescriptor:desc];
     
     updateWidthCGImage( imageRef );
+    
+    CFRelease(imageRef);
 }
 
 TextureBuffer::~TextureBuffer()
@@ -278,6 +280,7 @@ void TextureBuffer::update( ImageSourceRef imageSource )
     assert(mDataType == imageSource->getDataType());
     assert(mColorModel == imageSource->getColorModel());
     updateWidthCGImage( imageRef );
+    CFRelease(imageRef);
 }
 
 void TextureBuffer::updateWidthCGImage( void * imageRef ) // CGImageRef
@@ -306,7 +309,8 @@ void TextureBuffer::updateWidthCGImage( void * imageRef ) // CGImageRef
     
     if ( shouldFreeData )
     {
-        free(rawData);
+        delete [] rawData;
+//        free(rawData);
     }
     else
     {

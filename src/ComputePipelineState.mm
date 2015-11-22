@@ -24,7 +24,7 @@ mImpl(nullptr)
 {
     id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
     id <MTLLibrary> library = [RendererMetalImpl sharedRenderer].library;
-    id<MTLFunction> kernelFunction = [library newFunctionWithName:(__bridge NSString *)createCfString(computeShaderName)];
+    id<MTLFunction> kernelFunction = [library newFunctionWithName:[NSString stringWithUTF8String:computeShaderName.c_str()]];
     NSError* error = NULL;
     mImpl = (__bridge_retained void *)[device newComputePipelineStateWithFunction:kernelFunction
                                                                             error:&error];

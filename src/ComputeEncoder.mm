@@ -58,12 +58,17 @@ void ComputeEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_
             atIndex:index];
 }
 
+void ComputeEncoder::setThreadgroupMemoryLength( size_t byteLength, size_t groupMemoryIndex )
+{
+    [IMPL setThreadgroupMemoryLength:byteLength atIndex:groupMemoryIndex];
+}
+
 void ComputeEncoder::dispatch( ivec3 dataDimensions, ivec3 threadDimensions )
 {
     MTLSize threadgroupCounts = MTLSizeMake(threadDimensions.x, threadDimensions.y, threadDimensions.z);
-    MTLSize threadgroups = MTLSizeMake( dataDimensions.x / threadDimensions.x,
-                                        dataDimensions.y / threadDimensions.y,
-                                        dataDimensions.z / threadDimensions.z );
+    MTLSize threadgroups = MTLSizeMake( ceil(float(dataDimensions.x) / threadDimensions.x),
+                                        ceil(float(dataDimensions.y) / threadDimensions.y),
+                                        ceil(float(dataDimensions.z) / threadDimensions.z) );
 
     [IMPL dispatchThreadgroups:threadgroups threadsPerThreadgroup:threadgroupCounts];
 }

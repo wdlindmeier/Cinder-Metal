@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	
+	<block
+		name="Cinder-Metal"
+		id="com.wdlindmeier.cinder_metal"
+		author="William Lindmeier"
+		summary="Cinder wrapper for Apple's Metal framework"
+		git="ssh://git@github.com:wdlindmeier/Cinder-Metal.git"
+		url="https://github.com/wdlindmeier/Cinder-Metal.git"
+		library="https://developer.apple.com/metal/"
+		>
+		<supports os="ios" />
+		<supports os="macosx" />
+	
+		<sourcePattern>src/*.cpp</sourcePattern>	
+		<sourcePattern>src/*.mm</sourcePattern>
+		
+		<headerPattern>include/*.h</headerPattern>	
+		<headerPattern>include/*.hpp</headerPattern>
+		
+	</block>
+
+	<!--template>templates/cinderMetalBasic/template.xml</template-->
+	
+</cinder>

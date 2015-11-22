@@ -15,21 +15,44 @@
 using namespace cinder;
 using namespace cinder::mtl;
 
-ScopedCommandBuffer::ScopedCommandBuffer( const std::string & bufferName )
+ScopedCommandBuffer::ScopedCommandBuffer( bool waitUntilCompleted, const std::string & bufferName )
+:
+mWaitUntilCompleted(waitUntilCompleted)
+,mCompletionHandler(NULL)
 {
-    mInstance = CommandBuffer::createForRenderLoop(bufferName);
+    mInstance = CommandBuffer::create(bufferName);
 };
 
 ScopedCommandBuffer::~ScopedCommandBuffer()
 {
-    mInstance->commitAndPresentForRendererLoop();
+    mInstance->commit( mCompletionHandler );
+    if ( mWaitUntilCompleted )
+    {
+        mInstance->waitUntilCompleted();
+    }
 };
 
-ScopedRenderEncoder::ScopedRenderEncoder( CommandBufferRef commandBuffer,
+ScopedRenderBuffer::ScopedRenderBuffer( bool waitUntilCompleted, const std::string & bufferName )
+:
+mWaitUntilCompleted(waitUntilCompleted)
+{
+    mInstance = RenderBuffer::create(bufferName);
+};
+
+ScopedRenderBuffer::~ScopedRenderBuffer()
+{
+    mInstance->commitAndPresent();
+    if ( mWaitUntilCompleted )
+    {
+        mInstance->waitUntilCompleted();
+    }
+};
+
+ScopedRenderEncoder::ScopedRenderEncoder( RenderBufferRef renderBuffer,
                                           const RenderPassDescriptorRef descriptor,
                                           const std::string & encoderName )
 {
-    mInstance = commandBuffer->createRenderEncoderWithDescriptor(descriptor, encoderName);
+    mInstance = renderBuffer->createRenderEncoderWithDescriptor(descriptor, encoderName);
 }
 
 ScopedRenderEncoder::~ScopedRenderEncoder()

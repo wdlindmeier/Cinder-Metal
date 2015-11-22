@@ -10,7 +10,14 @@
 
 #include "MetalConstants.h"
 
-#define kParticleDimension 32
+#define kParticleDimension 32 // 1024 particles. should be a power of 2
+
+struct sortState_t
+{
+    unsigned int direction = 1;
+    unsigned int stage = 0;
+    unsigned int pass = 0;
+};
 
 struct myUniforms_t
 {

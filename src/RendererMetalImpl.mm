@@ -88,7 +88,14 @@ static RendererMetalImpl * SharedRenderer = nil;
     self.metalLayer = [CAMetalLayer layer];
     _metalLayer.device = self.device;
     
-    mInflightSemaphore = dispatch_semaphore_create(numInflightBuffers);
+    if ( numInflightBuffers > 1 )
+    {
+        mInflightSemaphore = dispatch_semaphore_create(numInflightBuffers);
+    }
+    else
+    {
+        mInflightSemaphore = nil;
+    }
 
     // Setup metal layer and add as sub layer to view
 
@@ -119,7 +126,10 @@ static RendererMetalImpl * SharedRenderer = nil;
     self.metalLayer.drawableSize = drawableSize;
     mLayerSizeDidUpdate = NO;
 
-    dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
+    if ( mInflightSemaphore )
+    {
+        dispatch_semaphore_wait(mInflightSemaphore, DISPATCH_TIME_FOREVER);
+    }
 }
 
 - (void)finishDraw

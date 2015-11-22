@@ -37,7 +37,8 @@ CommandEncoder::~CommandEncoder()
 
 void CommandEncoder::pushDebugGroup( const std::string & groupName )
 {
-    [IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
+    //[IMPL pushDebugGroup:(__bridge NSString *)createCfString(groupName)];
+    [IMPL pushDebugGroup:[NSString stringWithUTF8String:groupName.c_str()]];
 }
 
 void CommandEncoder::endEncoding()

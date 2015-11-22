@@ -54,7 +54,7 @@ void DataBuffer::init( unsigned long length, const void * pointer, const std::st
                                                              options:MTLResourceCPUCacheModeDefaultCache];
     }
     
-    IMPL.label = (__bridge NSString *)cocoa::createCfString(label);
+    IMPL.label = [NSString stringWithUTF8String:label.c_str()];
 }
 
 DataBuffer::~DataBuffer()

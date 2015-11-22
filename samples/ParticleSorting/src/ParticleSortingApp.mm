@@ -1,5 +1,6 @@
 #include "cinder/app/App.h"
 #include "cinder/Rand.h"
+#include "cinder/Log.h"
 
 // Cinder-Metal
 #include "metal.h"
@@ -11,8 +12,8 @@ using namespace ci::app;
 using namespace std;
 using namespace cinder::mtl;
 
-static const size_t MAX_BYTES_PER_FRAME = 1024*1024;
 const static int kNumInflightBuffers = 3;
+const static int kNumSortStateBuffers = 50;
 
 typedef struct {
     vec3 position;
@@ -36,9 +37,10 @@ public:
     SamplerStateRef mSamplerMipMapped;
     DepthStateRef mDepthEnabled;
     
-    //ciUniforms_t mUniforms;
     myUniforms_t mUniforms;
+    sortState_t mSortState;
     DataBufferRef mDynamicConstantBuffer;
+    DataBufferRef mSortStateBuffer;
     uint8_t mConstantDataBufferIndex;
     
     float mRotation;
@@ -49,14 +51,18 @@ public:
     RenderPipelineStateRef mPipelineGeomLighting;
     
     // Particles
-    DataBufferRef mParticleBuffer;
-    DataBufferRef mParticleIndicesBuffer;
+    DataBufferRef mParticlesUnsorted;
+    //DataBufferRef mParticlesSorted;
+    DataBufferRef mParticleIndices;
     RenderPassDescriptorRef mRenderDescriptor;
     RenderPipelineStateRef mPipelineParticles;
     TextureBufferRef mTextureParticle;
     
     // Sort pass
-    ComputePipelineStateRef mPipelineSorting;
+    ComputePipelineStateRef mPipelineParallelSort;
+    ComputePipelineStateRef mPipelineBitonicSort;
+    
+    long mParticleBufferLength;
 };
 
 void ParticleSortingApp::setup()
@@ -80,37 +86,45 @@ void ParticleSortingApp::resize()
 
 void ParticleSortingApp::loadAssets()
 {
-    mDynamicConstantBuffer = DataBuffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
+    mDynamicConstantBuffer = DataBuffer::create( sizeof(myUniforms_t) * kNumInflightBuffers,
+                                                 nullptr,
+                                                 "Uniform Buffer" );
+    
+    mSortStateBuffer = DataBuffer::create( sizeof(sortState_t) * kNumSortStateBuffers,
+                                          nullptr,
+                                          "Sort State Buffer" );
     
     mGeomBufferTeapot = VertexBuffer::create( ci::geom::Teapot(),
                                              {{ci::geom::INDEX,
                                                ci::geom::POSITION,
                                                ci::geom::NORMAL }});
+    
     mPipelineGeomLighting = RenderPipelineState::create("vertex_lighting_geom",
                                                         "fragment_color",
                                                         RenderPipelineState::Format()
                                                         .depthEnabled(true)
                                                         .blendingEnabled(true) );
-    
-    
+
     // Set up the particles
     vector<Particle> particles;
-    vector<int> indices;
+    vector<ivec4> indices;
     ci::Rand random;
     random.seed((UInt32)time(NULL));
-    for ( int y = 0; y < kParticleDimension; ++y )
+    for ( unsigned int i = 0; i < kParticleDimension * kParticleDimension; ++i )
     {
-        for ( int x = 0; x < kParticleDimension; ++x )
+        Particle p;
+        p.position = random.randVec3();
+        p.velocity = random.randVec3();
+        particles.push_back(p);
+        if ( i % 4 == 0 )
         {
-            Particle p;
-            p.position = random.randVec3();
-            p.velocity = random.randVec3();
-            particles.push_back(p);
-            indices.push_back((int)indices.size());
+            indices.push_back(ivec4(i, i+1, i+2, i+3));
         }
     }
-    mParticleBuffer = DataBuffer::create(particles);
-    mParticleIndicesBuffer = DataBuffer::create(indices);
+    
+    // Make sure we've got the right number of indicies
+    assert( float(indices.size()) == particles.size() / 4.0f );
+    
     mPipelineParticles = RenderPipelineState::create("vertex_particles", "fragment_point_texture",
                                                      RenderPipelineState::Format()
                                                      .depthEnabled(true)
@@ -118,7 +132,13 @@ void ParticleSortingApp::loadAssets()
     
     mTextureParticle = TextureBuffer::create(loadImage(getAssetPath("particle.png")));
     
-    mPipelineSorting = ComputePipelineState::create("kernel_sort");
+    mParticlesUnsorted = DataBuffer::create(particles);
+    // NOTE: 3x the buffer size so we dont overwrite the render particles mid-stream
+//    mParticleBufferLength = sizeof(Particle) * particles.size();
+//    mParticlesSorted = DataBuffer::create(mParticleBufferLength * kNumInflightBuffers, NULL);
+    mParticleIndices = DataBuffer::create(indices);
+    mPipelineParallelSort = ComputePipelineState::create("kernel_sort");
+    mPipelineBitonicSort = ComputePipelineState::create("bitonic_sort");
 }
 
 void ParticleSortingApp::update()
@@ -136,7 +156,6 @@ void ParticleSortingApp::update()
     mUniforms.inverseModelMatrix = toMtl(inverse(modelMatrix));
     mUniforms.modelMatrix = toMtl(modelMatrix);
     mUniforms.modelViewMatrix = toMtl(modelViewMatrix);
-    //mUniforms.elapsedSeconds = getElapsedSeconds();
     mDynamicConstantBuffer->setData( &mUniforms, mConstantDataBufferIndex );
 
     mRotation += 0.0015f;
@@ -145,30 +164,165 @@ void ParticleSortingApp::update()
 void ParticleSortingApp::draw()
 {
     uint constantsOffset = (sizeof(myUniforms_t) * mConstantDataBufferIndex);
+    ScopedRenderBuffer renderBuffer(true);
     {
-        ScopedCommandBuffer commandBuffer;
+        // Bitonic particle sort
         {
-            ScopedComputeEncoder computeEncoder(commandBuffer());
+            ScopedComputeEncoder computeEncoder(renderBuffer());
             
-            computeEncoder()->setPipelineState(mPipelineSorting);
-
+            computeEncoder()->setPipelineState( mPipelineBitonicSort );
             computeEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
-            computeEncoder()->setBufferAtIndex( mParticleBuffer, 1 );
-            computeEncoder()->setBufferAtIndex( mParticleIndicesBuffer, 2 );
-
-            // This feels odd...
-            // TODO: Make this more better
-            // This should be a uniform
-//            long numParticles = kParticleDimension * kParticleDimension;
-//            DataBufferRef b = DataBuffer::create( sizeof(long), &numParticles );
-//            computeEncoder()->setBufferAtIndex( b, 3 );
+            computeEncoder()->setBufferAtIndex( mParticlesUnsorted, 1 );
+            computeEncoder()->setBufferAtIndex( mParticleIndices, 2 );
             
-            computeEncoder()->dispatch( ivec3( kParticleDimension, kParticleDimension, 1 ) );
+            // No benchmakr
+            //    double   perf_start;
+            //    double   perf_stop;
+            //
+            //    cl_int err = CL_SUCCESS;
+            int numStages = 0;
+            uint temp;
+            
+            int stage;
+            int passOfStage;
+            uint arraySize = mUniforms.numParticles;
+            
+            // buffer is already created
+            // create OpenCL buffer using input array memory
+//            cl_mem cl_input_buffer =
+//            clCreateBuffer
+//            (
+//             oclobjects.context,
+//             CL_MEM_USE_HOST_PTR,
+//             zeroCopySizeAlignment(sizeof(cl_int) * arraySize, oclobjects.device),
+//             p_input,
+//             &err
+//             );
+            //SAMPLE_CHECK_ERRORS(err);
+            
+            //    if (cl_input_buffer == (cl_mem)0)
+            //    {
+            //        throw Error("Failed to create input data Buffer\n");
+            //    }
+            
+            
+            // Calculate the number of stages
+            for (temp = arraySize; temp > 2; temp >>= 1)
+            {
+                numStages++;
+            }
+            
+            
+            // Set the input buffer
+            // Move buffer from index 0 => 1
+//            err=  clSetKernelArg(executable.kernel, 0, sizeof(cl_mem), (void *) &cl_input_buffer);
+//            SAMPLE_CHECK_ERRORS(err);
+            // SET ABOVE
+            
+            // Sort state is in mSortState
+            // sortAscending is in uniforms
+//            err = clSetKernelArg(executable.kernel, 3, sizeof(cl_uint), (void *) &sortAscending);
+//            SAMPLE_CHECK_ERRORS(err);
+            // SET BELOW
+  
+            // Don't bother doing a performance benchmarking
+//            perf_start=time_stamp();
+            mSortState.direction = 1; // sort ascending
+            
+            
+            NEXT:
+            Seems like the stages are causing some problems
+            
+            // for ( stage = 0; stage < numStages; stage++ )
+            // TEST
+            stage = 0;
+            {
+                // Sort stage is in mSortState
+                //                err = clSetKernelArg(executable.kernel, 1, sizeof(cl_uint), (void *) &stage);
+                //                SAMPLE_CHECK_ERRORS(err);
+                
+                mSortState.stage = stage;
+                
+                for ( passOfStage = stage; passOfStage >= 0; passOfStage-- )
+                // TEST
+                //passOfStage = 0;
+                {
+                    mSortState.pass = passOfStage;
+                    mSortStateBuffer->setData( &mSortState, stage );
+                    computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3, sizeof(sortState_t) * stage);
 
-        } // scoped compute
-
+//                    err = clSetKernelArg(executable.kernel, 2, sizeof(cl_uint), (void *) &passOfStage);
+//                    SAMPLE_CHECK_ERRORS(err);
+                    
+                    // set work-item dimensions
+                    size_t gsz = arraySize / (2*4);
+                    // NOTE: work size is not 1-per vector
+                    // This is sorting integers
+                    size_t global_work_size = passOfStage ? gsz : gsz << 1;    // number of quad items in input array
+                    
+                    computeEncoder()->dispatch( ivec3( global_work_size, 1, 1), ivec3( 32, 1, 1 ) );
+                    
+                    // execute kernel
+                    // err = clEnqueueNDRangeKernel(oclobjects.queue, executable.kernel, 1, NULL, global_work_size, NULL, 0, NULL, NULL);
+                    // SAMPLE_CHECK_ERRORS(err);
+                }
+            }
+            
+            //err = clFinish(oclobjects.queue);
+            //SAMPLE_CHECK_ERRORS(err);
+            
+            //perf_stop=time_stamp();
+            
+//            void* tmp_ptr = NULL;
+//            tmp_ptr = clEnqueueMapBuffer(oclobjects.queue, cl_input_buffer, true, CL_MAP_READ, 0, sizeof(cl_int) * arraySize , 0, NULL, NULL, &err);
+//            SAMPLE_CHECK_ERRORS(err);
+//            if(tmp_ptr!=p_input)
+//            {
+//                throw Error("clEnqueueMapBuffer failed to return original pointer\n");
+//            }
+//            
+//            err = clFinish(oclobjects.queue);
+//            SAMPLE_CHECK_ERRORS(err);
+//            
+//            err = clEnqueueUnmapMemObject(oclobjects.queue, cl_input_buffer, tmp_ptr, 0, NULL, NULL);
+//            SAMPLE_CHECK_ERRORS(err);
+//            
+//            err = clReleaseMemObject(cl_input_buffer);
+//            SAMPLE_CHECK_ERRORS(err);
+//            
+//            return (float)(perf_stop - perf_start);
+//
+            
+//            computeEncoder()->setPipelineState( mPipelineParallelSort );
+//            computeEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
+//            computeEncoder()->setBufferAtIndex( mParticlesUnsorted, 1 );
+//            computeEncoder()->setBufferAtIndex( mParticlesSorted, 2,
+//                                                mParticleBufferLength * mConstantDataBufferIndex );
+//            computeEncoder()->dispatch( ivec3(mUniforms.numParticles, 1, 1), ivec3(64, 1, 1) );
+        }
+        
+        ivec4 * indices = (ivec4 *)mParticleIndices->contents();
+        long maxParticleIndex = 0;
+        for ( int i = 0; i < mUniforms.numParticles / 4; ++i )
         {
-            ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderDescriptor);
+            ivec4 v = indices[i];
+            console() << "i " << i << ": " << v << "\n";
+            for ( int j = 0; j < 4; ++j )
+            {
+                if ( v[j] > maxParticleIndex )
+                {
+                    maxParticleIndex = v[j];
+                }
+            }
+        }
+        console() << "NUM PARTICLES: " << mUniforms.numParticles << "\n";
+        console() << "MAX PARTICLE INDEX: " << maxParticleIndex << "\n";
+        if ( getElapsedFrames() == 2 )
+        {
+            exit(0);            
+        }
+        {
+            ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
             
             // Enable depth
             renderEncoder()->setDepthStencilState(mDepthEnabled);
@@ -191,28 +345,28 @@ void ParticleSortingApp::draw()
             
             
             // Draw particles
-            // Geom Target
             renderEncoder()->pushDebugGroup("Draw Particles");
             
             // Set the program
             renderEncoder()->setPipelineState( mPipelineParticles );
 
-            renderEncoder()->setBufferAtIndex( mParticleBuffer, ciBufferIndexInterleavedVerts );
-            
-            // Send in the sorted indices
-            renderEncoder()->setBufferAtIndex( mParticleIndicesBuffer, ciBufferIndexIndicies );
-            
+            // Pass in the unsorted particles
+            renderEncoder()->setBufferAtIndex( mParticlesUnsorted, ciBufferIndexInterleavedVerts );
+
+            // Pass in the sorted particle indices
+            renderEncoder()->setBufferAtIndex( mParticleIndices, ciBufferIndexIndicies );
+
             renderEncoder()->setTexture(mTextureParticle);
             
-            renderEncoder()->draw( mtl::geom::POINT, kParticleDimension * kParticleDimension );
+            renderEncoder()->draw( mtl::geom::POINT, mUniforms.numParticles );
 
             renderEncoder()->popDebugGroup();
-
             
         } // scoped render encoder
         
     } // scoped command buffer
     
+
     mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }
 

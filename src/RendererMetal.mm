@@ -29,7 +29,7 @@ RendererMetal::~RendererMetal(){}
 void RendererMetal::setup( CGRect frame, NSView *cinderView, RendererRef sharedRenderer, bool retinaEnabled )
 {
     // TODO
-    console() << "TODO: Setup\n";
+    console() << "TODO: Setup for mac\n";
 };
 #elif defined( CINDER_COCOA_TOUCH )
 void RendererMetal::setup( const Area &frame, UIView *cinderView, RendererRef sharedRenderer )

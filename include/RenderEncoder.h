@@ -29,6 +29,7 @@ namespace cinder { namespace mtl {
     {
 
         friend class CommandBuffer;
+        friend class RenderBuffer;
         
     public:
         
