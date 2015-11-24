@@ -46,9 +46,24 @@ vector_float4 static inline toMtl( glm::vec4 vec )
     return *(vector_float4 *)&vec;
 }
 
+vector_int4 static inline toMtl( glm::ivec4 vec )
+{
+    return *(vector_int4 *)&vec;
+}
+
 glm::vec4 static inline fromMtl( vector_float4 vec )
 {
     return *(glm::vec4 *)&vec;
+}
+
+glm::ivec4 static inline fromMtl( vector_uint4 vec )
+{
+    return *(glm::ivec4 *)&vec;
+}
+
+vector_int3 static inline toMtl( glm::ivec3 vec )
+{
+    return *(vector_int3 *)&vec;
 }
 
 vector_float3 static inline toMtl( glm::vec3 vec )
@@ -61,6 +76,16 @@ glm::vec3 static inline fromMtl( vector_float3 vec )
     return *(glm::vec3 *)&vec;
 }
 
+glm::ivec3 static inline fromMtl( vector_uint3 vec )
+{
+    return *(glm::ivec3 *)&vec;
+}
+
+vector_int2 static inline toMtl( glm::ivec2 vec )
+{
+    return *(vector_int2 *)&vec;
+}
+
 vector_float2 static inline toMtl( glm::vec2 vec )
 {
     return *(vector_float2 *)&vec;
@@ -69,4 +94,9 @@ vector_float2 static inline toMtl( glm::vec2 vec )
 glm::vec2 static inline fromMtl( vector_float2 vec )
 {
     return *(glm::vec2 *)&vec;
+}
+
+glm::ivec2 static inline fromMtl( vector_uint2 vec )
+{
+    return *(glm::ivec2 *)&vec;
 }

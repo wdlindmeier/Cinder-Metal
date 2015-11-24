@@ -110,9 +110,276 @@ int4 valueMask( int4 leftValues, int4 rightValues, bool4 mask )
     return newValues;
 }
 
+kernel void debug_sort( const device uint& sortStage [[ buffer(5) ]],
+                        const device uint& sortPass [[ buffer(6) ]],
+                        device uint * randValues [[ buffer(1) ]],
+                        device debugInfo_t * debugInfo [[ buffer(4) ]],
+                        constant sortState_t& sortState [[ buffer(3) ]],
+                        constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                        uint2 global_thread_position [[thread_position_in_grid]],
+                        uint local_index [[thread_index_in_threadgroup]],
+                        uint2 groups_per_grid [[ threadgroups_per_grid ]],
+                        uint2 group_thread_size [[ threads_per_threadgroup ]],
+                        uint2 grid_thread_count [[ threads_per_grid ]],
+                        uint2 group_position [[ threadgroup_position_in_grid ]] )
+{
+    uint stage = sortState.stage; // sortStage
+    uint pass = sortState.pass; // sortPass
+    
+    debugInfo->completedStages[stage] = 1;
+    debugInfo->completedPasses[pass] = 1;
+    
+    if ( debugInfo->previousStage[stage] == 999 )
+    {
+        // NOTE: We'll hit this point multiple times during the same stage,
+        // so we only want to do it once.
+        debugInfo->previousStage[stage] = debugInfo->lastStage;
+    }
+    debugInfo->previousPass[pass] = debugInfo->lastPass;
+    debugInfo->lastStage = stage;
+    debugInfo->lastPass = pass;
+    debugInfo->numTimesAccessed += 1; // NOTE: this ends up being 1-per-dispatch
+}
+
+kernel void simple_sort( device uint * randValues [[ buffer(1) ]],
+                       device debugInfo_t * debugInfo [[ buffer(4) ]],
+                       constant sortState_t& sortState [[ buffer(3) ]],
+                       constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                       uint2 global_thread_position [[thread_position_in_grid]],
+                       uint local_index [[thread_index_in_threadgroup]],
+                       uint2 groups_per_grid [[ threadgroups_per_grid ]],
+                       uint2 group_thread_size [[ threads_per_threadgroup ]],
+                       uint2 grid_thread_count [[ threads_per_grid ]],
+                       uint2 group_position [[ threadgroup_position_in_grid ]] )
+{
+    uint stage = sortState.stage; // sortStage
+    uint pass = sortState.pass; // sortPass
+    uint passNum = sortState.passNum;
+    uint threadI = global_thread_position[0];
+    uint iA = threadI * 2;
+//    bool isEven passNum % 2 == 0;
+    iA += passNum % 2;
+    uint iB = iA + 1;
+    
+    if ( iB >= uniforms.numParticles )
+    {
+        return;
+    }
+    
+    // Compare
+    uint valA = randValues[iA];
+    uint valB = randValues[iB];
+    
+    // Swap
+    if ( valA > valB )
+    {
+        randValues[iB] = valA;
+        randValues[iA] = valB;
+    }
+//    else
+//    {
+//        randValues[iB] = valB;
+//        randValues[iA] = valA;
+//    }
+
+    debugInfo->lastStage = stage;
+    debugInfo->lastPass = pass;
+    debugInfo->numTimesAccessed += 1; // NOTE: this ends up being 1-per-dispatch
+}
+
+kernel void simple_bitonic_sort( device int4 * randValues [[ buffer(1) ]],
+                                 device debugInfo_t * debugInfo [[ buffer(4) ]],
+                                 constant sortState_t& sortState [[ buffer(3) ]],
+                                 constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                 uint2 global_thread_position [[thread_position_in_grid]],
+                                 uint local_index [[thread_index_in_threadgroup]],
+                                 uint2 groups_per_grid [[ threadgroups_per_grid ]],
+                                 uint2 group_thread_size [[ threads_per_threadgroup ]],
+                                 uint2 grid_thread_count [[ threads_per_grid ]],
+                                 uint2 group_position [[ threadgroup_position_in_grid ]] )
+{
+    uint stage = sortState.stage;
+    uint passOfStage = sortState.pass;
+    int dir = sortState.direction;
+    uint i = global_thread_position[0];
+
+    int4 srcLeft, srcRight;
+    bool4 mask;
+    bool4 imask10 = (bool4)(0, 0, 1, 1);
+    bool4 imask11 = (bool4)(0, 1, 0, 1);
+    
+    srcLeft = randValues[i];
+    srcRight = srcLeft.zwxy;
+    
+    if( stage > 0 )
+    {
+        // upper level pass, exchange between two fours
+        if( passOfStage > 0 )
+        {
+            uint r = 1 << (passOfStage - 1);
+            uint lmask = r - 1;
+            uint left = ((i>>(passOfStage-1)) << passOfStage) + (i & lmask);
+            uint right = left + r;
+            
+            srcLeft = randValues[left];
+            srcRight = randValues[right];
+
+            //            mask = (srcLeft < srcRight);
+            mask = (srcLeft < srcRight);
+            
+            //            int4 imin = (leftValues & mask) | (rightValues & ~mask);
+            int4 imin = valueMask(srcLeft, srcRight, ~mask);
+            
+            //            int4 imax = (leftValues & ~mask) | (rightValues & mask);
+            int4 imax = valueMask(srcLeft, srcRight, mask);
+            
+            if( ( (i>>(stage-1)) & 1) ^ dir )
+            {
+                // theArray[left]  = imin;
+                randValues[left]  = imin;
+                // theArray[right] = imax;
+                randValues[right] = imax;
+            }
+            else
+            {
+                // theArray[right] = imin;
+                randValues[right] = imin;
+                // theArray[left]  = imax;
+                randValues[left]  = imax;
+            }
+        }
+        
+        // last pass, sort inside one four
+        else
+        {
+            
+            //srcLeft = theArray[i];
+            srcLeft = randValues[i];
+            
+            //srcRight = srcLeft.zwxy;
+            srcRight = srcLeft.zwxy;
+            
+            //mask = (srcLeft < srcRight) ^ imask10;
+            mask = (srcLeft < srcRight) ^ imask10;
+            
+            if ( ( (i >> stage) & 1) ^ dir )
+            {
+                //                srcLeft = (srcLeft & ~mask) | (srcRight & mask);
+                srcLeft = valueMask(srcLeft, srcRight, ~mask);
+                
+                //                srcRight = srcLeft.yxwz;
+                srcRight = srcLeft.yxwz;
+                
+                //                mask = (srcLeft < srcRight) ^ imask11;
+                mask = (srcLeft < srcRight) ^ imask11;
+                
+                //                theArray[i] = (srcLeft & ~mask) | (srcRight & mask);
+                randValues[i] = valueMask(srcLeft, srcRight, ~mask);
+
+            }
+            else
+            {
+                //                srcLeft = (srcLeft & mask) | (srcRight & ~mask);
+                srcLeft = valueMask(srcLeft, srcRight, mask);
+                
+                //                srcRight = srcLeft.yxwz;
+                srcRight = srcLeft.yxwz;
+                
+                //                mask = (srcLeft < srcRight) ^ imask11;
+                mask = (srcLeft < srcRight) ^ imask11;
+                
+                //                theArray[i] = (srcLeft & mask) | (srcRight & ~mask);
+                randValues[i] = valueMask(srcLeft, srcRight, mask);
+            }
+        }
+    }
+    else    // first stage, sort inside one four
+    {
+        
+        //int4 imask0 = (int4)(0, -1, -1,  0);
+        bool4 imask0 = (bool4)(0, 1, 1,  0);
+        
+        srcLeft = randValues[i];
+        srcRight = srcLeft.yxwz;
+        
+        // mask = (srcLeft < srcRight) ^ imask0;
+        mask = (srcLeft < srcRight) ^ imask0;
+        
+        if ( dir )
+        {
+            //            srcLeft = (srcLeft & mask) | (srcRight & ~mask);
+            srcLeft = valueMask(srcLeft, srcRight, mask);
+        }
+        else
+        {
+            //            srcLeft = (srcLeft & ~mask) | (srcRight & mask);
+            srcLeft = valueMask(srcLeft, srcRight, ~mask);
+        }
+        
+        //        srcRight = srcLeft.zwxy;
+        srcRight = srcLeft.zwxy;
+        
+        //        mask = (srcLeft < srcRight) ^ imask10;
+        mask = (srcLeft < srcRight) ^ imask10;
+        
+        if( (i & 1) ^ dir )
+        {
+            //            srcLeft = (srcLeft & mask) | (srcRight & ~mask);
+            srcLeft = valueMask(srcLeft, srcRight, mask);
+            
+            //            srcRight = srcLeft.yxwz;
+            srcRight = srcLeft.yxwz;
+            
+            //            mask = (srcLeft < srcRight) ^ imask11;
+            mask = (srcLeft < srcRight) ^ imask11;
+            
+            //            theArray[i] = (srcLeft & mask) | (srcRight & ~mask);
+            randValues[i] = valueMask(srcLeft, srcRight, mask);
+            
+        }
+        else
+        {
+            
+            //            srcLeft = (srcLeft & ~mask) | (srcRight & mask);
+            srcLeft = valueMask(srcLeft, srcRight, ~mask);
+            
+            //            srcRight = srcLeft.yxwz;
+            srcRight = srcLeft.yxwz;
+            
+            //            mask = (srcLeft < srcRight) ^ imask11;
+            mask = (srcLeft < srcRight) ^ imask11;
+            
+            //          theArray[i] = (srcLeft & ~mask) | (srcRight & mask);
+            randValues[i] = valueMask(srcLeft, srcRight, ~mask);
+        }
+    }
+
+    
+    
+
+
+    
+    // Write debug info
+    debugInfo->completedStages[stage] = 1;
+    debugInfo->completedPasses[passOfStage] = 1;
+    
+    if ( debugInfo->previousStage[stage] == 999 )
+    {
+        // NOTE: We'll hit this point multiple times during the same stage,
+        // so we only want to do it once.
+        debugInfo->previousStage[stage] = debugInfo->lastStage;
+    }
+    debugInfo->previousPass[passOfStage] = debugInfo->lastPass;
+    debugInfo->lastStage = stage;
+    debugInfo->lastPass = passOfStage;
+    debugInfo->numTimesAccessed += 1; // NOTE: this ends up being 1-per-dispatch
+}
+
+
 // Bitonic sort
 kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
                          device int4* sortIndices [[ buffer(2) ]],
+                         device debugInfo_t * debugInfo [[ buffer(4) ]],
                          constant sortState_t& sortState [[ buffer(3) ]],
                          constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                          uint2 global_thread_position [[thread_position_in_grid]],
@@ -124,19 +391,7 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 {
     // NOTE: i is NOT the particle index, it's the int4 index, which contains 4 indices
     uint i = global_thread_position[0];
-//    uint4 indices = sortIndices[i];
-//    uint4 depths(0);
-//    
-//    // First, convert the indices into the sortable values (0 .. UINT_MAX)
-//    for ( int a = 0; a < 4; ++a )
-//    {
-//        Particle p = inParticles[indices[a]];
-//        float4 viewPosition = uniforms.modelMatrix * float4(p.position, 0.0f);
-//        float viewZ = viewPosition[2]; // -1 .. 1
-//        uint key = keyForDepth(viewZ);
-//        depths[a] = key;
-//    }
-    
+
     int4 srcLeft, srcRight,
           // lame way of mapping the values to the indices
           // BILL
@@ -178,15 +433,20 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 //    483 == 32925
 //    481 == 38968
 
+    
+    if ( uint(stage) > debugInfo->maxStage ) debugInfo->maxStage = uint(stage);
+    if ( uint(stage) < debugInfo->minStage ) debugInfo->minStage = uint(stage);
+    if ( uint(passOfStage) > debugInfo->maxPass ) debugInfo->maxPass = uint(passOfStage);
+    if ( uint(passOfStage) < debugInfo->minPass ) debugInfo->minPass = uint(passOfStage);
+//    if ( uint(stage) > debugInfo.maxStage ) debugInfo.maxStage = uint(stage);
+//    if ( uint(stage) < debugInfo.minStage ) debugInfo.minStage = uint(stage);
+//    if ( uint(passOfStage) > debugInfo.maxPass ) debugInfo.maxPass = uint(passOfStage);
+//    if ( uint(passOfStage) < debugInfo.minPass ) debugInfo.minPass = uint(passOfStage);
 
-    // TODO
-//    -- wrap up the value / index converter into a function
-    // x everytime we re-sort values, resort the indices
-//    change masks into bool4
-//      change -1 => 1
-//    change l & mask | r & ~mask
-//      to
-//    maskValues(l,r,mask)
+//    debugInfo->maxStage = stage;
+//    debugInfo->minStage = stage;
+//    debugInfo->maxPass = passOfStage;
+//    debugInfo->minPass = passOfStage;
     
     if( stage > 0 )
     {
@@ -201,74 +461,47 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
             srcLeft = sortIndices[left];
             srcRight = sortIndices[right];
             
-            // Derp. Is there a cleaner way to do this?
-            // BILL
-//            originalLeftValues = indexSortKeys(srcLeft, inParticles, uniforms);
             leftValues = indexSortKeys(srcLeft, inParticles, uniforms);
-//            originalRightValues = indexSortKeys(srcRight, inParticles, uniforms);
             rightValues = indexSortKeys(srcRight, inParticles, uniforms);
             
 //            mask = (srcLeft < srcRight);
             mask = (leftValues < rightValues);
             
 //            int4 imin = (leftValues & mask) | (rightValues & ~mask);
-            int4 imin = valueMask(srcLeft, srcRight, mask);
+            int4 imin = valueMask(srcLeft, srcRight, ~mask);
             
 //            int4 imax = (leftValues & ~mask) | (rightValues & mask);
-            int4 imax = valueMask(srcLeft, srcRight, ~mask);
+            int4 imax = valueMask(srcLeft, srcRight, mask);
             
-//            // BILL
-//            int4 iminIndices(-1);
-//            int4 imaxIndices(-1);
-//            
-//            // REMAP the values to the indices
-//            // BILL
-//            for ( int v = 0; v < 4; ++v )
-//            {
-//                int minVal = imin[v];
-//                int maxVal = imax[v];
-//                for ( int u = 0; u < 4; ++u )
-//                {
-//                    int lVal = originalLeftValues[u];
-//                    int rVal = originalRightValues[u];
-//                    
-//                    if ( minVal == lVal )
-//                    {
-//                        int minIndex = srcLeft[u];
-//                        iminIndices[v] = minIndex;
-//                    }
-//                    else if ( minVal == rVal )
-//                    {
-//                        int minIndex = srcRight[u];
-//                        iminIndices[v] = minIndex;
-//                    }
-//                    
-//                    if ( maxVal == lVal )
-//                    {
-//                        int maxIndex = srcLeft[u];
-//                        imaxIndices[v] = maxIndex;
-//                    }
-//                    else if ( maxVal == rVal )
-//                    {
-//                        int maxIndex = srcRight[u];
-//                        imaxIndices[v] = maxIndex;
-//                    }
-//
-//                }
-//            }
+//            debugInfo->int4s[0] = uint4(0,0,0,0);
+//            debugInfo->int4s[1] = uint4(1,1,1,1);
+//            debugInfo->int4s[2] = uint4(2,2,2,2);
+//            debugInfo->int4s[3] = uint4(3,3,3,3);
+//            debugInfo->numInt4s = 4;
             
+            if ( stage > 1 )
+            {
+                debugInfo->int4s[0] = uint4(0,0,0,0);
+                uint s = uint(stage);
+                debugInfo->int4s[1] = uint4(s,s,s,s);
+                uint maxS = uint(debugInfo->maxStage);
+                debugInfo->int4s[2] = uint4(maxS,maxS,maxS,maxS);
+                debugInfo->int4s[3] = uint4(99,99,99,99);
+                debugInfo->numInt4s = 4;
+            }
+
             if( ( (i>>(stage-1)) & 1) ^ dir )
             {
-                //sortIndices[left]  = iminIndices;//imin;
+                // theArray[left]  = imin;
                 sortIndices[left]  = imin;
-                //sortIndices[right] = imaxIndices;//imax;
+                // theArray[right] = imax;
                 sortIndices[right] = imax;
             }
             else
             {
-                //sortIndices[right] = iminIndices;//imin;
+                // theArray[right] = imin;
                 sortIndices[right] = imin;
-                //sortIndices[left]  = imaxIndices;//imax;
+                // theArray[left]  = imax;
                 sortIndices[left]  = imax;
             }
         }
@@ -276,7 +509,6 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
         // last pass, sort inside one four
         else
         {
-            
             /*
              // TEST
              // So far so good
@@ -287,15 +519,12 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
              i 123: [      123,      123,      123,      123]
              */
             
+            //srcLeft = theArray[i];
             srcLeft = sortIndices[i];
+            //srcRight = srcLeft.zwxy;
             srcRight = srcLeft.zwxy;
 
-//            // BILL
-//            originalLeftValues = indexSortKeys(srcLeft, inParticles, uniforms);
-//            leftValues = originalLeftValues;
             leftValues = indexSortKeys(srcLeft, inParticles, uniforms);
-//            originalRightValues = indexSortKeys(srcRight, inParticles, uniforms);
-//            rightValues = originalRightValues;
             rightValues = indexSortKeys(srcRight, inParticles, uniforms);
             
             // TEST
@@ -342,56 +571,14 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 //                mask = (srcLeft < srcRight) ^ imask11;
                 mask = (leftValues < rightValues) ^ imask11;
                 
+//                theArray[i] = (srcLeft & mask) | (srcRight & ~mask);
                 sortIndices[i] = valueMask(srcLeft, srcRight, mask);
-//                
-////                theArray[i] = (srcLeft & mask) | (srcRight & ~mask);
-//                int4 resultValues = (leftValues & mask) | (rightValues & ~mask);
-//                
-//                /*
-//                 
-//                 sortIndices[i] = resultValues;
-//                 i 120: [-2147483648,-2147483648,-2147483648,-2147483648]
-//                 i 121: [-2147483648,-2147483648,-2147483648,-2147483648]
-//                 i 122: [    32767,    32767,    32767,    32767]
-//                 i 123: [    32767,    32767,    32767,    32767]
-//                */
-//                
-//                // OK, this is the problem
-//                int4 resultIndices(-1);
-//                
-//                // REMAP the values to the indices
-//                // BILL
-//                for ( int v = 0; v < 4; ++v )
-//                {
-//                    int val = resultValues[v];
-//                    
-//                    for ( int u = 0; u < 4; ++u )
-//                    {
-//                        int lVal = originalLeftValues[u];
-//                        int rVal = originalRightValues[u];
-//                        
-//                        if ( val == lVal )
-//                        {
-//                            int index = srcLeft[u];
-//                            resultIndices[v] = index;
-//                        }
-//                        else if ( val == rVal )
-//                        {
-//                            int index = srcRight[u];
-//                            resultIndices[v] = index;
-//                        }
-//                    }
-//                }
-//                
-//                sortIndices[i] = resultIndices;
-//
             }
             else
             {
 //                srcLeft = (srcLeft & ~mask) | (srcRight & mask);
-//                leftValues = (leftValues & ~mask) | (rightValues & mask);
-                leftValues = valueMask(leftValues, rightValues, mask);
-                srcLeft = valueMask(leftValues, rightValues, mask);
+                leftValues = valueMask(leftValues, rightValues, ~mask);
+                srcLeft = valueMask(leftValues, rightValues, ~mask);
                 
 //                srcRight = srcLeft.yxwz;
                 rightValues = leftValues.yxwz;
@@ -400,58 +587,24 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 //                mask = (srcLeft < srcRight) ^ imask11;
                 mask = (leftValues < rightValues) ^ imask11;
   
-                sortIndices[i] = valueMask(srcLeft, srcRight, ~mask);
-                
 //                theArray[i] = (srcLeft & ~mask) | (srcRight & mask);
-//                int4 resultValues = (leftValues & ~mask) | (rightValues & mask);
-//                
-//                int4 resultIndices(-1);
-//                
-//                // REMAP the values to the indices
-//                // BILL
-//                for ( int v = 0; v < 4; ++v )
-//                {
-//                    int val = resultValues[v];
-//                    
-//                    for ( int u = 0; u < 4; ++u )
-//                    {
-//                        int lVal = originalLeftValues[u];
-//                        int rVal = originalRightValues[u];
-//                        
-//                        if ( val == lVal )
-//                        {
-//                            int index = srcLeft[u];
-//                            resultIndices[v] = index;
-//                        }
-//                        else if ( val == rVal )
-//                        {
-//                            int index = srcRight[u];
-//                            resultIndices[v] = index;
-//                        }
-//                    }
-//                }
-//                
-//                sortIndices[i] = resultIndices;
+                sortIndices[i] = valueMask(srcLeft, srcRight, ~mask);
             }
         }
     }
+    
+    // EVERYTHING below seems to work
     else    // first stage, sort inside one four
     {
+        
         //int4 imask0 = (int4)(0, -1, -1,  0);
-        
-        
-        // TEST
-//        bool4 mask;
         bool4 imask0 = (bool4)(0, 1, 1,  0);
-//        bool4 imask10 = (bool4)(0, 0, 1, 1);
-//        bool4 imask11 = (bool4)(0, 1, 0, 1);
 
+        
         srcLeft = sortIndices[i];
         srcRight = srcLeft.yxwz;
         
-//        originalLeftValues = indexSortKeys(srcLeft, inParticles, uniforms);
         leftValues = indexSortKeys(srcLeft, inParticles, uniforms);
-//        originalRightValues = indexSortKeys(srcRight, inParticles, uniforms);
         rightValues = indexSortKeys(srcRight, inParticles, uniforms);
         
         /*
@@ -481,14 +634,12 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
         i 123: [        0,        1,        0,        1]
         */
         
-        //        mask = (srcLeft < srcRight) ^ imask0;
-        //mask = int4((leftValues < rightValues) ^ bool4(imask0));
-        // bool
+        // mask = (srcLeft < srcRight) ^ imask0;
         mask = (leftValues < rightValues) ^ imask0;
         
-        // TEST
-        // OK! This seems much more like it
         /*
+         // TEST
+         // OK! This seems much more like it
         mask = int4((leftValues < rightValues) ^ bool4(imask0));
         sortIndices[i] = mask;
          i 120: [        1,        1,        0,        0]
@@ -500,14 +651,12 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
         if ( dir )
         {
 //            srcLeft = (srcLeft & mask) | (srcRight & ~mask);
-//            leftValues = (leftValues & mask) | (rightValues & ~mask);
             leftValues = valueMask(leftValues, rightValues, mask);
             srcLeft = valueMask(srcLeft, srcRight, mask);
         }
         else
         {
 //            srcLeft = (srcLeft & ~mask) | (srcRight & mask);
-//            leftValues = (leftValues & ~mask) | (rightValues & mask);
             leftValues = valueMask(leftValues, rightValues, ~mask);
             srcLeft = valueMask(srcLeft, srcRight, ~mask);
         }
@@ -533,7 +682,6 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
         if( (i & 1) ^ dir )
         {
 //            srcLeft = (srcLeft & mask) | (srcRight & ~mask);
-//            leftValues = (leftValues & mask) | (rightValues & ~mask);
             leftValues = valueMask(leftValues, rightValues, mask);
             srcLeft = valueMask(srcLeft, srcRight, mask);
             
@@ -544,6 +692,7 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 //            mask = (srcLeft < srcRight) ^ imask11;
             mask = (leftValues < rightValues) ^ imask11;
             
+//            theArray[i] = (srcLeft & mask) | (srcRight & ~mask);
             sortIndices[i] = valueMask(srcLeft, srcRight, mask);
             // YEP
 //            i 120: [      480,      482,      483,      481]
@@ -551,60 +700,11 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 //            i 122: [      491,      490,      488,      489]
 //            i 123: [      494,      492,      495,      493]
 
-//            
-////            theArray[i] = (srcLeft & mask) | (srcRight & ~mask);
-////            int4 resultValues = (leftValues & mask) | (rightValues & ~mask);
-//            int4 resultValues = valueMask(leftValues, rightValues, mask);
-//            
-//            
-//            // TEST
-//            // THIS is looking good!
-//            //            sortIndices[i] = resultValues;
-//            //            i 120: [    27303,    31478,    32925,    38968] // ascending
-//            //            i 121: [    35177,    18379,    14640,     8679] // descending
-//            //            i 122: [     5474,     8251,    27157,    63838]
-//            //            i 123: [    33721,    31185,    29560,     9335]
-//            //            return;
-//
-//            int4 resultIndices(-1);
-//            
-//            // REMAP the values to the indices
-//            // BILL
-//            for ( int v = 0; v < 4; ++v )
-//            {
-//                int val = resultValues[v];
-//                
-//                for ( int u = 0; u < 4; ++u )
-//                {
-//                    int lVal = originalLeftValues[u];
-//                    int rVal = originalRightValues[u];
-//                    
-//                    if ( val == lVal )
-//                    {
-//                        int index = srcLeft[u];
-//                        resultIndices[v] = index;
-//                    }
-//                    else if ( val == rVal )
-//                    {
-//                        int index = srcRight[u];
-//                        resultIndices[v] = index;
-//                    }
-//                }
-//            }
-//            
-//            sortIndices[i] = resultIndices;
-////            i 120: [      480,      482,      483,      481]
-////            i 121: [      485,      487,      486,      484]
-////            i 122: [      491,      490,      488,      489]
-////            i 123: [      494,      492,      495,      493]
-//
-//
-//            
         }
         else
         {
+
 //            srcLeft = (srcLeft & ~mask) | (srcRight & mask);
-//            leftValues = (leftValues & ~mask) | (rightValues & mask);
             leftValues = valueMask(leftValues, rightValues, ~mask);
             srcLeft = valueMask(srcLeft, srcRight, ~mask);
             
@@ -615,53 +715,8 @@ kernel void bitonic_sort(const device Particle* inParticles [[ buffer(1) ]],
 //            mask = (srcLeft < srcRight) ^ imask11;
             mask = (leftValues < rightValues) ^ imask11;
             
-            
-            // TEST
+//          theArray[i] = (srcLeft & ~mask) | (srcRight & mask);
             sortIndices[i] = valueMask(srcLeft, srcRight, ~mask);
-//            return;
-//            
-//            
-////            theArray[i] = (srcLeft & ~mask) | (srcRight & mask);
-//            
-////            int4 resultValues = (leftValues & ~mask) | (rightValues & mask);
-//            int4 resultValues = valueMask(leftValues, rightValues, ~mask);
-//            
-//            // TEST
-//            // THIS is looking good!
-////            sortIndices[i] = resultValues;
-////            i 120: [    27303,    31478,    32925,    38968] // ascending
-////            i 121: [    35177,    18379,    14640,     8679] // descending
-////            i 122: [     5474,     8251,    27157,    63838]
-////            i 123: [    33721,    31185,    29560,     9335]
-////            return;
-//
-//            int4 resultIndices(-1);
-//            
-//            // REMAP the values to the indices
-//            // BILL
-//            for ( int v = 0; v < 4; ++v )
-//            {
-//                int val = resultValues[v];
-//                
-//                for ( int u = 0; u < 4; ++u )
-//                {
-//                    int lVal = originalLeftValues[u];
-//                    int rVal = originalRightValues[u];
-//                    
-//                    if ( val == lVal )
-//                    {
-//                        int index = srcLeft[u];
-//                        resultIndices[v] = index;
-//                    }
-//                    else if ( val == rVal )
-//                    {
-//                        int index = srcRight[u];
-//                        resultIndices[v] = index;
-//                    }
-//                }
-//            }
-//            
-//            sortIndices[i] = resultIndices;
         }
     }
 }
