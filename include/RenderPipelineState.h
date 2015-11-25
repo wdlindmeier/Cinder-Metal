@@ -24,7 +24,6 @@ namespace cinder { namespace mtl {
         {
             Format() :
             mSampleCount(1)
-            ,mDepthEnabled(false)
             ,mBlendingEnabled(false)
             ,mColorBlendOperation(0) // MTLBlendOperationAdd
             ,mAlphaBlendOperation(0) // MTLBlendOperationAdd
@@ -37,7 +36,6 @@ namespace cinder { namespace mtl {
             {}
 
             FORMAT_OPTION(sampleCount, SampleCount, int)
-            FORMAT_OPTION(depthEnabled, DepthEnabled, bool)
             FORMAT_OPTION(blendingEnabled, BlendingEnabled, bool)
             FORMAT_OPTION(colorBlendOperation, ColorBlendOperation, int)
             FORMAT_OPTION(alphaBlendOperation, AlphaBlendOperation, int)

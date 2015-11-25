@@ -11,14 +11,13 @@
 #include "MetalConstants.h"
 #include <simd/simd.h>
 
-#define kParticleDimension 32 // 1024 particles. should be a power of 2
+#define kParticleDimension 128 // Must be a power of 2 for the bitonic sort to work
 #define kNumStages  8
 #define kNumPasses  8
 
-
 struct sortState_t
 {
-    unsigned int direction = 1;
+    unsigned int direction = 1; // 1 == ascending, 0 == descending
     unsigned int stage = 0;
     unsigned int pass = 0;
     unsigned int passNum = 0;
@@ -27,7 +26,7 @@ struct sortState_t
 
 struct debugInfo_t
 {
-    vector_uint4 int4s[16];
+    vector_int4 int4s[16];
     
     unsigned int completedStages[kNumStages];
     unsigned int completedPasses[kNumPasses];
@@ -45,6 +44,15 @@ struct debugInfo_t
     unsigned int lastStage = 999;
     
     unsigned int numTimesAccessed = 0;
+    
+    int duplicateBlock = -1;
+    bool hasDuplicateIndices = false;
+    vector_int4 duplicateIndices;
+    vector_int4 duplicateIndicesStart;
+    int duplicateStage = -1;
+    int duplicatePass = -1;
+    int duplicateIndex = -1;
+    
 };
 
 struct myUniforms_t
