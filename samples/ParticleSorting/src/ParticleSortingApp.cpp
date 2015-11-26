@@ -80,8 +80,6 @@ public:
     float mModelScale;
 };
 
-#include <UIKit/UIKit.h>
-
 void ParticleSortingApp::setup()
 {
     mConstantDataBufferIndex = 0;

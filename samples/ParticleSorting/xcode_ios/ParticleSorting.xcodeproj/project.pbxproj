@@ -13,7 +13,7 @@
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		21077A5D96B547ED84A88497 /* ParticleSortingApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.mm */; };
+		21077A5D96B547ED84A88497 /* ParticleSortingApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.cpp */; };
 		24B2E43F726B454BBB739D52 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B42A687E01D8407A96A943A3 /* LaunchScreen.xib */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
@@ -114,7 +114,7 @@
 		C7FB19D5124BC0D70045AFD2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D081285BBDAD40388F688E90 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		DDDDDF6A1138442D0091DDDD /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ParticleSortingApp.mm; path = ../src/ParticleSortingApp.mm; sourceTree = "<group>"; };
+		E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleSortingApp.cpp; path = ../src/ParticleSortingApp.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,7 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				A99166CA1BF2CFEC006F710D /* Shaders.metal */,
-				E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.mm */,
+				E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.cpp */,
 				A9C4747E1BF6D02B0015B236 /* SharedData.h */,
 			);
 			name = Source;
@@ -366,7 +366,7 @@
 				A99166BC1BF2CFCA006F710D /* RenderPassDescriptor.mm in Sources */,
 				A99166C01BF2CFCA006F710D /* VertexBuffer.cpp in Sources */,
 				A99166B61BF2CFCA006F710D /* DepthState.mm in Sources */,
-				21077A5D96B547ED84A88497 /* ParticleSortingApp.mm in Sources */,
+				21077A5D96B547ED84A88497 /* ParticleSortingApp.cpp in Sources */,
 				A99166D21BF4FAC1006F710D /* CommandEncoder.mm in Sources */,
 				A99166BF1BF2CFCA006F710D /* TextureBuffer.mm in Sources */,
 				A99166B31BF2CFCA006F710D /* CommandBuffer.mm in Sources */,
