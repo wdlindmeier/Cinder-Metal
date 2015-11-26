@@ -186,8 +186,8 @@
 		00692BD914FF149000D0A05E /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				A99166CA1BF2CFEC006F710D /* Shaders.metal */,
 				E4A461BA30D443E9B5C1AC72 /* ParticleSortingApp.cpp */,
+				A99166CA1BF2CFEC006F710D /* Shaders.metal */,
 				A9C4747E1BF6D02B0015B236 /* SharedData.h */,
 			);
 			name = Source;
