@@ -36,10 +36,10 @@ CommandBuffer(mtlCommandBuffer)
     assert( [(__bridge id)mtlDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
 }
 
-RenderEncoderRef RenderBuffer::createRenderEncoderWithDescriptor( RenderPassDescriptorRef descriptor,
-                                                                  const std::string & encoderName )
+RenderEncoderRef RenderBuffer::createRenderEncoder( RenderPassDescriptorRef descriptor,
+                                                    const std::string & encoderName )
 {
-    return CommandBuffer::createRenderEncoderWithDescriptor(descriptor, (__bridge void *)DRAWABLE.texture);
+    return CommandBuffer::createRenderEncoder(descriptor, (__bridge void *)DRAWABLE.texture);
 }
 
 void RenderBuffer::commitAndPresent()

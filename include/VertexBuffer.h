@@ -25,9 +25,6 @@ namespace cinder
             
         public:
 
-            // NOTE:
-            // The geom::Attr shader indices have defaults, donus in MetalConstants.h
-            
             static VertexBufferRef create( const ci::geom::AttribSet & requestedAttribs = {{}},
                                            ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
 
@@ -43,7 +40,8 @@ namespace cinder
                                         int shaderBufferIndex = -1 );
             DataBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
             
-            // Override the default shader indices
+            // Override the default shader indices.
+            // The default geom::Attr shader indices are defined in MetalConstants.h
             void setAttributeShaderIndex( const ci::geom::Attrib attr, int shaderBufferIndex );
             
             template<typename T>

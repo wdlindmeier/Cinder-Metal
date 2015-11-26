@@ -28,14 +28,16 @@ RendererMetal::~RendererMetal(){}
 #if defined( CINDER_MAC )
 void RendererMetal::setup( CGRect frame, NSView *cinderView, RendererRef sharedRenderer, bool retinaEnabled )
 {
-    // TODO
-    console() << "TODO: Setup for mac\n";
+    mImpl = [[RendererMetalImpl alloc] initWithFrame: frame
+                                          cinderView: cinderView
+                                            renderer: this
+                                             options: mOptions ];
 };
 #elif defined( CINDER_COCOA_TOUCH )
 void RendererMetal::setup( const Area &frame, UIView *cinderView, RendererRef sharedRenderer )
 {
     mImpl = [[RendererMetalImpl alloc] initWithFrame: cocoa::createCgRect( frame )
-                                          cinderView: (UIView *)cinderView
+                                          cinderView: cinderView
                                             renderer: this
                                              options: mOptions ];
 };

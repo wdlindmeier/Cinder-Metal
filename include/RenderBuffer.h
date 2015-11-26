@@ -31,8 +31,9 @@ namespace cinder { namespace mtl {
         
         void commitAndPresent();
         
-        RenderEncoderRef createRenderEncoderWithDescriptor( RenderPassDescriptorRef renderDescriptor,
-                                                            const std::string & encoderName = "Default Render Encoder" );
+        // Creates a render coder for the main draw loop using the next "drawable".
+        RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef renderDescriptor,
+                                              const std::string & encoderName = "Default Render Encoder" );
         
     protected:
         

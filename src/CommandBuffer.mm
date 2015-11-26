@@ -28,7 +28,6 @@ CommandBuffer::CommandBuffer( void * mtlCommandBuffer )
 :
 mImpl(mtlCommandBuffer)
 {
-     // <MTLCommandBuffer>
     assert( mtlCommandBuffer != NULL );
     assert( [(__bridge id)mtlCommandBuffer conformsToProtocol:@protocol(MTLCommandBuffer)] );
     CFRetain(mImpl);
@@ -39,9 +38,9 @@ CommandBuffer::~CommandBuffer()
     CFRelease(mImpl);
 }
 
-RenderEncoderRef CommandBuffer::createRenderEncoderWithDescriptor( RenderPassDescriptorRef descriptor,
-                                                                   void *drawableTexture,
-                                                                   const std::string & encoderName )
+RenderEncoderRef CommandBuffer::createRenderEncoder( RenderPassDescriptorRef descriptor,
+                                                     void *drawableTexture,
+                                                     const std::string & encoderName )
 {
     descriptor->applyToDrawableTexture(drawableTexture);
 

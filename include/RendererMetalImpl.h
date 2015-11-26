@@ -17,7 +17,11 @@
 {
     BOOL mLayerSizeDidUpdate;
     cinder::app::RendererMetal  *mRenderer;
+#if defined( CINDER_MAC )
+    NSView  *mCinderView;
+#elif defined( CINDER_COCOA_TOUCH )
     UIView  *mCinderView;
+#endif
 }
 
 @property (nonatomic, strong) id <MTLDevice> device;
@@ -26,11 +30,17 @@
 @property (nonatomic, strong) CAMetalLayer *metalLayer;
 
 + (instancetype)sharedRenderer;
+#if defined( CINDER_MAC )
+- (instancetype)initWithFrame:(CGRect)frame
+                   cinderView:(NSView *)cinderView
+                     renderer:(cinder::app::RendererMetal *)renderer
+                      options:(cinder::app::RendererMetal::Options &)options;
+#elif defined( CINDER_COCOA_TOUCH )
 - (instancetype)initWithFrame:(CGRect)frame
                    cinderView:(UIView *)cinderView
                      renderer:(cinder::app::RendererMetal *)renderer
                       options:(cinder::app::RendererMetal::Options &)options;
-
+#endif
 - (void)setFrameSize:(CGSize)newSize;
 
 - (void)startDraw;

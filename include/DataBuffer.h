@@ -22,24 +22,25 @@ namespace cinder { namespace mtl {
     
     class DataBuffer
     {
-        
-        // friend class RenderEncoder;
-        
+
     public:
         
         // Data stored at pointer will be copied into the buffer
         // static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label );
-        static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Default Vert Buffer" ){
+        static DataBufferRef create( unsigned long length, const void * pointer, const std::string & label = "Default Vert Buffer" )
+        {
             return DataBufferRef( new DataBuffer(length, pointer, label) );
         }
         
         template <typename T>
-        static DataBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Default Vert Buffer" ){
+        static DataBufferRef create( const std::vector<T> & dataVector, const std::string & label = "Default Vert Buffer" )
+        {
             return DataBufferRef( new DataBuffer(dataVector, label) );
         }
         
         virtual ~DataBuffer();
         
+        // A pointer to the data
         void * contents();
         
         template <typename T>
@@ -68,8 +69,6 @@ namespace cinder { namespace mtl {
         
         DataBuffer( unsigned long length, const void * pointer, const std::string & label );
         void init( unsigned long length, const void * pointer, const std::string & label );
-//        template <typename T>
-//        DataBuffer( const std::vector<T> & dataVector, const std::string & label );
         
         template <typename T>
         DataBuffer( const std::vector<T> & dataVector, const std::string & label )
@@ -77,7 +76,6 @@ namespace cinder { namespace mtl {
             unsigned long vectorSize = sizeof(dataVector) + (sizeof(T) * dataVector.size());
             init(vectorSize, dataVector.data(), label);
         }
-
 
         void * mImpl = NULL; // <MTLBuffer>
         

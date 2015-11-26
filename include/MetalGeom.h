@@ -26,17 +26,18 @@ namespace cinder {
             
             // Converts ci::geom::Primitive into (ObjC) MTLPrimitiveType
             // Returns MTLPrimitiveType (must be cast)
-            int nativeMTLPrimativeTypeFromGeom( const ci::geom::Primitive geomPrimitive );
+            extern int nativeMTLPrimativeTypeFromGeom( const ci::geom::Primitive geomPrimitive );
 
             // Converts ci::mtl::geom::Primitive into (ObjC) MTLPrimitiveType
             // Returns MTLPrimitiveType (must be cast)
-            int nativeMTLPrimitiveType( const ci::mtl::geom::Primitive primitive );
+            extern int nativeMTLPrimitiveType( const ci::mtl::geom::Primitive primitive );
             
             // Converts ci::geom::Primitive into a mtl::geom::Primitive
-            Primitive mtlPrimitiveTypeFromGeom( const ci::geom::Primitive primitive );
+            extern Primitive mtlPrimitiveTypeFromGeom( const ci::geom::Primitive primitive );
             
             // Returns the shader index associated with a given attribute
-            int defaultShaderIndexForAttribute( const ci::geom::Attrib attr );
+            extern int defaultShaderIndexForAttribute( const ci::geom::Attrib attr );
+            
         }
     }
 }

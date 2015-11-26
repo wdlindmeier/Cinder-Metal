@@ -139,21 +139,15 @@ void ParticleSortingApp::update()
 {
     mRotation += 0.0015f;
 
+    // Create the matrices
     mat4 modelMatrix = glm::rotate(mRotation, vec3(1.0f, 1.0f, 1.0f));
     modelMatrix = glm::scale(modelMatrix, vec3(mModelScale));
-    
-    mat4 normalMatrix = inverse(transpose(modelMatrix));
     mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
     mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
     
-    // Is there a clean way to automatically wrap these up?
-    mUniforms.normalMatrix = toMtl(normalMatrix);
+    // Set the uniform data
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-    mUniforms.viewMatrix = toMtl(mCamera.getViewMatrix());
-    mUniforms.inverseViewMatrix = toMtl(mCamera.getInverseViewMatrix());
-    mUniforms.inverseModelMatrix = toMtl(inverse(modelMatrix));
     mUniforms.modelMatrix = toMtl(modelMatrix);
-    mUniforms.modelViewMatrix = toMtl(modelViewMatrix);
     mDynamicConstantBuffer->setData( &mUniforms, mConstantDataBufferIndex );
     
     bitonicSort( false );

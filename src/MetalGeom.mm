@@ -4,11 +4,6 @@
 #include "MetalConstants.h"
 #include <Metal/Metal.h>
 
-//using namespace cinder;
-//using namespace cinder::mtl;
-//using namespace cinder::mtl::geom;
-//
-
 namespace cinder { namespace mtl { namespace geom {
 
     int nativeMTLPrimativeTypeFromGL( const ci::geom::Primitive primitive )

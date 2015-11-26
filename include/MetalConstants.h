@@ -7,7 +7,6 @@
 //
 
 #pragma once
-//#include "MetalHelpers.hpp"
 
 // Default Metal shader indices
 

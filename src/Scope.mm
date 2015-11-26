@@ -52,7 +52,7 @@ ScopedRenderEncoder::ScopedRenderEncoder( RenderBufferRef renderBuffer,
                                           const RenderPassDescriptorRef descriptor,
                                           const std::string & encoderName )
 {
-    mInstance = renderBuffer->createRenderEncoderWithDescriptor(descriptor, encoderName);
+    mInstance = renderBuffer->createRenderEncoder(descriptor, encoderName);
 }
 
 ScopedRenderEncoder::~ScopedRenderEncoder()

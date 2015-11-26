@@ -45,11 +45,17 @@ static RendererMetalImpl * SharedRenderer = nil;
 {
     return mInflightSemaphore;
 }
-
+#if defined( CINDER_MAC )
+- (instancetype)initWithFrame:(CGRect)frame
+                   cinderView:(NSView *)cinderView
+                     renderer:(cinder::app::RendererMetal *)renderer
+                      options:(cinder::app::RendererMetal::Options &)options;
+#elif defined( CINDER_COCOA_TOUCH )
 - (instancetype)initWithFrame:(CGRect)frame
                    cinderView:(UIView *)cinderView
                      renderer:(cinder::app::RendererMetal *)renderer
                       options:(cinder::app::RendererMetal::Options &)options
+#endif
 {
     if ( SharedRenderer )
     {

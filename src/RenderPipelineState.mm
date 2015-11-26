@@ -33,16 +33,13 @@ mFormat(format)
     // Load the fragment program into the library
     id <MTLFunction> fragmentProgram = [library newFunctionWithName:
                                         [NSString stringWithUTF8String:fragShaderName.c_str()]];
-//                                        (__bridge NSString *)createCfString(fragShaderName)];
     
     // Load the vertex program into the library
     id <MTLFunction> vertexProgram = [library newFunctionWithName:
                                       [NSString stringWithUTF8String:vertShaderName.c_str()]];
-//                                      (__bridge NSString *)createCfString(vertShaderName)];
     
     // Create a reusable pipeline state
     MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-//    pipelineStateDescriptor.label = (__bridge NSString *)createCfString(format.getLabel());
     pipelineStateDescriptor.label = [NSString stringWithUTF8String:format.getLabel().c_str()];
     [pipelineStateDescriptor setSampleCount: format.getSampleCount()];
     [pipelineStateDescriptor setVertexFunction:vertexProgram];

@@ -12,9 +12,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace cinder::mtl;
 
-// Max API memory buffer size.
-static const size_t MAX_BYTES_PER_FRAME = 1024*1024;
-
 // Raw cube data. Layout is positionX, positionY, positionZ, normalX, normalY, normalZ
 float cubeVertexData[216] =
 {
@@ -41,9 +38,9 @@ class MetalCubeApp : public App {
     VertexBufferRef mAttribBufferCube;
     vector<vec3> mPositions;
 
-    PipelineStateRef mPipelineInterleavedLighting;
-    PipelineStateRef mPipelineGeomLighting;
-    PipelineStateRef mPipelineAttribLighting;
+    RenderPipelineStateRef mPipelineInterleavedLighting;
+    RenderPipelineStateRef mPipelineGeomLighting;
+    RenderPipelineStateRef mPipelineAttribLighting;
     
     SamplerStateRef mSamplerMipMapped;
     DepthStateRef mDepthEnabled;
@@ -85,16 +82,20 @@ void MetalCubeApp::resize()
 void MetalCubeApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = DataBuffer::create(MAX_BYTES_PER_FRAME, nullptr, "Uniform Buffer");
+    mDynamicConstantBuffer = DataBuffer::create(sizeof(ciUniforms_t) * kNumInflightBuffers,
+                                                nullptr,
+                                                "Uniform Buffer");
     
     // EXAMPLE 1
     // Use raw, interleaved vertex data
     mVertexBuffer = DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
                                        cubeVertexData,          // the data
                                        "Interleaved Vertices"); // the name of the buffer
-    mPipelineInterleavedLighting = PipelineState::create("lighting_vertex_interleaved",
-                                                         "lighting_fragment",
-                                                         PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
+    
+    mPipelineInterleavedLighting = RenderPipelineState::create("lighting_vertex_interleaved",
+                                                               "lighting_fragment",
+                                                               RenderPipelineState::Format()
+                                                               .blendingEnabled(true) );
 
     // EXAMPLE 2
     // Use a geom source
@@ -103,9 +104,11 @@ void MetalCubeApp::loadAssets()
                                              ci::geom::POSITION,  // which will be sent to the shader.
                                              ci::geom::NORMAL,
                                              ci::geom::TEX_COORD_0 }});
-    mPipelineGeomLighting = PipelineState::create("lighting_vertex_geom",
-                                                  "lighting_texture_fragment",
-                                                  PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
+    
+    mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_geom",
+                                                        "lighting_texture_fragment",
+                                                        RenderPipelineState::Format()
+                                                        .blendingEnabled(true) );
 
     // EXAMPLE 3
     // Use attribtue buffers
@@ -128,9 +131,10 @@ void MetalCubeApp::loadAssets()
     DataBufferRef normalBuffer = DataBuffer::create(normals, "normals");
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL );
     
-    mPipelineAttribLighting = PipelineState::create("lighting_vertex_attrib_buffers",
-                                                    "lighting_fragment",
-                                                    PipelineState::Format().depthEnabled(true).blendingEnabled(true) );
+    mPipelineAttribLighting = RenderPipelineState::create("lighting_vertex_attrib_buffers",
+                                                          "lighting_fragment",
+                                                          RenderPipelineState::Format()
+                                                          .blendingEnabled(true) );
 }
 
 void MetalCubeApp::update()
@@ -161,10 +165,9 @@ void MetalCubeApp::update()
 void MetalCubeApp::draw()
 {    
     {
-        ScopedCommandBuffer commandBuffer;
-                
+        ScopedRenderBuffer renderBuffer;
         {
-            ScopedRenderEncoder renderEncoder(commandBuffer(), mRenderDescriptor);
+            ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
             
             // Enable depth
             renderEncoder()->setDepthStencilState(mDepthEnabled);
