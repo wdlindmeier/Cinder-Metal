@@ -20,8 +20,8 @@ typedef struct {
     vec3 velocity;
 } Particle;
 
-class ParticleSortingApp : public App {
-
+class ParticleSortingApp : public App
+{
 public:
     
     ParticleSortingApp() :
@@ -43,7 +43,6 @@ public:
     
     myUniforms_t mUniforms;
     DataBufferRef mDynamicConstantBuffer;
-    DataBufferRef mSortStateBuffer;
     uint8_t mConstantDataBufferIndex;
     
     float mRotation;
@@ -54,6 +53,7 @@ public:
     // Particles
     DataBufferRef mParticlesUnsorted;
     DataBufferRef mParticleIndices;
+    DataBufferRef mSortStateBuffer;
     RenderPassDescriptorRef mRenderDescriptor;
     RenderPipelineStateRef mPipelineParticles;
     TextureBufferRef mTextureParticle;

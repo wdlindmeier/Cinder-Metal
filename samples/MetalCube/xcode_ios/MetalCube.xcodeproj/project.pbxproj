@@ -230,22 +230,6 @@
 			name = Blocks;
 			sourceTree = "<group>";
 		};
-		A916E3201BD2B0710012573E /* Impls */ = {
-			isa = PBXGroup;
-			children = (
-				A920449F1BCAE05200CC8AAB /* RendererMetalImpl.h */,
-			);
-			name = Impls;
-			sourceTree = "<group>";
-		};
-		A916E3211BD2B07F0012573E /* Impls */ = {
-			isa = PBXGroup;
-			children = (
-				A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */,
-			);
-			name = Impls;
-			sourceTree = "<group>";
-		};
 		A92044831BCAD13200CC8AAB /* Cinder-Metal */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,7 +250,6 @@
 				A9EF82AB1C07CF4F00923994 /* ComputePipelineState.h */,
 				A916E3181BD2A5080012573E /* DataBuffer.h */,
 				A96C28431BEE6D9B00D847C0 /* DepthState.h */,
-				A916E3201BD2B0710012573E /* Impls */,
 				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
 				A991662F1BF02655006F710D /* MetalConstants.h */,
 				A916E3161BD2A47F0012573E /* MetalGeom.h */,
@@ -274,6 +257,7 @@
 				A9EF82AC1C07CF4F00923994 /* RenderBuffer.h */,
 				A916E3121BD15DC10012573E /* RenderEncoder.h */,
 				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
+				A920449F1BCAE05200CC8AAB /* RendererMetalImpl.h */,
 				A96C5E5F1BCDD8B5001DD6D3 /* RenderPassDescriptor.h */,
 				A9EF82AD1C07CF4F00923994 /* RenderPipelineState.h */,
 				A96C28441BEE6D9B00D847C0 /* SamplerState.h */,
@@ -296,11 +280,11 @@
 				A9EF82AF1C07CF6000923994 /* ComputePipelineState.mm */,
 				A916E31A1BD2A51A0012573E /* DataBuffer.mm */,
 				A96C283D1BEE6D5900D847C0 /* DepthState.mm */,
-				A916E3211BD2B07F0012573E /* Impls */,
 				A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */,
 				A9EF82B01C07CF6000923994 /* RenderBuffer.mm */,
 				A916E30F1BD15DA50012573E /* RenderEncoder.mm */,
 				A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */,
+				A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */,
 				A96C5E5A1BCDD87C001DD6D3 /* RenderPassDescriptor.mm */,
 				A9EF82B11C07CF6000923994 /* RenderPipelineState.mm */,
 				A96C28401BEE6D6000D847C0 /* SamplerState.mm */,

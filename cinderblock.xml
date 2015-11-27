@@ -21,6 +21,6 @@
 		
 	</block>
 
-	<!--template>templates/cinderMetalBasic/template.xml</template-->
+	<template>templates/MetalTemplate/template.xml</template>
 	
 </cinder>

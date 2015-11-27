@@ -20,7 +20,8 @@ float cubeVertexData[216] =
 
 const static int kNumInflightBuffers = 3;
 
-class MetalCubeApp : public App {
+class MetalCubeApp : public App
+{
   public:
     
     MetalCubeApp() :

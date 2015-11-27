@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00748058165D41390024B57A /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 00748057165D41390024B57A /* assets */; };
 		0087D25512CD809F002CD69F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0087D25412CD809F002CD69F /* CoreText.framework */; };
 		00A66A361965AC8800B17EB3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A66A351965AC8800B17EB3 /* Accelerate.framework */; };
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
@@ -21,7 +20,7 @@
 		3EF7B835D9624AD4BB7A60F0 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5738B97A8C2744548D4606E4 /* VertexBuffer.cpp */; };
 		4055BECB349241E88E364F51 /* RenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1D8862E2B0F34CAF861BFB4C /* RenderEncoder.mm */; };
 		4A2BF9018E924936B6C9F2E3 /* ComputeEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 463E55B9372C4369A3F91D47 /* ComputeEncoder.mm */; };
-		4BD52DFB67464EBB8CF47A74 /* MetalTemplateApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C0A2A652914017A2F9E22A /* MetalTemplateApp.cpp */; };
+		4BD52DFB67464EBB8CF47A74 /* _TBOX_PREFIX_App.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C0A2A652914017A2F9E22A /* _TBOX_PREFIX_App.cpp */; };
 		5B006D65083643AAAB88A12C /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = C06EF8F2409A422DBABDFC76 /* RenderPipelineState.mm */; };
 		5B5B383EC2E8400EB099EC58 /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 02062082FF6040F3BDF68C4E /* ComputePipelineState.mm */; };
 		87E47D6A7E6A45779B799C6C /* MetalGeom.mm in Sources */ = {isa = PBXBuildFile; fileRef = A27031AEC98648B0BBC0D3C4 /* MetalGeom.mm */; };
@@ -32,6 +31,7 @@
 		9E84F1A3A4954F9CAECA2A02 /* RenderBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FDDB97CCD55D4CC58DE4FE1F /* RenderBuffer.mm */; };
 		A66E346942494F3CB37E964A /* Scope.mm in Sources */ = {isa = PBXBuildFile; fileRef = 74BD9A776CFA4DBE928BD0F5 /* Scope.mm */; };
 		A9B786FD1BFD72890031EEE1 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9B786FC1BFD72890031EEE1 /* Metal.framework */; };
+		A9BDFE7C1C07D34800A76FD0 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A9BDFE7B1C07D34800A76FD0 /* Shaders.metal */; };
 		AD5BFF87BD8A45C9B137E194 /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 728EFC3AAC634D60808B2A56 /* RendererMetal.mm */; };
 		B5AD27F3A89A436EADB7F498 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6C9361C34839412F8B767A11 /* CommandBuffer.mm */; };
 		B9D502864B144835AB614512 /* RendererMetalImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = D91A54B19FA741EAA8EC087F /* RendererMetalImpl.mm */; };
@@ -43,13 +43,11 @@
 		C7FB19D6124BC0D70045AFD2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7FB19D5124BC0D70045AFD2 /* AudioToolbox.framework */; };
 		D63F93BC3ECA4F2FB6CAA4C7 /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FCE0AC2168134A90A9CCB84A /* DataBuffer.mm */; };
 		DDDDE001121DAC8FFFFADDDD /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDDDDF6A1138442D0091DDDD /* MobileCoreServices.framework */; };
-		E956C2E71787476FBE372E25 /* CinderApp_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = EAB30D92EF81448BA5D5C669 /* CinderApp_ios.png */; };
 		FCD099FFE7C24C7C9C4B34DE /* CommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3AD0F68378DE4AB3AE3514F6 /* CommandEncoder.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00692BCF14FF149000D0A05E /* MetalTemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalTemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		00748057165D41390024B57A /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
 		0087D25412CD809F002CD69F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		00A66A351965AC8800B17EB3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		00CFDF6A1138442D0091E310 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -67,7 +65,6 @@
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		292A9D1E482B43A1BDD3BC89 /* CommandBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandBuffer.h; path = ../../../include/CommandBuffer.h; sourceTree = "<group>"; };
 		29D6A6E3F4B4413C80763A05 /* DataBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataBuffer.h; path = ../../../include/DataBuffer.h; sourceTree = "<group>"; };
-		2AE4BC5223EF424C8E8C6BCC /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		2B13DDAE169045FE83AC6898 /* BlitEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlitEncoder.h; path = ../../../include/BlitEncoder.h; sourceTree = "<group>"; };
 		2BC61630D0C847A1BAD72612 /* MetalConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalConstants.h; path = ../../../include/MetalConstants.h; sourceTree = "<group>"; };
 		30C7CC9A742140AD9DF39DFD /* VertexBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VertexBuffer.h; path = ../../../include/VertexBuffer.h; sourceTree = "<group>"; };
@@ -93,6 +90,7 @@
 		A27031AEC98648B0BBC0D3C4 /* MetalGeom.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MetalGeom.mm; path = ../../../src/MetalGeom.mm; sourceTree = "<group>"; };
 		A53E0D94EFEE498D8B9A72B5 /* MetalHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = MetalHelpers.hpp; path = ../../../include/MetalHelpers.hpp; sourceTree = "<group>"; };
 		A9B786FC1BFD72890031EEE1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		A9BDFE7B1C07D34800A76FD0 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = ../src/Shaders.metal; sourceTree = "<group>"; };
 		B3D1A7ABD1DB4C718FB93CDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C06EF8F2409A422DBABDFC76 /* RenderPipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderPipelineState.mm; path = ../../../src/RenderPipelineState.mm; sourceTree = "<group>"; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -104,9 +102,8 @@
 		D8D7D04EC90C4B50BD747934 /* RendererMetalImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetalImpl.h; path = ../../../include/RendererMetalImpl.h; sourceTree = "<group>"; };
 		D91A54B19FA741EAA8EC087F /* RendererMetalImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetalImpl.mm; path = ../../../src/RendererMetalImpl.mm; sourceTree = "<group>"; };
 		DDDDDF6A1138442D0091DDDD /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E8C0A2A652914017A2F9E22A /* MetalTemplateApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = MetalTemplateApp.cpp; path = ../src/MetalTemplateApp.cpp; sourceTree = "<group>"; };
+		E8C0A2A652914017A2F9E22A /* _TBOX_PREFIX_App.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = _TBOX_PREFIX_App.cpp; path = ../src/_TBOX_PREFIX_App.cpp; sourceTree = "<group>"; };
 		E94DC879AE69492BB1797D77 /* RenderPipelineState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPipelineState.h; path = ../../../include/RenderPipelineState.h; sourceTree = "<group>"; };
-		EAB30D92EF81448BA5D5C669 /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = CinderApp_ios.png; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; };
 		F0B496120C1F4CD78E5488A6 /* DepthState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DepthState.h; path = ../../../include/DepthState.h; sourceTree = "<group>"; };
 		FCE0AC2168134A90A9CCB84A /* DataBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DataBuffer.mm; path = ../../../src/DataBuffer.mm; sourceTree = "<group>"; };
 		FD34028D4D8B49A2AA06A8D2 /* RenderPassDescriptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPassDescriptor.h; path = ../../../include/RenderPassDescriptor.h; sourceTree = "<group>"; };
@@ -183,7 +180,8 @@
 		00692BD914FF149000D0A05E /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E8C0A2A652914017A2F9E22A /* MetalTemplateApp.cpp */,
+				E8C0A2A652914017A2F9E22A /* _TBOX_PREFIX_App.cpp */,
+				A9BDFE7B1C07D34800A76FD0 /* Shaders.metal */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -191,8 +189,6 @@
 		00692BD914FF149000D0FFFF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				00748057165D41390024B57A /* assets */,
-				EAB30D92EF81448BA5D5C669 /* CinderApp_ios.png */,
 				D3FA912B679C406EB1859975 /* Images.xcassets */,
 				5BD91E906DC14643B0F10C71 /* LaunchScreen.xib */,
 				B3D1A7ABD1DB4C718FB93CDC /* Info.plist */,
@@ -232,7 +228,6 @@
 		99692BD914FF149000D0A05F /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				2AE4BC5223EF424C8E8C6BCC /* Resources.h */,
 				05CAC6D14E5D468AA5895A70 /* MetalTemplate_Prefix.pch */,
 			);
 			name = Headers;
@@ -330,8 +325,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00748058165D41390024B57A /* assets in Resources */,
-				E956C2E71787476FBE372E25 /* CinderApp_ios.png in Resources */,
 				9BB70E580699421D95145C19 /* Images.xcassets in Resources */,
 				8BAF0D8393C440E8AD51800A /* LaunchScreen.xib in Resources */,
 			);
@@ -344,7 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4BD52DFB67464EBB8CF47A74 /* MetalTemplateApp.cpp in Sources */,
+				4BD52DFB67464EBB8CF47A74 /* _TBOX_PREFIX_App.cpp in Sources */,
 				3EF7B835D9624AD4BB7A60F0 /* VertexBuffer.cpp in Sources */,
 				9C126805A8CB478283C64C1B /* BlitEncoder.mm in Sources */,
 				3B497DEFD3DB4E87B3132707 /* CinderViewCocoaTouch+Metal.mm in Sources */,
@@ -359,6 +352,7 @@
 				4055BECB349241E88E364F51 /* RenderEncoder.mm in Sources */,
 				AD5BFF87BD8A45C9B137E194 /* RendererMetal.mm in Sources */,
 				B9D502864B144835AB614512 /* RendererMetalImpl.mm in Sources */,
+				A9BDFE7C1C07D34800A76FD0 /* Shaders.metal in Sources */,
 				134C0E1886FB4B4EA954B97B /* RenderPassDescriptor.mm in Sources */,
 				5B006D65083643AAAB88A12C /* RenderPipelineState.mm in Sources */,
 				2C8C2605D4934BC28471B0B6 /* SamplerState.mm in Sources */,
@@ -399,7 +393,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include";
@@ -429,7 +423,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
