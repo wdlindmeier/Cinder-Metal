@@ -67,10 +67,10 @@ void ParticleSortingApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mDepthEnabled = DepthState::create( DepthState::Format().depthCompareFunction(7) );
+    mDepthEnabled = DepthState::create(DepthState::Format().depthCompareFunction(7));
     
-    mRenderDescriptor = RenderPassDescriptor::create( RenderPassDescriptor::Format()
-                                                      .clearColor( ColorAf(0.5f,0.f,1.f,1.f) ) );
+    mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
+                                                    .clearColor( ColorAf(0.5f,0.f,1.f,1.f)));
 
     loadAssets();
 }
@@ -83,13 +83,13 @@ void ParticleSortingApp::resize()
 
 void ParticleSortingApp::loadAssets()
 {
-    mDynamicConstantBuffer = DataBuffer::create( sizeof(myUniforms_t) * kNumInflightBuffers,
-                                                 nullptr,
-                                                 "Uniform Buffer" );
+    mDynamicConstantBuffer = DataBuffer::create(sizeof(myUniforms_t) * kNumInflightBuffers,
+                                                nullptr,
+                                                "Uniform Buffer");
     
-    mSortStateBuffer = DataBuffer::create( sizeof(sortState_t) * kNumSortStateBuffers,
-                                           nullptr,
-                                           "Sort State Buffer" );
+    mSortStateBuffer = DataBuffer::create(sizeof(sortState_t) * kNumSortStateBuffers,
+                                          nullptr,
+                                          "Sort State Buffer");
 
     // Set up the particles
     vector<Particle> particles;
@@ -141,8 +141,8 @@ void ParticleSortingApp::mouseDrag( MouseEvent event )
         gestureLength *= -1;
     }
     mMousePos = newPos;
-    mModelScale = ci::math<float>::clamp( mModelScale + (gestureLength / getWindowCenter().x),
-                                          1.f, 3.f );
+    mModelScale = ci::math<float>::clamp(mModelScale + (gestureLength / getWindowCenter().x),
+                                         1.f, 3.f );
 }
 
 void ParticleSortingApp::update()
@@ -206,12 +206,13 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
         // until the work is done.
         // We'll do both for demonstration.
         
-        ScopedCommandBuffer commandBuffer( shouldLogOutput ); // param value indicates if we should synchrounously wait until the work is done.
+        ScopedCommandBuffer commandBuffer(shouldLogOutput); // param value indicates if we should synchrounously wait until the work is done.
         
         if ( shouldLogOutput )
         {
             myUniforms_t uniformsCopy = mUniforms;
-            commandBuffer.addCompletionHandler([&]( void * mtlCommandBuffer ){
+            commandBuffer.addCompletionHandler([&]( void * mtlCommandBuffer )
+            {
                 logComputeOutput(uniformsCopy);
             });
         }
@@ -229,20 +230,20 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
                 sortState.direction = 1; // ascending
                 mSortStateBuffer->setData(&sortState, passNum);
                 
-                computeEncoder()->setPipelineState( mPipelineBitonicSort );
+                computeEncoder()->setPipelineState(mPipelineBitonicSort);
                 
-                computeEncoder()->setBufferAtIndex( mParticleIndices, 1 );
-                computeEncoder()->setBufferAtIndex( mParticlesUnsorted, 2 );
-                computeEncoder()->setBufferAtIndex( mSortStateBuffer, 3, sizeof(sortState_t) * passNum );
+                computeEncoder()->setBufferAtIndex(mParticleIndices, 1);
+                computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
+                computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3, sizeof(sortState_t) * passNum);
 
-                computeEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
+                computeEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
                 
                 size_t gsz = arraySize / (2*4);
                 // NOTE: work size is not 1-per vector.
                 // Its the number of quad items in input array
-                size_t global_work_size = passOfStage ? gsz : gsz << 1;
+                size_t globalWorkSize = passOfStage ? gsz : gsz << 1;
                 
-                computeEncoder()->dispatch( ivec3( global_work_size, 1, 1), ivec3( 32, 1, 1 ) );
+                computeEncoder()->dispatch(ivec3(globalWorkSize, 1, 1), ivec3(32,1,1));
                 assert( passNum < kNumSortStateBuffers );
                 passNum++;
             }
@@ -259,26 +260,26 @@ void ParticleSortingApp::draw()
     ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
 
     // Set uniforms
-    renderEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
+    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
     
     // Enable depth
-    renderEncoder()->setDepthStencilState( mDepthEnabled );
+    renderEncoder()->setDepthStencilState(mDepthEnabled);
 
     // Draw particles
     renderEncoder()->pushDebugGroup("Draw Particles");
     
     // Set the program
-    renderEncoder()->setPipelineState( mPipelineParticles );
+    renderEncoder()->setPipelineState(mPipelineParticles);
 
     // Pass in the unsorted particles
-    renderEncoder()->setBufferAtIndex( mParticlesUnsorted, ciBufferIndexInterleavedVerts );
+    renderEncoder()->setBufferAtIndex(mParticlesUnsorted, ciBufferIndexInterleavedVerts);
 
     // Pass in the sorted particle indices
-    renderEncoder()->setBufferAtIndex( mParticleIndices, ciBufferIndexIndicies );
+    renderEncoder()->setBufferAtIndex(mParticleIndices, ciBufferIndexIndicies);
 
     renderEncoder()->setTexture(mTextureParticle);
     
-    renderEncoder()->draw( mtl::geom::POINT, mUniforms.numParticles );
+    renderEncoder()->draw(mtl::geom::POINT, mUniforms.numParticles);
 
     renderEncoder()->popDebugGroup();
     
@@ -286,7 +287,7 @@ void ParticleSortingApp::draw()
 }
 
 CINDER_APP( ParticleSortingApp,
-            RendererMetal( RendererMetal::Options()
+            RendererMetal(RendererMetal::Options()
                           .numInflightBuffers(kNumInflightBuffers)),
             []( ParticleSortingApp::Settings *settings )
             {

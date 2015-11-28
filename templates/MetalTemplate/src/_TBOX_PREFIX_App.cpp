@@ -6,22 +6,15 @@ using namespace ci::app;
 using namespace std;
 using namespace cinder::mtl;
 
-const static int kNumInflightBuffers = 3;
-
 class _TBOX_PREFIX_App : public App
 {
 public:
-    
-    _TBOX_PREFIX_App() :
-    mUniformBufferIndex(0)
-    {}
     
     void setup() override;
     void resize() override;
     void update() override;
     void draw() override;
     
-    uint8_t mUniformBufferIndex;
     RenderPassDescriptorRef mRenderDescriptor;
 };
 
@@ -51,9 +44,6 @@ void _TBOX_PREFIX_App::draw()
     ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
     
     // Put your drawing here
-
-    mUniformBufferIndex = (mUniformBufferIndex + 1) % kNumInflightBuffers;
 }
 
-CINDER_APP( _TBOX_PREFIX_App, RendererMetal( RendererMetal::Options()
-                                            .numInflightBuffers(kNumInflightBuffers) ) )
+CINDER_APP( _TBOX_PREFIX_App, RendererMetal )

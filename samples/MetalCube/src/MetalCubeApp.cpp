@@ -65,11 +65,11 @@ void MetalCubeApp::setup()
     mSamplerMipMapped = SamplerState::create();
     mDepthEnabled = DepthState::create();
     
-    mRenderDescriptor = RenderPassDescriptor::create( RenderPassDescriptor::Format()
-                                                      .clearColor( ColorAf(1.f,0.f,0.f,1.f) ) );
+    mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
+                                                     .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
 
-    mTexture = TextureBuffer::create( loadImage( getAssetPath("checker.png") ),
-                                      TextureBuffer::Format().mipmapLevel(4) );
+    mTexture = TextureBuffer::create(loadImage(getAssetPath("checker.png")),
+                                     TextureBuffer::Format().mipmapLevel(4));
     
     loadAssets();
 }
@@ -96,11 +96,11 @@ void MetalCubeApp::loadAssets()
     mPipelineInterleavedLighting = RenderPipelineState::create("lighting_vertex_interleaved",
                                                                "lighting_fragment",
                                                                RenderPipelineState::Format()
-                                                               .blendingEnabled(true) );
+                                                               .blendingEnabled(true));
 
     // EXAMPLE 2
     // Use a geom source
-    mGeomBufferCube = VertexBuffer::create( ci::geom::Cube(),     // A geom source
+    mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(),     // A geom source
                                            {{ci::geom::INDEX,     // Pass in the requested attributes
                                              ci::geom::POSITION,  // which will be sent to the shader.
                                              ci::geom::NORMAL,
@@ -109,7 +109,7 @@ void MetalCubeApp::loadAssets()
     mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_geom",
                                                         "lighting_texture_fragment",
                                                         RenderPipelineState::Format()
-                                                        .blendingEnabled(true) );
+                                                        .blendingEnabled(true));
 
     // EXAMPLE 3
     // Use attribtue buffers
@@ -128,9 +128,9 @@ void MetalCubeApp::loadAssets()
     mAttribBufferCube = VertexBuffer::create();
     mPositions = positions;
     DataBufferRef positionBuffer = DataBuffer::create(mPositions, "positions");
-    mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION );
+    mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
     DataBufferRef normalBuffer = DataBuffer::create(normals, "normals");
-    mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL );
+    mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
     mPipelineAttribLighting = RenderPipelineState::create("lighting_vertex_attrib_buffers",
                                                           "lighting_fragment",
@@ -145,11 +145,11 @@ void MetalCubeApp::update()
     mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
     mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
 
-    // Is there a clean way to automatically wrap these up?
+    // Pass the matrices into the uniform block
     mUniforms.normalMatrix = toMtl(normalMatrix);
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.elapsedSeconds = getElapsedSeconds();
-    mDynamicConstantBuffer->setData( &mUniforms, mConstantDataBufferIndex );
+    mDynamicConstantBuffer->setData(&mUniforms, mConstantDataBufferIndex);
     
     mRotation += 0.01f;
 
@@ -157,30 +157,29 @@ void MetalCubeApp::update()
     vector<vec3> newPositions;
     for ( vec3 & v : mPositions )
     {
-        newPositions.push_back( (v + vec3(0,1,0)) // offset along Y
-                                * (1.f + (float(1.0f + sin(getElapsedSeconds())) * 0.5f ) ) );
+        newPositions.push_back((v + vec3(0,1,0))
+                               * (1.f + (float(1.0f + sin(getElapsedSeconds())) * 0.5f )));
     }
     mAttribBufferCube->update(ci::geom::POSITION, newPositions);
 }
 
 void MetalCubeApp::draw()
 {    
-    {
-        ScopedRenderBuffer renderBuffer;
-        {
-            ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
-            
-            // Enable depth
-            renderEncoder()->setDepthStencilState(mDepthEnabled);
+    ScopedRenderBuffer renderBuffer;
+    ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
+    
+    // Enable depth
+    renderEncoder()->setDepthStencilState(mDepthEnabled);
 
-            // Enable mip-mapping
-            renderEncoder()->setFragSamplerState(mSamplerMipMapped);
-            
-            uint constantsOffset = (sizeof(ciUniforms_t) * mConstantDataBufferIndex);
-            renderEncoder()->setUniforms( mDynamicConstantBuffer, constantsOffset );
-            
-            // EXAMPLE 1
-            // Using interleaved data
+    // Enable mip-mapping
+    renderEncoder()->setFragSamplerState(mSamplerMipMapped);
+    
+    uint constantsOffset = (sizeof(ciUniforms_t) * mConstantDataBufferIndex);
+    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
+    
+    
+    // EXAMPLE 1
+    // Using interleaved data
 //            renderEncoder()->pushDebugGroup("Draw Interleaved Cube");
 //
 //            // Set the program
@@ -194,41 +193,37 @@ void MetalCubeApp::draw()
 //            renderEncoder()->draw(mtl::geom::TRIANGLE, 36);
 //            renderEncoder()->popDebugGroup();
 
-            
-            // EXAMPLE 2
-            // Using Cinder geom to draw the cube
-            
-            // Geom Target
-            renderEncoder()->pushDebugGroup("Draw Geom Cube");
-            
-            // Set the program
-            renderEncoder()->setPipelineState( mPipelineGeomLighting );
+    
+    // EXAMPLE 2
+    // Using Cinder geom to draw the cube
+    
+    // Geom Target
+    renderEncoder()->pushDebugGroup("Draw Geom Cube");
+    
+    // Set the program
+    renderEncoder()->setPipelineState(mPipelineGeomLighting);
 
-            // Set the texture
-            renderEncoder()->setTexture( mTexture );
+    // Set the texture
+    renderEncoder()->setTexture(mTexture);
 
-            // Draw
-            mGeomBufferCube->draw( renderEncoder() );
+    // Draw
+    mGeomBufferCube->draw(renderEncoder());
 
-            renderEncoder()->popDebugGroup();
+    renderEncoder()->popDebugGroup();
 
-            
-            // EXAMPLE 3
-            // Using attrib buffers to draw the cube
-            
-            // Geom Target
-            renderEncoder()->pushDebugGroup("Draw Attrib Cube");
-            
-            // Set the program
-            renderEncoder()->setPipelineState( mPipelineAttribLighting );
+    
+    // EXAMPLE 3
+    // Using attrib buffers to draw the cube
+    
+    // Geom Target
+    renderEncoder()->pushDebugGroup("Draw Attrib Cube");
+    
+    // Set the program
+    renderEncoder()->setPipelineState(mPipelineAttribLighting);
 
-            mAttribBufferCube->draw( renderEncoder(), 36 );
-            
-            renderEncoder()->popDebugGroup();
-
-        } // scoped render encoder
-        
-    } // scoped command buffer
+    mAttribBufferCube->draw(renderEncoder(), 36);
+    
+    renderEncoder()->popDebugGroup();
     
     mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }

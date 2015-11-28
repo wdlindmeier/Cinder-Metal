@@ -15,18 +15,14 @@ using namespace metal;
 
 typedef struct
 {
-    packed_float3 position;
-    packed_float3 normal;
-} vertex_t;
-
-typedef struct {
     float4 position [[position]];
     float pointSize [[point_size]];
     float4 color;
     float2 texCoords;
 } ColorInOut;
 
-typedef struct {
+typedef struct
+{
     packed_float3 position;
     packed_float3 velocity;
 } Particle;
@@ -43,11 +39,11 @@ int keyForDepth( float depth )
 
 // Convert the indices into the sortable values (0 .. large num)
 int4 indexSortKeys( int4 indices,
-                   const device Particle* inParticles,
-                   constant myUniforms_t& uniforms );
+                    const device Particle* inParticles,
+                    constant myUniforms_t& uniforms );
 int4 indexSortKeys( int4 indices,
-                   const device Particle* inParticles,
-                   constant myUniforms_t& uniforms )
+                    const device Particle* inParticles,
+                    constant myUniforms_t& uniforms )
 {
     int4 depths(0);
     for ( int a = 0; a < 4; ++a )
@@ -76,9 +72,9 @@ int4 vecMask( int4 leftValues, int4 rightValues, bool4 mask )
 // which is necessary when using a bitonic sort, otherwise it's possible to lose particles.
 // This assumes that the indices are unique.
 bool4 ltMask( int4 leftValues, int4 rightValues,
-             int4 leftIndices, int4 rightIndices );
+              int4 leftIndices, int4 rightIndices );
 bool4 ltMask( int4 leftValues, int4 rightValues,
-             int4 leftIndices, int4 rightIndices )
+              int4 leftIndices, int4 rightIndices )
 {
     bool4 ret(false);
     
