@@ -30,14 +30,20 @@ namespace cinder {
             {
             public:
                 
-                Options() : mMaxInflightBuffers(3) {}
+                Options() :
+                mMaxInflightBuffers(3)
+                ,mFramebufferOnly(true)
+                {}
                 
                 Options & numInflightBuffers( int numInflightBuffers ){ mMaxInflightBuffers = numInflightBuffers; return *this; };
                 const int getNumInflightBuffers() const { return mMaxInflightBuffers; }
+                Options & framebufferOnly( bool framebufferOnly ){ mFramebufferOnly = framebufferOnly; return *this; };
+                const int getFramebufferOnly() const { return mFramebufferOnly; }
                 
             protected:
                 
                 int mMaxInflightBuffers;
+                bool mFramebufferOnly;
                 
             };
             

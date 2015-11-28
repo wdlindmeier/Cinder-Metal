@@ -40,8 +40,12 @@ namespace cinder { namespace mtl {
         ScopedRenderBuffer( bool waitUntilCompleted = false,
                             const std::string & bufferName = "Scoped Render Buffer" );
         ~ScopedRenderBuffer();
+        void addCompletionHandler( std::function< void( void * mtlCommandBuffer) > handler ){
+            mCompletionHandler = handler;
+        }
     private:
         bool mWaitUntilCompleted;
+        std::function< void( void * mtlCommandBuffer) > mCompletionHandler;
     };
 
     struct ScopedRenderEncoder : public ScopedT< RenderEncoderRef > {

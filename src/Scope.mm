@@ -35,13 +35,14 @@ ScopedCommandBuffer::~ScopedCommandBuffer()
 ScopedRenderBuffer::ScopedRenderBuffer( bool waitUntilCompleted, const std::string & bufferName )
 :
 mWaitUntilCompleted(waitUntilCompleted)
+,mCompletionHandler(NULL)
 {
     mInstance = RenderBuffer::create(bufferName);
 };
 
 ScopedRenderBuffer::~ScopedRenderBuffer()
 {
-    mInstance->commitAndPresent();
+    mInstance->commitAndPresent( mCompletionHandler );
     if ( mWaitUntilCompleted )
     {
         mInstance->waitUntilCompleted();

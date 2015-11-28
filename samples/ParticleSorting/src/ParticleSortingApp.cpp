@@ -36,6 +36,7 @@ public:
     void draw() override;
     void mouseDown( MouseEvent event ) override;
     void mouseDrag( MouseEvent event ) override;
+
     void bitonicSort( bool shouldLogOutput );
     void logComputeOutput( const myUniforms_t uniforms );
     
@@ -60,7 +61,6 @@ public:
     
     // Sort pass
     ComputePipelineStateRef mPipelineBitonicSort;
-    
 };
 
 void ParticleSortingApp::setup()
@@ -129,10 +129,20 @@ void ParticleSortingApp::mouseDown( MouseEvent event )
 
 void ParticleSortingApp::mouseDrag( MouseEvent event )
 {
+    // As the finger moves away from the center, scale up.
     vec2 newPos = event.getPos();
     vec2 offset = newPos - mMousePos;
+    float gestureLength = length(offset);
+    if ( distance(newPos, getWindowCenter()) <
+         distance(mMousePos, getWindowCenter()) )
+    {
+        // We're getting closer to the center.
+        // Scale down.
+        gestureLength *= -1;
+    }
     mMousePos = newPos;
-    mModelScale = ci::math<float>::clamp(mModelScale + (offset.x / getWindowWidth()), 1.f, 3.f);
+    mModelScale = ci::math<float>::clamp( mModelScale + (gestureLength / getWindowCenter().x),
+                                          1.f, 3.f );
 }
 
 void ParticleSortingApp::update()
@@ -238,7 +248,6 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
             }
         }
     }
-    
 }
 
 void ParticleSortingApp::draw()
@@ -246,6 +255,7 @@ void ParticleSortingApp::draw()
     uint constantsOffset = (sizeof(myUniforms_t) * mConstantDataBufferIndex);
     
     ScopedRenderBuffer renderBuffer;
+ 
     ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
 
     // Set uniforms
@@ -276,7 +286,8 @@ void ParticleSortingApp::draw()
 }
 
 CINDER_APP( ParticleSortingApp,
-            RendererMetal( RendererMetal::Options().numInflightBuffers(kNumInflightBuffers) ),
+            RendererMetal( RendererMetal::Options()
+                          .numInflightBuffers(kNumInflightBuffers)),
             []( ParticleSortingApp::Settings *settings )
             {
                 // Just observe 1 touch for scaling

@@ -71,7 +71,11 @@ static RendererMetalImpl * SharedRenderer = nil;
         // Get the layer
         CAMetalLayer *metalLayer = (CAMetalLayer *)mCinderView.layer;
         assert( [metalLayer isKindOfClass:[CAMetalLayer class]] );
-        [self setupMetal:options.getNumInflightBuffers()];
+        
+        // TEST
+        metalLayer.framebufferOnly = NO;
+        
+        [self setupMetal:options];
     }
     
     SharedRenderer = self;
@@ -79,7 +83,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     return self;
 }
 
-- (void)setupMetal:(int)numInflightBuffers
+- (void)setupMetal:(cinder::app::RendererMetal::Options &)options
 {
     self.device = MTLCreateSystemDefaultDevice();
     
@@ -91,9 +95,11 @@ static RendererMetalImpl * SharedRenderer = nil;
     // "failed assertion `Metal default library not found'"
     self.library = [self.device newDefaultLibrary];
     
-    self.metalLayer = [CAMetalLayer layer];
+    self.metalLayer = (CAMetalLayer *)mCinderView.layer;
+    
     _metalLayer.device = self.device;
     
+    int numInflightBuffers = options.getNumInflightBuffers();
     if ( numInflightBuffers > 1 )
     {
         mInflightSemaphore = dispatch_semaphore_create(numInflightBuffers);
@@ -103,15 +109,13 @@ static RendererMetalImpl * SharedRenderer = nil;
         mInflightSemaphore = nil;
     }
 
-    // Setup metal layer and add as sub layer to view
-
+    // Pixel format could be an option.
     _metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    // Change this to NO if the compute encoder is used as the last pass on the drawable texture
-    _metalLayer.framebufferOnly = YES;
+    
+    // Change this to NO if the compute encoder is used as the last pass on the drawable texture,
+    // or if you wish to copy the layer contents to an image.
+    _metalLayer.framebufferOnly = options.getFramebufferOnly();
 
-    // Add metal layer to the views layer hierarchy
-    [_metalLayer setFrame:mCinderView.layer.bounds];
-    [mCinderView.layer addSublayer:_metalLayer];
     mCinderView.opaque = YES;
     mCinderView.backgroundColor = nil;
     mCinderView.contentScaleFactor = [UIScreen mainScreen].scale;

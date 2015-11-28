@@ -229,7 +229,6 @@ mFormat(format)
         mBytesPerRow += mBytesPerRow / 3;
     }
 
-    CI_LOG_I("TODO: Account for non 2D textures.");
     assert( format.getTextureType() == MTLTextureType2D );
     MTLTextureDescriptor *desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:pxFormat
                                                                                     width:width

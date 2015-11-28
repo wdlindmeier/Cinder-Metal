@@ -249,11 +249,19 @@ ImageSourceMTLTexture::ImageSourceMTLTexture( id <MTLTexture> texture )
     
 void ImageSourceMTLTexture::getPixelData()
 {
+    if ( mRowBytes == 0 )
+    {
+        // NOTE: Sometimes mTexture.bufferBytesPerRow == 0
+        // We'll need to calculate the size now
+        int dataSize = dataSizeForType(mDataType);
+        mRowBytes = mWidth * ImageIo::channelOrderNumChannels( mChannelOrder ) * dataSize;
+    }
+    
     mData = unique_ptr<uint8_t[]>( new uint8_t[mRowBytes * mHeight] );
 
     [mTexture getBytes:mData.get()
-           bytesPerRow:mTexture.bufferBytesPerRow
-         bytesPerImage:mTexture.bufferBytesPerRow * mTexture.height
+           bytesPerRow:mRowBytes
+         bytesPerImage:mRowBytes * mTexture.height
             fromRegion:MTLRegionMake2D(0, 0, mTexture.width, mTexture.height)
            mipmapLevel:0
                  slice:0];

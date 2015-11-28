@@ -44,20 +44,21 @@ RenderEncoderRef RenderBuffer::createRenderEncoder( RenderPassDescriptorRef desc
     return CommandBuffer::createRenderEncoder(descriptor, (__bridge void *)DRAWABLE.texture);
 }
 
-ImageSourceRef RenderBuffer::createSource()
-{
-    return ImageSourceRef( new ImageSourceMTLTexture( DRAWABLE.texture ) );
-}
-
-void RenderBuffer::commitAndPresent()
+void RenderBuffer::commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler )
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
+    renderer.currentDrawable = DRAWABLE;
+
     // clean up the command buffer
     __block dispatch_semaphore_t block_sema = [renderer inflightSemaphore];
     if ( block_sema != nil )
     {
         [IMPL addCompletedHandler:^(id<MTLCommandBuffer> buffer)
          {
+             if ( completionHandler != NULL )
+             {
+                 completionHandler( (__bridge void *) buffer );
+             }
              dispatch_semaphore_signal(block_sema);
          }];
     }

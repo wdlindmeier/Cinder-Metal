@@ -29,14 +29,13 @@ namespace cinder { namespace mtl {
         
         static RenderBufferRef create( const std::string & bufferName );
         
-        void commitAndPresent();
-        
-        // Create an image source of the buffer contents
-        ImageSourceRef createSource();
-        
+        void commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
+                
         // Creates a render coder for the main draw loop using the next "drawable".
         RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef renderDescriptor,
                                               const std::string & encoderName = "Default Render Encoder" );
+        
+        void * getDrawable(){ return mDrawable; }
         
     protected:
         

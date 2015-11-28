@@ -18,7 +18,6 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		2BAD4FE1289B425E97D442F1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 596BC8C8EA384CE6812E1DFB /* Images.xcassets */; };
-		A91A5A86C4F34B7181576265 /* CinderApp_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = B6ACE75793074184AF48202D /* CinderApp_ios.png */; };
 		A99166B11BF2CFCA006F710D /* BlitEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166841BF2CFCA006F710D /* BlitEncoder.mm */; };
 		A99166B21BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166851BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm */; };
 		A99166B31BF2CFCA006F710D /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166861BF2CFCA006F710D /* CommandBuffer.mm */; };
@@ -39,6 +38,7 @@
 		A99166CD1BF2D2C4006F710D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99166CC1BF2D2C4006F710D /* Metal.framework */; };
 		A99166D21BF4FAC1006F710D /* CommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166D11BF4FAC1006F710D /* CommandEncoder.mm */; };
 		A9BDFE871C08E01700A76FD0 /* ImageHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9BDFE861C08E01700A76FD0 /* ImageHelpers.mm */; };
+		A9BDFE8F1C09568300A76FD0 /* MetalIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BDFE8E1C09568300A76FD0 /* MetalIcon.png */; };
 		A9C4747D1BF653580015B236 /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9C4747C1BF653580015B236 /* ComputePipelineState.mm */; };
 		A9DAEF001BF8F4F3005D80D8 /* RenderBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9DAEEFF1BF8F4F3005D80D8 /* RenderBuffer.mm */; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -103,13 +103,13 @@
 		A99166D11BF4FAC1006F710D /* CommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandEncoder.mm; sourceTree = "<group>"; };
 		A9BDFE851C08DF7500A76FD0 /* ImageHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageHelpers.h; sourceTree = "<group>"; };
 		A9BDFE861C08E01700A76FD0 /* ImageHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageHelpers.mm; sourceTree = "<group>"; };
+		A9BDFE8E1C09568300A76FD0 /* MetalIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = MetalIcon.png; path = ../resources/MetalIcon.png; sourceTree = "<group>"; };
 		A9C4747B1BF653530015B236 /* ComputePipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputePipelineState.h; sourceTree = "<group>"; };
 		A9C4747C1BF653580015B236 /* ComputePipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputePipelineState.mm; sourceTree = "<group>"; };
 		A9C4747E1BF6D02B0015B236 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedData.h; path = ../include/SharedData.h; sourceTree = "<group>"; };
 		A9DAEEFD1BF8F4BF005D80D8 /* RenderBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderBuffer.h; sourceTree = "<group>"; };
 		A9DAEEFF1BF8F4F3005D80D8 /* RenderBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderBuffer.mm; sourceTree = "<group>"; };
 		B42A687E01D8407A96A943A3 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = LaunchScreen.xib; sourceTree = "<group>"; };
-		B6ACE75793074184AF48202D /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = CinderApp_ios.png; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; };
 		B82FC18285ED4AEBB1D9B7C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C727C02B121B400300192073 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -200,10 +200,10 @@
 			isa = PBXGroup;
 			children = (
 				00748057165D41390024B57A /* assets */,
-				B6ACE75793074184AF48202D /* CinderApp_ios.png */,
 				596BC8C8EA384CE6812E1DFB /* Images.xcassets */,
-				B42A687E01D8407A96A943A3 /* LaunchScreen.xib */,
 				B82FC18285ED4AEBB1D9B7C0 /* Info.plist */,
+				B42A687E01D8407A96A943A3 /* LaunchScreen.xib */,
+				A9BDFE8E1C09568300A76FD0 /* MetalIcon.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -343,7 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00748058165D41390024B57A /* assets in Resources */,
-				A91A5A86C4F34B7181576265 /* CinderApp_ios.png in Resources */,
+				A9BDFE8F1C09568300A76FD0 /* MetalIcon.png in Resources */,
 				2BAD4FE1289B425E97D442F1 /* Images.xcassets in Resources */,
 				24B2E43F726B454BBB739D52 /* LaunchScreen.xib in Resources */,
 			);

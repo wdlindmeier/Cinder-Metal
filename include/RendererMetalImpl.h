@@ -28,6 +28,7 @@
 @property (nonatomic, strong) id <MTLCommandQueue> commandQueue;
 @property (nonatomic, strong) id <MTLLibrary> library;
 @property (nonatomic, strong) CAMetalLayer *metalLayer;
+@property (nonatomic, strong) id <CAMetalDrawable> currentDrawable; // Set by RenderBuffer, when the command buffer is committed
 
 + (instancetype)sharedRenderer;
 #if defined( CINDER_MAC )
