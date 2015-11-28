@@ -8,7 +8,9 @@
 
 #include "RenderBuffer.h"
 #include "RendererMetalImpl.h"
+#include "ImageHelpers.h"
 
+using namespace std;
 using namespace ci;
 using namespace ci::mtl;
 
@@ -42,6 +44,11 @@ RenderEncoderRef RenderBuffer::createRenderEncoder( RenderPassDescriptorRef desc
     return CommandBuffer::createRenderEncoder(descriptor, (__bridge void *)DRAWABLE.texture);
 }
 
+ImageSourceRef RenderBuffer::createSource()
+{
+    return ImageSourceRef( new ImageSourceMTLTexture( DRAWABLE.texture ) );
+}
+
 void RenderBuffer::commitAndPresent()
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
@@ -57,5 +64,4 @@ void RenderBuffer::commitAndPresent()
     [IMPL presentDrawable:DRAWABLE];
     // Finalize rendering here & push the command buffer to the GPU
     [IMPL commit];
-    
 }

@@ -10,188 +10,189 @@
 #include "RendererMetalImpl.h"
 #include "cinder/Log.h"
 #include "cinder/cocoa/CinderCocoa.h"
+#include "ImageHelpers.h"
 
 using namespace std;
 using namespace cinder;
 using namespace cinder::mtl;
-
-static inline int dataSizeForType( ImageIo::DataType dataType )
-{
-    switch (dataType)
-    {
-        case ImageIo::UINT8:
-            return 1;
-            break;
-        case ImageIo::UINT16:
-        case ImageIo::FLOAT16:
-            return 2;
-            break;
-        case ImageIo::FLOAT32:
-            return 4;
-            break;
-        default:
-            return 1;
-            break;
-    }
-}
-
-// Metal textures don't appear to have 3-component formats, so we'll
-// convert RGB image data to RGBA.
-// NOTE: This always adds a 4th component to the end of the order.
-static inline uint8_t* createFourChannelFromThreeChannel(ivec2 imageSize,
-                                                         ImageIo::DataType dataType,
-                                                         const uint8_t* rgbData )
-{
-    const size_t dataSize = dataSizeForType(dataType);
-    const size_t bytesPer3ChannelPx = 3 * dataSize;
-    const size_t bytesPer4ChannelPx = 4 * dataSize;
-    const size_t rowBytes = imageSize.x * bytesPer4ChannelPx;
-    size_t rgbaSize = rowBytes * imageSize.y;
-    uint8_t* rgbaData = new uint8_t[rgbaSize];
-    memset(rgbaData, 0xFF, rgbaSize); // fill with white, alpha = 1
-    size_t pxCount = imageSize.x * imageSize.y;
-    for(size_t i = 0; i < pxCount; ++i)
-    {
-        memcpy(&rgbaData[i * bytesPer4ChannelPx],
-               &((const uint8_t*)rgbData)[i * bytesPer3ChannelPx],
-               bytesPer3ChannelPx);
-    }
-    return rgbaData;
-}
-
-static inline MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
-                                                             ImageIo::DataType dataType )
-{
-    switch (channelOrder)
-    {
-        case ImageIo::RGBA:
-            switch (dataType)
-            {
-                case ImageIo::UINT8:
-                    return MTLPixelFormatRGBA8Unorm;
-                case ImageIo::UINT16:
-                    return MTLPixelFormatRGBA16Unorm;
-                case ImageIo::FLOAT16:
-                    return MTLPixelFormatRGBA16Float;
-                case ImageIo::FLOAT32:
-                    return MTLPixelFormatRGBA32Float;
-                default:
-                    return MTLPixelFormatInvalid;
-            }
-        case ImageIo::BGRA:
-            return MTLPixelFormatBGRA8Unorm;
-        case ImageIo::RGBX:
-            switch (dataType)
-            {
-                case ImageIo::UINT8:
-                    return MTLPixelFormatRGBA8Unorm;
-                case ImageIo::UINT16:
-                    return MTLPixelFormatRGBA16Unorm;
-                case ImageIo::FLOAT16:
-                    return MTLPixelFormatRGBA16Float;
-                case ImageIo::FLOAT32:
-                    return MTLPixelFormatRGBA32Float;
-                default:
-                    return MTLPixelFormatInvalid;
-            }
-        case ImageIo::BGRX:
-            return MTLPixelFormatBGRA8Unorm;
-        case ImageIo::RGB:
-            // NOTE: MTLPixelFormat doesn't have a standard RGB w/out Alpha.
-            // We need to use a 4-component format and add an additional channel to the data.
-            switch (dataType)
-            {
-                case ImageIo::UINT8:
-                    return MTLPixelFormatRGBA8Unorm;
-                case ImageIo::UINT16:
-                    return MTLPixelFormatRGBA16Unorm;
-                case ImageIo::FLOAT16:
-                    return MTLPixelFormatRGBA16Float;
-                case ImageIo::FLOAT32:
-                    return MTLPixelFormatRGBA32Float;
-                default:
-                    return MTLPixelFormatInvalid;
-            }
-        case ImageIo::BGR:
-            return MTLPixelFormatBGRA8Unorm;
-        case ImageIo::Y:
-            switch (dataType)
-            {
-                case ImageIo::UINT8:
-                    return MTLPixelFormatR8Unorm;
-                case ImageIo::UINT16:
-                    return MTLPixelFormatR16Unorm;
-                case ImageIo::FLOAT16:
-                    return MTLPixelFormatR16Float;
-                case ImageIo::FLOAT32:
-                    return MTLPixelFormatR32Float;
-                default:
-                    return MTLPixelFormatInvalid;
-            }
-        case ImageIo::YA:
-            switch (dataType)
-            {
-                case ImageIo::UINT8:
-                    return MTLPixelFormatRG8Unorm;
-                case ImageIo::UINT16:
-                    return MTLPixelFormatRG16Unorm;
-                case ImageIo::FLOAT16:
-                    return MTLPixelFormatRG16Float;
-                case ImageIo::FLOAT32:
-                    return MTLPixelFormatRG32Float;
-                default:
-                    return MTLPixelFormatInvalid;
-            }
-        default:
-            CI_LOG_E("Don't know how to convert channel order " << channelOrder << " into MTLPixelFormat");
-            assert(false);
-    }
-}
-
-namespace cinder { namespace mtl {
-    
-class ImageSourceMTLTexture : public ImageSource
-{
-
-public:
-    
-    ImageSourceMTLTexture( TextureBuffer & texture )
-    : ImageSource()
-    {
-        mWidth = (int)texture.getWidth();
-        mHeight = (int)texture.getHeight();
-
-        setChannelOrder( texture.mChannelOrder );
-        setColorModel( texture.mColorModel );
-        setDataType( texture.mDataType );
-
-        int dataSize = dataSizeForType(mDataType);
-
-        mRowBytes = mWidth * ImageIo::channelOrderNumChannels( mChannelOrder ) * dataSize;
-        mData = unique_ptr<uint8_t[]>( new uint8_t[mRowBytes * mHeight] );
-        
-        texture.getPixelData(mData.get());
-    }
-    
-    // NOTE: I just copied this from ImageSourceTexture. Not sure if it's correct.
-    void load( ImageTargetRef target )
-    {
-        // get a pointer to the ImageSource function appropriate for handling our data configuration
-        ImageSource::RowFunc func = setupRowFunc( target );
-        
-        const uint8_t *data = mData.get();
-        if( mRowBytes < 0 )
-            data = data + ( mHeight - 1 ) * (-mRowBytes);
-        for( int32_t row = 0; row < mHeight; ++row ) {
-            ((*this).*func)( target, row, data );
-            data += mRowBytes;
-        }
-    }
-    
-    std::unique_ptr<uint8_t[]>	mData;
-    int32_t						mRowBytes;
-};
-}} // cinder mtl
+//
+//static inline int dataSizeForType( ImageIo::DataType dataType )
+//{
+//    switch (dataType)
+//    {
+//        case ImageIo::UINT8:
+//            return 1;
+//            break;
+//        case ImageIo::UINT16:
+//        case ImageIo::FLOAT16:
+//            return 2;
+//            break;
+//        case ImageIo::FLOAT32:
+//            return 4;
+//            break;
+//        default:
+//            return 1;
+//            break;
+//    }
+//}
+//
+//// Metal textures don't appear to have 3-component formats, so we'll
+//// convert RGB image data to RGBA.
+//// NOTE: This always adds a 4th component to the end of the order.
+//static inline uint8_t* createFourChannelFromThreeChannel(ivec2 imageSize,
+//                                                         ImageIo::DataType dataType,
+//                                                         const uint8_t* rgbData )
+//{
+//    const size_t dataSize = dataSizeForType(dataType);
+//    const size_t bytesPer3ChannelPx = 3 * dataSize;
+//    const size_t bytesPer4ChannelPx = 4 * dataSize;
+//    const size_t rowBytes = imageSize.x * bytesPer4ChannelPx;
+//    size_t rgbaSize = rowBytes * imageSize.y;
+//    uint8_t* rgbaData = new uint8_t[rgbaSize];
+//    memset(rgbaData, 0xFF, rgbaSize); // fill with white, alpha = 1
+//    size_t pxCount = imageSize.x * imageSize.y;
+//    for(size_t i = 0; i < pxCount; ++i)
+//    {
+//        memcpy(&rgbaData[i * bytesPer4ChannelPx],
+//               &((const uint8_t*)rgbData)[i * bytesPer3ChannelPx],
+//               bytesPer3ChannelPx);
+//    }
+//    return rgbaData;
+//}
+//
+//static inline MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
+//                                                             ImageIo::DataType dataType )
+//{
+//    switch (channelOrder)
+//    {
+//        case ImageIo::RGBA:
+//            switch (dataType)
+//            {
+//                case ImageIo::UINT8:
+//                    return MTLPixelFormatRGBA8Unorm;
+//                case ImageIo::UINT16:
+//                    return MTLPixelFormatRGBA16Unorm;
+//                case ImageIo::FLOAT16:
+//                    return MTLPixelFormatRGBA16Float;
+//                case ImageIo::FLOAT32:
+//                    return MTLPixelFormatRGBA32Float;
+//                default:
+//                    return MTLPixelFormatInvalid;
+//            }
+//        case ImageIo::BGRA:
+//            return MTLPixelFormatBGRA8Unorm;
+//        case ImageIo::RGBX:
+//            switch (dataType)
+//            {
+//                case ImageIo::UINT8:
+//                    return MTLPixelFormatRGBA8Unorm;
+//                case ImageIo::UINT16:
+//                    return MTLPixelFormatRGBA16Unorm;
+//                case ImageIo::FLOAT16:
+//                    return MTLPixelFormatRGBA16Float;
+//                case ImageIo::FLOAT32:
+//                    return MTLPixelFormatRGBA32Float;
+//                default:
+//                    return MTLPixelFormatInvalid;
+//            }
+//        case ImageIo::BGRX:
+//            return MTLPixelFormatBGRA8Unorm;
+//        case ImageIo::RGB:
+//            // NOTE: MTLPixelFormat doesn't have a standard RGB w/out Alpha.
+//            // We need to use a 4-component format and add an additional channel to the data.
+//            switch (dataType)
+//            {
+//                case ImageIo::UINT8:
+//                    return MTLPixelFormatRGBA8Unorm;
+//                case ImageIo::UINT16:
+//                    return MTLPixelFormatRGBA16Unorm;
+//                case ImageIo::FLOAT16:
+//                    return MTLPixelFormatRGBA16Float;
+//                case ImageIo::FLOAT32:
+//                    return MTLPixelFormatRGBA32Float;
+//                default:
+//                    return MTLPixelFormatInvalid;
+//            }
+//        case ImageIo::BGR:
+//            return MTLPixelFormatBGRA8Unorm;
+//        case ImageIo::Y:
+//            switch (dataType)
+//            {
+//                case ImageIo::UINT8:
+//                    return MTLPixelFormatR8Unorm;
+//                case ImageIo::UINT16:
+//                    return MTLPixelFormatR16Unorm;
+//                case ImageIo::FLOAT16:
+//                    return MTLPixelFormatR16Float;
+//                case ImageIo::FLOAT32:
+//                    return MTLPixelFormatR32Float;
+//                default:
+//                    return MTLPixelFormatInvalid;
+//            }
+//        case ImageIo::YA:
+//            switch (dataType)
+//            {
+//                case ImageIo::UINT8:
+//                    return MTLPixelFormatRG8Unorm;
+//                case ImageIo::UINT16:
+//                    return MTLPixelFormatRG16Unorm;
+//                case ImageIo::FLOAT16:
+//                    return MTLPixelFormatRG16Float;
+//                case ImageIo::FLOAT32:
+//                    return MTLPixelFormatRG32Float;
+//                default:
+//                    return MTLPixelFormatInvalid;
+//            }
+//        default:
+//            CI_LOG_E("Don't know how to convert channel order " << channelOrder << " into MTLPixelFormat");
+//            assert(false);
+//    }
+//}
+//
+//namespace cinder { namespace mtl {
+//    
+//class ImageSourceTextureBuffer : public ImageSource
+//{
+//
+//public:
+//    
+//    ImageSourceTextureBuffer( TextureBuffer & texture )
+//    : ImageSource()
+//    {
+//        mWidth = (int)texture.getWidth();
+//        mHeight = (int)texture.getHeight();
+//
+//        setChannelOrder( texture.mChannelOrder );
+//        setColorModel( texture.mColorModel );
+//        setDataType( texture.mDataType );
+//
+//        int dataSize = dataSizeForType(mDataType);
+//
+//        mRowBytes = mWidth * ImageIo::channelOrderNumChannels( mChannelOrder ) * dataSize;
+//        mData = unique_ptr<uint8_t[]>( new uint8_t[mRowBytes * mHeight] );
+//        
+//        texture.getPixelData(mData.get());
+//    }
+//    
+//    // NOTE: I just copied this from ImageSourceTexture. Not sure if it's correct.
+//    void load( ImageTargetRef target )
+//    {
+//        // get a pointer to the ImageSource function appropriate for handling our data configuration
+//        ImageSource::RowFunc func = setupRowFunc( target );
+//        
+//        const uint8_t *data = mData.get();
+//        if( mRowBytes < 0 )
+//            data = data + ( mHeight - 1 ) * (-mRowBytes);
+//        for( int32_t row = 0; row < mHeight; ++row ) {
+//            ((*this).*func)( target, row, data );
+//            data += mRowBytes;
+//        }
+//    }
+//    
+//    std::unique_ptr<uint8_t[]>	mData;
+//    int32_t						mRowBytes;
+//};
+//}} // cinder mtl
 
 #define IMPL ((__bridge id <MTLTexture>)mImpl)
 
@@ -257,7 +258,7 @@ TextureBuffer::~TextureBuffer()
 
 ImageSourceRef TextureBuffer::createSource()
 {
-    return ImageSourceRef( new ImageSourceMTLTexture( *this ) );
+    return ImageSourceRef( new ImageSourceTextureBuffer( *this ) );
 }
 
 void TextureBuffer::getPixelData( void *pixelBytes )

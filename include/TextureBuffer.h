@@ -21,7 +21,7 @@ namespace cinder { namespace mtl {
     class TextureBuffer
     {
         
-        friend class ImageSourceMTLTexture;
+        friend class ImageSourceTextureBuffer;
         
     public:
         

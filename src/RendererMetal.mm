@@ -52,6 +52,11 @@ void RendererMetal::setFrameSize( int width, int height )
 Surface8u RendererMetal::copyWindowSurface( const Area &area, int32_t windowHeightPixels )
 {
     // TODO
+//    CGSize size = mImpl.metalLayer.drawableSize;
+//    id <CAMetalDrawable> drawable = [mImpl.metalLayer nextDrawable];
+//    id <MTLTexture> texture = drawable.texture;
+//
+//    createSource
     return Surface8u(area.getWidth(), area.getHeight(), false);
 };
 
