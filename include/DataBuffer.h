@@ -55,12 +55,12 @@ namespace cinder { namespace mtl {
         {
             update(vectorData.data(), sizeof(T) * vectorData.size());
         }
-
-        template <typename BufferType>
-        void setData(BufferType *data, int inflightBufferIndex )
+        
+        template <typename BufferObjectType>
+        void setDataAtIndex( BufferObjectType *dataObject, int inflightBufferIndex )
         {
-            uint8_t *bufferPointer = (uint8_t *)this->contents() + (sizeof(BufferType) * inflightBufferIndex);
-            memcpy(bufferPointer, data, sizeof(BufferType));
+            uint8_t *bufferPointer = (uint8_t *)this->contents() + (sizeof(BufferObjectType) * inflightBufferIndex);
+            memcpy(bufferPointer, dataObject, sizeof(BufferObjectType));
         }
                 
         void * getNative(){ return mImpl; }

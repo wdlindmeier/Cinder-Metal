@@ -106,6 +106,7 @@ fragment float4 lighting_texture_fragment( ColorInOut in [[stage_in]],
                                            texture2d<float> textureCube [[ texture(ciTextureIndex0) ]],
                                            sampler objcSampler [[sampler(ciSamplerIndex0)]] )
 {
+    // Use the shader sampler
     // float4 texColor = textureCube.sample(shaderSampler, in.texCoords);
     // Use the sampler passed in from the app:
     float4 texColor = textureCube.sample(objcSampler, in.texCoords);

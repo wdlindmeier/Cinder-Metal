@@ -158,7 +158,7 @@ void ParticleSortingApp::update()
     // Set the uniform data
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.modelMatrix = toMtl(modelMatrix);
-    mDynamicConstantBuffer->setData( &mUniforms, mConstantDataBufferIndex );
+    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
     
     bitonicSort( false );
 }
@@ -228,7 +228,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
                 sortState.pass = passOfStage;
                 sortState.passNum = passNum;
                 sortState.direction = 1; // ascending
-                mSortStateBuffer->setData(&sortState, passNum);
+                mSortStateBuffer->setDataAtIndex(&sortState, passNum);
                 
                 computeEncoder()->setPipelineState(mPipelineBitonicSort);
                 

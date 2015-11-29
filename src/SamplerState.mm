@@ -17,7 +17,7 @@ SamplerState::SamplerState( Format format )
 {
     MTLSamplerDescriptor *samplerDescriptor = [MTLSamplerDescriptor new];
     samplerDescriptor.mipFilter = (MTLSamplerMipFilter)format.getMipFilter();
-    samplerDescriptor.maxAnisotropy = format.getMaxAnisotropy();// 3;
+    samplerDescriptor.maxAnisotropy = format.getMaxAnisotropy();
     samplerDescriptor.minFilter = (MTLSamplerMinMagFilter)format.getMinFilter();
     samplerDescriptor.magFilter = (MTLSamplerMinMagFilter)format.getMagFilter();
     samplerDescriptor.sAddressMode = (MTLSamplerAddressMode)format.getSAddressMode();

@@ -28,16 +28,22 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
-            mMipmapLevel(1),
-            mSampleCount(1),
-            mTextureType(2), // defaults to MTLTextureType2D
-            mPixelFormat(0) // defaults to MTLPixelFormatInvalid
+            mMipmapLevel(1)
+            ,mSampleCount(1)
+            ,mTextureType(2) // defaults to MTLTextureType2D
+            ,mPixelFormat(0) // defaults to MTLPixelFormatInvalid
+            ,mDepth(1)
+            ,mArrayLength(1)
+            ,mUsage(0) // defaults to  MTLTextureUsageUnknown
             {};
             
             FORMAT_OPTION(mipmapLevel, MipmapLevel, int)
             FORMAT_OPTION(sampleCount, SampleCount, int)
             FORMAT_OPTION(textureType, TextureType, int) // MTLTextureType
             FORMAT_OPTION(pixelFormat, PixelFormat, int) // MTLPixelFormat
+            FORMAT_OPTION(depth, Depth, int)
+            FORMAT_OPTION(arrayLength, ArrayLength, int)
+            FORMAT_OPTION(usage, Usage, int)
         };
         
         static TextureBufferRef create( ImageSourceRef imageSource, Format format = Format() )

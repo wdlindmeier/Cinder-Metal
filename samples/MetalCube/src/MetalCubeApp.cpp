@@ -62,14 +62,16 @@ void MetalCubeApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
+    mTexture = TextureBuffer::create(loadImage(getAssetPath("checker.png")),
+                                     TextureBuffer::Format().mipmapLevel(4));
+    
     mSamplerMipMapped = SamplerState::create();
+    
     mDepthEnabled = DepthState::create();
     
     mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
                                                      .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
 
-    mTexture = TextureBuffer::create(loadImage(getAssetPath("checker.png")),
-                                     TextureBuffer::Format().mipmapLevel(4));
     
     loadAssets();
 }
@@ -149,7 +151,7 @@ void MetalCubeApp::update()
     mUniforms.normalMatrix = toMtl(normalMatrix);
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.elapsedSeconds = getElapsedSeconds();
-    mDynamicConstantBuffer->setData(&mUniforms, mConstantDataBufferIndex);
+    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
     
     mRotation += 0.01f;
 
@@ -171,9 +173,6 @@ void MetalCubeApp::draw()
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);
 
-    // Enable mip-mapping
-    renderEncoder()->setFragSamplerState(mSamplerMipMapped);
-    
     uint constantsOffset = (sizeof(ciUniforms_t) * mConstantDataBufferIndex);
     renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
     
@@ -206,6 +205,9 @@ void MetalCubeApp::draw()
     // Set the texture
     renderEncoder()->setTexture(mTexture);
 
+    // Enable mip-mapping
+    renderEncoder()->setFragSamplerState(mSamplerMipMapped);
+    
     // Draw
     mGeomBufferCube->draw(renderEncoder());
 
