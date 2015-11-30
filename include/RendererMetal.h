@@ -48,7 +48,6 @@ namespace cinder {
             };
             
             RendererMetal( const Options & options = Options() );
-            virtual ~RendererMetal();
             
             // TODO
             // How do I cast this?

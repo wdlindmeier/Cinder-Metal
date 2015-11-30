@@ -1,5 +1,4 @@
 #include "RendererMetal.h"
-#include "CinderViewCocoaTouch+Metal.h"
 #include "RendererMetalImpl.h"
 #include "RenderEncoder.h"
 #include "ImageHelpers.h"
@@ -15,16 +14,6 @@ mImpl( nullptr )
 {
     ci::app::console() << "Creating renderer with " << mOptions.getNumInflightBuffers() << " inflight buffers.\n";
 }
-
-#if defined( CINDER_MAC )
-RendererGl::~RendererGl()
-{
-    if( mImpl )
-        ::CFRelease( mImpl );
-}
-#else
-RendererMetal::~RendererMetal(){}
-#endif
 
 #if defined( CINDER_COCOA )
 #if defined( CINDER_MAC )

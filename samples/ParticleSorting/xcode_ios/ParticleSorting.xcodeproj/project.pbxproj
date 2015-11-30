@@ -19,7 +19,6 @@
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		2BAD4FE1289B425E97D442F1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 596BC8C8EA384CE6812E1DFB /* Images.xcassets */; };
 		A99166B11BF2CFCA006F710D /* BlitEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166841BF2CFCA006F710D /* BlitEncoder.mm */; };
-		A99166B21BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166851BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm */; };
 		A99166B31BF2CFCA006F710D /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166861BF2CFCA006F710D /* CommandBuffer.mm */; };
 		A99166B41BF2CFCA006F710D /* ComputeEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166871BF2CFCA006F710D /* ComputeEncoder.mm */; };
 		A99166B51BF2CFCA006F710D /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99166881BF2CFCA006F710D /* DataBuffer.mm */; };
@@ -63,7 +62,6 @@
 		596BC8C8EA384CE6812E1DFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Images.xcassets; sourceTree = "<group>"; };
 		737EA48B9C39411787FD7F0D /* ParticleSorting_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = ParticleSorting_Prefix.pch; sourceTree = "<group>"; };
 		A99166331BF2CFCA006F710D /* BlitEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlitEncoder.h; sourceTree = "<group>"; };
-		A99166341BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CinderViewCocoaTouch+Metal.h"; sourceTree = "<group>"; };
 		A99166351BF2CFCA006F710D /* CommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandBuffer.h; sourceTree = "<group>"; };
 		A99166361BF2CFCA006F710D /* ComputeEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputeEncoder.h; sourceTree = "<group>"; };
 		A99166371BF2CFCA006F710D /* DataBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBuffer.h; sourceTree = "<group>"; };
@@ -82,7 +80,6 @@
 		A99166441BF2CFCA006F710D /* TextureBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBuffer.h; sourceTree = "<group>"; };
 		A99166451BF2CFCA006F710D /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
 		A99166841BF2CFCA006F710D /* BlitEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlitEncoder.mm; sourceTree = "<group>"; };
-		A99166851BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "CinderViewCocoaTouch+Metal.mm"; sourceTree = "<group>"; };
 		A99166861BF2CFCA006F710D /* CommandBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandBuffer.mm; sourceTree = "<group>"; };
 		A99166871BF2CFCA006F710D /* ComputeEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputeEncoder.mm; sourceTree = "<group>"; };
 		A99166881BF2CFCA006F710D /* DataBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataBuffer.mm; sourceTree = "<group>"; };
@@ -239,7 +236,6 @@
 			isa = PBXGroup;
 			children = (
 				A99166331BF2CFCA006F710D /* BlitEncoder.h */,
-				A99166341BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.h */,
 				A99166351BF2CFCA006F710D /* CommandBuffer.h */,
 				A99166CF1BF4FAA8006F710D /* CommandEncoder.h */,
 				A99166361BF2CFCA006F710D /* ComputeEncoder.h */,
@@ -269,7 +265,6 @@
 			isa = PBXGroup;
 			children = (
 				A99166841BF2CFCA006F710D /* BlitEncoder.mm */,
-				A99166851BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm */,
 				A99166861BF2CFCA006F710D /* CommandBuffer.mm */,
 				A99166D11BF4FAC1006F710D /* CommandEncoder.mm */,
 				A99166871BF2CFCA006F710D /* ComputeEncoder.mm */,
@@ -358,7 +353,6 @@
 			files = (
 				A99166BB1BF2CFCA006F710D /* RendererMetalImpl.mm in Sources */,
 				A99166BA1BF2CFCA006F710D /* RendererMetal.mm in Sources */,
-				A99166B21BF2CFCA006F710D /* CinderViewCocoaTouch+Metal.mm in Sources */,
 				A99166B41BF2CFCA006F710D /* ComputeEncoder.mm in Sources */,
 				A99166B51BF2CFCA006F710D /* DataBuffer.mm in Sources */,
 				A99166BE1BF2CFCA006F710D /* Scope.mm in Sources */,

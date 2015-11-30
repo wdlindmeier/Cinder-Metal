@@ -244,19 +244,12 @@ ImageSourceMTLTexture::ImageSourceMTLTexture( id <MTLTexture> texture )
     ImageIo::DataType dataType = ciDataTypeFromMtlPixelFormat(pxFormat);
     setDataType( dataType );
 
-    mRowBytes = (int)mTexture.bufferBytesPerRow;
+    int dataSize = dataSizeForType(mDataType);
+    mRowBytes = mWidth * ImageIo::channelOrderNumChannels( mChannelOrder ) * dataSize;
 }
     
 void ImageSourceMTLTexture::getPixelData()
 {
-    if ( mRowBytes == 0 )
-    {
-        // NOTE: Sometimes mTexture.bufferBytesPerRow == 0
-        // We'll need to calculate the size now
-        int dataSize = dataSizeForType(mDataType);
-        mRowBytes = mWidth * ImageIo::channelOrderNumChannels( mChannelOrder ) * dataSize;
-    }
-    
     mData = unique_ptr<uint8_t[]>( new uint8_t[mRowBytes * mHeight] );
 
     [mTexture getBytes:mData.get()

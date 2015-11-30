@@ -24,6 +24,7 @@ void _TBOX_PREFIX_App::setup()
     // 1) Change the Deployment Target to iOS >= 8.0 or Mac OS >= 10.11 in the Project info
     // 2) Enable "Automatic Reference Counting" in the Target Build Settings
     // 3) Add the Metal Framework to your target in Build Phases > Link Binaries with Libraries
+    // 4) If you're building for OS X, also add the QuartzCore Framework 
     
     // NOTE: You cannot build the project for the iOS Simulator
 

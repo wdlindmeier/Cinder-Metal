@@ -26,7 +26,9 @@ SamplerState::SamplerState( Format format )
     samplerDescriptor.normalizedCoordinates = format.getNormalizedCoordinates();
     samplerDescriptor.lodMinClamp = format.getLodMinClamp();
     samplerDescriptor.lodMaxClamp = format.getLodMaxClamp();
+#if defined( CINDER_COCOA_TOUCH )
     samplerDescriptor.lodAverage = format.getLodAverage();
+#endif
     samplerDescriptor.compareFunction = (MTLCompareFunction)format.getCompareFunction();
     
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device

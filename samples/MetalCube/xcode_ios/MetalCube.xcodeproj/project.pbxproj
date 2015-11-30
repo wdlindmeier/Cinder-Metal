@@ -30,7 +30,6 @@
 		A920448F1BCAD4BA00CC8AAB /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A92044891BCAD17700CC8AAB /* MetalKit.framework */; };
 		A92044901BCAD4BA00CC8AAB /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A920448A1BCAD17700CC8AAB /* MetalPerformanceShaders.framework */; };
 		A92044911BCAD5B000CC8AAB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
-		A920449B1BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */; };
 		A920449C1BCADD5E00CC8AAB /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */; };
 		A920449E1BCAE04100CC8AAB /* RendererMetalImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */; };
 		A92044A11BCB0AD000CC8AAB /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A92044A01BCB0AD000CC8AAB /* Shaders.metal */; };
@@ -88,9 +87,7 @@
 		A92044881BCAD17700CC8AAB /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A92044891BCAD17700CC8AAB /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		A920448A1BCAD17700CC8AAB /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
-		A92044961BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CinderViewCocoaTouch+Metal.h"; sourceTree = "<group>"; };
 		A92044971BCADD5E00CC8AAB /* RendererMetal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RendererMetal.h; sourceTree = "<group>"; };
-		A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "CinderViewCocoaTouch+Metal.mm"; sourceTree = "<group>"; };
 		A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererMetal.mm; sourceTree = "<group>"; };
 		A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererMetalImpl.mm; sourceTree = "<group>"; };
 		A920449F1BCAE05200CC8AAB /* RendererMetalImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererMetalImpl.h; sourceTree = "<group>"; };
@@ -246,7 +243,6 @@
 			isa = PBXGroup;
 			children = (
 				A916E33D1BD318270012573E /* BlitEncoder.h */,
-				A92044961BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.h */,
 				A916E34C1BD31B5C0012573E /* CommandBuffer.h */,
 				A9EF82AA1C07CF4F00923994 /* CommandEncoder.h */,
 				A916E3401BD318270012573E /* ComputeEncoder.h */,
@@ -277,7 +273,6 @@
 			isa = PBXGroup;
 			children = (
 				A916E3421BD3182F0012573E /* BlitEncoder.mm */,
-				A92044991BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm */,
 				A916E34D1BD31B650012573E /* CommandBuffer.mm */,
 				A9EF82AE1C07CF6000923994 /* CommandEncoder.mm */,
 				A916E3451BD3182F0012573E /* ComputeEncoder.mm */,
@@ -386,7 +381,6 @@
 				A920449E1BCAE04100CC8AAB /* RendererMetalImpl.mm in Sources */,
 				A916E3111BD15DA50012573E /* RenderEncoder.mm in Sources */,
 				A916E34A1BD3182F0012573E /* ComputeEncoder.mm in Sources */,
-				A920449B1BCADD5E00CC8AAB /* CinderViewCocoaTouch+Metal.mm in Sources */,
 				A9EF82B21C07CF6000923994 /* CommandEncoder.mm in Sources */,
 				A96C28421BEE6D6000D847C0 /* SamplerState.mm in Sources */,
 				A90BF5DB1BEA6E09002C9257 /* Scope.mm in Sources */,

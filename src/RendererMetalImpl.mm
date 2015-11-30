@@ -8,25 +8,28 @@
 
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
+#import <QuartzCore/CAMetalLayer.h>
 #import <simd/simd.h>
 
 #import "metal.h"
 #import "RendererMetal.h"
 #import "RendererMetalImpl.h"
 
+#if defined( CINDER_MAC )
+#import "cinder/app/cocoa/CinderViewMac.h"
+#elif defined( CINDER_COCOA_TOUCH )
 #import "cinder/app/cocoa/CinderViewCocoaTouch.h"
-
-using namespace ci;
-using namespace ci::mtl;
-
 @implementation CinderViewCocoaTouch(Metal)
 
 + (Class)layerClass
 {
     return [CAMetalLayer class];
 }
-
 @end
+#endif
+
+using namespace ci;
+using namespace ci::mtl;
 
 @implementation RendererMetalImpl
 {
@@ -69,12 +72,14 @@ static RendererMetalImpl * SharedRenderer = nil;
         mLayerSizeDidUpdate = true;
         mCinderView = cinderView;
         // Get the layer
-        CAMetalLayer *metalLayer = (CAMetalLayer *)mCinderView.layer;
-        assert( [metalLayer isKindOfClass:[CAMetalLayer class]] );
-        
-        // TEST
-        metalLayer.framebufferOnly = NO;
-        
+#if defined( CINDER_MAC )
+        self.metalLayer = [CAMetalLayer layer];
+        self.metalLayer.bounds = mCinderView.layer.bounds;
+        [mCinderView.layer addSublayer:self.metalLayer];
+#elif defined( CINDER_COCOA_TOUCH )
+        self.metalLayer = (CAMetalLayer *)mCinderView.layer;
+        assert( [self.metalLayer isKindOfClass:[CAMetalLayer class]] );
+#endif        
         [self setupMetal:options];
     }
     
@@ -95,8 +100,6 @@ static RendererMetalImpl * SharedRenderer = nil;
     // "failed assertion `Metal default library not found'"
     self.library = [self.device newDefaultLibrary];
     
-    self.metalLayer = (CAMetalLayer *)mCinderView.layer;
-    
     _metalLayer.device = self.device;
     
     int numInflightBuffers = options.getNumInflightBuffers();
@@ -116,9 +119,11 @@ static RendererMetalImpl * SharedRenderer = nil;
     // or if you wish to copy the layer contents to an image.
     _metalLayer.framebufferOnly = options.getFramebufferOnly();
 
+#if defined( CINDER_COCOA_TOUCH )
     mCinderView.opaque = YES;
     mCinderView.backgroundColor = nil;
     mCinderView.contentScaleFactor = [UIScreen mainScreen].scale;
+#endif
 }
 
 - (void)setFrameSize:(CGSize)newSize
@@ -129,11 +134,14 @@ static RendererMetalImpl * SharedRenderer = nil;
 
 - (void)startDraw
 {
+#if defined( CINDER_COCOA_TOUCH )
     CGFloat nativeScale = mCinderView.window.screen.nativeScale;
     CGSize drawableSize = mCinderView.bounds.size;
     drawableSize.width *= nativeScale;
     drawableSize.height *= nativeScale;
     self.metalLayer.drawableSize = drawableSize;
+#endif
+    
     mLayerSizeDidUpdate = NO;
 
     if ( mInflightSemaphore )

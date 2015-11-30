@@ -16,7 +16,6 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		2C8C2605D4934BC28471B0B6 /* SamplerState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79350998758B42CBAD40BB75 /* SamplerState.mm */; };
-		3B497DEFD3DB4E87B3132707 /* CinderViewCocoaTouch+Metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 76DA667A98A747BD97320437 /* CinderViewCocoaTouch+Metal.mm */; };
 		3EF7B835D9624AD4BB7A60F0 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5738B97A8C2744548D4606E4 /* VertexBuffer.cpp */; };
 		4055BECB349241E88E364F51 /* RenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1D8862E2B0F34CAF861BFB4C /* RenderEncoder.mm */; };
 		4A2BF9018E924936B6C9F2E3 /* ComputeEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 463E55B9372C4369A3F91D47 /* ComputeEncoder.mm */; };
@@ -69,7 +68,6 @@
 		2B13DDAE169045FE83AC6898 /* BlitEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlitEncoder.h; path = ../../../include/BlitEncoder.h; sourceTree = "<group>"; };
 		2BC61630D0C847A1BAD72612 /* MetalConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalConstants.h; path = ../../../include/MetalConstants.h; sourceTree = "<group>"; };
 		30C7CC9A742140AD9DF39DFD /* VertexBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VertexBuffer.h; path = ../../../include/VertexBuffer.h; sourceTree = "<group>"; };
-		3AB6AA34D8E547CB909FA813 /* CinderViewCocoaTouch+Metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CinderViewCocoaTouch+Metal.h"; path = "../../../include/CinderViewCocoaTouch+Metal.h"; sourceTree = "<group>"; };
 		3AD0F68378DE4AB3AE3514F6 /* CommandEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CommandEncoder.mm; path = ../../../src/CommandEncoder.mm; sourceTree = "<group>"; };
 		3CFB668BDC4E4728ADBA892A /* DepthState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DepthState.mm; path = ../../../src/DepthState.mm; sourceTree = "<group>"; };
 		463E55B9372C4369A3F91D47 /* ComputeEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputeEncoder.mm; path = ../../../src/ComputeEncoder.mm; sourceTree = "<group>"; };
@@ -82,7 +80,6 @@
 		728EFC3AAC634D60808B2A56 /* RendererMetal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetal.mm; path = ../../../src/RendererMetal.mm; sourceTree = "<group>"; };
 		74BD9A776CFA4DBE928BD0F5 /* Scope.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Scope.mm; path = ../../../src/Scope.mm; sourceTree = "<group>"; };
 		75522185C9FB45929B61B07E /* TextureBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = TextureBuffer.mm; path = ../../../src/TextureBuffer.mm; sourceTree = "<group>"; };
-		76DA667A98A747BD97320437 /* CinderViewCocoaTouch+Metal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "CinderViewCocoaTouch+Metal.mm"; path = "../../../src/CinderViewCocoaTouch+Metal.mm"; sourceTree = "<group>"; };
 		78796D8B0B0141979DDC5B4C /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalGeom.h; path = ../../../include/MetalGeom.h; sourceTree = "<group>"; };
 		79350998758B42CBAD40BB75 /* SamplerState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = SamplerState.mm; path = ../../../src/SamplerState.mm; sourceTree = "<group>"; };
 		7A99163CE78C406C88E36969 /* RendererMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetal.h; path = ../../../include/RendererMetal.h; sourceTree = "<group>"; };
@@ -203,7 +200,6 @@
 			isa = PBXGroup;
 			children = (
 				2B13DDAE169045FE83AC6898 /* BlitEncoder.h */,
-				3AB6AA34D8E547CB909FA813 /* CinderViewCocoaTouch+Metal.h */,
 				292A9D1E482B43A1BDD3BC89 /* CommandBuffer.h */,
 				228248F5C5E247979EB72437 /* CommandEncoder.h */,
 				70C76CF80D0F4E3382AFB5D9 /* ComputeEncoder.h */,
@@ -258,7 +254,6 @@
 			isa = PBXGroup;
 			children = (
 				0AF10702E07E47BDB3A223B8 /* BlitEncoder.mm */,
-				76DA667A98A747BD97320437 /* CinderViewCocoaTouch+Metal.mm */,
 				6C9361C34839412F8B767A11 /* CommandBuffer.mm */,
 				3AD0F68378DE4AB3AE3514F6 /* CommandEncoder.mm */,
 				463E55B9372C4369A3F91D47 /* ComputeEncoder.mm */,
@@ -345,7 +340,6 @@
 				4BD52DFB67464EBB8CF47A74 /* _TBOX_PREFIX_App.cpp in Sources */,
 				3EF7B835D9624AD4BB7A60F0 /* VertexBuffer.cpp in Sources */,
 				9C126805A8CB478283C64C1B /* BlitEncoder.mm in Sources */,
-				3B497DEFD3DB4E87B3132707 /* CinderViewCocoaTouch+Metal.mm in Sources */,
 				B5AD27F3A89A436EADB7F498 /* CommandBuffer.mm in Sources */,
 				FCD099FFE7C24C7C9C4B34DE /* CommandEncoder.mm in Sources */,
 				4A2BF9018E924936B6C9F2E3 /* ComputeEncoder.mm in Sources */,
