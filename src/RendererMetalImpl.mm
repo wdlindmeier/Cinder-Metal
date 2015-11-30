@@ -17,10 +17,16 @@
 
 #if defined( CINDER_MAC )
 #import "cinder/app/cocoa/CinderViewMac.h"
+@implementation CinderViewMac(Metal)
+- (CALayer *)makeBackingLayer
+{
+    [super makeBackingLayer];
+    return [CAMetalLayer layer];
+}
+@end
 #elif defined( CINDER_COCOA_TOUCH )
 #import "cinder/app/cocoa/CinderViewCocoaTouch.h"
 @implementation CinderViewCocoaTouch(Metal)
-
 + (Class)layerClass
 {
     return [CAMetalLayer class];
@@ -69,17 +75,15 @@ static RendererMetalImpl * SharedRenderer = nil;
     
     if ( self )
     {
+        
         mLayerSizeDidUpdate = true;
         mCinderView = cinderView;
         // Get the layer
 #if defined( CINDER_MAC )
-        self.metalLayer = [CAMetalLayer layer];
-        self.metalLayer.bounds = mCinderView.layer.bounds;
-        [mCinderView.layer addSublayer:self.metalLayer];
-#elif defined( CINDER_COCOA_TOUCH )
+        mCinderView.wantsLayer = YES;
+#endif
         self.metalLayer = (CAMetalLayer *)mCinderView.layer;
         assert( [self.metalLayer isKindOfClass:[CAMetalLayer class]] );
-#endif        
         [self setupMetal:options];
     }
     
@@ -119,11 +123,12 @@ static RendererMetalImpl * SharedRenderer = nil;
     // or if you wish to copy the layer contents to an image.
     _metalLayer.framebufferOnly = options.getFramebufferOnly();
 
-#if defined( CINDER_COCOA_TOUCH )
-    mCinderView.opaque = YES;
-    mCinderView.backgroundColor = nil;
-    mCinderView.contentScaleFactor = [UIScreen mainScreen].scale;
-#endif
+    // Pretty sure this is taken care of elsewhere
+//#if defined( CINDER_COCOA_TOUCH )
+//    mCinderView.opaque = YES;
+//    mCinderView.backgroundColor = nil;
+//    mCinderView.contentScaleFactor = [UIScreen mainScreen].scale;
+//#endif
 }
 
 - (void)setFrameSize:(CGSize)newSize

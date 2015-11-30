@@ -99,6 +99,9 @@ void RenderPassDescriptor::applyToDrawableTexture( void * texture, int colorAtta
                                                                                         width: colorTexture.width
                                                                                        height: colorTexture.height
                                                                                     mipmapped: NO];
+#if defined( CINDER_MAC )
+        desc.resourceOptions = MTLResourceStorageModePrivate;
+#endif
         mDepthTexture = (__bridge_retained void *)[device newTextureWithDescriptor: desc];
         DEPTH_TEX.label = @"Default Depth Texture";
         
