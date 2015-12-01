@@ -34,7 +34,7 @@ namespace cinder { namespace mtl {
             ,mPixelFormat(0) // defaults to MTLPixelFormatInvalid
             ,mDepth(1)
             ,mArrayLength(1)
-            ,mUsage(0) // defaults to  MTLTextureUsageUnknown
+            ,mUsage(0) // defaults to MTLTextureUsageUnknown
             {};
             
             FORMAT_OPTION(mipmapLevel, MipmapLevel, int)

@@ -16,11 +16,11 @@
 #import "RendererMetalImpl.h"
 
 #if defined( CINDER_MAC )
+#import <AppKit/AppKit.h>
 #import "cinder/app/cocoa/CinderViewMac.h"
 @implementation CinderViewMac(Metal)
 - (CALayer *)makeBackingLayer
 {
-    [super makeBackingLayer];
     return [CAMetalLayer layer];
 }
 @end
@@ -75,7 +75,6 @@ static RendererMetalImpl * SharedRenderer = nil;
     
     if ( self )
     {
-        
         mLayerSizeDidUpdate = true;
         mCinderView = cinderView;
         // Get the layer
@@ -122,13 +121,6 @@ static RendererMetalImpl * SharedRenderer = nil;
     // Change this to NO if the compute encoder is used as the last pass on the drawable texture,
     // or if you wish to copy the layer contents to an image.
     _metalLayer.framebufferOnly = options.getFramebufferOnly();
-
-    // Pretty sure this is taken care of elsewhere
-//#if defined( CINDER_COCOA_TOUCH )
-//    mCinderView.opaque = YES;
-//    mCinderView.backgroundColor = nil;
-//    mCinderView.contentScaleFactor = [UIScreen mainScreen].scale;
-//#endif
 }
 
 - (void)setFrameSize:(CGSize)newSize
@@ -141,11 +133,13 @@ static RendererMetalImpl * SharedRenderer = nil;
 {
 #if defined( CINDER_COCOA_TOUCH )
     CGFloat nativeScale = mCinderView.window.screen.nativeScale;
+#else 
+    CGFloat nativeScale = mCinderView.window.backingScaleFactor;
+#endif
     CGSize drawableSize = mCinderView.bounds.size;
     drawableSize.width *= nativeScale;
     drawableSize.height *= nativeScale;
     self.metalLayer.drawableSize = drawableSize;
-#endif
     
     mLayerSizeDidUpdate = NO;
 

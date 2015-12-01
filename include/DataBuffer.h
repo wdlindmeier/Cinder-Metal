@@ -9,12 +9,7 @@
 #pragma once
 
 #include "cinder/Cinder.h"
-
-//#if defined( __OBJC__ )
-//@class DataBufferImpl;
-//#else
-//class DataBufferImpl;
-//#endif
+#include "MetalHelpers.hpp"
 
 namespace cinder { namespace mtl {
     
@@ -51,15 +46,24 @@ namespace cinder { namespace mtl {
         }
         
         template <typename T>
-        void update( const std::vector<T> & vectorData )
+        void update( const std::vector<T> & vectorData, bool isConstant = false )
         {
             update(vectorData.data(), sizeof(T) * vectorData.size());
         }
         
         template <typename BufferObjectType>
-        void setDataAtIndex( BufferObjectType *dataObject, int inflightBufferIndex )
+        void setDataAtIndex( BufferObjectType *dataObject, int inflightBufferIndex, bool isConstant = false )
         {
-            uint8_t *bufferPointer = (uint8_t *)this->contents() + (sizeof(BufferObjectType) * inflightBufferIndex);
+            size_t dataSize;
+            if ( isConstant )
+            {
+                dataSize = mtlConstantSize(BufferObjectType);
+            }
+            else
+            {
+                dataSize = sizeof(BufferObjectType);
+            }
+            uint8_t *bufferPointer = (uint8_t *)this->contents() + (dataSize * inflightBufferIndex);
             memcpy(bufferPointer, dataObject, sizeof(BufferObjectType));
         }
                 

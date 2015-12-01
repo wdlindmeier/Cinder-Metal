@@ -131,3 +131,9 @@ glm::ivec2 static inline fromMtl( vector_int2 vec )
     return *(glm::ivec2 *)&vec;
 }
 
+// NOTE: Mac OS requires constant buffer sizes be a multiple of 256.
+#if defined( CINDER_COCOA_TOUCH )
+#define mtlConstantSize(T)  sizeof(T)
+#else
+#define mtlConstantSize(T) size_t(256 * ceil(sizeof(T) / 256.0f))
+#endif

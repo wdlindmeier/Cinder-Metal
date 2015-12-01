@@ -33,7 +33,9 @@ namespace cinder { namespace mtl {
             ,mNormalizedCoordinates(true)
             ,mLodMinClamp(0.f)
             ,mLodMaxClamp(FLT_MAX)
+#if defined( CINDER_COCOA_TOUCH )
             ,mLodAverage(false)
+#endif
             ,mCompareFunction(0) // MTLCompareFunctionNever
             ,mLabel("Default Sampler State")
             {}
@@ -48,7 +50,9 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(normalizedCoordinates, NormalizedCoordinates, int)
             FORMAT_OPTION(lodMinClamp, LodMinClamp, int)
             FORMAT_OPTION(lodMaxClamp, LodMaxClamp, int)
+#if defined( CINDER_COCOA_TOUCH )
             FORMAT_OPTION(lodAverage, LodAverage, int)
+#endif
             FORMAT_OPTION(compareFunction, CompareFunction, int) // MTLCompareFunction
             FORMAT_OPTION(label, Label, std::string)
         };

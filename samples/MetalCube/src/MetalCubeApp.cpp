@@ -151,7 +151,10 @@ void MetalCubeApp::update()
     mUniforms.normalMatrix = toMtl(normalMatrix);
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.elapsedSeconds = getElapsedSeconds();
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
+    
+//    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
+    mDynamicConstantBuffer->update(&mUniforms, sizeof(ciUniforms_t),
+                                   mConstantDataBufferIndex * sizeof(ciUniforms_t));
     
     mRotation += 0.01f;
 
@@ -173,10 +176,8 @@ void MetalCubeApp::draw()
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);
 
-    uint constantsOffset = (sizeof(ciUniforms_t) * mConstantDataBufferIndex);
-    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
-    
-    
+    uint constantsOffset = sizeof(ciUniforms_t) * mConstantDataBufferIndex;
+
     // EXAMPLE 1
     // Using interleaved data
 //            renderEncoder()->pushDebugGroup("Draw Interleaved Cube");
@@ -201,6 +202,8 @@ void MetalCubeApp::draw()
     
     // Set the program
     renderEncoder()->setPipelineState(mPipelineGeomLighting);
+    
+    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
 
     // Set the texture
     renderEncoder()->setTexture(mTexture);
@@ -222,6 +225,8 @@ void MetalCubeApp::draw()
     
     // Set the program
     renderEncoder()->setPipelineState(mPipelineAttribLighting);
+    
+    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
 
     mAttribBufferCube->draw(renderEncoder(), 36);
     

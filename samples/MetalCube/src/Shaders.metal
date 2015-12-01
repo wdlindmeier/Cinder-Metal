@@ -36,7 +36,7 @@ typedef struct {
 
 // Vertex shader function
 vertex ColorInOut lighting_vertex_interleaved(device vertex_t* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                              constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                              device const ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                               unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
@@ -59,7 +59,7 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(ci
                                        device packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
                                        device packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
                                        device packed_float2* texCoords [[ buffer(ciBufferIndexTexCoords0) ]],
-                                       constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                       device const ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                        unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
@@ -83,7 +83,7 @@ vertex ColorInOut lighting_vertex_geom(device unsigned int* indices [[ buffer(ci
 // Vertex shader function using attrib buffers
 vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
                                                  device packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
-                                                 constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                 device const ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                  unsigned int vid [[ vertex_id ]])
 {
     ColorInOut out;
@@ -104,7 +104,7 @@ vertex ColorInOut lighting_vertex_attrib_buffers(device packed_float3* positions
 // Fragment shader function
 fragment float4 lighting_texture_fragment( ColorInOut in [[stage_in]],
                                            texture2d<float> textureCube [[ texture(ciTextureIndex0) ]],
-                                           sampler objcSampler [[sampler(ciSamplerIndex0)]] )
+                                           sampler objcSampler [[ sampler(ciSamplerIndex0) ]] )
 {
     // Use the shader sampler
     // float4 texColor = textureCube.sample(shaderSampler, in.texCoords);

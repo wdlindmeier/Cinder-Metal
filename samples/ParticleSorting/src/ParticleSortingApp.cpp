@@ -12,8 +12,8 @@ using namespace ci::app;
 using namespace std;
 using namespace cinder::mtl;
 
-const static int kNumInflightBuffers = 3;
 const static int kNumSortStateBuffers = 91; // Must be >= the number of sort passes
+const static int kNumInflightBuffers = 4;
 
 typedef struct {
     vec3 position;
@@ -45,6 +45,7 @@ public:
     myUniforms_t mUniforms;
     DataBufferRef mDynamicConstantBuffer;
     uint8_t mConstantDataBufferIndex;
+    uint mConstantsOffset;
     
     float mRotation;
     CameraPersp mCamera;
@@ -83,13 +84,13 @@ void ParticleSortingApp::resize()
 
 void ParticleSortingApp::loadAssets()
 {
-    mDynamicConstantBuffer = DataBuffer::create(sizeof(myUniforms_t) * kNumInflightBuffers,
-                                                nullptr,
-                                                "Uniform Buffer");
+    mDynamicConstantBuffer = DataBuffer::create( mtlConstantSize(myUniforms_t) * kNumInflightBuffers,
+                                                 nullptr,
+                                                 "Uniform Buffer");
     
-    mSortStateBuffer = DataBuffer::create(sizeof(sortState_t) * kNumSortStateBuffers,
-                                          nullptr,
-                                          "Sort State Buffer");
+    mSortStateBuffer = DataBuffer::create( mtlConstantSize(sortState_t) * kNumSortStateBuffers,
+                                           nullptr,
+                                           "Sort State Buffer");
 
     // Set up the particles
     vector<Particle> particles;
@@ -158,7 +159,8 @@ void ParticleSortingApp::update()
     // Set the uniform data
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.modelMatrix = toMtl(modelMatrix);
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
+    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex, true);
+    mConstantsOffset = mtlConstantSize(myUniforms_t) * mConstantDataBufferIndex;
     
     bitonicSort( false );
 }
@@ -188,7 +190,6 @@ void ParticleSortingApp::logComputeOutput( const myUniforms_t uniforms )
 void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
 {
     int passNum = 0;
-    uint constantsOffset = (sizeof(myUniforms_t) * mConstantDataBufferIndex);
     {
         uint arraySize = mUniforms.numParticles;
         int numStages = 0;
@@ -199,15 +200,11 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
             numStages++;
         }
         
+        ScopedCommandBuffer commandBuffer;
+        
         // NOTE:
         // If we log out the results while the command buffer is still running, the values might
-        // be incorrect. This can be fixed by logging out in the completion handler, OR, passing
-        // `true` into the ScopedCommandBuffer constructor, which causes it to wait synchronously
-        // until the work is done.
-        // We'll do both for demonstration.
-        
-        ScopedCommandBuffer commandBuffer(shouldLogOutput); // param value indicates if we should synchrounously wait until the work is done.
-        
+        // have already changed. This can be fixed by logging out in the completion handler.
         if ( shouldLogOutput )
         {
             myUniforms_t uniformsCopy = mUniforms;
@@ -228,15 +225,16 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
                 sortState.pass = passOfStage;
                 sortState.passNum = passNum;
                 sortState.direction = 1; // ascending
-                mSortStateBuffer->setDataAtIndex(&sortState, passNum);
+                mSortStateBuffer->setDataAtIndex(&sortState, passNum, true);
                 
                 computeEncoder()->setPipelineState(mPipelineBitonicSort);
                 
                 computeEncoder()->setBufferAtIndex(mParticleIndices, 1);
                 computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
-                computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3, sizeof(sortState_t) * passNum);
+                computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3,
+                                                   mtlConstantSize(sortState_t) * passNum);
 
-                computeEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
+                computeEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
                 
                 size_t gsz = arraySize / (2*4);
                 // NOTE: work size is not 1-per vector.
@@ -253,14 +251,12 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
 
 void ParticleSortingApp::draw()
 {
-    uint constantsOffset = (sizeof(myUniforms_t) * mConstantDataBufferIndex);
-    
     ScopedRenderBuffer renderBuffer;
  
     ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
 
     // Set uniforms
-    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
+    renderEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
     
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);
