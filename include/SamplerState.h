@@ -57,7 +57,7 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(label, Label, std::string)
         };
         
-        static SamplerStateRef create( Format format = Format() )
+        static SamplerStateRef create( const Format & format = Format() )
         {
             return SamplerStateRef( new SamplerState(format) );
         }

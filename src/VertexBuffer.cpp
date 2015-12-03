@@ -14,29 +14,35 @@ using namespace cinder;
 using namespace cinder::mtl;
 
 VertexBufferRef VertexBuffer::create( const ci::geom::AttribSet & requestedAttribs,
-                                      ci::mtl::geom::Primitive primitive )
+                                      const ci::mtl::geom::Primitive primitive,
+                                      const DataBuffer::Format & format )
 {
-    return VertexBufferRef( new VertexBuffer( requestedAttribs, primitive ) );
+    return VertexBufferRef( new VertexBuffer( requestedAttribs, primitive, format ) );
 }
 
 VertexBuffer::VertexBuffer( const ci::geom::AttribSet & requestedAttribs,
-                            ci::mtl::geom::Primitive primitive ) :
+                            const ci::mtl::geom::Primitive primitive,
+                            DataBuffer::Format format ) :
 mPrimitive(primitive)
 ,mVertexLength(0)
+,mDefaultBufferFormat(format)
 {
     setDefaultAttribIndices( requestedAttribs );
 }
 
 VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
-                                      const ci::geom::AttribSet & requestedAttribs )
+                                      const ci::geom::AttribSet & requestedAttribs,
+                                      const DataBuffer::Format & format )
 {
-    return VertexBufferRef( new VertexBuffer( source, requestedAttribs ) );
+    return VertexBufferRef( new VertexBuffer( source, requestedAttribs, format ) );
 }
 
 VertexBuffer::VertexBuffer( const ci::geom::Source & source,
-                            const ci::geom::AttribSet & requestedAttribs ) :
+                            const ci::geom::AttribSet & requestedAttribs,
+                            DataBuffer::Format format ) :
 mSource( source.clone() )
 ,mVertexLength(0)
+,mDefaultBufferFormat(format)
 {
     setDefaultAttribIndices( requestedAttribs );
     
@@ -69,7 +75,9 @@ DataBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
     return mAttributeBuffers[attr];
 }
 
-void VertexBuffer::setBufferForAttribute( DataBufferRef buffer, const ci::geom::Attrib attr, int shaderBufferIndex )
+void VertexBuffer::setBufferForAttribute( DataBufferRef buffer,
+                                          const ci::geom::Attrib attr,
+                                          int shaderBufferIndex )
 {
     mAttributeBuffers[attr] = buffer;
     
@@ -108,10 +116,11 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 et
     // Are we using stride right?
     unsigned long length = (dims * sizeof(float) + strideBytes) * count;
     
+    DataBuffer::Format format = mDefaultBufferFormat;
     std::string attrName = ci::geom::attribToString( attr );
-    auto buffer = DataBuffer::create(length,
-                                     srcData,
-                                     DataBuffer::Format().label(attrName));
+    format.setLabel(format.getLabel() + ": " + attrName);
+
+    auto buffer = DataBuffer::create(length, srcData, format);
     setBufferForAttribute(buffer, attr);
 }
 
@@ -132,8 +141,9 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
         indices.push_back(idx);
     }
 
-    DataBufferRef indexBuffer = DataBuffer::create(indices,
-                                                   DataBuffer::Format().label("Indices"));
+    DataBuffer::Format format = mDefaultBufferFormat;
+    format.setLabel(format.getLabel() + ": Indices");
+    DataBufferRef indexBuffer = DataBuffer::create(indices, format);
 
     setBufferForAttribute( indexBuffer, ci::geom::INDEX );
 }
@@ -172,17 +182,7 @@ void VertexBuffer::draw( RenderEncoderRef renderEncoder,
         assert( !!buffer );
         renderEncoder->setBufferAtIndex( buffer, kvp.second );
     }
-    
-//    // Lets take a peek
-//    if ( mAttributeBuffers.count(ci::geom::INDEX) )
-//    {
-//        unsigned int *indices = (unsigned int*)mAttributeBuffers[ci::geom::INDEX]->contents();
-//        for ( int i = 0; i < 36; ++i )
-//        {
-//            CI_LOG_I("indices[" << i << "] " << indices[i]);
-//        }
-//    }
-    
+
     renderEncoder->draw(mPrimitive,
                         vertexLength,
                         vertexStart,

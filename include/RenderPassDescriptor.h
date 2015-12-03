@@ -42,7 +42,7 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(depthStoreAction, DepthStoreAction, int) // MTLStoreAction
         };
         
-        static RenderPassDescriptorRef create( Format format = Format() );
+        static RenderPassDescriptorRef create( const Format & format = Format() );
         ~RenderPassDescriptor();
         
         void * getNative(){ return mImpl; };

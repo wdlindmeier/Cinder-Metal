@@ -23,7 +23,7 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
-            mStorageMode(-1) // defaults to MTLResourceStorageModeShared
+            mStorageMode(-1) // defaults to MTLResourceStorageModeManaged
             ,mCacheMode(-1) // defaults to MTLResourceCPUCacheModeDefaultCache
             ,mLabel("Default Data Buffer")
             {};
@@ -34,13 +34,13 @@ namespace cinder { namespace mtl {
         };
 
         // Data stored at pointer will be copied into the buffer
-        static DataBufferRef create( unsigned long length, const void * pointer, Format format = Format() )
+        static DataBufferRef create( unsigned long length, const void * pointer, const Format & format = Format() )
         {
             return DataBufferRef( new DataBuffer(length, pointer, format) );
         }
         
         template <typename T>
-        static DataBufferRef create( const std::vector<T> & dataVector, Format format = Format() )
+        static DataBufferRef create( const std::vector<T> & dataVector, const Format & format = Format() )
         {
             return DataBufferRef( new DataBuffer(dataVector, format) );
         }
@@ -91,7 +91,7 @@ namespace cinder { namespace mtl {
         void init( unsigned long length, const void * pointer, Format format );
         
         template <typename T>
-        DataBuffer( const std::vector<T> & dataVector, Format & format )
+        DataBuffer( const std::vector<T> & dataVector, Format format )
         {
             unsigned long vectorSize = sizeof(dataVector) + (sizeof(T) * dataVector.size());
             init(vectorSize, dataVector.data(), format);

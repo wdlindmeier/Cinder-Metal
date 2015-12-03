@@ -16,7 +16,7 @@ using namespace ci::cocoa;
 
 RenderPipelineStateRef RenderPipelineState::create(const std::string & vertShaderName,
                                                    const std::string & fragShaderName,
-                                                   Format format )
+                                                   const Format & format )
 {
     return RenderPipelineStateRef( new RenderPipelineState(vertShaderName, fragShaderName, format) );
 }

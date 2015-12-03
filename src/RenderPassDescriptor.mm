@@ -14,7 +14,7 @@
 using namespace ci;
 using namespace ci::mtl;
 
-RenderPassDescriptorRef RenderPassDescriptor::create( Format format )
+RenderPassDescriptorRef RenderPassDescriptor::create( const Format & format )
 {
     return RenderPassDescriptorRef( new RenderPassDescriptor( format ) );
 }

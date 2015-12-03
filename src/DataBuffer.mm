@@ -28,7 +28,7 @@ void DataBuffer::init( unsigned long length, const void * pointer, Format format
     auto device = [RendererMetalImpl sharedRenderer].device;
     
     SET_FORMAT_DEFAULT(format, CacheMode, MTLResourceCPUCacheModeDefaultCache);
-    SET_FORMAT_DEFAULT(format, StorageMode, MTLResourceStorageModeShared);
+    SET_FORMAT_DEFAULT(format, StorageMode, MTLResourceStorageModeManaged);
 
     if ( pointer == NULL )
     {

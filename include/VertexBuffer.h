@@ -25,18 +25,24 @@ namespace cinder
             
         public:
 
+            // The DataBuffer::Format will be passed into each DataBuffer that's constructed within
+            // the VertexBuffer (e.g. position, normal, etc).
+            // The label will be appended with the name of the attribute.
             static VertexBufferRef create( const ci::geom::AttribSet & requestedAttribs = {{}},
-                                           ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
+                                           const ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE,
+                                           const DataBuffer::Format & format = DataBuffer::Format().label("Vertex Buffer") );
 
             static VertexBufferRef create( const ci::geom::Source & source,
-                                           const ci::geom::AttribSet & requestedAttribs = {{}} );
+                                           const ci::geom::AttribSet & requestedAttribs = {{}},
+                                           const DataBuffer::Format & format = DataBuffer::Format().label("Vertex Buffer") );
             virtual ~VertexBuffer(){}
             
             ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
             void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
             
             // Set shaderBufferIndex to something > -1 if you wish to update / assign the shader index for this attribute
-            void setBufferForAttribute( DataBufferRef buffer, const ci::geom::Attrib attr,
+            void setBufferForAttribute( DataBufferRef buffer,
+                                        const ci::geom::Attrib attr,
                                         int shaderBufferIndex = -1 );
             DataBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
             
@@ -60,10 +66,12 @@ namespace cinder
         protected:
             
             VertexBuffer( const ci::geom::Source & source,
-                          const ci::geom::AttribSet & requestedAttribs );
+                          const ci::geom::AttribSet & requestedAttribs,
+                          DataBuffer::Format format );
             
             VertexBuffer( const ci::geom::AttribSet & requestedAttribs,
-                          ci::mtl::geom::Primitive primitive );
+                          const ci::mtl::geom::Primitive primitive,
+                          DataBuffer::Format format );
 
             // geom::Target subclass
             // Only use internally
@@ -79,6 +87,8 @@ namespace cinder
             std::map<ci::geom::Attrib, int> mRequestedAttribs;
             ci::geom::SourceRef mSource;
             size_t mVertexLength;
+            
+            DataBuffer::Format mDefaultBufferFormat;
             
         };
     }

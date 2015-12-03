@@ -86,7 +86,7 @@ void MetalCubeApp::loadAssets()
     mDynamicConstantBuffer = DataBuffer::create(mtlConstantSize(ciUniforms_t) * kNumInflightBuffers,
                                                 nullptr,
                                                 DataBuffer::Format().label("Uniform Buffer"));
-    
+
     // EXAMPLE 1
     // Use raw, interleaved vertex data
     mVertexBuffer = DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer

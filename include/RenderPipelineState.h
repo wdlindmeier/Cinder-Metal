@@ -48,8 +48,8 @@ namespace cinder { namespace mtl {
         };
         
         static RenderPipelineStateRef create( const std::string & vertShaderName,
-                                             const std::string & fragShaderName,
-                                             Format format = Format() );
+                                              const std::string & fragShaderName,
+                                              const Format & format = Format() );
         virtual ~RenderPipelineState();
         
         void * getNative(){ return mImpl; }

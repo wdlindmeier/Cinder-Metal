@@ -38,7 +38,7 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(label, Label, std::string)
         };
         
-        static DepthStateRef create( Format format = Format() )
+        static DepthStateRef create( const Format & format = Format() )
         {
             return DepthStateRef( new DepthState(format) );
         }
