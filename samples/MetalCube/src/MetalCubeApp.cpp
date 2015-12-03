@@ -71,8 +71,6 @@ void MetalCubeApp::setup()
     
     mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
                                                      .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
-
-    
     loadAssets();
 }
 
@@ -85,15 +83,15 @@ void MetalCubeApp::resize()
 void MetalCubeApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = DataBuffer::create(sizeof(ciUniforms_t) * kNumInflightBuffers,
+    mDynamicConstantBuffer = DataBuffer::create(mtlConstantSize(ciUniforms_t) * kNumInflightBuffers,
                                                 nullptr,
-                                                "Uniform Buffer");
+                                                DataBuffer::Format().label("Uniform Buffer"));
     
     // EXAMPLE 1
     // Use raw, interleaved vertex data
     mVertexBuffer = DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
                                        cubeVertexData,          // the data
-                                       "Interleaved Vertices"); // the name of the buffer
+                                       DataBuffer::Format().label("Interleaved Vertices")); // the name of the buffer
     
     mPipelineInterleavedLighting = RenderPipelineState::create("lighting_vertex_interleaved",
                                                                "lighting_fragment",
@@ -102,12 +100,12 @@ void MetalCubeApp::loadAssets()
 
     // EXAMPLE 2
     // Use a geom source
-    mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(),     // A geom source
+    mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(),      // A geom source
                                            {{ci::geom::INDEX,     // Pass in the requested attributes
                                              ci::geom::POSITION,  // which will be sent to the shader.
                                              ci::geom::NORMAL,
                                              ci::geom::TEX_COORD_0 }});
-    
+
     mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_geom",
                                                         "lighting_texture_fragment",
                                                         RenderPipelineState::Format()
@@ -129,9 +127,9 @@ void MetalCubeApp::loadAssets()
     
     mAttribBufferCube = VertexBuffer::create();
     mPositions = positions;
-    DataBufferRef positionBuffer = DataBuffer::create(mPositions, "positions");
+    DataBufferRef positionBuffer = DataBuffer::create(mPositions, DataBuffer::Format().label("positions"));
     mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
-    DataBufferRef normalBuffer = DataBuffer::create(normals, "normals");
+    DataBufferRef normalBuffer = DataBuffer::create(normals, DataBuffer::Format().label("normals"));
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
     mPipelineAttribLighting = RenderPipelineState::create("lighting_vertex_attrib_buffers",
@@ -152,9 +150,7 @@ void MetalCubeApp::update()
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.elapsedSeconds = getElapsedSeconds();
     
-//    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
-    mDynamicConstantBuffer->update(&mUniforms, sizeof(ciUniforms_t),
-                                   mConstantDataBufferIndex * sizeof(ciUniforms_t));
+    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex, true);
     
     mRotation += 0.01f;
 
@@ -176,7 +172,7 @@ void MetalCubeApp::draw()
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);
 
-    uint constantsOffset = sizeof(ciUniforms_t) * mConstantDataBufferIndex;
+    uint constantsOffset = mtlConstantSize(ciUniforms_t) * mConstantDataBufferIndex;
 
     // EXAMPLE 1
     // Using interleaved data
@@ -198,7 +194,7 @@ void MetalCubeApp::draw()
     // Using Cinder geom to draw the cube
     
     // Geom Target
-    renderEncoder()->pushDebugGroup("Draw Geom Cube");
+    renderEncoder()->pushDebugGroup("Draw Textured Geom Cube");
     
     // Set the program
     renderEncoder()->setPipelineState(mPipelineGeomLighting);

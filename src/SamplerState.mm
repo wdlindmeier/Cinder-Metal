@@ -15,6 +15,14 @@ using namespace ci::mtl;
 
 SamplerState::SamplerState( Format format )
 {
+    SET_FORMAT_DEFAULT(format, MipFilter, MTLSamplerMipFilterLinear);
+    SET_FORMAT_DEFAULT(format, MinFilter, MTLSamplerMinMagFilterLinear);
+    SET_FORMAT_DEFAULT(format, MagFilter, MTLSamplerMinMagFilterLinear);
+    SET_FORMAT_DEFAULT(format, SAddressMode, MTLSamplerAddressModeClampToEdge);
+    SET_FORMAT_DEFAULT(format, TAddressMode, MTLSamplerAddressModeClampToEdge);
+    SET_FORMAT_DEFAULT(format, RAddressMode, MTLSamplerAddressModeClampToEdge);
+    SET_FORMAT_DEFAULT(format, CompareFunction, MTLCompareFunctionNever);
+    
     MTLSamplerDescriptor *samplerDescriptor = [MTLSamplerDescriptor new];
     samplerDescriptor.mipFilter = (MTLSamplerMipFilter)format.getMipFilter();
     samplerDescriptor.maxAnisotropy = format.getMaxAnisotropy();

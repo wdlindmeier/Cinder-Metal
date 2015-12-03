@@ -27,6 +27,14 @@ RenderPipelineState::RenderPipelineState(const std::string & vertShaderName,
 mFormat(format)
 ,mImpl(nullptr)
 {
+    SET_FORMAT_DEFAULT(mFormat, ColorBlendOperation, MTLBlendOperationAdd);
+    SET_FORMAT_DEFAULT(mFormat, AlphaBlendOperation, MTLBlendOperationAdd);
+    SET_FORMAT_DEFAULT(mFormat, SrcColorBlendFactor, MTLBlendFactorSourceAlpha);
+    SET_FORMAT_DEFAULT(mFormat, SrcAlphaBlendFactor, MTLBlendFactorSourceAlpha);
+    SET_FORMAT_DEFAULT(mFormat, DstColorBlendFactor, MTLBlendFactorOneMinusSourceAlpha);
+    SET_FORMAT_DEFAULT(mFormat, DstAlphaBlendFactor, MTLBlendFactorOneMinusSourceAlpha);
+    SET_FORMAT_DEFAULT(mFormat, PixelFormat, MTLPixelFormatBGRA8Unorm);
+    
     id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
     id <MTLLibrary> library = [RendererMetalImpl sharedRenderer].library;
     
@@ -40,22 +48,22 @@ mFormat(format)
     
     // Create a reusable pipeline state
     MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    pipelineStateDescriptor.label = [NSString stringWithUTF8String:format.getLabel().c_str()];
-    [pipelineStateDescriptor setSampleCount: format.getSampleCount()];
+    pipelineStateDescriptor.label = [NSString stringWithUTF8String:mFormat.getLabel().c_str()];
+    [pipelineStateDescriptor setSampleCount: mFormat.getSampleCount()];
     [pipelineStateDescriptor setVertexFunction:vertexProgram];
     [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
     
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = (MTLPixelFormat)format.getPixelFormat();
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = (MTLPixelFormat)mFormat.getPixelFormat();
     pipelineStateDescriptor.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float; // this is the only depth format
 
     MTLRenderPipelineColorAttachmentDescriptor *renderbufferAttachment = pipelineStateDescriptor.colorAttachments[0];
-    renderbufferAttachment.blendingEnabled = format.getBlendingEnabled();
-    renderbufferAttachment.rgbBlendOperation = (MTLBlendOperation)format.getColorBlendOperation();
-    renderbufferAttachment.alphaBlendOperation = (MTLBlendOperation)format.getAlphaBlendOperation();
-    renderbufferAttachment.sourceRGBBlendFactor = (MTLBlendFactor)format.getSrcColorBlendFactor();
-    renderbufferAttachment.sourceAlphaBlendFactor = (MTLBlendFactor)format.getSrcAlphaBlendFactor();
-    renderbufferAttachment.destinationRGBBlendFactor = (MTLBlendFactor)format.getDstColorBlendFactor();
-    renderbufferAttachment.destinationAlphaBlendFactor = (MTLBlendFactor)format.getDstAlphaBlendFactor();
+    renderbufferAttachment.blendingEnabled = mFormat.getBlendingEnabled();
+    renderbufferAttachment.rgbBlendOperation = (MTLBlendOperation)mFormat.getColorBlendOperation();
+    renderbufferAttachment.alphaBlendOperation = (MTLBlendOperation)mFormat.getAlphaBlendOperation();
+    renderbufferAttachment.sourceRGBBlendFactor = (MTLBlendFactor)mFormat.getSrcColorBlendFactor();
+    renderbufferAttachment.sourceAlphaBlendFactor = (MTLBlendFactor)mFormat.getSrcAlphaBlendFactor();
+    renderbufferAttachment.destinationRGBBlendFactor = (MTLBlendFactor)mFormat.getDstColorBlendFactor();
+    renderbufferAttachment.destinationAlphaBlendFactor = (MTLBlendFactor)mFormat.getDstAlphaBlendFactor();
     
     NSError* error = NULL;
     mImpl = (__bridge_retained void *)[device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];

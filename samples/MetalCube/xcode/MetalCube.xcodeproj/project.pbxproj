@@ -29,6 +29,11 @@
 		91A4626DA1D24E3DAE19ADDA /* BlitEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 586B5D2180154121B965919D /* BlitEncoder.mm */; };
 		922225B1182340EEA117E85C /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B01807E0304B4EB1BA7FA1A6 /* CommandBuffer.mm */; };
 		9BD540119ED54934A989A3B8 /* ImageHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA3596C3BD87487BB74B6F9D /* ImageHelpers.mm */; };
+		A9AA4B0A1C0E8DA40023916E /* checker.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B051C0E8DA40023916E /* checker.png */; };
+		A9AA4B0B1C0E8DA40023916E /* checker_trans.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B061C0E8DA40023916E /* checker_trans.png */; };
+		A9AA4B0C1C0E8DA40023916E /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B071C0E8DA40023916E /* texture.jpg */; };
+		A9AA4B0D1C0E8DA40023916E /* texture.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B081C0E8DA40023916E /* texture.png */; };
+		A9AA4B0E1C0E8DA40023916E /* texture_trans.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B091C0E8DA40023916E /* texture_trans.png */; };
 		A9BDFEBC1C0CB92000A76FD0 /* MetalCubeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BDFEBB1C0CB92000A76FD0 /* MetalCubeApp.cpp */; };
 		A9BDFEBF1C0CBA0700A76FD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BDFEBE1C0CBA0700A76FD0 /* QuartzCore.framework */; };
 		A9BDFEC11C0CBA1000A76FD0 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BDFEC01C0CBA1000A76FD0 /* Metal.framework */; };
@@ -64,7 +69,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D7F8E610A6C49CC89846BDF /* CommandEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CommandEncoder.mm; path = ../../../src/CommandEncoder.mm; sourceTree = "<group>"; };
-		302EFEB33CB448BCB2AFEF87 /* VertexBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = VertexBuffer.cpp; path = ../../../src/VertexBuffer.cpp; sourceTree = "<group>"; };
+		302EFEB33CB448BCB2AFEF87 /* VertexBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VertexBuffer.cpp; path = ../../../src/VertexBuffer.cpp; sourceTree = "<group>"; };
 		42CEF22CD6CF4DE1BD245E76 /* MetalHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = MetalHelpers.hpp; path = ../../../include/MetalHelpers.hpp; sourceTree = "<group>"; };
 		43D053499629469F9A38A4BA /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		4EF2F2BBBCCA4DBAA98D6234 /* ComputePipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputePipelineState.mm; path = ../../../src/ComputePipelineState.mm; sourceTree = "<group>"; };
@@ -88,6 +93,11 @@
 		A0270BB15512489FA0123048 /* RenderEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderEncoder.mm; path = ../../../src/RenderEncoder.mm; sourceTree = "<group>"; };
 		A1A1EE3CC2B244829C4309FD /* RenderPipelineState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPipelineState.h; path = ../../../include/RenderPipelineState.h; sourceTree = "<group>"; };
 		A76F7CCC4A3E4136B26BC02B /* ImageHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageHelpers.h; path = ../../../include/ImageHelpers.h; sourceTree = "<group>"; };
+		A9AA4B051C0E8DA40023916E /* checker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker.png; sourceTree = "<group>"; };
+		A9AA4B061C0E8DA40023916E /* checker_trans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker_trans.png; sourceTree = "<group>"; };
+		A9AA4B071C0E8DA40023916E /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
+		A9AA4B081C0E8DA40023916E /* texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture.png; sourceTree = "<group>"; };
+		A9AA4B091C0E8DA40023916E /* texture_trans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture_trans.png; sourceTree = "<group>"; };
 		A9BDFEBB1C0CB92000A76FD0 /* MetalCubeApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MetalCubeApp.cpp; path = ../src/MetalCubeApp.cpp; sourceTree = "<group>"; };
 		A9BDFEBD1C0CB93800A76FD0 /* MetalCube_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalCube_Prefix.pch; sourceTree = "<group>"; };
 		A9BDFEBE1C0CBA0700A76FD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -242,6 +252,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A9AA4B041C0E8DA40023916E /* assets */,
 				884B2E6828EB48DABC9FA568 /* CinderApp.icns */,
 				DC55182B8AD2463EA42E63DC /* Info.plist */,
 			);
@@ -264,6 +275,19 @@
 				1D36FAEDE54A4F83B943DF31 /* include */,
 			);
 			name = "Cinder-Metal";
+			sourceTree = "<group>";
+		};
+		A9AA4B041C0E8DA40023916E /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				A9AA4B051C0E8DA40023916E /* checker.png */,
+				A9AA4B061C0E8DA40023916E /* checker_trans.png */,
+				A9AA4B071C0E8DA40023916E /* texture.jpg */,
+				A9AA4B081C0E8DA40023916E /* texture.png */,
+				A9AA4B091C0E8DA40023916E /* texture_trans.png */,
+			);
+			name = assets;
+			path = ../assets;
 			sourceTree = "<group>";
 		};
 		CA30133D9B5141CF96BDCDE0 /* src */ = {
@@ -344,7 +368,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9AA4B0D1C0E8DA40023916E /* texture.png in Resources */,
+				A9AA4B0B1C0E8DA40023916E /* checker_trans.png in Resources */,
+				A9AA4B0E1C0E8DA40023916E /* texture_trans.png in Resources */,
 				D3406EF229FC4D44A6618D70 /* CinderApp.icns in Resources */,
+				A9AA4B0A1C0E8DA40023916E /* checker.png in Resources */,
+				A9AA4B0C1C0E8DA40023916E /* texture.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

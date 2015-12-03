@@ -23,7 +23,7 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
-            mDepthCompareFunction(3) // MTLCompareFunctionLessEqual
+            mDepthCompareFunction(-1) // defaults to MTLCompareFunctionLessEqual
             ,mDepthWriteEnabled(true)
             ,mFrontFaceStencil(nullptr)
             ,mBackFaceStencil(nullptr)

@@ -30,11 +30,11 @@ namespace cinder { namespace mtl {
             Format() :
             mMipmapLevel(1)
             ,mSampleCount(1)
-            ,mTextureType(2) // defaults to MTLTextureType2D
-            ,mPixelFormat(0) // defaults to MTLPixelFormatInvalid
+            ,mTextureType(-1) // defaults to MTLTextureType2D
+            ,mPixelFormat(-1) // defaults to MTLPixelFormatInvalid
             ,mDepth(1)
             ,mArrayLength(1)
-            ,mUsage(0) // defaults to MTLTextureUsageUnknown
+            ,mUsage(-1) // defaults to MTLTextureUsageShaderRead
             {};
             
             FORMAT_OPTION(mipmapLevel, MipmapLevel, int)

@@ -30,8 +30,8 @@ namespace cinder { namespace mtl {
             ,mShouldClearDepth(true)
             ,mClearColor(0.f,0.f,0.f,1.f)
             ,mClearDepth(1.f)
-            ,mColorStoreAction(1) // MTLStoreActionStore
-            ,mDepthStoreAction(0) // MTLStoreActionDontCare
+            ,mColorStoreAction(-1) // MTLStoreActionStore
+            ,mDepthStoreAction(-1) // MTLStoreActionDontCare
             {};
             
             FORMAT_OPTION(shouldClearColor, ShouldClearColor, bool)

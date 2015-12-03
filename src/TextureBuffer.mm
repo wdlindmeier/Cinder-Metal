@@ -23,6 +23,10 @@ using namespace cinder::mtl;
 TextureBuffer::TextureBuffer( ImageSourceRef imageSource, Format format ) :
 mFormat(format)
 {
+    SET_FORMAT_DEFAULT(mFormat, TextureType, MTLTextureType2D);
+    SET_FORMAT_DEFAULT(mFormat, PixelFormat, MTLPixelFormatInvalid);
+    SET_FORMAT_DEFAULT(mFormat, Usage, MTLTextureUsageShaderRead );
+
     CGImageRef imageRef = cocoa::createCgImage( imageSource, ImageTarget::Options() );
 
     MTLPixelFormat pxFormat = (MTLPixelFormat)mFormat.getPixelFormat();
@@ -39,7 +43,7 @@ mFormat(format)
     
     NSUInteger width = CGImageGetWidth(imageRef);
     NSUInteger height = CGImageGetHeight(imageRef);
-
+    
     // Get the image data
     mBytesPerRow = CGImageGetBytesPerRow(imageRef);
     // NOTE: channelOrderNumChannels can return the wrong number of channels.
@@ -52,7 +56,7 @@ mFormat(format)
     }
 
     MTLTextureDescriptor *desc = [[MTLTextureDescriptor alloc] init];
-    desc.textureType = (MTLTextureType)format.getTextureType();
+    desc.textureType = (MTLTextureType)mFormat.getTextureType();
     desc.pixelFormat = pxFormat;
     desc.width = width;
     desc.height = height;

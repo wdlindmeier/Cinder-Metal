@@ -111,7 +111,7 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 et
     std::string attrName = ci::geom::attribToString( attr );
     auto buffer = DataBuffer::create(length,
                                      srcData,
-                                     attrName);
+                                     DataBuffer::Format().label(attrName));
     setBufferForAttribute(buffer, attr);
 }
 
@@ -124,24 +124,17 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
     {
         assert( mRequestedAttribs.count(ci::geom::INDEX) > 0 );
     }
-    
-    // NOTE: Is unsigned int the right data type?
-    size_t idxBytesRequired = sizeof(unsigned int);
-    assert(idxBytesRequired >= requiredBytesPerIndex);
-    
-    unsigned long length = idxBytesRequired * numIndices;
-    DataBufferRef indexBuffer = DataBuffer::create(length,
-                                                   NULL,
-                                                   "Indices");
-    
-    // Copy each index one by one to minimize the memory required
+    std::vector<unsigned int> indices;
     for ( size_t i = 0; i < numIndices; ++i )
     {
-        unsigned int * bufferPointer = (unsigned int *)indexBuffer->contents() + i;
         // Convert the index into the type expected by Metal
         unsigned int idx = source[i];
-        *bufferPointer = idx;
+        indices.push_back(idx);
     }
+
+    DataBufferRef indexBuffer = DataBuffer::create(indices,
+                                                   DataBuffer::Format().label("Indices"));
+
     setBufferForAttribute( indexBuffer, ci::geom::INDEX );
 }
 
@@ -179,6 +172,16 @@ void VertexBuffer::draw( RenderEncoderRef renderEncoder,
         assert( !!buffer );
         renderEncoder->setBufferAtIndex( buffer, kvp.second );
     }
+    
+//    // Lets take a peek
+//    if ( mAttributeBuffers.count(ci::geom::INDEX) )
+//    {
+//        unsigned int *indices = (unsigned int*)mAttributeBuffers[ci::geom::INDEX]->contents();
+//        for ( int i = 0; i < 36; ++i )
+//        {
+//            CI_LOG_I("indices[" << i << "] " << indices[i]);
+//        }
+//    }
     
     renderEncoder->draw(mPrimitive,
                         vertexLength,

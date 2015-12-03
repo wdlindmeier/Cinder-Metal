@@ -25,14 +25,14 @@ namespace cinder { namespace mtl {
             Format() :
             mSampleCount(1)
             ,mBlendingEnabled(false)
-            ,mColorBlendOperation(0) // MTLBlendOperationAdd
-            ,mAlphaBlendOperation(0) // MTLBlendOperationAdd
-            ,mSrcColorBlendFactor(4) // MTLBlendFactorSourceAlpha
-            ,mSrcAlphaBlendFactor(4) // MTLBlendFactorSourceAlpha
-            ,mDstColorBlendFactor(5) // MTLBlendFactorOneMinusSourceAlpha
-            ,mDstAlphaBlendFactor(5) // MTLBlendFactorOneMinusSourceAlpha
+            ,mColorBlendOperation(-1) // defaults to MTLBlendOperationAdd
+            ,mAlphaBlendOperation(-1) // defaults to MTLBlendOperationAdd
+            ,mSrcColorBlendFactor(-1) // defaults to MTLBlendFactorSourceAlpha
+            ,mSrcAlphaBlendFactor(-1) // defaults to MTLBlendFactorSourceAlpha
+            ,mDstColorBlendFactor(-1) // defaults to MTLBlendFactorOneMinusSourceAlpha
+            ,mDstAlphaBlendFactor(-1) // defaults to MTLBlendFactorOneMinusSourceAlpha
             ,mLabel("Default Pipeline")
-            ,mPixelFormat(80) //MTLPixelFormatBGRA8Unorm
+            ,mPixelFormat(-1) // defaults to MTLPixelFormatBGRA8Unorm
             {}
 
             FORMAT_OPTION(sampleCount, SampleCount, int)

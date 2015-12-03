@@ -27,6 +27,9 @@ mDepthTexture(nullptr)
 {
     mImpl = (__bridge void *)[MTLRenderPassDescriptor renderPassDescriptor];
     CFRetain(mImpl);
+    
+    SET_FORMAT_DEFAULT(format, ColorStoreAction, MTLStoreActionStore);
+    SET_FORMAT_DEFAULT(format, DepthStoreAction, MTLStoreActionDontCare);
 
     setShouldClearColor(format.getShouldClearColor());
     setClearColor(format.getClearColor());

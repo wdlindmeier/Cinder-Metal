@@ -19,6 +19,12 @@
         void set##CAP_NAME( TYPE NAME ) { m##CAP_NAME = NAME; }; \
         TYPE get##CAP_NAME() { return m##CAP_NAME; }; \
 
+#define SET_FORMAT_DEFAULT(FORMAT, CAP_NAME, DEFAULT_VALUE) \
+    if ( FORMAT.get##CAP_NAME() == -1 ) \
+    { \
+        FORMAT.set##CAP_NAME(DEFAULT_VALUE); \
+    } \
+
 // Conversions to simd types
 
 matrix_float4x4 static inline toMtl( glm::mat4 mat )
@@ -131,9 +137,12 @@ glm::ivec2 static inline fromMtl( vector_int2 vec )
     return *(glm::ivec2 *)&vec;
 }
 
-// NOTE: Mac OS requires constant buffer sizes be a multiple of 256.
+// For buffers in the constant address space, the offset must be aligned to 256 bytes in OS X.
+// In iOS, the offset must be aligned to the maximum of either the data type consumed by the vertex
+// shader function, or 4 bytes. A 16-byte alignment is always safe in iOS if you do not need to
+// worry about the data type.
 #if defined( CINDER_COCOA_TOUCH )
-#define mtlConstantSize(T)  sizeof(T)
+#define mtlConstantSize(T) size_t(16 * ceil(sizeof(T) / 16.0f))
 #else
 #define mtlConstantSize(T) size_t(256 * ceil(sizeof(T) / 256.0f))
 #endif

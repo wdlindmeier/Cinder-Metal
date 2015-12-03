@@ -86,11 +86,11 @@ void ParticleSortingApp::loadAssets()
 {
     mDynamicConstantBuffer = DataBuffer::create( mtlConstantSize(myUniforms_t) * kNumInflightBuffers,
                                                  nullptr,
-                                                 "Uniform Buffer");
+                                                 DataBuffer::Format().label("Uniform Buffer"));
     
     mSortStateBuffer = DataBuffer::create( mtlConstantSize(sortState_t) * kNumSortStateBuffers,
                                            nullptr,
-                                           "Sort State Buffer");
+                                           DataBuffer::Format().label("Sort State Buffer"));
 
     // Set up the particles
     vector<Particle> particles;

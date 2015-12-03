@@ -18,30 +18,41 @@ using namespace cinder::cocoa;
 
 #define IMPL ((__bridge id <MTLBuffer>)mImpl)
 
-DataBuffer::DataBuffer( unsigned long length, const void * pointer, const std::string & label )
+DataBuffer::DataBuffer( unsigned long length, const void * pointer, Format format )
 {
-    init( length, pointer, label );
+    init( length, pointer, format );
 }
 
-void DataBuffer::init( unsigned long length, const void * pointer, const std::string & label )
+void DataBuffer::init( unsigned long length, const void * pointer, Format format )
 {
     auto device = [RendererMetalImpl sharedRenderer].device;
     
+    SET_FORMAT_DEFAULT(format, CacheMode, MTLResourceCPUCacheModeDefaultCache);
+    SET_FORMAT_DEFAULT(format, StorageMode, MTLResourceStorageModeShared);
+
     if ( pointer == NULL )
     {
         mImpl = (__bridge_retained void *)[device newBufferWithLength:length
-                                                              options:MTLResourceCPUCacheModeDefaultCache |
-                                                                      MTLResourceStorageModeShared];
+                                                              options:format.getCacheMode() |
+                                                                      format.getStorageMode() ];
     }
     else
     {
+        if ( format.getStorageMode() == MTLResourceStorageModePrivate )
+        {
+            CI_LOG_E("DataBuffer with Private storage mode cannot be constructed with data from \
+                     the CPU. Data must be sent via a blit command.");
+            // https://developer.apple.com/library/mac/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+        }
         mImpl = (__bridge_retained void *)[device newBufferWithBytes:pointer
                                                               length:length
-                                                             options:MTLResourceCPUCacheModeDefaultCache |
-                                                                     MTLResourceStorageModeShared];
+                                                             options:format.getCacheMode() |
+                                                                     format.getStorageMode() ];
+        
+        didModifyRange(0, length);
     }
     
-    IMPL.label = [NSString stringWithUTF8String:label.c_str()];
+    IMPL.label = [NSString stringWithUTF8String:format.getLabel().c_str()];
 }
 
 DataBuffer::~DataBuffer()
@@ -55,4 +66,12 @@ DataBuffer::~DataBuffer()
 void * DataBuffer::contents()
 {
     return [IMPL contents];
+}
+
+void DataBuffer::didModifyRange( size_t location, size_t length )
+{
+    if ( [IMPL storageMode] == MTLStorageModeManaged )
+    {
+        [IMPL didModifyRange:NSMakeRange(0, length)];
+    }
 }

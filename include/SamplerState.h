@@ -23,20 +23,20 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
-            mMipFilter(2) // MTLSamplerMipFilterLinear
+            mMipFilter(-1) // defaults to MTLSamplerMipFilterLinear
             ,mMaxAnisotropy(3)
-            ,mMinFilter(1) // MTLSamplerMinMagFilterLinear
-            ,mMagFilter(1) // MTLSamplerMinMagFilterLinear
-            ,mSAddressMode(0) // MTLSamplerAddressModeClampToEdge
-            ,mTAddressMode(0) // MTLSamplerAddressModeClampToEdge
-            ,mRAddressMode(0) // MTLSamplerAddressModeClampToEdge
+            ,mMinFilter(-1) // defaults to MTLSamplerMinMagFilterLinear
+            ,mMagFilter(-1) // defaults to MTLSamplerMinMagFilterLinear
+            ,mSAddressMode(-1) // defaults to MTLSamplerAddressModeClampToEdge
+            ,mTAddressMode(-1) // defaults to MTLSamplerAddressModeClampToEdge
+            ,mRAddressMode(-1) // defaults to MTLSamplerAddressModeClampToEdge
             ,mNormalizedCoordinates(true)
             ,mLodMinClamp(0.f)
             ,mLodMaxClamp(FLT_MAX)
 #if defined( CINDER_COCOA_TOUCH )
             ,mLodAverage(false)
 #endif
-            ,mCompareFunction(0) // MTLCompareFunctionNever
+            ,mCompareFunction(-1) // defaults to MTLCompareFunctionNever
             ,mLabel("Default Sampler State")
             {}
             
