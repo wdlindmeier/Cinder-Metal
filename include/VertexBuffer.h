@@ -30,11 +30,13 @@ namespace cinder
             // The label will be appended with the name of the attribute.
             static VertexBufferRef create( const ci::geom::AttribSet & requestedAttribs = {{}},
                                            const ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE,
-                                           const DataBuffer::Format & format = DataBuffer::Format().label("Vertex Buffer") );
+                                           const DataBuffer::Format & format = DataBuffer::Format()
+                                                                                .label("Vertex Buffer") );
 
             static VertexBufferRef create( const ci::geom::Source & source,
                                            const ci::geom::AttribSet & requestedAttribs = {{}},
-                                           const DataBuffer::Format & format = DataBuffer::Format().label("Vertex Buffer") );
+                                           const DataBuffer::Format & format = DataBuffer::Format()
+                                                                                .label("Vertex Buffer") );
             virtual ~VertexBuffer(){}
             
             ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };

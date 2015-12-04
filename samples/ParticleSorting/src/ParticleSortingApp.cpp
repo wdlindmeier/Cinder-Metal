@@ -84,13 +84,13 @@ void ParticleSortingApp::resize()
 
 void ParticleSortingApp::loadAssets()
 {
-    mDynamicConstantBuffer = DataBuffer::create( mtlConstantSize(myUniforms_t) * kNumInflightBuffers,
+    mDynamicConstantBuffer = DataBuffer::create( mtlConstantSizeOf(myUniforms_t) * kNumInflightBuffers,
                                                  nullptr,
-                                                 DataBuffer::Format().label("Uniform Buffer"));
+                                                 DataBuffer::Format().label("Uniform Buffer").isConstant(true) );
     
-    mSortStateBuffer = DataBuffer::create( mtlConstantSize(sortState_t) * kNumSortStateBuffers,
+    mSortStateBuffer = DataBuffer::create( mtlConstantSizeOf(sortState_t) * kNumSortStateBuffers,
                                            nullptr,
-                                           DataBuffer::Format().label("Sort State Buffer"));
+                                           DataBuffer::Format().label("Sort State Buffer").isConstant(true) );
 
     // Set up the particles
     vector<Particle> particles;
@@ -159,8 +159,8 @@ void ParticleSortingApp::update()
     // Set the uniform data
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.modelMatrix = toMtl(modelMatrix);
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex, true);
-    mConstantsOffset = mtlConstantSize(myUniforms_t) * mConstantDataBufferIndex;
+    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
+    mConstantsOffset = mtlConstantSizeOf(myUniforms_t) * mConstantDataBufferIndex;
     
     bitonicSort( false );
 }
@@ -225,14 +225,14 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
                 sortState.pass = passOfStage;
                 sortState.passNum = passNum;
                 sortState.direction = 1; // ascending
-                mSortStateBuffer->setDataAtIndex(&sortState, passNum, true);
+                mSortStateBuffer->setDataAtIndex(&sortState, passNum);
                 
                 computeEncoder()->setPipelineState(mPipelineBitonicSort);
                 
                 computeEncoder()->setBufferAtIndex(mParticleIndices, 1);
                 computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
                 computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3,
-                                                   mtlConstantSize(sortState_t) * passNum);
+                                                   mtlConstantSizeOf(sortState_t) * passNum);
 
                 computeEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
                 

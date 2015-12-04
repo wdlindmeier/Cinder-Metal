@@ -121,6 +121,7 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 et
     format.setLabel(format.getLabel() + ": " + attrName);
 
     auto buffer = DataBuffer::create(length, srcData, format);
+    
     setBufferForAttribute(buffer, attr);
 }
 
@@ -143,6 +144,7 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
 
     DataBuffer::Format format = mDefaultBufferFormat;
     format.setLabel(format.getLabel() + ": Indices");
+
     DataBufferRef indexBuffer = DataBuffer::create(indices, format);
 
     setBufferForAttribute( indexBuffer, ci::geom::INDEX );

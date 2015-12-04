@@ -62,7 +62,7 @@ void MetalCubeApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mTexture = TextureBuffer::create(loadImage(getAssetPath("checker.png")),
+    mTexture = TextureBuffer::create(loadImage(Platform::get()->getResourcePath("checker.png")),
                                      TextureBuffer::Format().mipmapLevel(4));
     
     mSamplerMipMapped = SamplerState::create();
@@ -83,9 +83,9 @@ void MetalCubeApp::resize()
 void MetalCubeApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = DataBuffer::create(mtlConstantSize(ciUniforms_t) * kNumInflightBuffers,
+    mDynamicConstantBuffer = DataBuffer::create(mtlConstantSizeOf(ciUniforms_t) * kNumInflightBuffers,
                                                 nullptr,
-                                                DataBuffer::Format().label("Uniform Buffer"));
+                                                DataBuffer::Format().label("Uniform Buffer").isConstant(true));
 
     // EXAMPLE 1
     // Use raw, interleaved vertex data
@@ -150,7 +150,7 @@ void MetalCubeApp::update()
     mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
     mUniforms.elapsedSeconds = getElapsedSeconds();
     
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex, true);
+    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
     
     mRotation += 0.01f;
 
@@ -172,7 +172,7 @@ void MetalCubeApp::draw()
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);
 
-    uint constantsOffset = mtlConstantSize(ciUniforms_t) * mConstantDataBufferIndex;
+    uint constantsOffset = mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex;
 
     // EXAMPLE 1
     // Using interleaved data
@@ -200,6 +200,29 @@ void MetalCubeApp::draw()
     renderEncoder()->setPipelineState(mPipelineGeomLighting);
     
     renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
+    
+//    DataBufferRef ind = mGeomBufferCube->getBufferForAttribute(ci::geom::INDEX);
+//    unsigned int * idx = (unsigned int * )ind->contents();
+//    
+//    DataBufferRef pos = mGeomBufferCube->getBufferForAttribute(ci::geom::POSITION);
+//    vec3 * posx = (vec3 *)pos->contents();
+//
+//    vector<unsigned int> indices;
+//    vector<vec3> positions;
+//    for ( int i = 0; i < 36; ++i )
+//    {
+//        indices.push_back(idx[i]);
+//        if ( i < 24 )
+//        {
+//            positions.push_back(posx[i]);
+//        }
+//    }
+//    DataBufferRef dupedIndices = DataBuffer::create(sizeof(vector<unsigned int>) * indices.size(), NULL );
+//    dupedIndices->update(indices, true);
+//    renderEncoder()->setBufferAtIndex(dupedIndices, 19);
+//    
+//    DataBufferRef dupedPositions = DataBuffer::create(positions);
+//    renderEncoder()->setBufferAtIndex(dupedPositions, 18);
 
     // Set the texture
     renderEncoder()->setTexture(mTexture);

@@ -142,7 +142,13 @@ glm::ivec2 static inline fromMtl( vector_int2 vec )
 // shader function, or 4 bytes. A 16-byte alignment is always safe in iOS if you do not need to
 // worry about the data type.
 #if defined( CINDER_COCOA_TOUCH )
-#define mtlConstantSize(T) size_t(16 * ceil(sizeof(T) / 16.0f))
+#define mtlConstantBufferSize(T) size_t(16 * ceil(T / 16.0f))
 #else
-#define mtlConstantSize(T) size_t(256 * ceil(sizeof(T) / 256.0f))
+#define mtlConstantBufferSize(T) size_t(256 * ceil(T / 256.0f))
+#endif
+
+#if defined( CINDER_COCOA_TOUCH )
+#define mtlConstantSizeOf(T) mtlConstantBufferSize(sizeof(T))
+#else
+#define mtlConstantSizeOf(T) mtlConstantBufferSize(sizeof(T))
 #endif

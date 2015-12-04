@@ -39,10 +39,10 @@ int keyForDepth( float depth )
 
 // Convert the indices into the sortable values (0 .. large num)
 int4 indexSortKeys( int4 indices,
-                    const device Particle* inParticles,
+                    device const Particle* inParticles,
                     constant myUniforms_t& uniforms );
 int4 indexSortKeys( int4 indices,
-                    const device Particle* inParticles,
+                    device const Particle* inParticles,
                     constant myUniforms_t& uniforms )
 {
     int4 depths(0);
@@ -94,7 +94,7 @@ bool4 ltMask( int4 leftValues, int4 rightValues,
 
 // An extremely simple sort to demonstrate the compute pipeline.
 // This is not efficient.
-kernel void kernel_sort(const device Particle* inPositions [[ buffer(1) ]],
+kernel void kernel_sort(device const Particle* inPositions [[ buffer(1) ]],
                         device Particle* outPositions [[ buffer(2) ]],
                         constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                         uint2 global_thread_position [[thread_position_in_grid]],
@@ -129,10 +129,9 @@ kernel void kernel_sort(const device Particle* inPositions [[ buffer(1) ]],
 // A bitonic sort of indices based on value (e.g. depth of particle)
 // Based on https://software.intel.com/en-us/articles/bitonic-sorting
 
-kernel void bitonic_sort_by_value( //device const myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                   constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                    device int4 * particleIndices [[ buffer(1) ]],
-                                   const device Particle * particles [[ buffer(2) ]],
+                                   device const Particle * particles [[ buffer(2) ]],
                                    constant sortState_t& sortState [[ buffer(3) ]],
                                    uint2 global_thread_position [[thread_position_in_grid]],
                                    uint local_index [[thread_index_in_threadgroup]],
@@ -276,8 +275,8 @@ kernel void bitonic_sort_by_value( //device const myUniforms_t& uniforms [[ buff
     }
 }
 
-vertex ColorInOut vertex_particles(const device Particle * particles [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                   const device int4 * indices [[ buffer(ciBufferIndexIndicies) ]],
+vertex ColorInOut vertex_particles(device const Particle * particles [[ buffer(ciBufferIndexInterleavedVerts) ]],
+                                   device const int4 * indices [[ buffer(ciBufferIndexIndicies) ]],
                                    constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                    unsigned int vid [[ vertex_id ]] )
 {

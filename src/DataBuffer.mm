@@ -25,20 +25,21 @@ DataBuffer::DataBuffer( unsigned long length, const void * pointer, Format forma
 
 void DataBuffer::init( unsigned long length, const void * pointer, Format format )
 {
+    mFormat = format;
     auto device = [RendererMetalImpl sharedRenderer].device;
     
-    SET_FORMAT_DEFAULT(format, CacheMode, MTLResourceCPUCacheModeDefaultCache);
-    SET_FORMAT_DEFAULT(format, StorageMode, MTLResourceStorageModeManaged);
+    SET_FORMAT_DEFAULT(mFormat, CacheMode, MTLResourceCPUCacheModeDefaultCache);
+    SET_FORMAT_DEFAULT(mFormat, StorageMode, MTLResourceStorageModeManaged);
 
     if ( pointer == NULL )
     {
         mImpl = (__bridge_retained void *)[device newBufferWithLength:length
-                                                              options:format.getCacheMode() |
-                                                                      format.getStorageMode() ];
+                                                              options:mFormat.getCacheMode() |
+                                                                      mFormat.getStorageMode() ];
     }
     else
     {
-        if ( format.getStorageMode() == MTLResourceStorageModePrivate )
+        if ( mFormat.getStorageMode() == MTLResourceStorageModePrivate )
         {
             CI_LOG_E("DataBuffer with Private storage mode cannot be constructed with data from \
                      the CPU. Data must be sent via a blit command.");
@@ -46,13 +47,13 @@ void DataBuffer::init( unsigned long length, const void * pointer, Format format
         }
         mImpl = (__bridge_retained void *)[device newBufferWithBytes:pointer
                                                               length:length
-                                                             options:format.getCacheMode() |
-                                                                     format.getStorageMode() ];
+                                                             options:mFormat.getCacheMode() |
+                                                                     mFormat.getStorageMode() ];
         
         didModifyRange(0, length);
     }
     
-    IMPL.label = [NSString stringWithUTF8String:format.getLabel().c_str()];
+    IMPL.label = [NSString stringWithUTF8String:mFormat.getLabel().c_str()];
 }
 
 DataBuffer::~DataBuffer()

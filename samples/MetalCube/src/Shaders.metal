@@ -17,10 +17,10 @@ constant float3 light_position = float3(0.0, 1.0, -1.0);
 constant float4 ambient_color  = float4(0.18, 0.24, 0.8, 1.0);
 constant float4 diffuse_color  = float4(0.4, 0.4, 1.0, 1.0);
 // NOTE: samplers defined in the shader don't appear to have an anisotropy param
-constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
-                                address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
-                                filter::linear, // nearest or linear
-                                mip_filter::linear ); // nearest or linear or none
+constexpr sampler shaderSampler( coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
+                                 address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
+                                 filter::linear, // nearest or linear
+                                 mip_filter::linear ); // nearest or linear or none
 
 typedef struct
 {
@@ -35,9 +35,9 @@ typedef struct {
 } ColorInOut;
 
 // Vertex shader function
-vertex ColorInOut lighting_vertex_interleaved(device const vertex_t* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                              constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                              unsigned int vid [[ vertex_id ]])
+vertex ColorInOut lighting_vertex_interleaved( device const vertex_t* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
+                                               constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                               unsigned int vid [[ vertex_id ]] )
 {
     ColorInOut out;
     
@@ -55,16 +55,16 @@ vertex ColorInOut lighting_vertex_interleaved(device const vertex_t* vertex_arra
 }
 
 // Vertex shader function using geom::Source data layout
-vertex ColorInOut lighting_vertex_geom(device const uint* indices [[ buffer(ciBufferIndexIndicies) ]],
-                                       device const packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
-                                       device const packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
-                                       device const packed_float2* texCoords [[ buffer(ciBufferIndexTexCoords0) ]],
-                                       constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                       unsigned int vid [[ vertex_id ]])
+vertex ColorInOut lighting_vertex_geom( device const uint* indices [[ buffer(ciBufferIndexIndicies) ]],
+                                        device const packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
+                                        device const packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
+                                        device const packed_float2* texCoords [[ buffer(ciBufferIndexTexCoords0) ]],
+                                        constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                        unsigned int vid [[ vertex_id ]] )
 {
     ColorInOut out;
     
-    uint vertIndex = indices[vid];
+    const uint vertIndex = indices[vid];
 
     float4 in_position = float4(positions[vertIndex], 1.0);
     out.position = uniforms.modelViewProjectionMatrix * in_position;
@@ -76,6 +76,7 @@ vertex ColorInOut lighting_vertex_geom(device const uint* indices [[ buffer(ciBu
     
     out.texCoords = texCoords[vertIndex];
     out.color = n_dot_l;
+    // out.color = float4(1.0,1.0,0.0,1.0);
     
     return out;
 }

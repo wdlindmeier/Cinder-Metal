@@ -26,11 +26,13 @@ namespace cinder { namespace mtl {
             mStorageMode(-1) // defaults to MTLResourceStorageModeManaged
             ,mCacheMode(-1) // defaults to MTLResourceCPUCacheModeDefaultCache
             ,mLabel("Default Data Buffer")
+            ,mIsConstant(false) // used when measuring data allocation. Verts should be `false`, uniforms should be `true`.
             {};
             
             FORMAT_OPTION(storageMode, StorageMode, int)
             FORMAT_OPTION(cacheMode, CacheMode, int)
             FORMAT_OPTION(label, Label, std::string)
+            FORMAT_OPTION(isConstant, IsConstant, bool)
         };
 
         // Data stored at pointer will be copied into the buffer
@@ -62,25 +64,25 @@ namespace cinder { namespace mtl {
         }
         
         template <typename T>
-        void update( const std::vector<T> & vectorData, bool isConstant = false )
+        void update( const std::vector<T> & vectorData )
         {
             size_t length = sizeof(T) * vectorData.size();
+            if ( mFormat.getIsConstant() )
+            {
+                length = mtlConstantBufferSize(length);
+            }
             update(vectorData.data(), length);
         }
         
         template <typename BufferObjectType>
-        void setDataAtIndex( BufferObjectType *dataObject, int inflightBufferIndex, bool isConstant )
+        void setDataAtIndex( BufferObjectType *dataObject, int inflightBufferIndex )
         {
-            size_t dataSize;
-            if ( isConstant )
+            size_t dataSize = sizeof(BufferObjectType);
+            if ( mFormat.getIsConstant() )
             {
-                dataSize = mtlConstantSize(BufferObjectType);
+                dataSize = mtlConstantBufferSize(dataSize);
             }
-            else
-            {
-                dataSize = sizeof(BufferObjectType);
-            }
-            update( dataObject, sizeof(BufferObjectType), dataSize * inflightBufferIndex );
+            update( dataObject, dataSize, dataSize * inflightBufferIndex );
         }
                 
         void * getNative(){ return mImpl; }
@@ -93,11 +95,16 @@ namespace cinder { namespace mtl {
         template <typename T>
         DataBuffer( const std::vector<T> & dataVector, Format format )
         {
-            unsigned long vectorSize = sizeof(dataVector) + (sizeof(T) * dataVector.size());
-            init(vectorSize, dataVector.data(), format);
+            size_t dataSize = sizeof(T) * dataVector.size();
+            if ( format.getIsConstant() )
+            {
+                dataSize = mtlConstantBufferSize(dataSize);
+            }
+            init(dataSize, dataVector.data(), format);
         }
 
         void * mImpl = NULL; // <MTLBuffer>
+        Format mFormat;
         
     };
     
