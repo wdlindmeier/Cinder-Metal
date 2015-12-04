@@ -76,7 +76,6 @@ vertex ColorInOut lighting_vertex_geom( device const uint* indices [[ buffer(ciB
     
     out.texCoords = texCoords[vertIndex];
     out.color = n_dot_l;
-    // out.color = float4(1.0,1.0,0.0,1.0);
     
     return out;
 }

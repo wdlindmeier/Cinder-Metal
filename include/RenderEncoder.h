@@ -42,6 +42,16 @@ namespace cinder { namespace mtl {
 
         void setFragSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
         void setDepthStencilState( DepthStateRef depthState );
+        
+        void setViewport( vec2 origin, vec2 size, float near = 0.1, float far = 1000.f );
+        void setFrontFacingWinding( bool isClockwise );
+        void setCullMode( int mtlCullMode );
+        void setDepthClipMode( int mtlDepthClipMode );
+        void setDepthBias( float depthBias, float slopeScale, float clamp );
+        // NOTE: This function name is slightly confusing because it takes an Area, not a rect.
+        // But the Metal signature is called "scissorRect" so we'll stick with it for consistency.
+        void setScissorRect( Area rect );
+        void setTriangleFillMode( int mtlTriangleFillMode );
 
         void draw( ci::mtl::geom::Primitive primitive, size_t vertexCount, size_t vertexStart = 0,
                    size_t instanceCount = 1);

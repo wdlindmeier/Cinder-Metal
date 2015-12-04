@@ -66,6 +66,42 @@ void RenderEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t
                   atIndex:index];
 }
 
+void RenderEncoder::setViewport( vec2 origin, vec2 size, float near, float far )
+{
+    [IMPL setViewport:{ origin.x, origin.y, size.x, size.y, near, far }];
+}
+
+void RenderEncoder::setFrontFacingWinding( bool isClockwise )
+{
+    [IMPL setFrontFacingWinding:isClockwise ? MTLWindingClockwise : MTLWindingCounterClockwise];
+}
+
+void RenderEncoder::setCullMode( int mtlCullMode )
+{
+    [IMPL setCullMode:(MTLCullMode)mtlCullMode];
+}
+
+void RenderEncoder::setDepthClipMode( int mtlDepthClipMode )
+{
+    [IMPL setDepthClipMode:(MTLDepthClipMode)mtlDepthClipMode];
+}
+
+void RenderEncoder::setDepthBias( float depthBias, float slopeScale, float clamp )
+{
+    [IMPL setDepthBias:depthBias slopeScale:slopeScale clamp:clamp];
+}
+
+void RenderEncoder::setScissorRect( Area rect )
+{
+    [IMPL setScissorRect: { (NSUInteger)rect.getX1(), (NSUInteger)rect.getY1(),
+                            (NSUInteger)rect.getWidth(), (NSUInteger)rect.getHeight() } ];
+}
+
+void RenderEncoder::setTriangleFillMode( int mtlTriangleFillMode )
+{
+    [IMPL setTriangleFillMode:(MTLTriangleFillMode)mtlTriangleFillMode];
+}
+
 void RenderEncoder::draw( ci::mtl::geom::Primitive primitive,
                           size_t vertexCount,
                           size_t vertexStart,
