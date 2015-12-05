@@ -8,14 +8,13 @@
 
 #pragma once
 
-#include "MetalConstants.h"
 #include <simd/simd.h>
 
-// Data shared by both the Cinder app and the Metal shader
-//
-//typedef struct
-//{
-//    vector_float3 position;
-//    vector_float3 normal;
-//    vector_float2 texCoord0;
-//} SourceVertex;
+using namespace metal;
+
+typedef struct
+{
+    packed_float3 position;
+    packed_float3 normal;
+    packed_float2 texCoord0;
+} CubeVertex;

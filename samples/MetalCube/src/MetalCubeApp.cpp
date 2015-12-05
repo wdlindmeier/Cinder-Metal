@@ -19,15 +19,6 @@ float cubeVertexData[216] =
     0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, 0.5, 0.0, -1.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, 0.5, 1.0,  0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 0.5, 0.5, -0.5, 1.0, 0.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, 0.5, -1.0, 0.0,  0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, -0.5, -0.5, -0.5,  -1.0,  0.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, 0.5, -0.5, 0.5, 0.0,  0.0,  1.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, -0.5, -0.5, 0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0
 };
 
-// TEST
-// TODO: Can we de-dupe this?
-typedef struct
-{
-    vec3 position;
-    vec3 normal;
-    vec2 texCoord0;
-} SourceVertex;
-
 const static int kNumInflightBuffers = 3;
 
 class MetalCubeApp : public App
@@ -111,12 +102,13 @@ void MetalCubeApp::loadAssets()
     // EXAMPLE 2
     // Use a geom source
     ci::geom::BufferLayout cubeLayout;
-    cubeLayout.append( ci::geom::Attrib::POSITION, 3, sizeof( SourceVertex ), offsetof( SourceVertex, position ) );
-    cubeLayout.append( ci::geom::Attrib::NORMAL, 3, sizeof( SourceVertex ), offsetof( SourceVertex, normal ) );
-    cubeLayout.append( ci::geom::Attrib::TEX_COORD_0, 2, sizeof( SourceVertex ), offsetof( SourceVertex, texCoord0 ) );
+    
+    cubeLayout.append( ci::geom::Attrib::POSITION, 3, sizeof( CubeVertex ), offsetof( CubeVertex, position ) );
+    cubeLayout.append( ci::geom::Attrib::NORMAL, 3, sizeof( CubeVertex ), offsetof( CubeVertex, normal ) );
+    cubeLayout.append( ci::geom::Attrib::TEX_COORD_0, 2, sizeof( CubeVertex ), offsetof( CubeVertex, texCoord0 ) );
     mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(), cubeLayout, DataBuffer::Format().label("Geom Cube"));
 
-    mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_interleaved_src",//"lighting_vertex_geom",
+    mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_interleaved_src",
                                                         "lighting_texture_fragment",
                                                         RenderPipelineState::Format()
                                                         .blendingEnabled(true));
@@ -186,18 +178,18 @@ void MetalCubeApp::draw()
 
     // EXAMPLE 1
     // Using interleaved data
-//            renderEncoder()->pushDebugGroup("Draw Interleaved Cube");
+//    renderEncoder()->pushDebugGroup("Draw Interleaved Cube");
 //
-//            // Set the program
-//            renderEncoder()->setPipelineState( mPipelineInterleavedLighting );
+//    // Set the program
+//    renderEncoder()->setPipelineState( mPipelineInterleavedLighting );
 //
-//            // Set render state & resources
-//            renderEncoder()->setVertexBufferAtIndex( mVertexBuffer, ciBufferIndexInterleavedVerts );
-//            renderEncoder()->setVertexBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
+//    // Set render state & resources
+//    renderEncoder()->setVertexBufferAtIndex( mVertexBuffer, ciBufferIndexInterleavedVerts );
+//    renderEncoder()->setVertexBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
 //
-//            // Draw
-//            renderEncoder()->draw(mtl::geom::TRIANGLE, 36);
-//            renderEncoder()->popDebugGroup();
+//    // Draw
+//    renderEncoder()->draw(mtl::geom::TRIANGLE, 36);
+//    renderEncoder()->popDebugGroup();
 
     
     // EXAMPLE 2

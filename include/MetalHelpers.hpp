@@ -152,3 +152,11 @@ glm::ivec2 static inline fromMtl( vector_int2 vec )
 #else
 #define mtlConstantSizeOf(T) mtlConstantBufferSize(sizeof(T))
 #endif
+
+// Map metal shader types to glm types so we can use shared structs between shaders and the app
+namespace metal
+{
+    #define packed_float4 glm::vec4
+    #define packed_float3 glm::vec3
+    #define packed_float2 glm::vec2
+}

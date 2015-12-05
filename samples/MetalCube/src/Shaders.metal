@@ -27,16 +27,17 @@ typedef struct
 {
     packed_float3 position;
     packed_float3 normal;
-} vertex_t;
+} InterleavedVertex;
 
-typedef struct {
+typedef struct
+{
     float4 position [[position]];
     float4 color;
     float2 texCoords;
 } ColorInOut;
 
 // Vertex shader function
-vertex ColorInOut lighting_vertex_interleaved( device const vertex_t* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                                constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                unsigned int vid [[ vertex_id ]] )
 {
@@ -54,49 +55,10 @@ vertex ColorInOut lighting_vertex_interleaved( device const vertex_t* vertex_arr
 
     return out;
 }
-//
-//constant uint TMP_knownIndices[36] = {0, 2, 1, 1, 2, 3, 4, 6,
-//                                    5, 5, 6, 7, 8, 10, 9, 9,
-//                                    10, 11, 12, 14, 13, 13, 14, 15,
-//                                    16, 18, 17, 17, 18, 19, 20, 22,
-//    21, 21, 22, 23};
-//
-// Vertex shader for indexed geometry
 
-// Interesting... Stage in doesn't use packed_
-//typedef struct
-//{
-//    float3 position [[ attribute(0) ]];
-//    float3 normal [[ attribute(1) ]];
-//    float2 texCoord0 [[ attribute(2) ]];
-//} SourceVertexMTL;
-//
-//vertex ColorInOut lighting_vertex_interleaved_src( SourceVertexMTL vert [[ stage_in ]],
-//                                                   constant ciUniforms_t& uniforms [[ buffer(1) ]])
-//{
-//    ColorInOut out;
-//    
-//    float4 in_position = float4(vert.position, 1.0);
-//    out.position = uniforms.modelViewProjectionMatrix * in_position;
-//    
-//    float4 eye_normal = normalize(uniforms.normalMatrix * float4(vert.normal, 0.0));
-//    float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
-//    n_dot_l = fmax(0.0, n_dot_l);
-//    
-//    out.texCoords = vert.texCoord0;
-//    out.color = n_dot_l;
-//    
-//    return out;
-//}
-
-typedef struct
-{
-    packed_float3 position;
-    packed_float3 normal;
-    packed_float2 texCoord0;
-} SourceVertexCi;
-
-vertex ColorInOut lighting_vertex_interleaved_src( device const SourceVertexCi* verts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+// Vertex Bhader using an interleaved geom::Source
+// CubeVertex is found in SharedData.h
+vertex ColorInOut lighting_vertex_interleaved_src( device const CubeVertex* verts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                                    device const uint* indices [[ buffer(ciBufferIndexIndicies) ]],
                                                    constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                    unsigned int vid [[ vertex_id ]] )
@@ -104,7 +66,7 @@ vertex ColorInOut lighting_vertex_interleaved_src( device const SourceVertexCi* 
     ColorInOut out;
     
     const uint idx = indices[vid];
-    SourceVertexCi vert = verts[idx];
+    CubeVertex vert = verts[idx];
     float4 in_position = float4(vert.position, 1.0);
     out.position = uniforms.modelViewProjectionMatrix * in_position;
     
@@ -118,34 +80,7 @@ vertex ColorInOut lighting_vertex_interleaved_src( device const SourceVertexCi* 
     return out;
 }
 
-
-// Vertex shader function using geom::Source data layout
-vertex ColorInOut lighting_vertex_geom( device const uint* indices [[ buffer(ciBufferIndexIndicies) ]],
-                                        device const packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
-                                        device const packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
-                                        device const packed_float2* texCoords [[ buffer(ciBufferIndexTexCoords0) ]],
-                                        constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                        unsigned int vid [[ vertex_id ]] )
-{
-    ColorInOut out;
-    
-    unsigned int vertIndex = indices[vid];//vid % 4;//TMP_knownIndices[1];//indices[vid];
-
-    float4 in_position = float4(positions[vertIndex], 1.0);
-    out.position = uniforms.modelViewProjectionMatrix * in_position;
-    
-    float3 normal = normals[vertIndex];
-    float4 eye_normal = normalize(uniforms.normalMatrix * float4(normal, 0.0));
-    float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
-    n_dot_l = fmax(0.0, n_dot_l);
-    
-    out.texCoords = texCoords[vertIndex];
-    out.color = n_dot_l;
-    
-    return out;
-}
-
-// Vertex shader function using attrib buffers
+// Vertex Buffer using attrib buffers
 vertex ColorInOut lighting_vertex_attrib_buffers( device const packed_float3* positions [[ buffer(ciBufferIndexPositions) ]],
                                                   device const packed_float3* normals [[ buffer(ciBufferIndexNormals) ]],
                                                   constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
