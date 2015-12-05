@@ -68,9 +68,9 @@ namespace cinder { namespace mtl {
         void drawIndexed( ci::mtl::geom::Primitive primitive, DataBufferRef indexBuffer,
                           size_t indexCount, int mtlIndexType = 1, size_t bufferOffset = 0,
                           size_t instanceCount = 1, size_t baseVertex = 0, size_t baseInstance = 0 );
-
+#if !defined( CINDER_COCOA_TOUCH )
         void textureBarrier();
-
+#endif
     protected:
 
         static RenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>

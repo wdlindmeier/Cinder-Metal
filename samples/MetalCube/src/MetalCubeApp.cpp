@@ -63,7 +63,7 @@ void MetalCubeApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mTexture = TextureBuffer::create(loadImage(Platform::get()->getResourcePath("checker.png")),
+    mTexture = TextureBuffer::create(loadImage(getAssetPath("checker.png")),
                                      TextureBuffer::Format().mipmapLevel(4));
     
     mSamplerMipMapped = SamplerState::create();

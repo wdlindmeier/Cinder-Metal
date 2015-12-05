@@ -29,7 +29,11 @@ void DataBuffer::init( unsigned long length, const void * pointer, Format format
     auto device = [RendererMetalImpl sharedRenderer].device;
     
     SET_FORMAT_DEFAULT(mFormat, CacheMode, MTLResourceCPUCacheModeDefaultCache);
+#if defined( CINDER_COCOA_TOUCH )
+    SET_FORMAT_DEFAULT(mFormat, StorageMode, MTLResourceStorageModeShared);
+#else
     SET_FORMAT_DEFAULT(mFormat, StorageMode, MTLResourceStorageModeManaged);
+#endif
 
     if ( pointer == NULL )
     {
@@ -76,8 +80,10 @@ size_t DataBuffer::getLength()
 
 void DataBuffer::didModifyRange( size_t location, size_t length )
 {
+#if !defined( CINDER_COCOA_TOUCH )
     if ( [IMPL storageMode] == MTLStorageModeManaged )
     {
         [IMPL didModifyRange:NSMakeRange(0, length)];
     }
+#endif
 }

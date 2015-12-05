@@ -159,7 +159,9 @@ void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, DataBufferR
                    baseInstance:baseInstance];
 }
 
+#if !defined( CINDER_COCOA_TOUCH )
 void RenderEncoder::textureBarrier()
 {
     [IMPL textureBarrier];
 }
+#endif

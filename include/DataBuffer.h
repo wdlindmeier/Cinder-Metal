@@ -23,7 +23,7 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
-            mStorageMode(-1) // defaults to MTLResourceStorageModeManaged
+            mStorageMode(-1) // defaults to MTLResourceStorageModeManaged on OS X, and MTLResourceStorageModeShared on iOS
             ,mCacheMode(-1) // defaults to MTLResourceCPUCacheModeDefaultCache
             ,mLabel("Default Data Buffer")
             ,mIsConstant(false) // used when measuring data allocation. Verts should be `false`, uniforms should be `true`.
@@ -54,7 +54,8 @@ namespace cinder { namespace mtl {
 
         size_t getLength();
         
-        // Mark data changed
+        // Mark data changed.
+        // NOTE: Only relevant to Managed storage on OS X
         void didModifyRange( size_t location, size_t length );
         
         template <typename T>
