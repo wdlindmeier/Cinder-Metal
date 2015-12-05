@@ -51,6 +51,8 @@ namespace cinder { namespace mtl {
         
         // A pointer to the data
         void * contents();
+
+        size_t getLength();
         
         // Mark data changed
         void didModifyRange( size_t location, size_t length );

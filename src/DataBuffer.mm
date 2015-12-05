@@ -69,6 +69,11 @@ void * DataBuffer::contents()
     return [IMPL contents];
 }
 
+size_t DataBuffer::getLength()
+{
+    return [IMPL length];
+}
+
 void DataBuffer::didModifyRange( size_t location, size_t length )
 {
     if ( [IMPL storageMode] == MTLStorageModeManaged )

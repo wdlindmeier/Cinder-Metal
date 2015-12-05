@@ -6,6 +6,7 @@
 // Cinder-Metal
 #include "metal.h"
 #include "VertexBuffer.h"
+#include "SharedData.h"
 
 using namespace std;
 using namespace ci;
@@ -17,6 +18,15 @@ float cubeVertexData[216] =
 {
     0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, 0.5, 0.0, -1.0, 0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 0.5, -0.5, 0.5, 0.0, -1.0,  0.0, -0.5, -0.5, -0.5, 0.0, -1.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, 0.5, 1.0,  0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 0.5, 0.5, -0.5, 1.0, 0.0,  0.0, 0.5, 0.5, 0.5,  1.0, 0.0,  0.0, 0.5, -0.5, -0.5,  1.0,  0.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, 0.5, 0.5,  0.0, 1.0,  0.0, 0.5, 0.5, -0.5, 0.0, 1.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, 0.5, -1.0, 0.0,  0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, -0.5, -0.5, -0.5,  -1.0,  0.0,  0.0, -0.5, -0.5, 0.5,  -1.0,  0.0, 0.0, -0.5, 0.5, -0.5,  -1.0, 0.0,  0.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, 0.5,  0.5,  0.0, 0.0,  1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, -0.5, -0.5, 0.5, 0.0,  0.0, 1.0, 0.5, -0.5, 0.5, 0.0,  0.0,  1.0, 0.5, 0.5,  0.5,  0.0, 0.0,  1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, -0.5, -0.5, 0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, 0.5, -0.5,  0.0, 0.0, -1.0, 0.5, -0.5, -0.5,  0.0,  0.0, -1.0, -0.5, 0.5, -0.5,  0.0, 0.0, -1.0
 };
+
+// TEST
+// TODO: Can we de-dupe this?
+typedef struct
+{
+    vec3 position;
+    vec3 normal;
+    vec2 texCoord0;
+} SourceVertex;
 
 const static int kNumInflightBuffers = 3;
 
@@ -100,13 +110,13 @@ void MetalCubeApp::loadAssets()
 
     // EXAMPLE 2
     // Use a geom source
-    mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(),      // A geom source
-                                           {{ci::geom::INDEX,     // Pass in the requested attributes
-                                             ci::geom::POSITION,  // which will be sent to the shader.
-                                             ci::geom::NORMAL,
-                                             ci::geom::TEX_COORD_0 }});
+    ci::geom::BufferLayout cubeLayout;
+    cubeLayout.append( ci::geom::Attrib::POSITION, 3, sizeof( SourceVertex ), offsetof( SourceVertex, position ) );
+    cubeLayout.append( ci::geom::Attrib::NORMAL, 3, sizeof( SourceVertex ), offsetof( SourceVertex, normal ) );
+    cubeLayout.append( ci::geom::Attrib::TEX_COORD_0, 2, sizeof( SourceVertex ), offsetof( SourceVertex, texCoord0 ) );
+    mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(), cubeLayout, DataBuffer::Format().label("Geom Cube"));
 
-    mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_geom",
+    mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_interleaved_src",//"lighting_vertex_geom",
                                                         "lighting_texture_fragment",
                                                         RenderPipelineState::Format()
                                                         .blendingEnabled(true));
@@ -127,9 +137,9 @@ void MetalCubeApp::loadAssets()
     
     mAttribBufferCube = VertexBuffer::create();
     mPositions = positions;
-    DataBufferRef positionBuffer = DataBuffer::create(mPositions, DataBuffer::Format().label("positions"));
+    DataBufferRef positionBuffer = DataBuffer::create(mPositions, DataBuffer::Format().label("Positions"));
     mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
-    DataBufferRef normalBuffer = DataBuffer::create(normals, DataBuffer::Format().label("normals"));
+    DataBufferRef normalBuffer = DataBuffer::create(normals, DataBuffer::Format().label("Normals"));
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
     mPipelineAttribLighting = RenderPipelineState::create("lighting_vertex_attrib_buffers",
@@ -182,8 +192,8 @@ void MetalCubeApp::draw()
 //            renderEncoder()->setPipelineState( mPipelineInterleavedLighting );
 //
 //            // Set render state & resources
-//            renderEncoder()->setBufferAtIndex( mVertexBuffer, ciBufferIndexInterleavedVerts );
-//            renderEncoder()->setBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
+//            renderEncoder()->setVertexBufferAtIndex( mVertexBuffer, ciBufferIndexInterleavedVerts );
+//            renderEncoder()->setVertexBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
 //
 //            // Draw
 //            renderEncoder()->draw(mtl::geom::TRIANGLE, 36);
@@ -200,29 +210,6 @@ void MetalCubeApp::draw()
     renderEncoder()->setPipelineState(mPipelineGeomLighting);
     
     renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
-    
-//    DataBufferRef ind = mGeomBufferCube->getBufferForAttribute(ci::geom::INDEX);
-//    unsigned int * idx = (unsigned int * )ind->contents();
-//    
-//    DataBufferRef pos = mGeomBufferCube->getBufferForAttribute(ci::geom::POSITION);
-//    vec3 * posx = (vec3 *)pos->contents();
-//
-//    vector<unsigned int> indices;
-//    vector<vec3> positions;
-//    for ( int i = 0; i < 36; ++i )
-//    {
-//        indices.push_back(idx[i]);
-//        if ( i < 24 )
-//        {
-//            positions.push_back(posx[i]);
-//        }
-//    }
-//    DataBufferRef dupedIndices = DataBuffer::create(sizeof(vector<unsigned int>) * indices.size(), NULL );
-//    dupedIndices->update(indices, true);
-//    renderEncoder()->setBufferAtIndex(dupedIndices, 19);
-//    
-//    DataBufferRef dupedPositions = DataBuffer::create(positions);
-//    renderEncoder()->setBufferAtIndex(dupedPositions, 18);
 
     // Set the texture
     renderEncoder()->setTexture(mTexture);

@@ -10,7 +10,6 @@
 
 #include "cinder/Cinder.h"
 #include "MetalGeom.h"
-//#include "PipelineState.h"
 #include "DataBuffer.h"
 #include "TextureBuffer.h"
 #include "MetalConstants.h"
@@ -19,6 +18,7 @@
 
 namespace cinder { namespace mtl {
     
+    // Super class of ComputeEncoder, RenderEncoder and BlitEncoder
     class CommandEncoder
     {
         
@@ -29,7 +29,6 @@ namespace cinder { namespace mtl {
         virtual void pushDebugGroup( const std::string & groupName );
         virtual void popDebugGroup();
         virtual void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 ) = 0;
-        virtual void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 ) = 0;
         virtual void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms ) = 0;
         virtual void endEncoding();
 

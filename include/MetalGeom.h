@@ -14,7 +14,7 @@ namespace cinder {
     
     namespace geom {
         // Append "INDEX" onto the attrib list so we can assign a buffer and shader index to it like an Attrib
-        const static Attrib INDEX = USER_DEFINED;
+//        const static Attrib INDEX = USER_DEFINED;
     }
     
     namespace mtl {

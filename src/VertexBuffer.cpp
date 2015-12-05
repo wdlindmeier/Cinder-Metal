@@ -13,53 +13,73 @@
 using namespace cinder;
 using namespace cinder::mtl;
 
-VertexBufferRef VertexBuffer::create( const ci::geom::AttribSet & requestedAttribs,
-                                      const ci::mtl::geom::Primitive primitive,
-                                      const DataBuffer::Format & format )
+VertexBufferRef VertexBuffer::create( const ci::mtl::geom::Primitive primitive )
 {
-    return VertexBufferRef( new VertexBuffer( requestedAttribs, primitive, format ) );
+    return VertexBufferRef( new VertexBuffer( primitive ) );
 }
 
-VertexBuffer::VertexBuffer( const ci::geom::AttribSet & requestedAttribs,
-                            const ci::mtl::geom::Primitive primitive,
-                            DataBuffer::Format format ) :
+VertexBuffer::VertexBuffer( const ci::mtl::geom::Primitive primitive ) :
 mPrimitive(primitive)
 ,mVertexLength(0)
-,mDefaultBufferFormat(format)
-{
-    setDefaultAttribIndices( requestedAttribs );
-}
+,mIsIndexed(false)
+{}
 
 VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
-                                      const ci::geom::AttribSet & requestedAttribs,
+                                      const ci::geom::BufferLayout & layout,
                                       const DataBuffer::Format & format )
 {
-    return VertexBufferRef( new VertexBuffer( source, requestedAttribs, format ) );
+    return VertexBufferRef( new VertexBuffer( source, layout, format ) );
 }
 
 VertexBuffer::VertexBuffer( const ci::geom::Source & source,
-                            const ci::geom::AttribSet & requestedAttribs,
+                            const ci::geom::BufferLayout & layout,
                             DataBuffer::Format format ) :
 mSource( source.clone() )
 ,mVertexLength(0)
-,mDefaultBufferFormat(format)
+,mBufferLayout(layout)
+,mIsIndexed(true)
 {
-    setDefaultAttribIndices( requestedAttribs );
-    
-    // Is there any reason to keep the source and attribs around?
+    // Is there any reason to keep the source around?
     mPrimitive = geom::mtlPrimitiveTypeFromGeom( mSource->getPrimitive() );
     mVertexLength = mSource->getNumIndices();
-    if ( mVertexLength == 0 )
+    
+    // Currently assuming sources have indices
+    bool hasIndices = mVertexLength > 0;
+
+    if ( !hasIndices )
     {
         mVertexLength = mSource->getNumVertices();
+        CI_LOG_I("Source doesnt have indices. Creating one for each vert");
     }
-    else
+
+    // Create the data buffer for the indices
+    DataBuffer::Format indexFormat = format;
+    indexFormat.setLabel(format.getLabel() + ": Indices");
+    mIndexBuffer = DataBuffer::create(mVertexLength * sizeof(unsigned int), NULL, indexFormat);
+    
+    // Create the buffer for the interleaved vert data
+    int numVertData = mSource->getNumVertices();
+    size_t bufferLength = mBufferLayout.calcRequiredStorage( numVertData );
+
+    DataBuffer::Format interleavedFormat = format;
+    interleavedFormat.setLabel(format.getLabel() + ": Interleaved");
+    mInterleavedData = DataBuffer::create(bufferLength, nullptr, interleavedFormat);
+
+    // Construct the requested attribs
+    ci::geom::AttribSet requestedAttribs;
+    for( const auto &attribInfo : layout.getAttribs() )
     {
-        // Make sure we've got a shader index for the vert indices.
-        assert( requestedAttribs.count(ci::geom::INDEX) > 0 );
+        requestedAttribs.insert(attribInfo.getAttrib());
     }
     
     mSource->loadInto( this, requestedAttribs );
+    
+    mInterleavedData->didModifyRange(0, bufferLength);
+    
+    if ( !hasIndices )
+    {
+        createDefaultIndices();
+    }
 }
 
 void VertexBuffer::setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs )
@@ -104,25 +124,36 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 et
                                size_t count ) // Number of values
 {
     // Skip the copy if we don't care about this attr
-    if ( mRequestedAttribs.find( attr ) == mRequestedAttribs.end() )
+    if ( !mBufferLayout.hasAttrib(attr) )
     {
         CI_LOG_I("Skipping attr " << attr << ". Not found in requested attributes." );
         return;
     }
     
-    // When is this not zero? What is the purpose?
-    assert( strideBytes == 0 );
+    ci::geom::AttribInfo attrInfo = mBufferLayout.getAttribInfo(attr);
     
-    // Are we using stride right?
-    unsigned long length = (dims * sizeof(float) + strideBytes) * count;
-    
-    DataBuffer::Format format = mDefaultBufferFormat;
-    std::string attrName = ci::geom::attribToString( attr );
-    format.setLabel(format.getLabel() + ": " + attrName);
+    uint8_t *bufferPointer = (uint8_t*)mInterleavedData->contents();
 
-    auto buffer = DataBuffer::create(length, srcData, format);
+    // Copied from VBOMesh
+    uint8_t *dstData = nullptr;
+    uint8_t dstDims;
+    size_t dstStride, dstDataSize;
+    dstDims = attrInfo.getDims();
+    dstStride = attrInfo.getStride();
+    dstData = bufferPointer + attrInfo.getOffset();
+    dstDataSize = mInterleavedData->getLength();
     
-    setBufferForAttribute(buffer, attr);
+    CI_ASSERT( dstData );
+
+    // verify we have room for this data
+    auto testDstStride = dstStride ? dstStride : ( dstDims * sizeof(float) );
+    if( dstDataSize < count * testDstStride )
+    {
+        CI_LOG_E( "copyAttrib() called with inadequate attrib data storage allocated" );
+        assert( false );
+    }
+    
+    ci::geom::copyData( dims, srcData, count, dstDims, dstStride, reinterpret_cast<float*>( dstData ) );
 }
 
 
@@ -130,10 +161,6 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
                                 size_t numIndices, uint8_t requiredBytesPerIndex )
 {
     assert( mPrimitive == mtl::geom::mtlPrimitiveTypeFromGeom(primitive) );
-    if ( numIndices > 0 )
-    {
-        assert( mRequestedAttribs.count(ci::geom::INDEX) > 0 );
-    }
     std::vector<unsigned int> indices;
     for ( size_t i = 0; i < numIndices; ++i )
     {
@@ -141,13 +168,17 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
         unsigned int idx = source[i];
         indices.push_back(idx);
     }
+    mIndexBuffer->update(indices);
+}
 
-    DataBuffer::Format format = mDefaultBufferFormat;
-    format.setLabel(format.getLabel() + ": Indices");
-
-    DataBufferRef indexBuffer = DataBuffer::create(indices, format);
-
-    setBufferForAttribute( indexBuffer, ci::geom::INDEX );
+void VertexBuffer::createDefaultIndices()
+{
+    std::vector<unsigned int> indices;
+    for ( size_t i = 0; i < mVertexLength; ++i )
+    {
+        indices.push_back(i);
+    }
+    mIndexBuffer->update(indices);
 }
 
 uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
@@ -177,16 +208,28 @@ void VertexBuffer::draw( RenderEncoderRef renderEncoder,
                          size_t vertexStart,
                          size_t instanceCount )
 {
-    for ( auto kvp : mRequestedAttribs )
+    if ( mIsIndexed )
     {
-        ci::geom::Attrib attr = kvp.first;
-        DataBufferRef buffer = mAttributeBuffers[attr];
-        assert( !!buffer );
-        renderEncoder->setBufferAtIndex( buffer, kvp.second );
+        // NOTE: We're not using drawIndexed because Metal requires that we define
+        // a MTLVertexDescriptor as part of the pipeline, which is less flexible
+        // that using a known data layout with index access. This also lets us
+        // use BufferLayouts, which follows the Cinder convention.
+        renderEncoder->setVertexBufferAtIndex( mInterleavedData, ciBufferIndexInterleavedVerts );
+        renderEncoder->setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
     }
-
-    renderEncoder->draw(mPrimitive,
+    else
+    {
+        for ( auto kvp : mRequestedAttribs )
+        {
+            ci::geom::Attrib attr = kvp.first;
+            DataBufferRef buffer = mAttributeBuffers[attr];
+            assert( !!buffer );
+            renderEncoder->setVertexBufferAtIndex( buffer, kvp.second );
+        }
+    }
+    
+    renderEncoder->draw( mPrimitive,
                         vertexLength,
                         vertexStart,
-                        instanceCount);
+                        instanceCount );
 }

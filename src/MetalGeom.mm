@@ -80,8 +80,8 @@ namespace cinder { namespace mtl { namespace geom {
     {
         switch (attr)
         {
-            case ci::geom::INDEX:
-                return ciBufferIndexIndicies;
+//            case ci::geom::INDEX:
+//                return ciBufferIndexIndicies;
             case ci::geom::POSITION:
                 return ciBufferIndexPositions;
             case ci::geom::COLOR:

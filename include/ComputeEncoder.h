@@ -27,9 +27,8 @@ namespace cinder { namespace mtl {
         
         virtual void setPipelineState( ComputePipelineStateRef pipeline );
         virtual void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 );
-        virtual void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
         virtual void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
-
+        void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
         void setSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
         void setThreadgroupMemoryLength( size_t byteLength, size_t groupMemoryIndex );
         
