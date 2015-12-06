@@ -23,6 +23,8 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
+            // NOTE: On OS X, programs run faster in "Shared" mode when using the integrated GPU,
+            // and faster in "Managed" mode when using the descreet GPU.
             mStorageMode(-1) // defaults to MTLResourceStorageModeManaged on OS X, and MTLResourceStorageModeShared on iOS
             ,mCacheMode(-1) // defaults to MTLResourceCPUCacheModeDefaultCache
             ,mLabel("Default Data Buffer")

@@ -68,7 +68,7 @@ void MetalCubeApp::setup()
     
     mSamplerMipMapped = SamplerState::create();
     
-    mDepthEnabled = DepthState::create();
+    mDepthEnabled = DepthState::create(DepthState::Format().depthWriteEnabled(true));
     
     mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
                                                      .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
@@ -96,8 +96,7 @@ void MetalCubeApp::loadAssets()
     
     mPipelineInterleavedLighting = RenderPipelineState::create("lighting_vertex_interleaved",
                                                                "lighting_fragment",
-                                                               RenderPipelineState::Format()
-                                                               .blendingEnabled(true));
+                                                               RenderPipelineState::Format());
 
     // EXAMPLE 2
     // Use a geom source
@@ -110,8 +109,7 @@ void MetalCubeApp::loadAssets()
 
     mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_interleaved_src",
                                                         "lighting_texture_fragment",
-                                                        RenderPipelineState::Format()
-                                                        .blendingEnabled(true));
+                                                        RenderPipelineState::Format());
 
     // EXAMPLE 3
     // Use attribtue buffers
@@ -136,8 +134,7 @@ void MetalCubeApp::loadAssets()
     
     mPipelineAttribLighting = RenderPipelineState::create("lighting_vertex_attrib_buffers",
                                                           "lighting_fragment",
-                                                          RenderPipelineState::Format()
-                                                          .blendingEnabled(true) );
+                                                          RenderPipelineState::Format());
 }
 
 void MetalCubeApp::update()
@@ -174,7 +171,7 @@ void MetalCubeApp::draw()
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);
 
-    uint constantsOffset = mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex;
+    uint constantsOffset = (uint)(mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex);
 
     // EXAMPLE 1
     // Using interleaved data

@@ -45,6 +45,9 @@ int4 indexSortKeys( int4 indices,
                     device const Particle* inParticles,
                     constant myUniforms_t& uniforms )
 {
+    // TMP
+    // Profiling this func by returning the indices
+    // return indices;
     int4 depths(0);
     for ( int a = 0; a < 4; ++a )
     {
@@ -287,6 +290,7 @@ vertex ColorInOut vertex_particles(device const Particle * particles [[ buffer(c
     
     float4 in_position = float4(p.position, 1.0f);
     out.position = uniforms.modelViewProjectionMatrix * in_position;
+    
     out.pointSize = 20.f;
     
     float4 viewPosition = uniforms.modelMatrix * in_position;
@@ -315,7 +319,7 @@ constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord:
 fragment float4 fragment_point_texture( ColorInOut in [[stage_in]],
                                         texture2d<float> textureParticle [[ texture(ciTextureIndex0) ]],
                                         float2 pointTexCoord [[ point_coord ]] )
-{
+{    
     float4 texColor = textureParticle.sample(shaderSampler, pointTexCoord);
     float4 inColor = in.color;
     inColor[3] *= texColor[3];

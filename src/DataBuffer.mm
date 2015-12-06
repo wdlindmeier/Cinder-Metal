@@ -83,7 +83,7 @@ void DataBuffer::didModifyRange( size_t location, size_t length )
 #if !defined( CINDER_COCOA_TOUCH )
     if ( [IMPL storageMode] == MTLStorageModeManaged )
     {
-        [IMPL didModifyRange:NSMakeRange(0, length)];
+        [IMPL didModifyRange:NSMakeRange(location, length)];
     }
 #endif
 }

@@ -24,7 +24,7 @@ namespace cinder { namespace mtl {
         {
             Format() :
             mDepthCompareFunction(-1) // defaults to MTLCompareFunctionLessEqual
-            ,mDepthWriteEnabled(true)
+            ,mDepthWriteEnabled(false)
             ,mFrontFaceStencil(nullptr)
             ,mBackFaceStencil(nullptr)
             ,mLabel("Default Depth State")

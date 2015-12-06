@@ -12,7 +12,8 @@ using namespace ci::app;
 using namespace std;
 using namespace cinder::mtl;
 
-const static int kNumSortStateBuffers = 91; // Must be >= the number of sort passes
+// TMP
+const static int kNumSortStateBuffers = 200;//91; // Must be >= the number of sort passes
 const static int kNumInflightBuffers = 4;
 
 typedef struct {
@@ -68,7 +69,7 @@ void ParticleSortingApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mDepthEnabled = DepthState::create(DepthState::Format().depthCompareFunction(7));
+    mDepthEnabled = DepthState::create(DepthState::Format().depthCompareFunction(1)); // less than
     
     mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
                                                     .clearColor( ColorAf(0.5f,0.f,1.f,1.f)));
