@@ -38,6 +38,7 @@ public:
     void mouseDown( MouseEvent event ) override;
     void mouseDrag( MouseEvent event ) override;
 
+    void calculateDepths();
     void bitonicSort( bool shouldLogOutput );
     void logComputeOutput( const myUniforms_t uniforms );
     
@@ -56,12 +57,14 @@ public:
     // Particles
     DataBufferRef mParticlesUnsorted;
     DataBufferRef mParticleIndices;
+    DataBufferRef mParticleDepths;
     DataBufferRef mSortStateBuffer;
     RenderPassDescriptorRef mRenderDescriptor;
     RenderPipelineStateRef mPipelineParticles;
     TextureBufferRef mTextureParticle;
     
     // Sort pass
+    ComputePipelineStateRef mPipelineCalculateDepths;
     ComputePipelineStateRef mPipelineBitonicSort;
 };
 
@@ -96,6 +99,7 @@ void ParticleSortingApp::loadAssets()
     // Set up the particles
     vector<Particle> particles;
     vector<ivec4> indices;
+    vector<float> particleDepths;
     ci::Rand random;
     random.seed((UInt32)time(NULL));
     for ( unsigned int i = 0; i < kParticleDimension * kParticleDimension; ++i )
@@ -108,6 +112,7 @@ void ParticleSortingApp::loadAssets()
         {
             indices.push_back(ivec4(i, i+1, i+2, i+3));
         }
+        particleDepths.push_back(p.position.z);
     }
 
     // Make sure we've got the right number of indicies
@@ -119,9 +124,11 @@ void ParticleSortingApp::loadAssets()
     
     mTextureParticle = TextureBuffer::create(loadImage(getAssetPath("particle.png")));
     
-    mParticlesUnsorted = DataBuffer::create(particles);
-    mParticleIndices = DataBuffer::create(indices);
+    mParticlesUnsorted = DataBuffer::create(particles, DataBuffer::Format().label("Particles"));
+    mParticleDepths = DataBuffer::create(particleDepths, DataBuffer::Format().label("Depths"));
+    mParticleIndices = DataBuffer::create(indices, DataBuffer::Format().label("Indices"));
     mPipelineBitonicSort = ComputePipelineState::create("bitonic_sort_by_value");
+    mPipelineCalculateDepths = ComputePipelineState::create("calculate_particle_depths");
 }
 
 void ParticleSortingApp::mouseDown( MouseEvent event )
@@ -163,6 +170,9 @@ void ParticleSortingApp::update()
     mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
     mConstantsOffset = mtlConstantSizeOf(myUniforms_t) * mConstantDataBufferIndex;
     
+    // Calculate the particle depths once before sorting
+    calculateDepths();
+    
     bitonicSort( false );
 }
 
@@ -186,6 +196,20 @@ void ParticleSortingApp::logComputeOutput( const myUniforms_t uniforms )
             printf("%f, ", value);
         }
     }
+}
+
+void ParticleSortingApp::calculateDepths()
+{
+    ScopedCommandBuffer commandBuffer(false, "Sort command buffer");
+    ScopedComputeEncoder computeEncoder(commandBuffer());
+    
+    computeEncoder()->setPipelineState(mPipelineCalculateDepths);
+    computeEncoder()->setBufferAtIndex(mParticleDepths, 1);
+    computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
+    computeEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+    
+    long arraySize = mUniforms.numParticles;
+    computeEncoder()->dispatch(ivec3(arraySize, 1, 1), ivec3(32,1,1));
 }
 
 void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
@@ -231,7 +255,8 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
                 computeEncoder()->setPipelineState(mPipelineBitonicSort);
                 
                 computeEncoder()->setBufferAtIndex(mParticleIndices, 1);
-                computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
+                //computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
+                computeEncoder()->setBufferAtIndex(mParticleDepths, 2);
                 computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3,
                                                    mtlConstantSizeOf(sortState_t) * passNum);
 

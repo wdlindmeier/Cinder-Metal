@@ -31,32 +31,38 @@ typedef struct
 constant float minDepth = -1.f;
 constant float maxDepth = 1.f;
 
-int keyForDepth( float depth );
-int keyForDepth( float depth )
-{
-    return ((depth - minDepth) / (maxDepth - minDepth)) * 65535.0;
-}
-
+//int keyForDepth( float depth );
+//int keyForDepth( float depth )
+//{
+//    return ((depth - minDepth) / (maxDepth - minDepth)) * 65535.0;
+//}
+//
 // Convert the indices into the sortable values (0 .. large num)
-int4 indexSortKeys( int4 indices,
-                    device const Particle* inParticles,
-                    constant myUniforms_t& uniforms );
-int4 indexSortKeys( int4 indices,
-                    device const Particle* inParticles,
-                    constant myUniforms_t& uniforms )
+float4 indexSortKeys( const int4 indices,
+                     //device const Particle* inParticles,
+                     device const float* inParticleDepths);
+float4 indexSortKeys( const int4 indices,
+                     //device const Particle* inParticles,
+                     device const float* inParticleDepths)
 {
+//    return indices;
+    return float4(inParticleDepths[indices[0]],
+                  inParticleDepths[indices[1]],
+                  inParticleDepths[indices[2]],
+                  inParticleDepths[indices[3]]);
     // TMP
     // Profiling this func by returning the indices
     // return indices;
-    int4 depths(0);
-    for ( int a = 0; a < 4; ++a )
-    {
-        int index = indices[a];
-        Particle p = inParticles[index];
-        float4 position = uniforms.modelMatrix * float4(p.position, 0.0f);
-        depths[a] = keyForDepth(position.z);
-    }
-    return depths;
+//    int4 depths(0);
+//    for ( int a = 0; a < 4; ++a )
+//    {
+//        int index = indices[a];
+////        Particle p = inParticles[index];
+////        float4 position = uniforms.modelMatrix * float4(p.position, 0.0f);
+////        depths[a] = keyForDepth(position.z);
+//        depths[a] = keyForDepth(inParticleDepths[index]);
+//    }
+//    return depths;
 }
 
 int4 vecMask( int4 leftValues, int4 rightValues, bool4 mask );
@@ -70,13 +76,24 @@ int4 vecMask( int4 leftValues, int4 rightValues, bool4 mask )
     return newValues;
 }
 
+float4 vecMask( float4 leftValues, float4 rightValues, bool4 mask );
+float4 vecMask( float4 leftValues, float4 rightValues, bool4 mask )
+{
+    float4 newValues(0);
+    for ( int i = 0; i < 4; ++i )
+    {
+        newValues[i] = mask[i] ? leftValues[i] : rightValues[i];
+    }
+    return newValues;
+}
+
 // Creates a < mask of 4 vectors, and uses the indices as a secondary sort if the values are the same.
 // This guarantees that every value will have a definitive < or > relationship, even if they're ==,
 // which is necessary when using a bitonic sort, otherwise it's possible to lose particles.
 // This assumes that the indices are unique.
-bool4 ltMask( int4 leftValues, int4 rightValues,
+bool4 ltMask( float4 leftValues, float4 rightValues,
               int4 leftIndices, int4 rightIndices );
-bool4 ltMask( int4 leftValues, int4 rightValues,
+bool4 ltMask( float4 leftValues, float4 rightValues,
               int4 leftIndices, int4 rightIndices )
 {
     bool4 ret(false);
@@ -129,12 +146,29 @@ kernel void kernel_sort(device const Particle* inPositions [[ buffer(1) ]],
     outPositions[numBefore] = p;
 }
 
+kernel void calculate_particle_depths( constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                       device float * particleDepths [[ buffer(1) ]],
+                                       device const Particle * particles [[ buffer(2) ]],
+                                       uint2 global_thread_position [[thread_position_in_grid]],
+                                       uint local_index [[thread_index_in_threadgroup]],
+                                       uint2 groups_per_grid [[ threadgroups_per_grid ]],
+                                       uint2 group_thread_size [[ threads_per_threadgroup ]],
+                                       uint2 grid_thread_count [[ threads_per_grid ]],
+                                       uint2 group_position [[ threadgroup_position_in_grid ]] )
+{
+    uint i = global_thread_position[0];
+    Particle p = particles[i];
+    float4 position = uniforms.modelMatrix * float4(p.position, 0.0f);
+    particleDepths[i] = position.z;
+}
+
 // A bitonic sort of indices based on value (e.g. depth of particle)
 // Based on https://software.intel.com/en-us/articles/bitonic-sorting
 
 kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                    device int4 * particleIndices [[ buffer(1) ]],
-                                   device const Particle * particles [[ buffer(2) ]],
+                                   //device const Particle * particles [[ buffer(2) ]],
+                                   device const float * particleDepths [[ buffer(2) ]],
                                    constant sortState_t& sortState [[ buffer(3) ]],
                                    uint2 global_thread_position [[thread_position_in_grid]],
                                    uint local_index [[thread_index_in_threadgroup]],
@@ -148,14 +182,16 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
     int dir = sortState.direction;
     uint i = global_thread_position[0];
     
-    int4 srcLeft, srcRight, valuesLeft, valuesRight;
+    int4 srcLeft, srcRight;
+    float4 valuesLeft, valuesRight;
     bool4 mask;
     bool4 imask10 = (bool4)(0, 0, 1, 1);
     bool4 imask11 = (bool4)(0, 1, 0, 1);
     
     srcLeft = particleIndices[i];
     srcRight = srcLeft.zwxy;
-    valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+    //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+    valuesLeft = indexSortKeys( srcLeft, particleDepths );
     valuesRight = valuesLeft.zwxy;
     
     if( stage > 0 )
@@ -171,8 +207,10 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
             srcLeft = particleIndices[left];
             srcRight = particleIndices[right];
             
-            valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
-            valuesRight = indexSortKeys( srcRight, particles, uniforms );
+            //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+            valuesLeft = indexSortKeys( srcLeft, particleDepths );
+            //valuesRight = indexSortKeys( srcRight, particles, uniforms );
+            valuesRight = indexSortKeys( srcRight, particleDepths );
 
             mask = ltMask(valuesLeft, valuesRight, srcLeft, srcRight);
             
@@ -196,7 +234,8 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
         else
         {
             srcLeft = particleIndices[i];
-            valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+            //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+            valuesLeft = indexSortKeys( srcLeft, particleDepths );
             srcRight = srcLeft.zwxy;
             valuesRight = valuesLeft.zwxy;
             
@@ -231,7 +270,8 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
         
         srcLeft = particleIndices[i];
         srcRight = srcLeft.yxwz;
-        valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+        //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
+        valuesLeft = indexSortKeys( srcLeft, particleDepths );
         valuesRight = valuesLeft.yxwz;
         
         mask = ltMask(valuesLeft, valuesRight, srcLeft, srcRight) ^ imask0;
@@ -278,10 +318,10 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
     }
 }
 
-vertex ColorInOut vertex_particles(device const Particle * particles [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                   device const int4 * indices [[ buffer(ciBufferIndexIndicies) ]],
-                                   constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                   unsigned int vid [[ vertex_id ]] )
+vertex ColorInOut vertex_particles( device const Particle * particles [[ buffer(ciBufferIndexInterleavedVerts) ]],
+                                    device const int4 * indices [[ buffer(ciBufferIndexIndicies) ]],
+                                    constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                    unsigned int vid [[ vertex_id ]] )
 {
     ColorInOut out;
     

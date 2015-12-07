@@ -52,7 +52,7 @@ namespace cinder {
             // TODO
             // How do I cast this?
             // Why does this need to be casted?
-            RendererRef clone() const override { return std::dynamic_pointer_cast<Renderer>(RendererMetalRef( new RendererMetal( *this ) ) ); }
+            RendererRef clone() const override { return RendererMetalRef( new RendererMetal( *this ) ); }
             
 #if defined( CINDER_COCOA )
 #if defined( CINDER_MAC )
