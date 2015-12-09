@@ -56,8 +56,8 @@ namespace cinder
             void setVertexLength( size_t vertLength ){ mVertexLength = vertLength; };
             size_t getVertexLength(){ return mVertexLength; };
 
-            void draw( RenderEncoderRef renderEncoder );
-            void draw( RenderEncoderRef renderEncoder, size_t vertexLength,
+            void draw( const RenderEncoderRef & renderEncoder );
+            void draw( const RenderEncoderRef & renderEncoder, size_t vertexLength,
                        size_t vertexStart = 0, size_t instanceCount = 1 );
             
         protected:
@@ -77,7 +77,6 @@ namespace cinder
             void createDefaultIndices();
             
             void setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs );
-            //void setInterleavedAttribIndices( const ci::geom::AttribSet & requestedAttribs );
 
             ci::mtl::geom::Primitive mPrimitive;
             std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;
@@ -85,8 +84,6 @@ namespace cinder
             std::map<ci::geom::Attrib, int> mRequestedAttribs;
             ci::geom::SourceRef mSource;
             size_t mVertexLength;
-            
-            //DataBuffer::Format mDefaultBufferFormat;
             
             ci::geom::BufferLayout mBufferLayout;
             DataBufferRef mInterleavedData;

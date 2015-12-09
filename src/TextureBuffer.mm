@@ -20,7 +20,7 @@ using namespace cinder::mtl;
 
 #pragma mark - Constructors
 
-TextureBuffer::TextureBuffer( ImageSourceRef imageSource, Format format ) :
+TextureBuffer::TextureBuffer( const ImageSourceRef & imageSource, Format format ) :
 mFormat(format)
 {
     SET_FORMAT_DEFAULT(mFormat, TextureType, MTLTextureType2D);
@@ -102,7 +102,7 @@ void TextureBuffer::getPixelData( void *pixelBytes )
 
 #pragma mark - Setting Data
 
-void TextureBuffer::update( ImageSourceRef imageSource )
+void TextureBuffer::update( const ImageSourceRef & imageSource )
 {
     CGImageRef imageRef = cocoa::createCgImage( imageSource, ImageTarget::Options() );
     assert(mChannelOrder == imageSource->getChannelOrder());

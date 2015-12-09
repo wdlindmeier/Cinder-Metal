@@ -32,42 +32,42 @@ CommandEncoder( encoderImpl )
     assert( [(__bridge id)encoderImpl conformsToProtocol:@protocol(MTLRenderCommandEncoder)] );
 }
 
-void RenderEncoder::setDepthStencilState( DepthStateRef depthState )
+void RenderEncoder::setDepthStencilState( const DepthStateRef & depthState )
 {
     [IMPL setDepthStencilState:(__bridge id<MTLDepthStencilState>)depthState->getNative()];
 }
 
-void RenderEncoder::setFragSamplerState( SamplerStateRef samplerState, int samplerIndex )
+void RenderEncoder::setFragSamplerState( const SamplerStateRef & samplerState, int samplerIndex )
 {
     [IMPL setFragmentSamplerState:(__bridge id<MTLSamplerState>)samplerState->getNative()
                           atIndex:samplerIndex];
 }
 
-void RenderEncoder::setPipelineState( RenderPipelineStateRef pipeline )
+void RenderEncoder::setPipelineState( const RenderPipelineStateRef & pipeline )
 {
     [IMPL setRenderPipelineState:(__bridge id <MTLRenderPipelineState>)pipeline->getNative()];
 }
 
-void RenderEncoder::setTexture( TextureBufferRef texture, size_t index )
+void RenderEncoder::setTexture( const TextureBufferRef & texture, size_t index )
 {
     [IMPL setFragmentTexture:(__bridge id <MTLTexture>)texture->getNative()
                      atIndex:index];
 }
 
-void RenderEncoder::setUniforms( DataBufferRef buffer, size_t bytesOffset, size_t bufferIndex )
+void RenderEncoder::setUniforms( const DataBufferRef & buffer, size_t bytesOffset, size_t bufferIndex )
 {
     setVertexBufferAtIndex(buffer, bufferIndex, bytesOffset);
     setFragmentBufferAtIndex(buffer, bufferIndex, bytesOffset);
 }
 
-void RenderEncoder::setVertexBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )
+void RenderEncoder::setVertexBufferAtIndex( const DataBufferRef & buffer, size_t index, size_t bytesOffset )
 {
     [IMPL setVertexBuffer:(__bridge id <MTLBuffer>)buffer->getNative()
                    offset:bytesOffset
                   atIndex:index];
 }
 
-void RenderEncoder::setFragmentBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )
+void RenderEncoder::setFragmentBufferAtIndex( const DataBufferRef & buffer, size_t index, size_t bytesOffset )
 {
     [IMPL setFragmentBuffer:(__bridge id <MTLBuffer>)buffer->getNative()
                      offset:bytesOffset
@@ -145,7 +145,7 @@ void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount
             baseInstance:baseInstance];
 }
 
-void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, DataBufferRef indexBuffer,
+void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
                                  size_t indexCount, int mtlIndexType, size_t bufferOffset,
                                  size_t instanceCount, size_t baseVertex, size_t baseInstance )
 {

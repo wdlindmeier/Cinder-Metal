@@ -49,20 +49,20 @@ namespace cinder { namespace mtl {
     };
 
     struct ScopedRenderEncoder : public ScopedT< RenderEncoderRef > {
-        ScopedRenderEncoder( RenderBufferRef renderBuffer,
-                             const RenderPassDescriptorRef descriptor,
+        ScopedRenderEncoder( const RenderBufferRef & renderBuffer,
+                             const RenderPassDescriptorRef & descriptor,
                              const std::string & encoderName = "Scoped Render Encoder" );
         ~ScopedRenderEncoder();
     };
 
     struct ScopedComputeEncoder : public ScopedT< ComputeEncoderRef > {
-        ScopedComputeEncoder( CommandBufferRef commandBuffer,
+        ScopedComputeEncoder( const CommandBufferRef & commandBuffer,
                               const std::string & encoderName = "Scoped Compute Encoder" );
         ~ScopedComputeEncoder();
     };
     
     struct ScopedBlitEncoder : public ScopedT< BlitEncoderRef > {
-        ScopedBlitEncoder( CommandBufferRef commandBuffer,                           
+        ScopedBlitEncoder( const CommandBufferRef & commandBuffer,
                            const std::string & encoderName = "Scoped Blit Encoder" );
         ~ScopedBlitEncoder();
     };

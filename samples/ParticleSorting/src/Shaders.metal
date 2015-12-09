@@ -27,42 +27,16 @@ typedef struct
     packed_float3 velocity;
 } Particle;
 
-// The range of depth (z) values that the Particles can have.
-constant float minDepth = -1.f;
-constant float maxDepth = 1.f;
-
-//int keyForDepth( float depth );
-//int keyForDepth( float depth )
-//{
-//    return ((depth - minDepth) / (maxDepth - minDepth)) * 65535.0;
-//}
-//
 // Convert the indices into the sortable values (0 .. large num)
 float4 indexSortKeys( const int4 indices,
-                     //device const Particle* inParticles,
-                     device const float* inParticleDepths);
+                     constant float* inParticleDepths);
 float4 indexSortKeys( const int4 indices,
-                     //device const Particle* inParticles,
-                     device const float* inParticleDepths)
+                     constant float* inParticleDepths)
 {
-//    return indices;
     return float4(inParticleDepths[indices[0]],
                   inParticleDepths[indices[1]],
                   inParticleDepths[indices[2]],
                   inParticleDepths[indices[3]]);
-    // TMP
-    // Profiling this func by returning the indices
-    // return indices;
-//    int4 depths(0);
-//    for ( int a = 0; a < 4; ++a )
-//    {
-//        int index = indices[a];
-////        Particle p = inParticles[index];
-////        float4 position = uniforms.modelMatrix * float4(p.position, 0.0f);
-////        depths[a] = keyForDepth(position.z);
-//        depths[a] = keyForDepth(inParticleDepths[index]);
-//    }
-//    return depths;
 }
 
 int4 vecMask( int4 leftValues, int4 rightValues, bool4 mask );
@@ -167,8 +141,7 @@ kernel void calculate_particle_depths( constant myUniforms_t& uniforms [[ buffer
 
 kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                    device int4 * particleIndices [[ buffer(1) ]],
-                                   //device const Particle * particles [[ buffer(2) ]],
-                                   device const float * particleDepths [[ buffer(2) ]],
+                                   constant float * particleDepths [[ buffer(2) ]],
                                    constant sortState_t& sortState [[ buffer(3) ]],
                                    uint2 global_thread_position [[thread_position_in_grid]],
                                    uint local_index [[thread_index_in_threadgroup]],
@@ -188,12 +161,6 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
     bool4 imask10 = (bool4)(0, 0, 1, 1);
     bool4 imask11 = (bool4)(0, 1, 0, 1);
     
-    srcLeft = particleIndices[i];
-    srcRight = srcLeft.zwxy;
-    //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
-    valuesLeft = indexSortKeys( srcLeft, particleDepths );
-    valuesRight = valuesLeft.zwxy;
-    
     if( stage > 0 )
     {
         // upper level pass, exchange between two fours
@@ -207,9 +174,7 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
             srcLeft = particleIndices[left];
             srcRight = particleIndices[right];
             
-            //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
             valuesLeft = indexSortKeys( srcLeft, particleDepths );
-            //valuesRight = indexSortKeys( srcRight, particles, uniforms );
             valuesRight = indexSortKeys( srcRight, particleDepths );
 
             mask = ltMask(valuesLeft, valuesRight, srcLeft, srcRight);
@@ -234,7 +199,6 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
         else
         {
             srcLeft = particleIndices[i];
-            //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
             valuesLeft = indexSortKeys( srcLeft, particleDepths );
             srcRight = srcLeft.zwxy;
             valuesRight = valuesLeft.zwxy;
@@ -270,7 +234,6 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
         
         srcLeft = particleIndices[i];
         srcRight = srcLeft.yxwz;
-        //valuesLeft = indexSortKeys( srcLeft, particles, uniforms );
         valuesLeft = indexSortKeys( srcLeft, particleDepths );
         valuesRight = valuesLeft.yxwz;
         

@@ -32,7 +32,7 @@ namespace cinder { namespace mtl {
 
         void * getNative(){ return mImpl; }
 
-        RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef descriptor,
+        RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & descriptor,
                                               void *drawableTexture,
                                               const std::string & encoderName = "Default Render Encoder" );
         ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Default Compute Encoder" );

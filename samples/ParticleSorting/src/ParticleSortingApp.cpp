@@ -10,10 +10,8 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
-using namespace cinder::mtl;
 
-// TMP
-const static int kNumSortStateBuffers = 200;//91; // Must be >= the number of sort passes
+const static int kNumSortStateBuffers = 91; // Must be >= the number of sort passes
 const static int kNumInflightBuffers = 4;
 
 typedef struct {
@@ -42,10 +40,10 @@ public:
     void bitonicSort( bool shouldLogOutput );
     void logComputeOutput( const myUniforms_t uniforms );
     
-    DepthStateRef mDepthEnabled;
+    mtl::DepthStateRef mDepthEnabled;
     
     myUniforms_t mUniforms;
-    DataBufferRef mDynamicConstantBuffer;
+    mtl::DataBufferRef mDynamicConstantBuffer;
     uint8_t mConstantDataBufferIndex;
     uint mConstantsOffset;
     
@@ -55,27 +53,27 @@ public:
     float mModelScale;
 
     // Particles
-    DataBufferRef mParticlesUnsorted;
-    DataBufferRef mParticleIndices;
-    DataBufferRef mParticleDepths;
-    DataBufferRef mSortStateBuffer;
-    RenderPassDescriptorRef mRenderDescriptor;
-    RenderPipelineStateRef mPipelineParticles;
-    TextureBufferRef mTextureParticle;
+    mtl::DataBufferRef mParticlesUnsorted;
+    mtl::DataBufferRef mParticleIndices;
+    mtl::DataBufferRef mParticleDepths;
+    mtl::DataBufferRef mSortStateBuffer;
+    mtl::RenderPassDescriptorRef mRenderDescriptor;
+    mtl::RenderPipelineStateRef mPipelineParticles;
+    mtl::TextureBufferRef mTextureParticle;
     
     // Sort pass
-    ComputePipelineStateRef mPipelineCalculateDepths;
-    ComputePipelineStateRef mPipelineBitonicSort;
+    mtl::ComputePipelineStateRef mPipelineCalculateDepths;
+    mtl::ComputePipelineStateRef mPipelineBitonicSort;
 };
 
 void ParticleSortingApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mDepthEnabled = DepthState::create(DepthState::Format().depthCompareFunction(1)); // less than
+    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format().depthCompareFunction(1)); // less than
     
-    mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
-                                                    .clearColor( ColorAf(0.5f,0.f,1.f,1.f)));
+    mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
+                                                          .clearColor( ColorAf(0.5f,0.f,1.f,1.f)));
 
     loadAssets();
 }
@@ -88,13 +86,13 @@ void ParticleSortingApp::resize()
 
 void ParticleSortingApp::loadAssets()
 {
-    mDynamicConstantBuffer = DataBuffer::create( mtlConstantSizeOf(myUniforms_t) * kNumInflightBuffers,
-                                                 nullptr,
-                                                 DataBuffer::Format().label("Uniform Buffer").isConstant(true) );
+    mDynamicConstantBuffer = mtl::DataBuffer::create( mtlConstantSizeOf(myUniforms_t) * kNumInflightBuffers,
+                                                      nullptr,
+                                                      mtl::DataBuffer::Format().label("Uniform Buffer").isConstant(true) );
     
-    mSortStateBuffer = DataBuffer::create( mtlConstantSizeOf(sortState_t) * kNumSortStateBuffers,
-                                           nullptr,
-                                           DataBuffer::Format().label("Sort State Buffer").isConstant(true) );
+    mSortStateBuffer = mtl::DataBuffer::create( mtlConstantSizeOf(sortState_t) * kNumSortStateBuffers,
+                                                nullptr,
+                                                mtl::DataBuffer::Format().label("Sort State Buffer").isConstant(true) );
 
     // Set up the particles
     vector<Particle> particles;
@@ -118,17 +116,17 @@ void ParticleSortingApp::loadAssets()
     // Make sure we've got the right number of indicies
     assert( float(indices.size()) == particles.size() / 4.0f );
     
-    mPipelineParticles = RenderPipelineState::create("vertex_particles", "fragment_point_texture",
-                                                     RenderPipelineState::Format()
-                                                     .blendingEnabled(true));
+    mPipelineParticles = mtl::RenderPipelineState::create("vertex_particles", "fragment_point_texture",
+                                                          mtl::RenderPipelineState::Format()
+                                                          .blendingEnabled(true));
     
-    mTextureParticle = TextureBuffer::create(loadImage(getAssetPath("particle.png")));
+    mTextureParticle = mtl::TextureBuffer::create(loadImage(getAssetPath("particle.png")));
     
-    mParticlesUnsorted = DataBuffer::create(particles, DataBuffer::Format().label("Particles"));
-    mParticleDepths = DataBuffer::create(particleDepths, DataBuffer::Format().label("Depths"));
-    mParticleIndices = DataBuffer::create(indices, DataBuffer::Format().label("Indices"));
-    mPipelineBitonicSort = ComputePipelineState::create("bitonic_sort_by_value");
-    mPipelineCalculateDepths = ComputePipelineState::create("calculate_particle_depths");
+    mParticlesUnsorted = mtl::DataBuffer::create(particles, mtl::DataBuffer::Format().label("Particles"));
+    mParticleDepths = mtl::DataBuffer::create(particleDepths, mtl::DataBuffer::Format().label("Depths").isConstant(true));
+    mParticleIndices = mtl::DataBuffer::create(indices, mtl::DataBuffer::Format().label("Indices"));
+    mPipelineBitonicSort = mtl::ComputePipelineState::create("bitonic_sort_by_value");
+    mPipelineCalculateDepths = mtl::ComputePipelineState::create("calculate_particle_depths");
 }
 
 void ParticleSortingApp::mouseDown( MouseEvent event )
@@ -157,7 +155,7 @@ void ParticleSortingApp::mouseDrag( MouseEvent event )
 void ParticleSortingApp::update()
 {
     mRotation += 0.0015f;
-
+    
     // Create the matrices
     mat4 modelMatrix = glm::rotate(mRotation, vec3(1.0f, 1.0f, 1.0f));
     modelMatrix = glm::scale(modelMatrix, vec3(mModelScale));
@@ -200,8 +198,8 @@ void ParticleSortingApp::logComputeOutput( const myUniforms_t uniforms )
 
 void ParticleSortingApp::calculateDepths()
 {
-    ScopedCommandBuffer commandBuffer(false, "Sort command buffer");
-    ScopedComputeEncoder computeEncoder(commandBuffer());
+    mtl::ScopedCommandBuffer commandBuffer(false, "Sort command buffer");
+    mtl::ScopedComputeEncoder computeEncoder(commandBuffer());
     
     computeEncoder()->setPipelineState(mPipelineCalculateDepths);
     computeEncoder()->setBufferAtIndex(mParticleDepths, 1);
@@ -225,7 +223,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
             numStages++;
         }
         
-        ScopedCommandBuffer commandBuffer;
+        mtl::ScopedCommandBuffer commandBuffer;
         
         // NOTE:
         // If we log out the results while the command buffer is still running, the values might
@@ -239,7 +237,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
             });
         }
         
-        ScopedComputeEncoder computeEncoder(commandBuffer());
+        mtl::ScopedComputeEncoder computeEncoder(commandBuffer());
         
         for ( int stage = 0; stage < numStages; stage++ )
         {
@@ -277,9 +275,9 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
 
 void ParticleSortingApp::draw()
 {
-    ScopedRenderBuffer renderBuffer;
+    mtl::ScopedRenderBuffer renderBuffer;
  
-    ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
+    mtl::ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
 
     // Set uniforms
     renderEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);

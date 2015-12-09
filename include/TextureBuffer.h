@@ -46,14 +46,14 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(usage, Usage, int)
         };
         
-        static TextureBufferRef create( ImageSourceRef imageSource, const Format & format = Format() )
+        static TextureBufferRef create( const ImageSourceRef & imageSource, const Format & format = Format() )
         {
             return TextureBufferRef( new TextureBuffer(imageSource, format) );
         }
 
         virtual ~TextureBuffer();
 
-        void update( ImageSourceRef imageSource );
+        void update( const ImageSourceRef & imageSource );
         void setPixelData( void *pixelBytes );
         
         // Getting Data
@@ -76,7 +76,7 @@ namespace cinder { namespace mtl {
 
     protected:
 
-        TextureBuffer( ImageSourceRef imageSource, Format format );
+        TextureBuffer( const ImageSourceRef & imageSource, Format format );
 
         void updateWidthCGImage( void * );
         void generateMipmap();

@@ -38,7 +38,7 @@ CommandBuffer::~CommandBuffer()
     CFRelease(mImpl);
 }
 
-RenderEncoderRef CommandBuffer::createRenderEncoder( RenderPassDescriptorRef descriptor,
+RenderEncoderRef CommandBuffer::createRenderEncoder( const RenderPassDescriptorRef & descriptor,
                                                      void *drawableTexture,
                                                      const std::string & encoderName )
 {

@@ -49,8 +49,8 @@ ScopedRenderBuffer::~ScopedRenderBuffer()
     }
 };
 
-ScopedRenderEncoder::ScopedRenderEncoder( RenderBufferRef renderBuffer,
-                                          const RenderPassDescriptorRef descriptor,
+ScopedRenderEncoder::ScopedRenderEncoder( const RenderBufferRef & renderBuffer,
+                                          const RenderPassDescriptorRef & descriptor,
                                           const std::string & encoderName )
 {
     mInstance = renderBuffer->createRenderEncoder(descriptor, encoderName);
@@ -61,7 +61,7 @@ ScopedRenderEncoder::~ScopedRenderEncoder()
     mInstance->endEncoding();
 }
 
-ScopedComputeEncoder::ScopedComputeEncoder( CommandBufferRef commandBuffer,
+ScopedComputeEncoder::ScopedComputeEncoder( const CommandBufferRef & commandBuffer,
                                             const std::string & encoderName )
 {
     mInstance = commandBuffer->createComputeEncoder( encoderName );
@@ -72,7 +72,7 @@ ScopedComputeEncoder::~ScopedComputeEncoder()
     mInstance->endEncoding();
 }
 
-ScopedBlitEncoder::ScopedBlitEncoder( CommandBufferRef commandBuffer,
+ScopedBlitEncoder::ScopedBlitEncoder( const CommandBufferRef & commandBuffer,
                                       const std::string & encoderName )
 {
     mInstance = commandBuffer->createBlitEncoder( encoderName );

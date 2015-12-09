@@ -193,7 +193,7 @@ uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
     return 0;
 }
 
-void VertexBuffer::draw( RenderEncoderRef renderEncoder )
+void VertexBuffer::draw( const RenderEncoderRef & renderEncoder )
 {
     if ( mVertexLength == 0 )
     {
@@ -203,7 +203,7 @@ void VertexBuffer::draw( RenderEncoderRef renderEncoder )
     draw( renderEncoder, mVertexLength );
 }
 
-void VertexBuffer::draw( RenderEncoderRef renderEncoder,
+void VertexBuffer::draw( const RenderEncoderRef & renderEncoder,
                          size_t vertexLength,
                          size_t vertexStart,
                          size_t instanceCount )

@@ -35,15 +35,15 @@ namespace cinder { namespace mtl {
         
         virtual ~RenderEncoder(){};
         
-        virtual void setPipelineState( RenderPipelineStateRef pipeline );
-        virtual void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 );
+        virtual void setPipelineState( const RenderPipelineStateRef & pipeline );
+        virtual void setTexture( const TextureBufferRef & texture, size_t index = ciTextureIndex0 );
         // Sets buffer at ciBufferIndexUniforms for both vertex and fragment shaders
-        virtual void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
-        void setVertexBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
-        void setFragmentBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        virtual void setUniforms( const DataBufferRef & buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
+        void setVertexBufferAtIndex( const DataBufferRef & buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        void setFragmentBufferAtIndex( const DataBufferRef & buffer, size_t bufferIndex , size_t bytesOffset = 0 );
         
-        void setFragSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
-        void setDepthStencilState( DepthStateRef depthState );
+        void setFragSamplerState( const SamplerStateRef & samplerState, int samplerIndex = 0 );
+        void setDepthStencilState( const DepthStateRef & depthState );
         
         void setViewport( vec2 origin, vec2 size, float near = 0.1, float far = 1000.f );
         void setFrontFacingWinding( bool isClockwise );
@@ -65,7 +65,7 @@ namespace cinder { namespace mtl {
         void draw( ci::mtl::geom::Primitive primitive, size_t vertexCount, size_t vertexStart = 0,
                    size_t instanceCount = 1, size_t baseInstance = 0 );
         
-        void drawIndexed( ci::mtl::geom::Primitive primitive, DataBufferRef indexBuffer,
+        void drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
                           size_t indexCount, int mtlIndexType = 1, size_t bufferOffset = 0,
                           size_t instanceCount = 1, size_t baseVertex = 0, size_t baseInstance = 0 );
 #if !defined( CINDER_COCOA_TOUCH )

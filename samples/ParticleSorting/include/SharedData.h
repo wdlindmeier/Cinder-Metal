@@ -13,7 +13,7 @@
 
 // Data shared by both the Cinder app and the Metal shader
 
-#define kParticleDimension 256 //128 // Must be a power of 2 for the bitonic sort to work
+#define kParticleDimension 128 // Must be a power of 2 for the bitonic sort to work
 
 struct sortState_t
 {

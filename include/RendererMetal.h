@@ -49,9 +49,6 @@ namespace cinder {
             
             RendererMetal( const Options & options = Options() );
             
-            // TODO
-            // How do I cast this?
-            // Why does this need to be casted?
             RendererRef clone() const override { return RendererMetalRef( new RendererMetal( *this ) ); }
             
 #if defined( CINDER_COCOA )

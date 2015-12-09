@@ -11,7 +11,6 @@
 using namespace std;
 using namespace ci;
 using namespace ci::app;
-using namespace cinder::mtl;
 
 // Raw cube data. Layout is positionX, positionY, positionZ, normalX, normalY, normalZ
 float cubeVertexData[216] =
@@ -35,43 +34,43 @@ class MetalCubeApp : public App
 	void update() override;
 	void draw() override;
 
-    DataBufferRef mVertexBuffer;
-    VertexBufferRef mGeomBufferCube;
-    VertexBufferRef mAttribBufferCube;
+    mtl::DataBufferRef mVertexBuffer;
+    mtl::VertexBufferRef mGeomBufferCube;
+    mtl::VertexBufferRef mAttribBufferCube;
     vector<vec3> mPositions;
 
-    RenderPipelineStateRef mPipelineInterleavedLighting;
-    RenderPipelineStateRef mPipelineGeomLighting;
-    RenderPipelineStateRef mPipelineAttribLighting;
+    mtl::RenderPipelineStateRef mPipelineInterleavedLighting;
+    mtl::RenderPipelineStateRef mPipelineGeomLighting;
+    mtl::RenderPipelineStateRef mPipelineAttribLighting;
     
-    SamplerStateRef mSamplerMipMapped;
-    DepthStateRef mDepthEnabled;
+    mtl::SamplerStateRef mSamplerMipMapped;
+    mtl::DepthStateRef mDepthEnabled;
     
     ciUniforms_t mUniforms;
-    DataBufferRef mDynamicConstantBuffer;
+    mtl::DataBufferRef mDynamicConstantBuffer;
     uint8_t mConstantDataBufferIndex;
     
     float mRotation;
     CameraPersp mCamera;
     
-    RenderPassDescriptorRef mRenderDescriptor;
+    mtl::RenderPassDescriptorRef mRenderDescriptor;
     
-    TextureBufferRef mTexture;
+    mtl::TextureBufferRef mTexture;
 };
 
 void MetalCubeApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mTexture = TextureBuffer::create(loadImage(getAssetPath("checker.png")),
-                                     TextureBuffer::Format().mipmapLevel(4));
+    mTexture = mtl::TextureBuffer::create(loadImage(getAssetPath("checker.png")),
+                                          mtl::TextureBuffer::Format().mipmapLevel(4));
     
-    mSamplerMipMapped = SamplerState::create();
+    mSamplerMipMapped = mtl::SamplerState::create();
     
-    mDepthEnabled = DepthState::create(DepthState::Format().depthWriteEnabled(true));
+    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format().depthWriteEnabled(true));
     
-    mRenderDescriptor = RenderPassDescriptor::create(RenderPassDescriptor::Format()
-                                                     .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
+    mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
+                                                          .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
     loadAssets();
 }
 
@@ -84,32 +83,31 @@ void MetalCubeApp::resize()
 void MetalCubeApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = DataBuffer::create(mtlConstantSizeOf(ciUniforms_t) * kNumInflightBuffers,
-                                                nullptr,
-                                                DataBuffer::Format().label("Uniform Buffer").isConstant(true));
+    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(ciUniforms_t) * kNumInflightBuffers,
+                                                     nullptr,
+                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant(true));
 
     // EXAMPLE 1
     // Use raw, interleaved vertex data
-    mVertexBuffer = DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
-                                       cubeVertexData,          // the data
-                                       DataBuffer::Format().label("Interleaved Vertices")); // the name of the buffer
+    mVertexBuffer = mtl::DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
+                                            cubeVertexData,          // the data
+                                            mtl::DataBuffer::Format().label("Interleaved Vertices")); // the name of the buffer
     
-    mPipelineInterleavedLighting = RenderPipelineState::create("lighting_vertex_interleaved",
-                                                               "lighting_fragment",
-                                                               RenderPipelineState::Format());
+    mPipelineInterleavedLighting = mtl::RenderPipelineState::create("lighting_vertex_interleaved",
+                                                                    "lighting_fragment",
+                                                                    mtl::RenderPipelineState::Format());
 
     // EXAMPLE 2
     // Use a geom source
-    ci::geom::BufferLayout cubeLayout;
-    
-    cubeLayout.append( ci::geom::Attrib::POSITION, 3, sizeof( CubeVertex ), offsetof( CubeVertex, position ) );
-    cubeLayout.append( ci::geom::Attrib::NORMAL, 3, sizeof( CubeVertex ), offsetof( CubeVertex, normal ) );
-    cubeLayout.append( ci::geom::Attrib::TEX_COORD_0, 2, sizeof( CubeVertex ), offsetof( CubeVertex, texCoord0 ) );
-    mGeomBufferCube = VertexBuffer::create(ci::geom::Cube(), cubeLayout, DataBuffer::Format().label("Geom Cube"));
+    ci::geom::BufferLayout cubeLayout;    
+    cubeLayout.append(ci::geom::Attrib::POSITION, 3, sizeof(CubeVertex), offsetof(CubeVertex, position));
+    cubeLayout.append(ci::geom::Attrib::NORMAL, 3, sizeof(CubeVertex), offsetof(CubeVertex, normal));
+    cubeLayout.append(ci::geom::Attrib::TEX_COORD_0, 2, sizeof(CubeVertex), offsetof(CubeVertex, texCoord0));
+    mGeomBufferCube = mtl::VertexBuffer::create(ci::geom::Cube(), cubeLayout, mtl::DataBuffer::Format().label("Geom Cube"));
 
-    mPipelineGeomLighting = RenderPipelineState::create("lighting_vertex_interleaved_src",
-                                                        "lighting_texture_fragment",
-                                                        RenderPipelineState::Format());
+    mPipelineGeomLighting = mtl::RenderPipelineState::create("lighting_vertex_interleaved_src",
+                                                             "lighting_texture_fragment",
+                                                             mtl::RenderPipelineState::Format());
 
     // EXAMPLE 3
     // Use attribtue buffers
@@ -125,16 +123,16 @@ void MetalCubeApp::loadAssets()
         normals.push_back(norm);
     }
     
-    mAttribBufferCube = VertexBuffer::create();
+    mAttribBufferCube = mtl::VertexBuffer::create();
     mPositions = positions;
-    DataBufferRef positionBuffer = DataBuffer::create(mPositions, DataBuffer::Format().label("Positions"));
+    mtl::DataBufferRef positionBuffer = mtl::DataBuffer::create(mPositions, mtl::DataBuffer::Format().label("Positions"));
     mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
-    DataBufferRef normalBuffer = DataBuffer::create(normals, DataBuffer::Format().label("Normals"));
+    mtl::DataBufferRef normalBuffer = mtl::DataBuffer::create(normals, mtl::DataBuffer::Format().label("Normals"));
     mAttribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
-    mPipelineAttribLighting = RenderPipelineState::create("lighting_vertex_attrib_buffers",
-                                                          "lighting_fragment",
-                                                          RenderPipelineState::Format());
+    mPipelineAttribLighting = mtl::RenderPipelineState::create("lighting_vertex_attrib_buffers",
+                                                               "lighting_fragment",
+                                                               mtl::RenderPipelineState::Format());
 }
 
 void MetalCubeApp::update()
@@ -165,8 +163,8 @@ void MetalCubeApp::update()
 
 void MetalCubeApp::draw()
 {    
-    ScopedRenderBuffer renderBuffer;
-    ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
+    mtl::ScopedRenderBuffer renderBuffer;
+    mtl::ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
     
     // Enable depth
     renderEncoder()->setDepthStencilState(mDepthEnabled);

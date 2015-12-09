@@ -25,11 +25,11 @@ namespace cinder { namespace mtl {
 
         virtual ~ComputeEncoder(){};
         
-        virtual void setPipelineState( ComputePipelineStateRef pipeline );
-        virtual void setTexture( TextureBufferRef texture, size_t index = ciTextureIndex0 );
-        virtual void setUniforms( DataBufferRef buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
-        void setBufferAtIndex( DataBufferRef buffer, size_t bufferIndex , size_t bytesOffset = 0 );
-        void setSamplerState( SamplerStateRef samplerState, int samplerIndex = 0 );
+        virtual void setPipelineState( const ComputePipelineStateRef & pipeline );
+        virtual void setTexture( const TextureBufferRef & texture, size_t index = ciTextureIndex0 );
+        virtual void setUniforms( const DataBufferRef & buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
+        void setBufferAtIndex( const DataBufferRef & buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        void setSamplerState( const SamplerStateRef & samplerState, int samplerIndex = 0 );
         void setThreadgroupMemoryLength( size_t byteLength, size_t groupMemoryIndex );
         
         void dispatch( ivec3 dataDimensions, ivec3 threadDimensions = ivec3(8,8,1) );

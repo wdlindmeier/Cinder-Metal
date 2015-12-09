@@ -29,29 +29,29 @@ CommandEncoder::CommandEncoder(mtlComputeCommandEncoder)
     assert([(__bridge id)mtlComputeCommandEncoder conformsToProtocol:@protocol(MTLComputeCommandEncoder)]);
 }
 
-void ComputeEncoder::setPipelineState( ComputePipelineStateRef pipeline )
+void ComputeEncoder::setPipelineState( const ComputePipelineStateRef & pipeline )
 {
     [IMPL setComputePipelineState:(__bridge id <MTLComputePipelineState>)pipeline->getNative()];
 };
 
-void ComputeEncoder::setSamplerState( SamplerStateRef samplerState, int samplerIndex )
+void ComputeEncoder::setSamplerState( const SamplerStateRef & samplerState, int samplerIndex )
 {
     [IMPL setSamplerState:(__bridge id<MTLSamplerState>)samplerState->getNative()
                   atIndex:samplerIndex];
 }
 
-void ComputeEncoder::setTexture( TextureBufferRef texture, size_t index )
+void ComputeEncoder::setTexture( const TextureBufferRef & texture, size_t index )
 {
     [IMPL setTexture:(__bridge id <MTLTexture>)texture->getNative()
              atIndex:index];
 }
 
-void ComputeEncoder::setUniforms( DataBufferRef buffer, size_t bytesOffset, size_t bufferIndex )
+void ComputeEncoder::setUniforms( const DataBufferRef & buffer, size_t bytesOffset, size_t bufferIndex )
 {
     setBufferAtIndex(buffer, bufferIndex, bytesOffset);
 }
 
-void ComputeEncoder::setBufferAtIndex( DataBufferRef buffer, size_t index, size_t bytesOffset )
+void ComputeEncoder::setBufferAtIndex( const DataBufferRef & buffer, size_t index, size_t bytesOffset )
 {
     [IMPL setBuffer:(__bridge id <MTLBuffer>)buffer->getNative()
              offset:bytesOffset
