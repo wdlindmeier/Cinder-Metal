@@ -199,15 +199,15 @@ void ParticleSortingApp::logComputeOutput( const myUniforms_t uniforms )
 void ParticleSortingApp::calculateDepths()
 {
     mtl::ScopedCommandBuffer commandBuffer(false, "Sort command buffer");
-    mtl::ScopedComputeEncoder computeEncoder(commandBuffer());
+    mtl::ScopedComputeEncoder computeEncoder = commandBuffer.scopedComputeEncoder();
     
-    computeEncoder()->setPipelineState(mPipelineCalculateDepths);
-    computeEncoder()->setBufferAtIndex(mParticleDepths, 1);
-    computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
-    computeEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+    computeEncoder.setPipelineState(mPipelineCalculateDepths);
+    computeEncoder.setBufferAtIndex(mParticleDepths, 1);
+    computeEncoder.setBufferAtIndex(mParticlesUnsorted, 2);
+    computeEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
     
     long arraySize = mUniforms.numParticles;
-    computeEncoder()->dispatch(ivec3(arraySize, 1, 1), ivec3(32,1,1));
+    computeEncoder.dispatch(ivec3(arraySize, 1, 1), ivec3(32,1,1));
 }
 
 void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
@@ -237,7 +237,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
             });
         }
         
-        mtl::ScopedComputeEncoder computeEncoder(commandBuffer());
+        mtl::ScopedComputeEncoder computeEncoder = commandBuffer.scopedComputeEncoder();
         
         for ( int stage = 0; stage < numStages; stage++ )
         {
@@ -250,22 +250,21 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
                 sortState.direction = 1; // ascending
                 mSortStateBuffer->setDataAtIndex(&sortState, passNum);
                 
-                computeEncoder()->setPipelineState(mPipelineBitonicSort);
+                computeEncoder.setPipelineState(mPipelineBitonicSort);
                 
-                computeEncoder()->setBufferAtIndex(mParticleIndices, 1);
-                //computeEncoder()->setBufferAtIndex(mParticlesUnsorted, 2);
-                computeEncoder()->setBufferAtIndex(mParticleDepths, 2);
-                computeEncoder()->setBufferAtIndex(mSortStateBuffer, 3,
+                computeEncoder.setBufferAtIndex(mParticleIndices, 1);
+                computeEncoder.setBufferAtIndex(mParticleDepths, 2);
+                computeEncoder.setBufferAtIndex(mSortStateBuffer, 3,
                                                    mtlConstantSizeOf(sortState_t) * passNum);
 
-                computeEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+                computeEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
                 
                 size_t gsz = arraySize / (2*4);
                 // NOTE: work size is not 1-per vector.
                 // Its the number of quad items in input array
                 size_t globalWorkSize = passOfStage ? gsz : gsz << 1;
                 
-                computeEncoder()->dispatch(ivec3(globalWorkSize, 1, 1), ivec3(32,1,1));
+                computeEncoder.dispatch(ivec3(globalWorkSize, 1, 1), ivec3(32,1,1));
                 assert( passNum < kNumSortStateBuffers );
                 passNum++;
             }
@@ -275,33 +274,32 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
 
 void ParticleSortingApp::draw()
 {
-    mtl::ScopedRenderBuffer renderBuffer;
- 
-    mtl::ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
+    mtl::ScopedRenderBuffer renderBuffer; 
+    mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
     // Set uniforms
-    renderEncoder()->setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+    renderEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
     
     // Enable depth
-    renderEncoder()->setDepthStencilState(mDepthEnabled);
+    renderEncoder.setDepthStencilState(mDepthEnabled);
 
     // Draw particles
-    renderEncoder()->pushDebugGroup("Draw Particles");
+    renderEncoder.pushDebugGroup("Draw Particles");
     
     // Set the program
-    renderEncoder()->setPipelineState(mPipelineParticles);
+    renderEncoder.setPipelineState(mPipelineParticles);
 
     // Pass in the unsorted particles
-    renderEncoder()->setVertexBufferAtIndex(mParticlesUnsorted, ciBufferIndexInterleavedVerts);
+    renderEncoder.setVertexBufferAtIndex(mParticlesUnsorted, ciBufferIndexInterleavedVerts);
 
     // Pass in the sorted particle indices
-    renderEncoder()->setVertexBufferAtIndex(mParticleIndices, ciBufferIndexIndicies);
+    renderEncoder.setVertexBufferAtIndex(mParticleIndices, ciBufferIndexIndicies);
 
-    renderEncoder()->setTexture(mTextureParticle);
+    renderEncoder.setTexture(mTextureParticle);
     
-    renderEncoder()->draw(mtl::geom::POINT, mUniforms.numParticles);
+    renderEncoder.draw(mtl::geom::POINT, mUniforms.numParticles);
 
-    renderEncoder()->popDebugGroup();
+    renderEncoder.popDebugGroup();
     
     mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }

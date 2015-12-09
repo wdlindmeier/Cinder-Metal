@@ -15,56 +15,69 @@
 
 namespace cinder { namespace mtl {
 
-    template < class T >
-    struct ScopedT : public ci::Noncopyable {
-        ScopedT(){};
-        virtual ~ScopedT(){}
-        virtual T & operator()(){ return mInstance; };
-    protected:
-        T mInstance;
+    class ScopedRenderEncoder : public RenderEncoder
+    {
+        friend class ScopedRenderBuffer;
+    public:
+        ~ScopedRenderEncoder();
+    private:
+        ScopedRenderEncoder( void * mtlRenderCommandEncoder );
     };
     
-    struct ScopedCommandBuffer : public ScopedT< CommandBufferRef > {
+    class ScopedComputeEncoder : public ComputeEncoder
+    {
+        friend class ScopedCommandBuffer;
+    public:
+        ~ScopedComputeEncoder();
+    private:
+        ScopedComputeEncoder( void * mtlComputeEncoder );
+    };
+    
+    class ScopedBlitEncoder : public BlitEncoder
+    {
+        friend class ScopedCommandBuffer;
+    public:
+        ~ScopedBlitEncoder();
+    private:
+        ScopedBlitEncoder( void * mtlBlitEncoder );
+    };
+    
+    class ScopedCommandBuffer : public CommandBuffer
+    {
+    public:
         ScopedCommandBuffer( bool waitUntilCompleted = false,
                              const std::string & bufferName = "Scoped Command Buffer" );
         ~ScopedCommandBuffer();
+        
         void addCompletionHandler( std::function< void( void * mtlCommandBuffer) > handler ){
             mCompletionHandler = handler;
         }
+        
+        ScopedComputeEncoder scopedComputeEncoder( const std::string & bufferName = "Scoped Compute Encoder" );
+        ScopedBlitEncoder scopedBlitEncoder( const std::string & bufferName = "Scoped Blit Encoder" );
+        
     private:
         bool mWaitUntilCompleted;
         std::function< void( void * mtlCommandBuffer) > mCompletionHandler;
     };
-
-    struct ScopedRenderBuffer : public ScopedT< RenderBufferRef > {
+    
+    class ScopedRenderBuffer : public RenderBuffer
+    {
+    public:
         ScopedRenderBuffer( bool waitUntilCompleted = false,
                             const std::string & bufferName = "Scoped Render Buffer" );
         ~ScopedRenderBuffer();
+        
         void addCompletionHandler( std::function< void( void * mtlCommandBuffer) > handler ){
             mCompletionHandler = handler;
         }
+        
+        ScopedRenderEncoder scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+                                                 const std::string & bufferName = "Scoped Render Encoder" );
+        
     private:
         bool mWaitUntilCompleted;
-        std::function< void( void * mtlCommandBuffer) > mCompletionHandler;
-    };
-
-    struct ScopedRenderEncoder : public ScopedT< RenderEncoderRef > {
-        ScopedRenderEncoder( const RenderBufferRef & renderBuffer,
-                             const RenderPassDescriptorRef & descriptor,
-                             const std::string & encoderName = "Scoped Render Encoder" );
-        ~ScopedRenderEncoder();
-    };
-
-    struct ScopedComputeEncoder : public ScopedT< ComputeEncoderRef > {
-        ScopedComputeEncoder( const CommandBufferRef & commandBuffer,
-                              const std::string & encoderName = "Scoped Compute Encoder" );
-        ~ScopedComputeEncoder();
-    };
-    
-    struct ScopedBlitEncoder : public ScopedT< BlitEncoderRef > {
-        ScopedBlitEncoder( const CommandBufferRef & commandBuffer,
-                           const std::string & encoderName = "Scoped Blit Encoder" );
-        ~ScopedBlitEncoder();
+        std::function< void( void * mtlCommandBuffer) > mCompletionHandler;        
     };
 
 }}

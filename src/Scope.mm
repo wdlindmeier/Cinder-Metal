@@ -15,70 +15,80 @@
 using namespace cinder;
 using namespace cinder::mtl;
 
+ScopedRenderEncoder::ScopedRenderEncoder( void * mtlRenderCommandEncoder ) :
+RenderEncoder(mtlRenderCommandEncoder)
+{}
+
+ScopedRenderEncoder::~ScopedRenderEncoder()
+{
+    endEncoding();
+}
+
+ScopedComputeEncoder::ScopedComputeEncoder( void *mtlComputeEncoder ) :
+ComputeEncoder(mtlComputeEncoder)
+{}
+
+ScopedComputeEncoder::~ScopedComputeEncoder()
+{
+    endEncoding();
+}
+
+ScopedBlitEncoder::ScopedBlitEncoder( void *mtlBlitEncoder ) :
+BlitEncoder(mtlBlitEncoder)
+{}
+
+ScopedBlitEncoder::~ScopedBlitEncoder()
+{
+    endEncoding();
+}
+
 ScopedCommandBuffer::ScopedCommandBuffer( bool waitUntilCompleted, const std::string & bufferName )
 :
-mWaitUntilCompleted(waitUntilCompleted)
+CommandBuffer(bufferName)
+,mWaitUntilCompleted(waitUntilCompleted)
 ,mCompletionHandler(NULL)
+{};
+
+ScopedComputeEncoder ScopedCommandBuffer::scopedComputeEncoder( const std::string & bufferName )
 {
-    mInstance = CommandBuffer::create(bufferName);
-};
+    ComputeEncoderRef computeEncoder = createComputeEncoder( bufferName );
+    return ScopedComputeEncoder( computeEncoder->getNative() );
+}
+
+ScopedBlitEncoder ScopedCommandBuffer::scopedBlitEncoder( const std::string & bufferName )
+{
+    BlitEncoderRef blitEncoder = createBlitEncoder( bufferName );
+    return ScopedBlitEncoder( blitEncoder->getNative() );
+}
 
 ScopedCommandBuffer::~ScopedCommandBuffer()
 {
-    mInstance->commit( mCompletionHandler );
+    commit( mCompletionHandler );
     if ( mWaitUntilCompleted )
     {
-        mInstance->waitUntilCompleted();
+        waitUntilCompleted();
     }
 };
 
 ScopedRenderBuffer::ScopedRenderBuffer( bool waitUntilCompleted, const std::string & bufferName )
 :
-mWaitUntilCompleted(waitUntilCompleted)
+RenderBuffer(bufferName)
+,mWaitUntilCompleted(waitUntilCompleted)
 ,mCompletionHandler(NULL)
+{};
+
+ScopedRenderEncoder ScopedRenderBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+                                                             const std::string & bufferName )
 {
-    mInstance = RenderBuffer::create(bufferName);
-};
+    RenderEncoderRef renderEncoder = createRenderEncoder(descriptor, bufferName);
+    return ScopedRenderEncoder(renderEncoder->getNative());
+}
 
 ScopedRenderBuffer::~ScopedRenderBuffer()
 {
-    mInstance->commitAndPresent( mCompletionHandler );
+    commitAndPresent( mCompletionHandler );
     if ( mWaitUntilCompleted )
     {
-        mInstance->waitUntilCompleted();
+        waitUntilCompleted();
     }
 };
-
-ScopedRenderEncoder::ScopedRenderEncoder( const RenderBufferRef & renderBuffer,
-                                          const RenderPassDescriptorRef & descriptor,
-                                          const std::string & encoderName )
-{
-    mInstance = renderBuffer->createRenderEncoder(descriptor, encoderName);
-}
-
-ScopedRenderEncoder::~ScopedRenderEncoder()
-{
-    mInstance->endEncoding();
-}
-
-ScopedComputeEncoder::ScopedComputeEncoder( const CommandBufferRef & commandBuffer,
-                                            const std::string & encoderName )
-{
-    mInstance = commandBuffer->createComputeEncoder( encoderName );
-}
-
-ScopedComputeEncoder::~ScopedComputeEncoder()
-{
-    mInstance->endEncoding();
-}
-
-ScopedBlitEncoder::ScopedBlitEncoder( const CommandBufferRef & commandBuffer,
-                                      const std::string & encoderName )
-{
-    mInstance = commandBuffer->createBlitEncoder( encoderName );
-}
-
-ScopedBlitEncoder::~ScopedBlitEncoder()
-{
-    mInstance->endEncoding();
-}

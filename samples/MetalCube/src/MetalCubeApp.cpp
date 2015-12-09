@@ -99,7 +99,7 @@ void MetalCubeApp::loadAssets()
 
     // EXAMPLE 2
     // Use a geom source
-    ci::geom::BufferLayout cubeLayout;    
+    ci::geom::BufferLayout cubeLayout;
     cubeLayout.append(ci::geom::Attrib::POSITION, 3, sizeof(CubeVertex), offsetof(CubeVertex, position));
     cubeLayout.append(ci::geom::Attrib::NORMAL, 3, sizeof(CubeVertex), offsetof(CubeVertex, normal));
     cubeLayout.append(ci::geom::Attrib::TEX_COORD_0, 2, sizeof(CubeVertex), offsetof(CubeVertex, texCoord0));
@@ -164,10 +164,10 @@ void MetalCubeApp::update()
 void MetalCubeApp::draw()
 {    
     mtl::ScopedRenderBuffer renderBuffer;
-    mtl::ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
+    mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
     // Enable depth
-    renderEncoder()->setDepthStencilState(mDepthEnabled);
+    renderEncoder.setDepthStencilState(mDepthEnabled);
 
     uint constantsOffset = (uint)(mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex);
 
@@ -191,39 +191,38 @@ void MetalCubeApp::draw()
     // Using Cinder geom to draw the cube
     
     // Geom Target
-    renderEncoder()->pushDebugGroup("Draw Textured Geom Cube");
+    renderEncoder.pushDebugGroup("Draw Textured Geom Cube");
     
     // Set the program
-    renderEncoder()->setPipelineState(mPipelineGeomLighting);
+    renderEncoder.setPipelineState(mPipelineGeomLighting);
     
-    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
+    renderEncoder.setUniforms(mDynamicConstantBuffer, constantsOffset);
 
     // Set the texture
-    renderEncoder()->setTexture(mTexture);
+    renderEncoder.setTexture(mTexture);
 
     // Enable mip-mapping
-    renderEncoder()->setFragSamplerState(mSamplerMipMapped);
+    renderEncoder.setFragSamplerState(mSamplerMipMapped);
     
     // Draw
-    mGeomBufferCube->draw(renderEncoder());
+    mGeomBufferCube->draw(renderEncoder);
 
-    renderEncoder()->popDebugGroup();
-
+    renderEncoder.popDebugGroup();
     
     // EXAMPLE 3
     // Using attrib buffers to draw the cube
     
     // Geom Target
-    renderEncoder()->pushDebugGroup("Draw Attrib Cube");
+    renderEncoder.pushDebugGroup("Draw Attrib Cube");
     
     // Set the program
-    renderEncoder()->setPipelineState(mPipelineAttribLighting);
+    renderEncoder.setPipelineState(mPipelineAttribLighting);
     
-    renderEncoder()->setUniforms(mDynamicConstantBuffer, constantsOffset);
+    renderEncoder.setUniforms(mDynamicConstantBuffer, constantsOffset);
 
-    mAttribBufferCube->draw(renderEncoder(), 36);
+    mAttribBufferCube->draw(renderEncoder, 36);
     
-    renderEncoder()->popDebugGroup();
+    renderEncoder.popDebugGroup();
     
     mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }

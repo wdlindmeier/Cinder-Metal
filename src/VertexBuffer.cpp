@@ -193,7 +193,7 @@ uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
     return 0;
 }
 
-void VertexBuffer::draw( const RenderEncoderRef & renderEncoder )
+void VertexBuffer::draw( RenderEncoder & renderEncoder )
 {
     if ( mVertexLength == 0 )
     {
@@ -203,7 +203,7 @@ void VertexBuffer::draw( const RenderEncoderRef & renderEncoder )
     draw( renderEncoder, mVertexLength );
 }
 
-void VertexBuffer::draw( const RenderEncoderRef & renderEncoder,
+void VertexBuffer::draw( RenderEncoder & renderEncoder,
                          size_t vertexLength,
                          size_t vertexStart,
                          size_t instanceCount )
@@ -214,8 +214,8 @@ void VertexBuffer::draw( const RenderEncoderRef & renderEncoder,
         // a MTLVertexDescriptor as part of the pipeline, which is less flexible
         // that using a known data layout with index access. This also lets us
         // use BufferLayouts, which follows the Cinder convention.
-        renderEncoder->setVertexBufferAtIndex( mInterleavedData, ciBufferIndexInterleavedVerts );
-        renderEncoder->setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
+        renderEncoder.setVertexBufferAtIndex( mInterleavedData, ciBufferIndexInterleavedVerts );
+        renderEncoder.setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
     }
     else
     {
@@ -224,11 +224,11 @@ void VertexBuffer::draw( const RenderEncoderRef & renderEncoder,
             ci::geom::Attrib attr = kvp.first;
             DataBufferRef buffer = mAttributeBuffers[attr];
             assert( !!buffer );
-            renderEncoder->setVertexBufferAtIndex( buffer, kvp.second );
+            renderEncoder.setVertexBufferAtIndex( buffer, kvp.second );
         }
     }
     
-    renderEncoder->draw( mPrimitive,
+    renderEncoder.draw( mPrimitive,
                         vertexLength,
                         vertexStart,
                         instanceCount );

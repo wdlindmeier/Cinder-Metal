@@ -27,7 +27,10 @@ namespace cinder { namespace mtl {
         
     public:
         
-        static RenderBufferRef create( const std::string & bufferName );
+        static RenderBufferRef create( const std::string & bufferName )
+        {
+            return RenderBufferRef( new RenderBuffer( bufferName ) );
+        }
         
         void commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
                 
@@ -39,7 +42,8 @@ namespace cinder { namespace mtl {
         
     protected:
         
-        RenderBuffer( void * mtlCommandBuffer, void *mtlDrawable );
+        //RenderBuffer( void * mtlCommandBuffer, void *mtlDrawable );
+        RenderBuffer( const std::string & bufferName );
         void * mDrawable; // <CAMetalDrawable>
     };
     

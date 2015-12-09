@@ -17,25 +17,15 @@ using namespace ci::mtl;
 #define IMPL ((__bridge id <MTLCommandBuffer>)mImpl)
 #define DRAWABLE ((__bridge id <CAMetalDrawable>)mDrawable)
 
-RenderBufferRef RenderBuffer::create( const std::string & bufferName )
+RenderBuffer::RenderBuffer( const std::string & bufferName )
+:
+CommandBuffer( bufferName )
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
-    // instantiate a command buffer
-    id <MTLCommandBuffer> commandBuffer = [renderer.commandQueue commandBuffer];
-    commandBuffer.label = [NSString stringWithUTF8String:bufferName.c_str()];
-    id <CAMetalDrawable> drawable = [renderer.metalLayer nextDrawable];
-    return RenderBufferRef( new RenderBuffer( (__bridge void *)commandBuffer,
-                                              (__bridge void *)drawable ) );
-}
-
-RenderBuffer::RenderBuffer( void * mtlCommandBuffer, void * mtlDrawable )
-:
-CommandBuffer(mtlCommandBuffer)
-,mDrawable(mtlDrawable)
-{
+    mDrawable = (__bridge void *)[renderer.metalLayer nextDrawable];
     assert( mImpl != NULL );
-    assert( mtlDrawable != NULL );
-    assert( [(__bridge id)mtlDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
+    assert( mDrawable != NULL );
+    assert( [(__bridge id)mDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
 }
 
 RenderEncoderRef RenderBuffer::createRenderEncoder( const RenderPassDescriptorRef & descriptor,

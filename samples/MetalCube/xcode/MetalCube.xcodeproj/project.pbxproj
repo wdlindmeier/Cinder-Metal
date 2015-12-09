@@ -71,7 +71,6 @@
 		2D7F8E610A6C49CC89846BDF /* CommandEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CommandEncoder.mm; path = ../../../src/CommandEncoder.mm; sourceTree = "<group>"; };
 		302EFEB33CB448BCB2AFEF87 /* VertexBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VertexBuffer.cpp; path = ../../../src/VertexBuffer.cpp; sourceTree = "<group>"; };
 		42CEF22CD6CF4DE1BD245E76 /* MetalHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = MetalHelpers.hpp; path = ../../../include/MetalHelpers.hpp; sourceTree = "<group>"; };
-		43D053499629469F9A38A4BA /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		4EF2F2BBBCCA4DBAA98D6234 /* ComputePipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputePipelineState.mm; path = ../../../src/ComputePipelineState.mm; sourceTree = "<group>"; };
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		586B5D2180154121B965919D /* BlitEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = BlitEncoder.mm; path = ../../../src/BlitEncoder.mm; sourceTree = "<group>"; };
@@ -245,7 +244,6 @@
 			isa = PBXGroup;
 			children = (
 				A9BDFEBD1C0CB93800A76FD0 /* MetalCube_Prefix.pch */,
-				43D053499629469F9A38A4BA /* Resources.h */,
 				A92232881C1387FF00EF5D03 /* SharedData.h */,
 			);
 			name = Headers;

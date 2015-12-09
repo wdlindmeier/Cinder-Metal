@@ -60,7 +60,6 @@
 		152C5E9B9D644D75883C946A /* TextureBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TextureBuffer.h; path = ../../../include/TextureBuffer.h; sourceTree = "<group>"; };
 		23A1506DA65347ADA34639F0 /* RendererMetalImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetalImpl.mm; path = ../../../src/RendererMetalImpl.mm; sourceTree = "<group>"; };
 		242AE25701FB4B3D9089009A /* RendererMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetal.h; path = ../../../include/RendererMetal.h; sourceTree = "<group>"; };
-		27A523EBC6EA44459228A98C /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		27F501E10C984AA2B497BF47 /* RenderBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderBuffer.mm; path = ../../../src/RenderBuffer.mm; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -202,7 +201,6 @@
 			isa = PBXGroup;
 			children = (
 				ED3EA155B8A5403BB8CFF88F /* Particles_Prefix.pch */,
-				27A523EBC6EA44459228A98C /* Resources.h */,
 				A9BDFEC81C0D35B100A76FD0 /* SharedData.h */,
 			);
 			name = Headers;

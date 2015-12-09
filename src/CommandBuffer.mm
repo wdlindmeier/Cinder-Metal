@@ -15,21 +15,15 @@ using namespace ci::mtl;
 
 #define IMPL ((__bridge id <MTLCommandBuffer>)mImpl)
 
-CommandBufferRef CommandBuffer::create( const std::string & bufferName )
+CommandBuffer::CommandBuffer( const std::string & bufferName )
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
     // instantiate a command buffer
     id <MTLCommandBuffer> commandBuffer = [renderer.commandQueue commandBuffer];
     commandBuffer.label = [NSString stringWithUTF8String:bufferName.c_str()];
-    return CommandBufferRef( new CommandBuffer( (__bridge void *)commandBuffer ) );
-}
-
-CommandBuffer::CommandBuffer( void * mtlCommandBuffer )
-:
-mImpl(mtlCommandBuffer)
-{
-    assert( mtlCommandBuffer != NULL );
-    assert( [(__bridge id)mtlCommandBuffer conformsToProtocol:@protocol(MTLCommandBuffer)] );
+    mImpl = (__bridge void *)commandBuffer;
+    assert( mImpl != NULL );
+    assert( [(__bridge id)mImpl conformsToProtocol:@protocol(MTLCommandBuffer)] );
     CFRetain(mImpl);
 }
 

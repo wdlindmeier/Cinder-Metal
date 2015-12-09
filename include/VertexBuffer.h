@@ -56,8 +56,8 @@ namespace cinder
             void setVertexLength( size_t vertLength ){ mVertexLength = vertLength; };
             size_t getVertexLength(){ return mVertexLength; };
 
-            void draw( const RenderEncoderRef & renderEncoder );
-            void draw( const RenderEncoderRef & renderEncoder, size_t vertexLength,
+            void draw( RenderEncoder & renderEncoder );
+            void draw( RenderEncoder & renderEncoder, size_t vertexLength,
                        size_t vertexStart = 0, size_t instanceCount = 1 );
             
         protected:
