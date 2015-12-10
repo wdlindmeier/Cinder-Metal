@@ -10,6 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "MetalHelpers.hpp"
+#include "MetalEnums.h"
 
 namespace cinder { namespace mtl {
     
@@ -23,14 +24,14 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
-            mDepthCompareFunction(-1) // defaults to MTLCompareFunctionLessEqual
+            mDepthCompareFunction(CompareFunctionLessEqual)
             ,mDepthWriteEnabled(false)
             ,mFrontFaceStencil(nullptr)
             ,mBackFaceStencil(nullptr)
             ,mLabel("Default Depth State")
             {}
 
-            FORMAT_OPTION(depthCompareFunction, DepthCompareFunction, int) // MTLCompareFunction
+            FORMAT_OPTION(depthCompareFunction, DepthCompareFunction, CompareFunction)
             FORMAT_OPTION(depthWriteEnabled, DepthWriteEnabled, bool)
             // TODO: Maybe the back/front stencil descriptors don't belong in the format...
             FORMAT_OPTION(frontFaceStencil, FrontFaceStencil, void *) // MTLStencilDescriptor

@@ -86,6 +86,7 @@
 		98EAF669469E47578285DDDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A4F8A77ADA34AF1ACEBA72E /* BlitEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlitEncoder.h; path = ../../../include/BlitEncoder.h; sourceTree = "<group>"; };
 		A7D732C7BF0A40AEB1A72FBA /* DataBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataBuffer.h; path = ../../../include/DataBuffer.h; sourceTree = "<group>"; };
+		A92F6CDD1C19183500E55016 /* MetalEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalEnums.h; path = ../../../include/MetalEnums.h; sourceTree = "<group>"; };
 		A9BDFEC21C0D356200A76FD0 /* ParticleSortingApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleSortingApp.cpp; path = ../src/ParticleSortingApp.cpp; sourceTree = "<group>"; };
 		A9BDFEC41C0D356E00A76FD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9BDFEC61C0D357300A76FD0 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -238,7 +239,9 @@
 				800DE8C21AB143E084F7624C /* ImageHelpers.h */,
 				501E9C0385DA4D1181840188 /* metal.h */,
 				B6EFF6EFCABF47219BB97C7D /* MetalConstants.h */,
+				A92F6CDD1C19183500E55016 /* MetalEnums.h */,
 				C1C665E585C7407B812FB411 /* MetalGeom.h */,
+				2A9881FA97F04897BC13645C /* MetalHelpers.hpp */,
 				6FBF95CF7735488680806708 /* RenderBuffer.h */,
 				6DB14B2A39374BC4B3E1FCA6 /* RenderEncoder.h */,
 				242AE25701FB4B3D9089009A /* RendererMetal.h */,
@@ -249,7 +252,6 @@
 				B63D27B9308E471899A13E99 /* Scope.h */,
 				152C5E9B9D644D75883C946A /* TextureBuffer.h */,
 				B645E74057D243D8B032FA64 /* VertexBuffer.h */,
-				2A9881FA97F04897BC13645C /* MetalHelpers.hpp */,
 			);
 			name = include;
 			sourceTree = "<group>";

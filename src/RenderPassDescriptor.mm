@@ -28,9 +28,6 @@ mDepthTexture(nullptr)
     mImpl = (__bridge void *)[MTLRenderPassDescriptor renderPassDescriptor];
     CFRetain(mImpl);
     
-    SET_FORMAT_DEFAULT(format, ColorStoreAction, MTLStoreActionStore);
-    SET_FORMAT_DEFAULT(format, DepthStoreAction, MTLStoreActionDontCare);
-
     setShouldClearColor(format.getShouldClearColor());
     setClearColor(format.getClearColor());
     setColorStoreAction(format.getColorStoreAction());
@@ -65,7 +62,7 @@ void RenderPassDescriptor::setClearColor( const ColorAf clearColor, int colorAtt
                                                                                  clearColor.a);
 };
 
-void RenderPassDescriptor::setColorStoreAction( int storeAction, int colorAttachementIndex ) // MTLStoreAction
+void RenderPassDescriptor::setColorStoreAction( StoreAction storeAction, int colorAttachementIndex )
 {
     IMPL.colorAttachments[colorAttachementIndex].storeAction = (MTLStoreAction)storeAction;
 }
@@ -80,7 +77,7 @@ void RenderPassDescriptor::setClearDepth( float clearDepth )
     IMPL.depthAttachment.clearDepth = clearDepth;
 };
 
-void RenderPassDescriptor::setDepthStoreAction( int storeAction ) // MTLStoreAction
+void RenderPassDescriptor::setDepthStoreAction( StoreAction storeAction )
 {
     IMPL.depthAttachment.storeAction = (MTLStoreAction)storeAction;
 }

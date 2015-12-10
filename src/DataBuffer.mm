@@ -28,13 +28,6 @@ void DataBuffer::init( unsigned long length, const void * pointer, Format format
     mFormat = format;
     auto device = [RendererMetalImpl sharedRenderer].device;
     
-    SET_FORMAT_DEFAULT(mFormat, CacheMode, MTLResourceCPUCacheModeDefaultCache);
-#if defined( CINDER_COCOA_TOUCH )
-    SET_FORMAT_DEFAULT(mFormat, StorageMode, MTLResourceStorageModeShared);
-#else
-    SET_FORMAT_DEFAULT(mFormat, StorageMode, MTLResourceStorageModeManaged);
-#endif
-
     if ( pointer == NULL )
     {
         mImpl = (__bridge_retained void *)[device newBufferWithLength:length
@@ -43,7 +36,7 @@ void DataBuffer::init( unsigned long length, const void * pointer, Format format
     }
     else
     {
-        if ( mFormat.getStorageMode() == MTLResourceStorageModePrivate )
+        if ( mFormat.getStorageMode() == StorageModePrivate )
         {
             CI_LOG_E("DataBuffer with Private storage mode cannot be constructed with data from \
                      the CPU. Data must be sent via a blit command.");

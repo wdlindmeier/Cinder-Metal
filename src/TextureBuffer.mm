@@ -23,10 +23,6 @@ using namespace cinder::mtl;
 TextureBuffer::TextureBuffer( const ImageSourceRef & imageSource, Format format ) :
 mFormat(format)
 {
-    SET_FORMAT_DEFAULT(mFormat, TextureType, MTLTextureType2D);
-    SET_FORMAT_DEFAULT(mFormat, PixelFormat, MTLPixelFormatInvalid);
-    SET_FORMAT_DEFAULT(mFormat, Usage, MTLTextureUsageShaderRead );
-
     CGImageRef imageRef = cocoa::createCgImage( imageSource, ImageTarget::Options() );
 
     MTLPixelFormat pxFormat = (MTLPixelFormat)mFormat.getPixelFormat();
@@ -38,7 +34,7 @@ mFormat(format)
     if ( pxFormat == MTLPixelFormatInvalid )
     {
         pxFormat = mtlPixelFormatFromChannelOrder(mChannelOrder, mDataType);
-        mFormat.setPixelFormat(pxFormat);
+        mFormat.setPixelFormat((PixelFormat)pxFormat);
     }
     
     NSUInteger width = CGImageGetWidth(imageRef);

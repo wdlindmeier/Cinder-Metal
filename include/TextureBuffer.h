@@ -11,6 +11,7 @@
 #include "cinder/Cinder.h"
 #include "cinder/ImageIo.h"
 #include "MetalHelpers.hpp"
+#include "MetalEnums.h"
 
 namespace cinder { namespace mtl {
     
@@ -30,20 +31,20 @@ namespace cinder { namespace mtl {
             Format() :
             mMipmapLevel(1)
             ,mSampleCount(1)
-            ,mTextureType(-1) // defaults to MTLTextureType2D
-            ,mPixelFormat(-1) // defaults to MTLPixelFormatInvalid
+            ,mTextureType(TextureType2D)
+            ,mPixelFormat(PixelFormatInvalid)
             ,mDepth(1)
             ,mArrayLength(1)
-            ,mUsage(-1) // defaults to MTLTextureUsageShaderRead
+            ,mUsage(TextureUsageShaderRead)
             {};
             
             FORMAT_OPTION(mipmapLevel, MipmapLevel, int)
             FORMAT_OPTION(sampleCount, SampleCount, int)
-            FORMAT_OPTION(textureType, TextureType, int) // MTLTextureType
-            FORMAT_OPTION(pixelFormat, PixelFormat, int) // MTLPixelFormat
+            FORMAT_OPTION(textureType, TextureType, TextureType)
+            FORMAT_OPTION(pixelFormat, PixelFormat, PixelFormat)
             FORMAT_OPTION(depth, Depth, int)
             FORMAT_OPTION(arrayLength, ArrayLength, int)
-            FORMAT_OPTION(usage, Usage, int)
+            FORMAT_OPTION(usage, Usage, TextureUsage)
         };
         
         static TextureBufferRef create( const ImageSourceRef & imageSource, const Format & format = Format() )

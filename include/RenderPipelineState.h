@@ -10,6 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "MetalHelpers.hpp"
+#include "MetalEnums.h"
 
 namespace cinder { namespace mtl {
     
@@ -25,26 +26,26 @@ namespace cinder { namespace mtl {
             Format() :
             mSampleCount(1)
             ,mBlendingEnabled(false)
-            ,mColorBlendOperation(-1) // defaults to MTLBlendOperationAdd
-            ,mAlphaBlendOperation(-1) // defaults to MTLBlendOperationAdd
-            ,mSrcColorBlendFactor(-1) // defaults to MTLBlendFactorSourceAlpha
-            ,mSrcAlphaBlendFactor(-1) // defaults to MTLBlendFactorSourceAlpha
-            ,mDstColorBlendFactor(-1) // defaults to MTLBlendFactorOneMinusSourceAlpha
-            ,mDstAlphaBlendFactor(-1) // defaults to MTLBlendFactorOneMinusSourceAlpha
+            ,mColorBlendOperation(BlendOperationAdd)
+            ,mAlphaBlendOperation(BlendOperationAdd)
+            ,mSrcColorBlendFactor(BlendFactorSourceAlpha)
+            ,mSrcAlphaBlendFactor(BlendFactorSourceAlpha)
+            ,mDstColorBlendFactor(BlendFactorOneMinusSourceAlpha)
+            ,mDstAlphaBlendFactor(BlendFactorOneMinusSourceAlpha)
             ,mLabel("Default Pipeline")
-            ,mPixelFormat(-1) // defaults to MTLPixelFormatBGRA8Unorm
+            ,mPixelFormat(PixelFormatBGRA8Unorm)
             {}
 
             FORMAT_OPTION(sampleCount, SampleCount, int)
             FORMAT_OPTION(blendingEnabled, BlendingEnabled, bool)
-            FORMAT_OPTION(colorBlendOperation, ColorBlendOperation, int)
-            FORMAT_OPTION(alphaBlendOperation, AlphaBlendOperation, int)
-            FORMAT_OPTION(srcColorBlendFactor, SrcColorBlendFactor, int)
-            FORMAT_OPTION(srcAlphaBlendFactor, SrcAlphaBlendFactor, int)
-            FORMAT_OPTION(dstColorBlendFactor, DstColorBlendFactor, int)
-            FORMAT_OPTION(dstAlphaBlendFactor, DstAlphaBlendFactor, int)
+            FORMAT_OPTION(colorBlendOperation, ColorBlendOperation, BlendOperation)
+            FORMAT_OPTION(alphaBlendOperation, AlphaBlendOperation, BlendOperation)
+            FORMAT_OPTION(srcColorBlendFactor, SrcColorBlendFactor, BlendFactor)
+            FORMAT_OPTION(srcAlphaBlendFactor, SrcAlphaBlendFactor, BlendFactor)
+            FORMAT_OPTION(dstColorBlendFactor, DstColorBlendFactor, BlendFactor)
+            FORMAT_OPTION(dstAlphaBlendFactor, DstAlphaBlendFactor, BlendFactor)
             FORMAT_OPTION(label, Label, std::string)
-            FORMAT_OPTION(pixelFormat, PixelFormat, int) // MTLPixelFormat
+            FORMAT_OPTION(pixelFormat, PixelFormat, PixelFormat) 
         };
         
         static RenderPipelineStateRef create( const std::string & vertShaderName,

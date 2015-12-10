@@ -19,12 +19,6 @@
         void set##CAP_NAME( TYPE NAME ) { m##CAP_NAME = NAME; }; \
         TYPE get##CAP_NAME() { return m##CAP_NAME; }; \
 
-#define SET_FORMAT_DEFAULT(FORMAT, CAP_NAME, DEFAULT_VALUE) \
-    if ( FORMAT.get##CAP_NAME() == -1 ) \
-    { \
-        FORMAT.set##CAP_NAME(DEFAULT_VALUE); \
-    } \
-
 // Conversions to simd types
 
 matrix_float4x4 static inline toMtl( glm::mat4 mat )

@@ -10,6 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "MetalHelpers.hpp"
+#include "MetalEnums.h"
 
 namespace cinder { namespace mtl {
     
@@ -30,16 +31,16 @@ namespace cinder { namespace mtl {
             ,mShouldClearDepth(true)
             ,mClearColor(0.f,0.f,0.f,1.f)
             ,mClearDepth(1.f)
-            ,mColorStoreAction(-1) // MTLStoreActionStore
-            ,mDepthStoreAction(-1) // MTLStoreActionDontCare
+            ,mColorStoreAction(StoreActionStore)
+            ,mDepthStoreAction(StoreActionDontCare)
             {};
             
             FORMAT_OPTION(shouldClearColor, ShouldClearColor, bool)
             FORMAT_OPTION(clearColor, ClearColor, ci::ColorAf)
-            FORMAT_OPTION(colorStoreAction, ColorStoreAction, int) // MTLStoreAction
+            FORMAT_OPTION(colorStoreAction, ColorStoreAction, StoreAction)
             FORMAT_OPTION(shouldClearDepth, ShouldClearDepth, bool)
             FORMAT_OPTION(clearDepth, ClearDepth, float)
-            FORMAT_OPTION(depthStoreAction, DepthStoreAction, int) // MTLStoreAction
+            FORMAT_OPTION(depthStoreAction, DepthStoreAction, StoreAction)
         };
         
         static RenderPassDescriptorRef create( const Format & format = Format() );
@@ -55,10 +56,10 @@ namespace cinder { namespace mtl {
         
         void setShouldClearColor( bool shouldClear, int colorAttachementIndex = 0 );
         void setClearColor( const ColorAf clearColor, int colorAttachementIndex = 0 );
-        void setColorStoreAction( int storeAction, int colorAttachementIndex = 0 ); // MTLStoreAction
+        void setColorStoreAction( StoreAction storeAction, int colorAttachementIndex = 0 );
         void setShouldClearDepth( bool shouldClear );
         void setClearDepth( float clearDepth );
-        void setDepthStoreAction( int storeAction ); // MTLStoreAction
+        void setDepthStoreAction( StoreAction storeAction );
 
         void * mImpl = NULL; // MTLRenderPassDescriptor *
         void * mDepthTexture = NULL; // <MTLTexture>

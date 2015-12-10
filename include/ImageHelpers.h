@@ -20,11 +20,11 @@ namespace cinder { namespace mtl {
 extern int dataSizeForType( ImageIo::DataType dataType );
 
 extern uint8_t* createFourChannelFromThreeChannel(ivec2 imageSize,
-                                                         ImageIo::DataType dataType,
-                                                         const uint8_t* rgbData );
+                                                  ImageIo::DataType dataType,
+                                                  const uint8_t* rgbData );
 
 extern MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
-                                                            ImageIo::DataType dataType );
+                                                      ImageIo::DataType dataType );
 
 extern ImageIo::ChannelOrder ciChannelOrderFromMtlPixelFormat( MTLPixelFormat pixelFormat );
 

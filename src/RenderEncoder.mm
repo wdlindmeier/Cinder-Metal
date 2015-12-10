@@ -146,12 +146,12 @@ void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount
 }
 
 void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
-                                 size_t indexCount, int mtlIndexType, size_t bufferOffset,
+                                 size_t indexCount, IndexType indexType, size_t bufferOffset,
                                  size_t instanceCount, size_t baseVertex, size_t baseInstance )
 {
     [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
                      indexCount:indexCount
-                      indexType:(MTLIndexType)mtlIndexType
+                      indexType:(MTLIndexType)indexType
                     indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
               indexBufferOffset:bufferOffset
                   instanceCount:instanceCount

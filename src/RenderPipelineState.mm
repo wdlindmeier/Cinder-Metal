@@ -27,13 +27,6 @@ RenderPipelineState::RenderPipelineState(const std::string & vertShaderName,
 mFormat(format)
 ,mImpl(nullptr)
 {
-    SET_FORMAT_DEFAULT(mFormat, ColorBlendOperation, MTLBlendOperationAdd);
-    SET_FORMAT_DEFAULT(mFormat, AlphaBlendOperation, MTLBlendOperationAdd);
-    SET_FORMAT_DEFAULT(mFormat, SrcColorBlendFactor, MTLBlendFactorSourceAlpha);
-    SET_FORMAT_DEFAULT(mFormat, SrcAlphaBlendFactor, MTLBlendFactorSourceAlpha);
-    SET_FORMAT_DEFAULT(mFormat, DstColorBlendFactor, MTLBlendFactorOneMinusSourceAlpha);
-    SET_FORMAT_DEFAULT(mFormat, DstAlphaBlendFactor, MTLBlendFactorOneMinusSourceAlpha);
-    SET_FORMAT_DEFAULT(mFormat, PixelFormat, MTLPixelFormatBGRA8Unorm);
     
     id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
     id <MTLLibrary> library = [RendererMetalImpl sharedRenderer].library;

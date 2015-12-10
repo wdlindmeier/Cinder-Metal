@@ -15,8 +15,6 @@ using namespace ci::mtl;
 
 DepthState::DepthState( Format format )
 {    
-    SET_FORMAT_DEFAULT(format, DepthCompareFunction, MTLCompareFunctionLessEqual);
-    
     MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
     depthStateDesc.depthCompareFunction = (MTLCompareFunction)format.getDepthCompareFunction();
     depthStateDesc.depthWriteEnabled = format.getDepthWriteEnabled();

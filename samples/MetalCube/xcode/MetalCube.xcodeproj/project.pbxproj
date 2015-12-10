@@ -93,6 +93,7 @@
 		A1A1EE3CC2B244829C4309FD /* RenderPipelineState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPipelineState.h; path = ../../../include/RenderPipelineState.h; sourceTree = "<group>"; };
 		A76F7CCC4A3E4136B26BC02B /* ImageHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageHelpers.h; path = ../../../include/ImageHelpers.h; sourceTree = "<group>"; };
 		A92232881C1387FF00EF5D03 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedData.h; path = ../include/SharedData.h; sourceTree = "<group>"; };
+		A92F6CDC1C190CC300E55016 /* MetalEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalEnums.h; path = ../../../include/MetalEnums.h; sourceTree = "<group>"; };
 		A9AA4B051C0E8DA40023916E /* checker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker.png; sourceTree = "<group>"; };
 		A9AA4B061C0E8DA40023916E /* checker_trans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker_trans.png; sourceTree = "<group>"; };
 		A9AA4B071C0E8DA40023916E /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
@@ -211,6 +212,7 @@
 				A76F7CCC4A3E4136B26BC02B /* ImageHelpers.h */,
 				FEDA6D9FEA5E4CBA8D85548F /* metal.h */,
 				C404444645DC4C60A91B28E0 /* MetalConstants.h */,
+				A92F6CDC1C190CC300E55016 /* MetalEnums.h */,
 				B3018B316DCF44E28D5349E9 /* MetalGeom.h */,
 				42CEF22CD6CF4DE1BD245E76 /* MetalHelpers.hpp */,
 				206994A644B0410A8F503EF2 /* RenderBuffer.h */,

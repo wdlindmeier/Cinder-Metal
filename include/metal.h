@@ -10,6 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "MetalConstants.h"
+#include "MetalEnums.h"
 #include "RendererMetal.h"
 #include "RenderPipelineState.h"
 #include "CommandBuffer.h"

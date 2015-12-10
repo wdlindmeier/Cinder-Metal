@@ -10,6 +10,7 @@
 
 #include "cinder/Cinder.h"
 #include "MetalHelpers.hpp"
+#include "MetalEnums.h"
 
 namespace cinder { namespace mtl {
     
@@ -23,16 +24,20 @@ namespace cinder { namespace mtl {
         struct Format
         {
             Format() :
+#if defined( CINDER_COCOA_TOUCH )
+            mStorageMode( StorageModeShared )
+#else
             // NOTE: On OS X, programs run faster in "Shared" mode when using the integrated GPU,
             // and faster in "Managed" mode when using the descreet GPU.
-            mStorageMode(-1) // defaults to MTLResourceStorageModeManaged on OS X, and MTLResourceStorageModeShared on iOS
-            ,mCacheMode(-1) // defaults to MTLResourceCPUCacheModeDefaultCache
+            mStorageMode( StorageModeManaged )
+#endif
+            ,mCacheMode( CPUCacheModeDefaultCache )
             ,mLabel("Default Data Buffer")
             ,mIsConstant(false) // used when measuring data allocation. Verts should be `false`, uniforms should be `true`.
             {};
             
-            FORMAT_OPTION(storageMode, StorageMode, int)
-            FORMAT_OPTION(cacheMode, CacheMode, int)
+            FORMAT_OPTION(storageMode, StorageMode, StorageMode)
+            FORMAT_OPTION(cacheMode, CacheMode, CPUCacheMode)
             FORMAT_OPTION(label, Label, std::string)
             FORMAT_OPTION(isConstant, IsConstant, bool)
         };

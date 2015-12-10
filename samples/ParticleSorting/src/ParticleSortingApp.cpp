@@ -70,7 +70,8 @@ void ParticleSortingApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
-    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format().depthCompareFunction(1)); // less than
+    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format()
+                                            .depthCompareFunction(mtl::CompareFunctionLess)); // less than
     
     mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
                                                           .clearColor( ColorAf(0.5f,0.f,1.f,1.f)));
