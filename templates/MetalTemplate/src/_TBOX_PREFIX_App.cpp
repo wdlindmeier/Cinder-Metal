@@ -4,7 +4,6 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
-using namespace cinder::mtl;
 
 class _TBOX_PREFIX_App : public App
 {
@@ -15,7 +14,7 @@ public:
     void update() override;
     void draw() override;
     
-    RenderPassDescriptorRef mRenderDescriptor;
+    mtl::RenderPassDescriptorRef mRenderDescriptor;
 };
 
 void _TBOX_PREFIX_App::setup()
@@ -28,7 +27,7 @@ void _TBOX_PREFIX_App::setup()
     
     // NOTE: You cannot build the project for the iOS Simulator
 
-    mRenderDescriptor = RenderPassDescriptor::create();
+    mRenderDescriptor = mtl::RenderPassDescriptor::create();
 }
 
 void _TBOX_PREFIX_App::resize()
@@ -41,8 +40,8 @@ void _TBOX_PREFIX_App::update()
 
 void _TBOX_PREFIX_App::draw()
 {
-    ScopedRenderBuffer renderBuffer;
-    ScopedRenderEncoder renderEncoder(renderBuffer(), mRenderDescriptor);
+    mtl::ScopedRenderBuffer renderBuffer;
+    mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
     // Put your drawing here
 }

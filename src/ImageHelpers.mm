@@ -62,8 +62,8 @@ uint8_t* createFourChannelFromThreeChannel(ivec2 imageSize,
     return rgbaData;
 }
 
-MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
-                                                            ImageIo::DataType dataType )
+PixelFormat pixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
+                                         ImageIo::DataType dataType )
 {
     switch (channelOrder)
     {
@@ -71,109 +71,109 @@ MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrde
             switch (dataType)
         {
             case ImageIo::UINT8:
-                return MTLPixelFormatRGBA8Unorm;
+                return PixelFormatRGBA8Unorm;
             case ImageIo::UINT16:
-                return MTLPixelFormatRGBA16Unorm;
+                return PixelFormatRGBA16Unorm;
             case ImageIo::FLOAT16:
-                return MTLPixelFormatRGBA16Float;
+                return PixelFormatRGBA16Float;
             case ImageIo::FLOAT32:
-                return MTLPixelFormatRGBA32Float;
+                return PixelFormatRGBA32Float;
             default:
-                return MTLPixelFormatInvalid;
+                return PixelFormatInvalid;
         }
         case ImageIo::BGRA:
-            return MTLPixelFormatBGRA8Unorm;
+            return PixelFormatBGRA8Unorm;
         case ImageIo::RGBX:
             switch (dataType)
         {
             case ImageIo::UINT8:
-                return MTLPixelFormatRGBA8Unorm;
+                return PixelFormatRGBA8Unorm;
             case ImageIo::UINT16:
-                return MTLPixelFormatRGBA16Unorm;
+                return PixelFormatRGBA16Unorm;
             case ImageIo::FLOAT16:
-                return MTLPixelFormatRGBA16Float;
+                return PixelFormatRGBA16Float;
             case ImageIo::FLOAT32:
-                return MTLPixelFormatRGBA32Float;
+                return PixelFormatRGBA32Float;
             default:
-                return MTLPixelFormatInvalid;
+                return PixelFormatInvalid;
         }
         case ImageIo::BGRX:
-            return MTLPixelFormatBGRA8Unorm;
+            return PixelFormatBGRA8Unorm;
         case ImageIo::RGB:
             // NOTE: MTLPixelFormat doesn't have a standard RGB w/out Alpha.
             // We need to use a 4-component format and add an additional channel to the data.
             switch (dataType)
         {
             case ImageIo::UINT8:
-                return MTLPixelFormatRGBA8Unorm;
+                return PixelFormatRGBA8Unorm;
             case ImageIo::UINT16:
-                return MTLPixelFormatRGBA16Unorm;
+                return PixelFormatRGBA16Unorm;
             case ImageIo::FLOAT16:
-                return MTLPixelFormatRGBA16Float;
+                return PixelFormatRGBA16Float;
             case ImageIo::FLOAT32:
-                return MTLPixelFormatRGBA32Float;
+                return PixelFormatRGBA32Float;
             default:
-                return MTLPixelFormatInvalid;
+                return PixelFormatInvalid;
         }
         case ImageIo::BGR:
-            return MTLPixelFormatBGRA8Unorm;
+            return PixelFormatBGRA8Unorm;
         case ImageIo::Y:
             switch (dataType)
         {
             case ImageIo::UINT8:
-                return MTLPixelFormatR8Unorm;
+                return PixelFormatR8Unorm;
             case ImageIo::UINT16:
-                return MTLPixelFormatR16Unorm;
+                return PixelFormatR16Unorm;
             case ImageIo::FLOAT16:
-                return MTLPixelFormatR16Float;
+                return PixelFormatR16Float;
             case ImageIo::FLOAT32:
-                return MTLPixelFormatR32Float;
+                return PixelFormatR32Float;
             default:
-                return MTLPixelFormatInvalid;
+                return PixelFormatInvalid;
         }
         case ImageIo::YA:
             switch (dataType)
         {
             case ImageIo::UINT8:
-                return MTLPixelFormatRG8Unorm;
+                return PixelFormatRG8Unorm;
             case ImageIo::UINT16:
-                return MTLPixelFormatRG16Unorm;
+                return PixelFormatRG16Unorm;
             case ImageIo::FLOAT16:
-                return MTLPixelFormatRG16Float;
+                return PixelFormatRG16Float;
             case ImageIo::FLOAT32:
-                return MTLPixelFormatRG32Float;
+                return PixelFormatRG32Float;
             default:
-                return MTLPixelFormatInvalid;
+                return PixelFormatInvalid;
         }
         default:
-            CI_LOG_E("Don't know how to convert channel order " << channelOrder << " into MTLPixelFormat");
+            CI_LOG_E("Don't know how to convert channel order " << channelOrder << " into PixelFormat");
             assert(false);
     }
 }
 
-ImageIo::ChannelOrder ciChannelOrderFromMtlPixelFormat( MTLPixelFormat pixelFormat )
+ImageIo::ChannelOrder channelOrderFromPixelFormat( PixelFormat pixelFormat )
 {
     switch( pixelFormat )
     {
-        case MTLPixelFormatRGBA8Unorm:
-        case MTLPixelFormatRGBA16Unorm:
-        case MTLPixelFormatRGBA16Float:
-        case MTLPixelFormatRGBA32Float:
+        case PixelFormatRGBA8Unorm:
+        case PixelFormatRGBA16Unorm:
+        case PixelFormatRGBA16Float:
+        case PixelFormatRGBA32Float:
             return ImageIo::RGBA;
             break;
-        case MTLPixelFormatBGRA8Unorm:
+        case PixelFormatBGRA8Unorm:
             return ImageIo::BGRA;
             break;
-        case MTLPixelFormatR8Unorm:
-        case MTLPixelFormatR16Unorm:
-        case MTLPixelFormatR16Float:
-        case MTLPixelFormatR32Float:
+        case PixelFormatR8Unorm:
+        case PixelFormatR16Unorm:
+        case PixelFormatR16Float:
+        case PixelFormatR32Float:
             return ImageIo::Y;
             break;
-        case MTLPixelFormatRG8Unorm:
-        case MTLPixelFormatRG16Unorm:
-        case MTLPixelFormatRG16Float:
-        case MTLPixelFormatRG32Float:
+        case PixelFormatRG8Unorm:
+        case PixelFormatRG16Unorm:
+        case PixelFormatRG16Float:
+        case PixelFormatRG32Float:
             return ImageIo::YA;
             break;
         default:
@@ -182,36 +182,36 @@ ImageIo::ChannelOrder ciChannelOrderFromMtlPixelFormat( MTLPixelFormat pixelForm
     }
 }
 
-ImageIo::DataType ciDataTypeFromMtlPixelFormat( MTLPixelFormat pixelFormat )
+ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat )
 {
     switch( pixelFormat )
     {
-        case MTLPixelFormatRGBA8Unorm:
-        case MTLPixelFormatBGRA8Unorm:
-        case MTLPixelFormatR8Unorm:
-        case MTLPixelFormatRG8Unorm:
-        case MTLPixelFormatRGBA8Sint:
-        case MTLPixelFormatRGBA8Uint:
-        case MTLPixelFormatRGBA8Snorm:
-        case MTLPixelFormatRGBA8Unorm_sRGB:
+        case PixelFormatRGBA8Unorm:
+        case PixelFormatBGRA8Unorm:
+        case PixelFormatR8Unorm:
+        case PixelFormatRG8Unorm:
+        case PixelFormatRGBA8Sint:
+        case PixelFormatRGBA8Uint:
+        case PixelFormatRGBA8Snorm:
+        case PixelFormatRGBA8Unorm_sRGB:
             return ImageIo::UINT8;
             break;
-        case MTLPixelFormatRGBA16Unorm:
-        case MTLPixelFormatR16Unorm:
-        case MTLPixelFormatRG16Unorm:
-        case MTLPixelFormatRGBA16Sint:
-        case MTLPixelFormatRGBA16Uint:
-        case MTLPixelFormatRGBA16Snorm:
+        case PixelFormatRGBA16Unorm:
+        case PixelFormatR16Unorm:
+        case PixelFormatRG16Unorm:
+        case PixelFormatRGBA16Sint:
+        case PixelFormatRGBA16Uint:
+        case PixelFormatRGBA16Snorm:
             return ImageIo::UINT16;
             break;
-        case MTLPixelFormatRGBA16Float:
-        case MTLPixelFormatR16Float:
-        case MTLPixelFormatRG16Float:
+        case PixelFormatRGBA16Float:
+        case PixelFormatR16Float:
+        case PixelFormatRG16Float:
             return ImageIo::FLOAT16;
             break;
-        case MTLPixelFormatRGBA32Float:
-        case MTLPixelFormatR32Float:
-        case MTLPixelFormatRG32Float:
+        case PixelFormatRGBA32Float:
+        case PixelFormatR32Float:
+        case PixelFormatRG32Float:
             return ImageIo::FLOAT32;
             break;
         default:
@@ -223,25 +223,26 @@ ImageIo::DataType ciDataTypeFromMtlPixelFormat( MTLPixelFormat pixelFormat )
 
 
 ImageSourceTextureBuffer::ImageSourceTextureBuffer( TextureBuffer & texture )
-: ImageSourceMTLTexture( ( __bridge id <MTLTexture> )texture.getNative() )
+: ImageSourceMTLTexture( texture.getNative() )
 {
     setChannelOrder( texture.mChannelOrder );
     setColorModel( texture.mColorModel );
     setDataType( texture.mDataType );
 }
         
-ImageSourceMTLTexture::ImageSourceMTLTexture( id <MTLTexture> texture )
+ImageSourceMTLTexture::ImageSourceMTLTexture( void *texture )
 : ImageSource()
 ,mTexture(texture)
 {
-    mWidth = (int)texture.width;
-    mHeight = (int)texture.height;
+    assert( [(__bridge id)mTexture conformsToProtocol:@protocol(MTLTexture)] );
+    mWidth = (int)((__bridge id <MTLTexture>)mTexture).width;
+    mHeight = (int)((__bridge id <MTLTexture>)mTexture).height;
 
-    MTLPixelFormat pxFormat = texture.pixelFormat;
-    ImageIo::ChannelOrder chanOrder = ciChannelOrderFromMtlPixelFormat(pxFormat);
+    MTLPixelFormat pxFormat = ((__bridge id <MTLTexture>)mTexture).pixelFormat;
+    ImageIo::ChannelOrder chanOrder = channelOrderFromPixelFormat((PixelFormat)pxFormat);
     setChannelOrder( chanOrder );
     setColorModel( ImageIo::CM_RGB );
-    ImageIo::DataType dataType = ciDataTypeFromMtlPixelFormat(pxFormat);
+    ImageIo::DataType dataType = dataTypeFromPixelFormat((PixelFormat)pxFormat);
     setDataType( dataType );
 
     int dataSize = dataSizeForType(mDataType);
@@ -252,12 +253,13 @@ void ImageSourceMTLTexture::getPixelData()
 {
     mData = unique_ptr<uint8_t[]>( new uint8_t[mRowBytes * mHeight] );
 
-    [mTexture getBytes:mData.get()
-           bytesPerRow:mRowBytes
-         bytesPerImage:mRowBytes * mTexture.height
-            fromRegion:MTLRegionMake2D(0, 0, mTexture.width, mTexture.height)
-           mipmapLevel:0
-                 slice:0];
+    id <MTLTexture> texture = ((__bridge id <MTLTexture>)mTexture);
+    [texture getBytes:mData.get()
+          bytesPerRow:mRowBytes
+        bytesPerImage:mRowBytes * texture.height
+           fromRegion:MTLRegionMake2D(0, 0, texture.width, texture.height)
+          mipmapLevel:0
+                slice:0];
 }
 
 void ImageSourceMTLTexture::load( ImageTargetRef target )

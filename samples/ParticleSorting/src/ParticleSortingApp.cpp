@@ -36,9 +36,9 @@ public:
     void mouseDown( MouseEvent event ) override;
     void mouseDrag( MouseEvent event ) override;
 
-    void calculateDepths();
     void bitonicSort( bool shouldLogOutput );
     void logComputeOutput( const myUniforms_t uniforms );
+    void calculateDepths( mtl::ScopedCommandBuffer & commandBuffer );
     
     mtl::DepthStateRef mDepthEnabled;
     
@@ -169,9 +169,6 @@ void ParticleSortingApp::update()
     mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
     mConstantsOffset = mtlConstantSizeOf(myUniforms_t) * mConstantDataBufferIndex;
     
-    // Calculate the particle depths once before sorting
-    calculateDepths();
-    
     bitonicSort( false );
 }
 
@@ -197,9 +194,8 @@ void ParticleSortingApp::logComputeOutput( const myUniforms_t uniforms )
     }
 }
 
-void ParticleSortingApp::calculateDepths()
+void ParticleSortingApp::calculateDepths( mtl::ScopedCommandBuffer & commandBuffer )
 {
-    mtl::ScopedCommandBuffer commandBuffer(false, "Sort command buffer");
     mtl::ScopedComputeEncoder computeEncoder = commandBuffer.scopedComputeEncoder();
     
     computeEncoder.setPipelineState(mPipelineCalculateDepths);
@@ -213,62 +209,63 @@ void ParticleSortingApp::calculateDepths()
 
 void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
 {
-    int passNum = 0;
-    {
-        uint arraySize = mUniforms.numParticles;
-        int numStages = 0;
-        
-        // Calculate the number of stages
-        for ( uint temp = arraySize; temp > 2; temp >>= 1 )
-        {
-            numStages++;
-        }
-        
-        mtl::ScopedCommandBuffer commandBuffer;
-        
-        // NOTE:
-        // If we log out the results while the command buffer is still running, the values might
-        // have already changed. This can be fixed by logging out in the completion handler.
-        if ( shouldLogOutput )
-        {
-            myUniforms_t uniformsCopy = mUniforms;
-            commandBuffer.addCompletionHandler([&]( void * mtlCommandBuffer )
-            {
-                logComputeOutput(uniformsCopy);
-            });
-        }
-        
-        mtl::ScopedComputeEncoder computeEncoder = commandBuffer.scopedComputeEncoder();
-        
-        for ( int stage = 0; stage < numStages; stage++ )
-        {
-            for ( int passOfStage = stage; passOfStage >= 0; passOfStage-- )
-            {
-                sortState_t sortState;
-                sortState.stage = stage;
-                sortState.pass = passOfStage;
-                sortState.passNum = passNum;
-                sortState.direction = 1; // ascending
-                mSortStateBuffer->setDataAtIndex(&sortState, passNum);
-                
-                computeEncoder.setPipelineState(mPipelineBitonicSort);
-                
-                computeEncoder.setBufferAtIndex(mParticleIndices, 1);
-                computeEncoder.setBufferAtIndex(mParticleDepths, 2);
-                computeEncoder.setBufferAtIndex(mSortStateBuffer, 3,
-                                                   mtlConstantSizeOf(sortState_t) * passNum);
+    mtl::ScopedCommandBuffer commandBuffer;
 
-                computeEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
-                
-                size_t gsz = arraySize / (2*4);
-                // NOTE: work size is not 1-per vector.
-                // Its the number of quad items in input array
-                size_t globalWorkSize = passOfStage ? gsz : gsz << 1;
-                
-                computeEncoder.dispatch(ivec3(globalWorkSize, 1, 1), ivec3(32,1,1));
-                assert( passNum < kNumSortStateBuffers );
-                passNum++;
-            }
+    // Calculate the particle depths once before sorting
+    calculateDepths( commandBuffer );
+
+    int passNum = 0;
+    uint arraySize = mUniforms.numParticles;
+    int numStages = 0;
+    
+    // Calculate the number of stages
+    for ( uint temp = arraySize; temp > 2; temp >>= 1 )
+    {
+        numStages++;
+    }
+    
+    // NOTE:
+    // If we log out the results while the command buffer is still running, the values might
+    // have already changed. This can be fixed by logging out in the completion handler.
+    if ( shouldLogOutput )
+    {
+        myUniforms_t uniformsCopy = mUniforms;
+        commandBuffer.addCompletionHandler([&]( void * mtlCommandBuffer )
+        {
+            logComputeOutput(uniformsCopy);
+        });
+    }
+    
+    mtl::ScopedComputeEncoder computeEncoder = commandBuffer.scopedComputeEncoder();
+    
+    for ( int stage = 0; stage < numStages; stage++ )
+    {
+        for ( int passOfStage = stage; passOfStage >= 0; passOfStage-- )
+        {
+            sortState_t sortState;
+            sortState.stage = stage;
+            sortState.pass = passOfStage;
+            sortState.passNum = passNum;
+            sortState.direction = 1; // ascending
+            mSortStateBuffer->setDataAtIndex(&sortState, passNum);
+            
+            computeEncoder.setPipelineState(mPipelineBitonicSort);
+            
+            computeEncoder.setBufferAtIndex(mParticleIndices, 1);
+            computeEncoder.setBufferAtIndex(mParticleDepths, 2);
+            computeEncoder.setBufferAtIndex(mSortStateBuffer, 3,
+                                               mtlConstantSizeOf(sortState_t) * passNum);
+
+            computeEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+            
+            size_t gsz = arraySize / (2*4);
+            // NOTE: work size is not 1-per vector.
+            // Its the number of quad items in input array
+            size_t globalWorkSize = passOfStage ? gsz : gsz << 1;
+            
+            computeEncoder.dispatch(ivec3(globalWorkSize, 1, 1), ivec3(32,1,1));
+            assert( passNum < kNumSortStateBuffers );
+            passNum++;
         }
     }
 }
@@ -284,7 +281,6 @@ void ParticleSortingApp::draw()
     // Enable depth
     renderEncoder.setDepthStencilState(mDepthEnabled);
 
-    // Draw particles
     renderEncoder.pushDebugGroup("Draw Particles");
     
     // Set the program

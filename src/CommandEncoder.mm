@@ -35,6 +35,11 @@ CommandEncoder::~CommandEncoder()
     }
 }
 
+void CommandEncoder::insertDebugSignpost( const std::string & name )
+{
+    [IMPL insertDebugSignpost:[NSString stringWithUTF8String:name.c_str()]];
+}
+
 void CommandEncoder::pushDebugGroup( const std::string & groupName )
 {
     [IMPL pushDebugGroup:[NSString stringWithUTF8String:groupName.c_str()]];

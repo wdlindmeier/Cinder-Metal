@@ -9,33 +9,28 @@
 #pragma once
 
 #include "cinder/Cinder.h"
-
-using namespace std;
-using namespace cinder;
-using namespace cinder::mtl;
+#include "MetalEnums.h"
 
 namespace cinder { namespace mtl {
-
     
 extern int dataSizeForType( ImageIo::DataType dataType );
 
-extern uint8_t* createFourChannelFromThreeChannel(ivec2 imageSize,
-                                                  ImageIo::DataType dataType,
-                                                  const uint8_t* rgbData );
+extern uint8_t* createFourChannelFromThreeChannel( ivec2 imageSize,
+                                                   ImageIo::DataType dataType,
+                                                   const uint8_t* rgbData );
 
-extern MTLPixelFormat mtlPixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
-                                                      ImageIo::DataType dataType );
+extern PixelFormat pixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrder,
+                                                ImageIo::DataType dataType );
 
-extern ImageIo::ChannelOrder ciChannelOrderFromMtlPixelFormat( MTLPixelFormat pixelFormat );
+extern ImageIo::ChannelOrder channelOrderFromPixelFormat( PixelFormat pixelFormat );
 
-extern ImageIo::DataType ciDataTypeFromMtlPixelFormat( MTLPixelFormat pixelFormat );
-
+extern ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat );
     
 class ImageSourceMTLTexture : public ImageSource
 {    
 public:
     
-    ImageSourceMTLTexture( id <MTLTexture> texture );
+    ImageSourceMTLTexture( void * texture ); // <MTLTexture>
     void load( ImageTargetRef target );
     
 protected:
@@ -44,7 +39,8 @@ protected:
     
     std::unique_ptr<uint8_t[]>	mData;
     int32_t						mRowBytes;
-    id <MTLTexture>             mTexture;
+    //id <MTLTexture>             mTexture;
+    void *                      mTexture; // <MTLTexture>
 };
     
     

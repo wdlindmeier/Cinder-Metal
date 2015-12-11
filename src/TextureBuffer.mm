@@ -11,6 +11,7 @@
 #include "cinder/Log.h"
 #include "cinder/cocoa/CinderCocoa.h"
 #include "ImageHelpers.h"
+#include "Scope.h"
 
 using namespace std;
 using namespace cinder;
@@ -33,7 +34,7 @@ mFormat(format)
     
     if ( pxFormat == MTLPixelFormatInvalid )
     {
-        pxFormat = mtlPixelFormatFromChannelOrder(mChannelOrder, mDataType);
+        pxFormat = (MTLPixelFormat)pixelFormatFromChannelOrder(mChannelOrder, mDataType);
         mFormat.setPixelFormat((PixelFormat)pxFormat);
     }
     

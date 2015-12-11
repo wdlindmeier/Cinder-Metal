@@ -47,7 +47,7 @@ Surface8u RendererMetal::copyWindowSurface( const Area &area, int32_t windowHeig
     // NOTE: The metal layer framebufferOnly must be false.
     // This can be set in the Renderer Options.
     assert( ![RendererMetalImpl sharedRenderer].metalLayer.framebufferOnly );
-    ImageSourceRef drawableImage( new ImageSourceMTLTexture( drawable.texture ) );
+    ImageSourceRef drawableImage( new ImageSourceMTLTexture( (__bridge void *)drawable.texture ) );
     Surface8u windowContents( drawableImage );
     if ( windowContents.getBounds() != area )
     {

@@ -28,6 +28,7 @@ namespace cinder { namespace mtl {
         
         virtual void pushDebugGroup( const std::string & groupName );
         virtual void popDebugGroup();
+        virtual void insertDebugSignpost( const std::string & name );
         virtual void setTexture( const TextureBufferRef & texture, size_t index = ciTextureIndex0 ) = 0;
         virtual void setUniforms( const DataBufferRef & buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms ) = 0;
         virtual void endEncoding();

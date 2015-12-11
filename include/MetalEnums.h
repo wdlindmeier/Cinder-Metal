@@ -393,4 +393,12 @@ namespace cinder { namespace mtl {
         TextureUsagePixelFormatView = 0x0010,
     } TextureUsage;
     
+    typedef enum
+    {
+        BlitOptionNone                       = 0,
+        BlitOptionDepthFromDepthStencil      = 1 << 0,
+        BlitOptionStencilFromDepthStencil    = 1 << 1,
+        BlitOptionRowLinearPVRTC = 1 << 2
+    } BlitOption;
+
 }}
