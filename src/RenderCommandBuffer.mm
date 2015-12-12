@@ -6,7 +6,7 @@
 //
 //
 
-#include "RenderBuffer.h"
+#include "RenderCommandBuffer.h"
 #include "RendererMetalImpl.h"
 #include "ImageHelpers.h"
 
@@ -17,7 +17,7 @@ using namespace ci::mtl;
 #define IMPL ((__bridge id <MTLCommandBuffer>)mImpl)
 #define DRAWABLE ((__bridge id <CAMetalDrawable>)mDrawable)
 
-RenderBuffer::RenderBuffer( const std::string & bufferName )
+RenderCommandBuffer::RenderCommandBuffer( const std::string & bufferName )
 :
 CommandBuffer( bufferName )
 {
@@ -28,13 +28,13 @@ CommandBuffer( bufferName )
     assert( [(__bridge id)mDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
 }
 
-RenderEncoderRef RenderBuffer::createRenderEncoder( const RenderPassDescriptorRef & descriptor,
+RenderEncoderRef RenderCommandBuffer::createRenderEncoder( const RenderPassDescriptorRef & descriptor,
                                                     const std::string & encoderName )
 {
     return CommandBuffer::createRenderEncoder(descriptor, (__bridge void *)DRAWABLE.texture);
 }
 
-void RenderBuffer::commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler )
+void RenderCommandBuffer::commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler )
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
     renderer.currentDrawable = DRAWABLE;

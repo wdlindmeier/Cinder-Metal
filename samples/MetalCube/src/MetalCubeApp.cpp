@@ -163,7 +163,7 @@ void MetalCubeApp::update()
 
 void MetalCubeApp::draw()
 {    
-    mtl::ScopedRenderBuffer renderBuffer;
+    mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
     // Enable depth

@@ -14,7 +14,7 @@
 
 namespace cinder { namespace mtl {
     
-    typedef std::shared_ptr<class RenderBuffer> RenderBufferRef;
+    typedef std::shared_ptr<class RenderCommandBuffer> RenderCommandBufferRef;
     
     // NOTE: a RenderBuffer is just a CommandBuffer that
     // stores a reference to the device's "nextDrawable" and
@@ -22,19 +22,19 @@ namespace cinder { namespace mtl {
     // It also synchronizes it's execution with the
     // shared inflight semaphore.
     
-    class RenderBuffer : public CommandBuffer
+    class RenderCommandBuffer : public CommandBuffer
     {
         
     public:
         
         static RenderBufferRef create( const std::string & bufferName )
         {
-            return RenderBufferRef( new RenderBuffer( bufferName ) );
+            return RenderBufferRef( new RenderCommandBuffer( bufferName ) );
         }
         
         void commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
                 
-        // Creates a render coder for the main draw loop using the next "drawable".
+        // Creates a render encoder for the main draw loop using the next "drawable".
         RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & renderDescriptor,
                                               const std::string & encoderName = "Default Render Encoder" );
         
@@ -43,7 +43,7 @@ namespace cinder { namespace mtl {
     protected:
         
         //RenderBuffer( void * mtlCommandBuffer, void *mtlDrawable );
-        RenderBuffer( const std::string & bufferName );
+        RenderCommandBuffer( const std::string & bufferName );
         void * mDrawable; // <CAMetalDrawable>
     };
     

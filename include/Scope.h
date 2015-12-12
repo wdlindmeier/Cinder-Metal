@@ -11,13 +11,13 @@
 #include "cinder/Cinder.h"
 #include "cinder/Noncopyable.h"
 #include "CommandBuffer.h"
-#include "RenderBuffer.h"
+#include "RenderCommandBuffer.h"
 
 namespace cinder { namespace mtl {
 
     class ScopedRenderEncoder : public RenderEncoder
     {
-        friend class ScopedRenderBuffer;
+        friend class ScopedRenderCommandBuffer;
     public:
         ~ScopedRenderEncoder();
     private:
@@ -61,12 +61,12 @@ namespace cinder { namespace mtl {
         std::function< void( void * mtlCommandBuffer) > mCompletionHandler;
     };
     
-    class ScopedRenderBuffer : public RenderBuffer
+    class ScopedRenderCommandBuffer : public RenderCommandBuffer
     {
     public:
-        ScopedRenderBuffer( bool waitUntilCompleted = false,
-                            const std::string & bufferName = "Scoped Render Buffer" );
-        ~ScopedRenderBuffer();
+        ScopedRenderCommandBuffer( bool waitUntilCompleted = false,
+                                   const std::string & bufferName = "Scoped Render Buffer" );
+        ~ScopedRenderCommandBuffer();
         
         void addCompletionHandler( std::function< void( void * mtlCommandBuffer) > handler ){
             mCompletionHandler = handler;

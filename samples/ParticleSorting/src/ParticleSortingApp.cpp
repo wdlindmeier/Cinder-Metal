@@ -272,7 +272,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
 
 void ParticleSortingApp::draw()
 {
-    mtl::ScopedRenderBuffer renderBuffer; 
+    mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
     // Set uniforms

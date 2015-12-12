@@ -70,21 +70,21 @@ ScopedCommandBuffer::~ScopedCommandBuffer()
     }
 };
 
-ScopedRenderBuffer::ScopedRenderBuffer( bool waitUntilCompleted, const std::string & bufferName )
+ScopedRenderCommandBuffer::ScopedRenderCommandBuffer( bool waitUntilCompleted, const std::string & bufferName )
 :
-RenderBuffer(bufferName)
+RenderCommandBuffer(bufferName)
 ,mWaitUntilCompleted(waitUntilCompleted)
 ,mCompletionHandler(NULL)
 {};
 
-ScopedRenderEncoder ScopedRenderBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
-                                                             const std::string & bufferName )
+ScopedRenderEncoder ScopedRenderCommandBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+                                                                    const std::string & bufferName )
 {
     RenderEncoderRef renderEncoder = createRenderEncoder(descriptor, bufferName);
     return ScopedRenderEncoder(renderEncoder->getNative());
 }
 
-ScopedRenderBuffer::~ScopedRenderBuffer()
+ScopedRenderCommandBuffer::~ScopedRenderCommandBuffer()
 {
     commitAndPresent( mCompletionHandler );
     if ( mWaitUntilCompleted )
