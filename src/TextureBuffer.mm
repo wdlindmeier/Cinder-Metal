@@ -21,6 +21,47 @@ using namespace cinder::mtl;
 
 #pragma mark - Constructors
 
+TextureBuffer::TextureBuffer( uint width, uint height, Format format ) :
+mFormat(format)
+{
+    PixelFormat pxFormat = format.getPixelFormat();
+    
+    MTLTextureDescriptor *desc = [[MTLTextureDescriptor alloc] init];
+    desc.textureType = (MTLTextureType)mFormat.getTextureType();
+    desc.pixelFormat = (MTLPixelFormat)pxFormat;
+    desc.width = width;
+    desc.height = height;
+    desc.depth = mFormat.getDepth();
+    desc.arrayLength = mFormat.getArrayLength();
+    desc.usage = mFormat.getUsage();
+    desc.mipmapLevelCount = mFormat.getMipmapLevel();
+    desc.sampleCount = mFormat.getSampleCount();
+    
+    mChannelOrder = channelOrderFromPixelFormat(pxFormat);
+    mDataType = dataTypeFromPixelFormat(pxFormat);
+    mColorModel = colorModelFromPixelFormat(pxFormat);
+    mBytesPerRow = dataSizeForType( mDataType ) * width;
+
+    mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device
+                                       newTextureWithDescriptor:desc];
+}
+
+TextureBuffer::TextureBuffer( void * mtlTexture ) :
+mImpl(mtlTexture)
+{
+    assert( mtlTexture != NULL );
+    assert( [(__bridge id)mtlTexture conformsToProtocol:@protocol(MTLTexture)] );
+    CFRetain(mImpl);
+    
+    PixelFormat pxFormat = (PixelFormat)[IMPL pixelFormat];
+    mChannelOrder = channelOrderFromPixelFormat(pxFormat);
+    mDataType = dataTypeFromPixelFormat(pxFormat);
+    mColorModel = colorModelFromPixelFormat(pxFormat);
+    mBytesPerRow = dataSizeForType( mDataType ) * [IMPL width];
+    
+    mFormat = Format().pixelFormat(pxFormat);
+}
+
 TextureBuffer::TextureBuffer( const ImageSourceRef & imageSource, Format format ) :
 mFormat(format)
 {
@@ -88,7 +129,6 @@ ImageSourceRef TextureBuffer::createSource()
 
 void TextureBuffer::getPixelData( void *pixelBytes )
 {
-     // TODO: Account for cubes and arrays
     [IMPL getBytes:pixelBytes
        bytesPerRow:mBytesPerRow
      bytesPerImage:mBytesPerRow * getHeight()
@@ -162,7 +202,7 @@ void TextureBuffer::generateMipmap()
     [commandBuffer commit];
 }
 
-void TextureBuffer::setPixelData( void *pixelBytes )
+void TextureBuffer::setPixelData( const void *pixelBytes )
 {
     ivec2 size = getSize();
     assert( size.x > 0 );
@@ -218,11 +258,49 @@ bool TextureBuffer::getFramebufferOnly()
     return [IMPL isFramebufferOnly];
 }
 
-int TextureBuffer::getUsage() // AKA MTLTextureUsage
+TextureUsage TextureBuffer::getUsage() // AKA MTLTextureUsage
 {
-    return (int)[IMPL usage];
+    return (TextureUsage)[IMPL usage];
 }
 
 // Not implemented
 // rootResource
+
+static inline MTLRegion mtlRegion( const glm::ivec3 regionOrigin, const glm::ivec3 regionSize )
+{
+    return MTLRegionMake3D( regionOrigin.x, regionOrigin.y, regionOrigin.z,
+                            regionSize.x, regionSize.y, regionSize.z );
+}
+
+void TextureBuffer::getBytes( void * pixelBytes, const ivec3 regionOrigin, const ivec3 regionSize,
+                              uint bytesPerRow, uint bytesPerImage, uint mipmapLevel, uint slice )
+{
+    [IMPL getBytes:pixelBytes
+       bytesPerRow:bytesPerRow
+     bytesPerImage:bytesPerImage
+        fromRegion:mtlRegion(regionOrigin, regionSize)
+       mipmapLevel:mipmapLevel
+             slice:slice];
+}
+
+void TextureBuffer::replaceRegion(const ivec3 regionOrigin, const ivec3 regionSize, const void * newBytes, uint bytesPerRow, uint bytesPerImage, uint mipmapLevel, uint slice)
+{
+    [IMPL replaceRegion:mtlRegion(regionOrigin, regionSize)
+            mipmapLevel:mipmapLevel
+                  slice:slice
+              withBytes:newBytes
+            bytesPerRow:bytesPerRow
+          bytesPerImage:bytesPerImage];
+}
+
+TextureBufferRef TextureBuffer::newTexture( PixelFormat pixelFormat, TextureType type,
+                                            uint levelOffset, uint levelLength, uint sliceOffset,
+                                            uint sliceLength )
+{
+    id <MTLTexture> newTex = [IMPL newTextureViewWithPixelFormat:(MTLPixelFormat)pixelFormat
+                                                     textureType:(MTLTextureType)type
+                                                          levels:NSMakeRange(levelOffset, levelLength)
+                                                          slices:NSMakeRange(sliceOffset, sliceLength)];
+    return TextureBufferRef( new TextureBuffer( (__bridge void *)newTex) );
+}
 

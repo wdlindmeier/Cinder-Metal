@@ -9,6 +9,7 @@
 #pragma once
 
 #include <simd/simd.h>
+//#import <Metal/MTLTypes.h>
 #include "glm/glm.hpp"
 
 #define FORMAT_OPTION(NAME, CAP_NAME, TYPE) \

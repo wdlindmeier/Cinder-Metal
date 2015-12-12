@@ -24,13 +24,15 @@ extern PixelFormat pixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrd
 
 extern ImageIo::ChannelOrder channelOrderFromPixelFormat( PixelFormat pixelFormat );
 
+extern ImageIo::ColorModel colorModelFromPixelFormat( PixelFormat pixelFormat );
+    
 extern ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat );
     
 class ImageSourceMTLTexture : public ImageSource
 {    
 public:
     
-    ImageSourceMTLTexture( void * texture ); // <MTLTexture>
+    ImageSourceMTLTexture( void * mtlTexture ); // <MTLTexture>
     void load( ImageTargetRef target );
     
 protected:
@@ -39,7 +41,6 @@ protected:
     
     std::unique_ptr<uint8_t[]>	mData;
     int32_t						mRowBytes;
-    //id <MTLTexture>             mTexture;
     void *                      mTexture; // <MTLTexture>
 };
     

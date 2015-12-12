@@ -182,6 +182,29 @@ ImageIo::ChannelOrder channelOrderFromPixelFormat( PixelFormat pixelFormat )
     }
 }
 
+ImageIo::ColorModel colorModelFromPixelFormat( PixelFormat pixelFormat )
+{
+    switch( pixelFormat )
+    {
+        case PixelFormatRGBA8Unorm:
+        case PixelFormatRGBA16Unorm:
+        case PixelFormatRGBA16Float:
+        case PixelFormatRGBA32Float:
+        case PixelFormatBGRA8Unorm:
+            return ImageIo::CM_RGB;
+            break;
+        case PixelFormatR8Unorm:
+        case PixelFormatR16Unorm:
+        case PixelFormatR16Float:
+        case PixelFormatR32Float:
+            return ImageIo::CM_GRAY;
+            break;
+        default:
+            CI_LOG_E("Don't know how to convert pixel format " << pixelFormat << " into ImageIo::ColorModel");
+            return ImageIo::CM_UNKNOWN;
+    }
+}
+
 ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat )
 {
     switch( pixelFormat )

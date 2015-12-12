@@ -49,16 +49,22 @@ namespace cinder { namespace mtl {
         
         static TextureBufferRef create( const ImageSourceRef & imageSource, const Format & format = Format() )
         {
-            return TextureBufferRef( new TextureBuffer(imageSource, format) );
+            return TextureBufferRef( new TextureBuffer( imageSource, format ) );
+        }
+
+        static TextureBufferRef create( uint width, uint height, const Format & format = Format() )
+        {
+            return TextureBufferRef( new TextureBuffer( width, height, format ) );
         }
 
         virtual ~TextureBuffer();
 
         void update( const ImageSourceRef & imageSource );
-        void setPixelData( void *pixelBytes );
         
-        // Getting Data
+        // Getting & Setting Data for 2D images
+        void setPixelData( const void *pixelBytes );
         void getPixelData( void *pixelBytes );
+        
         ci::ImageSourceRef createSource();
 
         // Accessors
@@ -71,13 +77,24 @@ namespace cinder { namespace mtl {
         long        getSampleCount();
         long        getArrayLength();
         bool        getFramebufferOnly();
-        int         getUsage(); // <MTLTextureUsage>
+        TextureUsage getUsage(); // <MTLTextureUsage>
+        
+        void getBytes( void * pixelBytes, const ivec3 regionOrigin, const ivec3 regionSize,
+                      uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0);
+        
+        void replaceRegion( const ivec3 regionOrigin, const ivec3 regionSize, const void * newBytes,
+                           uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0 );
+        
+        TextureBufferRef newTexture( PixelFormat pixelFormat, TextureType type, uint levelOffset = 0,
+                                    uint levelLength = 1, uint sliceOffset = 0, uint sliceLength = 1 );
         
         void *      getNative(){ return mImpl; };
 
     protected:
 
         TextureBuffer( const ImageSourceRef & imageSource, Format format );
+        TextureBuffer( uint width, uint height, Format format );
+        TextureBuffer( void * mtlTexture );
 
         void updateWidthCGImage( void * );
         void generateMipmap();
