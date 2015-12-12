@@ -18,11 +18,14 @@ namespace cinder { namespace mtl {
     
     class BlitEncoder
     {
-        
-        friend class CommandBuffer;
-        
+
     public:
 
+        // NOTE:
+        // Generally BlitEncoders should be created via the CommandBuffer
+        // using CommandBuffer::createBlitEncoder.
+        static BlitEncoderRef create( void * mtlBlitCommandEncoder );
+        
         virtual ~BlitEncoder();
         
         void * getNative(){ return mImpl; }
@@ -46,8 +49,6 @@ namespace cinder { namespace mtl {
         void copyFromBufferToBuffer( DataBufferRef & sourceBuffer, uint sourceOffset, DataBufferRef & destBuffer, uint destOffset, uint length);
 
     protected:
-        
-        static BlitEncoderRef create( void * mtlBlitCommandEncoder );
         
         BlitEncoder( void * mtlBlitCommandEncoder );
         

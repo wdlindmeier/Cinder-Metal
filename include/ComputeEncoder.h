@@ -19,10 +19,13 @@ namespace cinder { namespace mtl {
     class ComputeEncoder : public CommandEncoder
     {
      
-        friend class CommandBuffer;
-        
     public:
 
+        // NOTE:
+        // Generally ComputeEncoders should be created via the CommandBuffer
+        // using CommandBuffer::createComputeEncoder.
+        static ComputeEncoderRef create( void * mtlComputeCommandEncoder );
+        
         virtual ~ComputeEncoder(){};
         
         virtual void setPipelineState( const ComputePipelineStateRef & pipeline );
@@ -35,8 +38,6 @@ namespace cinder { namespace mtl {
         void dispatch( ivec3 dataDimensions, ivec3 threadDimensions = ivec3(8,8,1) );
         
     protected:
-        
-        static ComputeEncoderRef create( void * mtlComputeCommandEncoder );
         
         ComputeEncoder( void * mtlComputeCommandEncoder );
 

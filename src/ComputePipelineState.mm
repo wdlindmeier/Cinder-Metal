@@ -14,9 +14,12 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-ComputePipelineStateRef ComputePipelineState::create( const std::string & computeShaderName )
+ComputePipelineState::ComputePipelineState( void * mtlComputePipelineState ) :
+mImpl(mtlComputePipelineState)
 {
-    return ComputePipelineStateRef( new ComputePipelineState( computeShaderName ) );
+    assert( mtlComputePipelineState != NULL );
+    assert( [(__bridge id)mtlComputePipelineState conformsToProtocol:@protocol(MTLComputePipelineState)] );
+    CFRetain(mImpl);
 }
 
 ComputePipelineState::ComputePipelineState( const std::string & computeShaderName ) :

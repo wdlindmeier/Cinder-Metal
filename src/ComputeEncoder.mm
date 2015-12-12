@@ -26,6 +26,7 @@ ComputeEncoder::ComputeEncoder( void * mtlComputeCommandEncoder )
 :
 CommandEncoder::CommandEncoder(mtlComputeCommandEncoder)
 {
+    assert( mtlComputeCommandEncoder != NULL );
     assert([(__bridge id)mtlComputeCommandEncoder conformsToProtocol:@protocol(MTLComputeCommandEncoder)]);
 }
 

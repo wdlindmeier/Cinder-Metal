@@ -21,7 +21,17 @@ CommandBuffer::CommandBuffer( const std::string & bufferName )
     // instantiate a command buffer
     id <MTLCommandBuffer> commandBuffer = [renderer.commandQueue commandBuffer];
     commandBuffer.label = [NSString stringWithUTF8String:bufferName.c_str()];
-    mImpl = (__bridge void *)commandBuffer;
+    init((__bridge void *)commandBuffer);
+}
+
+CommandBuffer::CommandBuffer( void * mtlCommandBuffer )
+{
+    init(mtlCommandBuffer);
+}
+
+void CommandBuffer::init( void * mtlCommandBuffer )
+{
+    mImpl = mtlCommandBuffer;
     assert( mImpl != NULL );
     assert( [(__bridge id)mImpl conformsToProtocol:@protocol(MTLCommandBuffer)] );
     CFRetain(mImpl);

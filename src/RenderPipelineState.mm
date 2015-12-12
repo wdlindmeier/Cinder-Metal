@@ -14,13 +14,6 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-RenderPipelineStateRef RenderPipelineState::create(const std::string & vertShaderName,
-                                                   const std::string & fragShaderName,
-                                                   const Format & format )
-{
-    return RenderPipelineStateRef( new RenderPipelineState(vertShaderName, fragShaderName, format) );
-}
-
 RenderPipelineState::RenderPipelineState(const std::string & vertShaderName,
                              const std::string & fragShaderName,
                              Format format ) :
@@ -64,6 +57,14 @@ mFormat(format)
     {
         NSLog(@"Failed to created pipeline state, error %@", error);
     }
+}
+
+RenderPipelineState::RenderPipelineState( void * mtlRenderPipelineStateRef ) :
+mImpl( mtlRenderPipelineStateRef )
+{
+    assert(mImpl != NULL);
+    assert([(__bridge id)mImpl conformsToProtocol:@protocol(MTLRenderPipelineState)]);
+    CFRetain(mImpl);
 }
 
 RenderPipelineState::~RenderPipelineState()

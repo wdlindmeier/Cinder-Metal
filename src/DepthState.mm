@@ -30,6 +30,14 @@ DepthState::DepthState( Format format )
                                        newDepthStencilStateWithDescriptor:depthStateDesc];
 }
 
+DepthState::DepthState( void *mtlDepthStencilState ) :
+mImpl(mtlDepthStencilState)
+{
+    assert(mImpl != NULL);
+    assert([(__bridge id)mImpl conformsToProtocol:@protocol(MTLDepthStencilState)]);
+    CFRetain(mImpl);
+}
+
 DepthState::~DepthState()
 {
     if ( mImpl )

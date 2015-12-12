@@ -35,6 +35,14 @@ SamplerState::SamplerState( Format format )
                                        newSamplerStateWithDescriptor:samplerDescriptor];
 }
 
+SamplerState::SamplerState( void * mtlSamplerState ) :
+mImpl(mtlSamplerState)
+{
+    assert(mImpl != NULL);
+    assert([(__bridge id)mImpl conformsToProtocol:@protocol(MTLSamplerState)]);
+    CFRetain(mImpl);
+}
+
 SamplerState::~SamplerState()
 {
     if ( mImpl )

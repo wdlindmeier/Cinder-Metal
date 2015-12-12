@@ -29,10 +29,12 @@ namespace cinder { namespace mtl {
     class RenderEncoder : public CommandEncoder
     {
 
-        friend class CommandBuffer;
-        friend class RenderCommandBuffer;
-        
     public:
+        
+        // NOTE:
+        // Generally RenderEncoders should be created via the RenderCommandBuffer or CommandBuffer
+        // using RenderCommandBuffer::createRenderEncoder.
+        static RenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>
         
         virtual ~RenderEncoder(){};
         
@@ -72,10 +74,9 @@ namespace cinder { namespace mtl {
 #if !defined( CINDER_COCOA_TOUCH )
         void textureBarrier();
 #endif
+        
     protected:
 
-        static RenderEncoderRef create( void * mtlRenderCommandEncoder ); // <MTLRenderCommandEncoder>
-        
         RenderEncoder( void * mtlRenderCommandEncoder );
 
     };

@@ -43,7 +43,16 @@ namespace cinder { namespace mtl {
             FORMAT_OPTION(depthStoreAction, DepthStoreAction, StoreAction)
         };
         
-        static RenderPassDescriptorRef create( const Format & format = Format() );
+        static RenderPassDescriptorRef create( const Format & format = Format() )
+        {
+            return RenderPassDescriptorRef( new RenderPassDescriptor( format ) );
+        }
+        
+        static RenderPassDescriptorRef create( void * mtlRenderPassDescriptor )
+        {
+            return RenderPassDescriptorRef( new RenderPassDescriptor( mtlRenderPassDescriptor ) );
+        }
+
         ~RenderPassDescriptor();
         
         void * getNative(){ return mImpl; };
@@ -51,6 +60,7 @@ namespace cinder { namespace mtl {
     protected:
 
         RenderPassDescriptor( Format format );
+        RenderPassDescriptor( void * mtlRenderPassDescriptor );
         
         void applyToDrawableTexture( void * texture, int colorAttachmentIndex = 0 ); // <MTLTexture>
         

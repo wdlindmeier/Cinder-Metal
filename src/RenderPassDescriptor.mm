@@ -14,11 +14,6 @@
 using namespace ci;
 using namespace ci::mtl;
 
-RenderPassDescriptorRef RenderPassDescriptor::create( const Format & format )
-{
-    return RenderPassDescriptorRef( new RenderPassDescriptor( format ) );
-}
-
 #define IMPL ((__bridge MTLRenderPassDescriptor *)mImpl)
 #define DEPTH_TEX ((__bridge id <MTLTexture>)mDepthTexture)
 
@@ -34,6 +29,14 @@ mDepthTexture(nullptr)
     setShouldClearDepth(format.getShouldClearDepth());
     setClearDepth(format.getClearDepth());
     setDepthStoreAction(format.getDepthStoreAction());
+}
+
+RenderPassDescriptor::RenderPassDescriptor( void * mtlRenderPassDescriptor ) :
+mImpl(mtlRenderPassDescriptor)
+{
+    assert(mImpl != NULL);
+    assert([(__bridge id)mImpl isKindOfClass:[MTLRenderPassDescriptor class]]);
+    CFRetain(mImpl);
 }
 
 RenderPassDescriptor::~RenderPassDescriptor()

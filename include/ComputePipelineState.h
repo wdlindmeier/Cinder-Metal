@@ -20,7 +20,16 @@ namespace cinder { namespace mtl {
         
         public:
 
-        static ComputePipelineStateRef create( const std::string & computeShaderName );
+        static ComputePipelineStateRef create( const std::string & computeShaderName )
+        {
+            return ComputePipelineStateRef( new ComputePipelineState( computeShaderName ) );
+        }
+
+        static ComputePipelineStateRef create( void * mtlComputePipelineState )
+        {
+            return ComputePipelineStateRef( new ComputePipelineState(mtlComputePipelineState) );
+        }
+        
         virtual ~ComputePipelineState();
         
         void * getNative(){ return mImpl; }
@@ -28,6 +37,7 @@ namespace cinder { namespace mtl {
         protected:
         
         ComputePipelineState( const std::string & computeShaderName );
+        ComputePipelineState( void * mtlComputePipelineState );
         
         void * mImpl = NULL;  // <MTLComputePipelineState>
 

@@ -48,6 +48,12 @@ namespace cinder { namespace mtl {
             return DataBufferRef( new DataBuffer(length, pointer, format) );
         }
         
+        // Create with a native MTLBuffer
+        static DataBufferRef create( void * mtlDataBuffer )
+        {
+            return DataBufferRef( new DataBuffer( mtlDataBuffer ) );
+        }
+        
         template <typename T>
         static DataBufferRef create( const std::vector<T> & dataVector, const Format & format = Format() )
         {
@@ -100,6 +106,7 @@ namespace cinder { namespace mtl {
     protected:
         
         DataBuffer( unsigned long length, const void * pointer, Format format );
+        DataBuffer( void *mtlDataBuffer );
         void init( unsigned long length, const void * pointer, Format format );
         
         template <typename T>

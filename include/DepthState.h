@@ -43,6 +43,12 @@ namespace cinder { namespace mtl {
         {
             return DepthStateRef( new DepthState(format) );
         }
+        
+        static DepthStateRef create( void *mtlDepthStencilState )
+        {
+            return DepthStateRef( new DepthState(mtlDepthStencilState) );
+        }
+        
         virtual ~DepthState();
         
         void * getNative(){ return mImpl; }
@@ -50,6 +56,7 @@ namespace cinder { namespace mtl {
     protected:
         
         DepthState( Format format );
+        DepthState( void *mtlDepthStencilState );
         
         void * mImpl = NULL; // <MTLDepthStencilState>
         Format mFormat;

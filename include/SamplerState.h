@@ -62,6 +62,12 @@ namespace cinder { namespace mtl {
         {
             return SamplerStateRef( new SamplerState(format) );
         }
+        
+        static SamplerStateRef create( void * mtlSamplerState )
+        {
+            return SamplerStateRef( new SamplerState(mtlSamplerState) );
+        }
+
         virtual ~SamplerState();
         
         void * getNative(){ return mImpl; }
@@ -69,10 +75,10 @@ namespace cinder { namespace mtl {
     protected:
         
         SamplerState( Format format );
+        SamplerState( void * mtlSamplerState );
         
         void * mImpl = NULL; // <MTLSamplerState>
         Format mFormat;
         
-    };
-    
+    };    
 } }

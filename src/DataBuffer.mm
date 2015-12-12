@@ -53,6 +53,14 @@ void DataBuffer::init( unsigned long length, const void * pointer, Format format
     IMPL.label = [NSString stringWithUTF8String:mFormat.getLabel().c_str()];
 }
 
+DataBuffer::DataBuffer( void *mtlDataBuffer ) :
+mImpl(mtlDataBuffer)
+{
+    assert( mtlDataBuffer != NULL );
+    assert([(__bridge id)mtlDataBuffer conformsToProtocol:@protocol(MTLBuffer)]);
+    CFRetain(mImpl);
+}
+
 DataBuffer::~DataBuffer()
 {
     if ( mImpl )

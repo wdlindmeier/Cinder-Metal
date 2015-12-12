@@ -56,6 +56,11 @@ namespace cinder { namespace mtl {
         {
             return TextureBufferRef( new TextureBuffer( width, height, format ) );
         }
+        
+        static TextureBufferRef create( void * mtlTexture )
+        {
+            return TextureBufferRef( new TextureBuffer( mtlTexture ) );
+        }
 
         virtual ~TextureBuffer();
 

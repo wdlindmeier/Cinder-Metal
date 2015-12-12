@@ -27,6 +27,12 @@ namespace cinder { namespace mtl {
         {
             return CommandBufferRef( new CommandBuffer( bufferName ) );
         }
+        
+        static CommandBufferRef create( void * mtlCommandBuffer )
+        {
+            return CommandBufferRef( new CommandBuffer( mtlCommandBuffer ) );
+        }
+        
         virtual ~CommandBuffer();
 
         void commit( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
@@ -44,6 +50,9 @@ namespace cinder { namespace mtl {
     protected:
                 
         CommandBuffer( const std::string & bufferName );
+        CommandBuffer( void * mtlCommandBuffer );
+
+        void init( void * mtlCommandBuffer );
         
         void * mImpl;  // <MTLCommandBuffer>
     };
