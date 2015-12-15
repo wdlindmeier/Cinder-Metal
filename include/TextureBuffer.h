@@ -37,14 +37,47 @@ namespace cinder { namespace mtl {
             ,mArrayLength(1)
             ,mUsage(TextureUsageShaderRead)
             {};
+
+        public:
+
+            Format& mipmapLevel( int mipmapLevel ) { setMipmapLevel( mipmapLevel ); return *this; };
+            void setMipmapLevel( int mipmapLevel ) { mMipmapLevel = mipmapLevel; };
+            int getMipmapLevel() { return mMipmapLevel; };
+
+            Format& sampleCount( int sampleCount ) { setSampleCount( sampleCount ); return *this; };
+            void setSampleCount( int sampleCount ) { mSampleCount = sampleCount; };
+            int getSampleCount() { return mSampleCount; };
+
+            Format& textureType( TextureType textureType ) { setTextureType( textureType ); return *this; };
+            void setTextureType( TextureType textureType ) { mTextureType = textureType; };
+            TextureType getTextureType() { return mTextureType; };
+
+            Format& pixelFormat( PixelFormat pixelFormat ) { setPixelFormat( pixelFormat ); return *this; };
+            void setPixelFormat( PixelFormat pixelFormat ) { mPixelFormat = pixelFormat; };
+            PixelFormat getPixelFormat() { return mPixelFormat; };
+
+            Format& depth( int depth ) { setDepth( depth ); return *this; };
+            void setDepth( int depth ) { mDepth = depth; };
+            int getDepth() { return mDepth; };
+
+            Format& arrayLength( int arrayLength ) { setArrayLength( arrayLength ); return *this; };
+            void setArrayLength( int arrayLength ) { mArrayLength = arrayLength; };
+            int getArrayLength() { return mArrayLength; };
+
+            Format& usage( TextureUsage usage ) { setUsage( usage ); return *this; };
+            void setUsage( TextureUsage usage ) { mUsage = usage; };
+            TextureUsage getUsage() { return mUsage; };
+
+        protected:
             
-            FORMAT_OPTION(mipmapLevel, MipmapLevel, int)
-            FORMAT_OPTION(sampleCount, SampleCount, int)
-            FORMAT_OPTION(textureType, TextureType, TextureType)
-            FORMAT_OPTION(pixelFormat, PixelFormat, PixelFormat)
-            FORMAT_OPTION(depth, Depth, int)
-            FORMAT_OPTION(arrayLength, ArrayLength, int)
-            FORMAT_OPTION(usage, Usage, TextureUsage)
+            int mMipmapLevel;
+            int mSampleCount;
+            TextureType mTextureType;
+            PixelFormat mPixelFormat;
+            int mDepth;
+            int mArrayLength;
+            TextureUsage mUsage;
+            
         };
         
         static TextureBufferRef create( const ImageSourceRef & imageSource, const Format & format = Format() )

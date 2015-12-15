@@ -31,11 +31,11 @@ namespace cinder { namespace mtl {
         void * getNative(){ return mImpl; }
         
         void endEncoding();
-        
+#if !defined( CINDER_COCOA_TOUCH )
         void synchronizeResource( void * mtlResource ); // MTLResource
         
         void synchronizeTexture( const TextureBufferRef & texture, uint slice, uint level);
-
+#endif
         void copyFromTextureToTexture(const TextureBufferRef & sourceTexture, uint sourceSlice, uint sourceLevel, ivec3 sourceOrigin, ivec3 sourceSize, TextureBufferRef & destTexture, uint destSlice, uint destLevel, ivec3 destOrigin);
 
         void copyFromBufferToTexture( const DataBufferRef & sourceBuffer, uint sourceOffset, uint sourceBytesPerRow, uint sourceBytesPerImage, ivec3 sourceSize, TextureBufferRef & destTexture, uint destSlice, uint destLevel, ivec3 destOrigin, BlitOption options = BlitOptionNone );

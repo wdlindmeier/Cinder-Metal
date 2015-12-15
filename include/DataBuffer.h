@@ -35,11 +35,31 @@ namespace cinder { namespace mtl {
             ,mLabel("Default Data Buffer")
             ,mIsConstant(false) // used when measuring data allocation. Verts should be `false`, uniforms should be `true`.
             {};
+
+        public:
+
+            Format& storageMode( StorageMode storageMode ) { setStorageMode( storageMode ); return *this; };
+            void setStorageMode( StorageMode storageMode ) { mStorageMode = storageMode; };
+            StorageMode getStorageMode() { return mStorageMode; };
+
+            Format& cacheMode( CPUCacheMode cacheMode ) { setCacheMode( cacheMode ); return *this; };
+            void setCacheMode( CPUCacheMode cacheMode ) { mCacheMode = cacheMode; };
+            CPUCacheMode getCacheMode() { return mCacheMode; };
+
+            Format& label( std::string label ) { setLabel( label ); return *this; };
+            void setLabel( std::string label ) { mLabel = label; };
+            std::string getLabel() { return mLabel; };
+
+            Format& isConstant( bool isConstant ) { setIsConstant( isConstant ); return *this; };
+            void setIsConstant( bool isConstant ) { mIsConstant = isConstant; };
+            bool getIsConstant() { return mIsConstant; };
+
+        protected:
             
-            FORMAT_OPTION(storageMode, StorageMode, StorageMode)
-            FORMAT_OPTION(cacheMode, CacheMode, CPUCacheMode)
-            FORMAT_OPTION(label, Label, std::string)
-            FORMAT_OPTION(isConstant, IsConstant, bool)
+            StorageMode mStorageMode;
+            CPUCacheMode mCacheMode;
+            std::string mLabel;
+            bool mIsConstant;
         };
 
         // Data stored at pointer will be copied into the buffer

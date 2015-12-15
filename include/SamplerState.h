@@ -40,22 +40,79 @@ namespace cinder { namespace mtl {
             ,mCompareFunction(CompareFunctionNever)
             ,mLabel("Default Sampler State")
             {}
-            
-            FORMAT_OPTION(mipFilter, MipFilter, SamplerMipFilter)
-            FORMAT_OPTION(maxAnisotropy, MaxAnisotropy, int)
-            FORMAT_OPTION(minFilter, MinFilter, SamplerMinMagFilter)
-            FORMAT_OPTION(magFilter, MagFilter, SamplerMinMagFilter)
-            FORMAT_OPTION(sAddressMode, SAddressMode, SamplerAddressMode)
-            FORMAT_OPTION(tAddressMode, TAddressMode, SamplerAddressMode)
-            FORMAT_OPTION(rAddressMode, RAddressMode, SamplerAddressMode)
-            FORMAT_OPTION(normalizedCoordinates, NormalizedCoordinates, int)
-            FORMAT_OPTION(lodMinClamp, LodMinClamp, int)
-            FORMAT_OPTION(lodMaxClamp, LodMaxClamp, int)
+
+        public:
+
+            Format& mipFilter( SamplerMipFilter mipFilter ) { setMipFilter( mipFilter ); return *this; };
+            void setMipFilter( SamplerMipFilter mipFilter ) { mMipFilter = mipFilter; };
+            SamplerMipFilter getMipFilter() { return mMipFilter; };
+
+            Format& maxAnisotropy( int maxAnisotropy ) { setMaxAnisotropy( maxAnisotropy ); return *this; };
+            void setMaxAnisotropy( int maxAnisotropy ) { mMaxAnisotropy = maxAnisotropy; };
+            int getMaxAnisotropy() { return mMaxAnisotropy; };
+
+            Format& minFilter( SamplerMinMagFilter minFilter ) { setMinFilter( minFilter ); return *this; };
+            void setMinFilter( SamplerMinMagFilter minFilter ) { mMinFilter = minFilter; };
+            SamplerMinMagFilter getMinFilter() { return mMinFilter; };
+
+            Format& magFilter( SamplerMinMagFilter magFilter ) { setMagFilter( magFilter ); return *this; };
+            void setMagFilter( SamplerMinMagFilter magFilter ) { mMagFilter = magFilter; };
+            SamplerMinMagFilter getMagFilter() { return mMagFilter; };
+
+            Format& sAddressMode( SamplerAddressMode sAddressMode ) { setSAddressMode( sAddressMode ); return *this; };
+            void setSAddressMode( SamplerAddressMode sAddressMode ) { mSAddressMode = sAddressMode; };
+            SamplerAddressMode getSAddressMode() { return mSAddressMode; };
+
+            Format& tAddressMode( SamplerAddressMode tAddressMode ) { setTAddressMode( tAddressMode ); return *this; };
+            void setTAddressMode( SamplerAddressMode tAddressMode ) { mTAddressMode = tAddressMode; };
+            SamplerAddressMode getTAddressMode() { return mTAddressMode; };
+
+            Format& rAddressMode( SamplerAddressMode rAddressMode ) { setRAddressMode( rAddressMode ); return *this; };
+            void setRAddressMode( SamplerAddressMode rAddressMode ) { mRAddressMode = rAddressMode; };
+            SamplerAddressMode getRAddressMode() { return mRAddressMode; };
+
+            Format& normalizedCoordinates( int normalizedCoordinates ) { setNormalizedCoordinates( normalizedCoordinates ); return *this; };
+            void setNormalizedCoordinates( int normalizedCoordinates ) { mNormalizedCoordinates = normalizedCoordinates; };
+            int getNormalizedCoordinates() { return mNormalizedCoordinates; };
+
+            Format& lodMinClamp( int lodMinClamp ) { setLodMinClamp( lodMinClamp ); return *this; };
+            void setLodMinClamp( int lodMinClamp ) { mLodMinClamp = lodMinClamp; };
+            int getLodMinClamp() { return mLodMinClamp; };
+
+            Format& lodMaxClamp( int lodMaxClamp ) { setLodMaxClamp( lodMaxClamp ); return *this; };
+            void setLodMaxClamp( int lodMaxClamp ) { mLodMaxClamp = lodMaxClamp; };
+            int getLodMaxClamp() { return mLodMaxClamp; };
 #if defined( CINDER_COCOA_TOUCH )
-            FORMAT_OPTION(lodAverage, LodAverage, int)
+            Format& lodAverage( int lodAverage ) { setLodAverage( lodAverage ); return *this; };
+            void setLodAverage( int lodAverage ) { mLodAverage = lodAverage; };
+            int getLodAverage() { return mLodAverage; };
 #endif
-            FORMAT_OPTION(compareFunction, CompareFunction, CompareFunction)
-            FORMAT_OPTION(label, Label, std::string)
+            Format& compareFunction( CompareFunction compareFunction ) { setCompareFunction( compareFunction ); return *this; };
+            void setCompareFunction( CompareFunction compareFunction ) { mCompareFunction = compareFunction; };
+            CompareFunction getCompareFunction() { return mCompareFunction; };
+
+            Format& label( std::string label ) { setLabel( label ); return *this; };
+            void setLabel( std::string label ) { mLabel = label; };
+            std::string getLabel() { return mLabel; };
+
+        protected:
+            
+            SamplerMipFilter mMipFilter;
+            int mMaxAnisotropy;
+            SamplerMinMagFilter mMinFilter;
+            SamplerMinMagFilter mMagFilter;
+            SamplerAddressMode mSAddressMode;
+            SamplerAddressMode mTAddressMode;
+            SamplerAddressMode mRAddressMode;
+            int mNormalizedCoordinates;
+            int mLodMinClamp;
+            int mLodMaxClamp;
+#if defined( CINDER_COCOA_TOUCH )
+            int mLodAverage;
+#endif
+            CompareFunction mCompareFunction;
+            std::string mLabel;
+
         };
         
         static SamplerStateRef create( const Format & format = Format() )

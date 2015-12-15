@@ -51,7 +51,6 @@ namespace cinder {
             
             RendererRef clone() const override { return RendererMetalRef( new RendererMetal( *this ) ); }
             
-#if defined( CINDER_COCOA )
 #if defined( CINDER_MAC )
             void setup( CGRect frame, NSView *cinderView, RendererRef sharedRenderer, bool retinaEnabled )  override;
 #elif defined( CINDER_COCOA_TOUCH )
@@ -59,7 +58,6 @@ namespace cinder {
             
             // NOTE: We're not technically an EAGL layer, but we can pretent to be for the same callback / loop behavior
             bool isEaglLayer() const override { return true; }
-#endif
 #endif
             void setFrameSize( int width, int height )  override;
             const Options&	getOptions() const { return mOptions; }

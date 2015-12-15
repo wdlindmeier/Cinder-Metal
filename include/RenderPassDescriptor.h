@@ -35,12 +35,43 @@ namespace cinder { namespace mtl {
             ,mDepthStoreAction(StoreActionDontCare)
             {};
             
-            FORMAT_OPTION(shouldClearColor, ShouldClearColor, bool)
-            FORMAT_OPTION(clearColor, ClearColor, ci::ColorAf)
-            FORMAT_OPTION(colorStoreAction, ColorStoreAction, StoreAction)
-            FORMAT_OPTION(shouldClearDepth, ShouldClearDepth, bool)
-            FORMAT_OPTION(clearDepth, ClearDepth, float)
-            FORMAT_OPTION(depthStoreAction, DepthStoreAction, StoreAction)
+            // Format Options
+
+        public:
+
+            Format& shouldClearColor( bool shouldClearColor ) { setShouldClearColor( shouldClearColor ); return *this; };
+            void setShouldClearColor( bool shouldClearColor ) { mShouldClearColor = shouldClearColor; };
+            bool getShouldClearColor() { return mShouldClearColor; };
+
+            Format& clearColor( ci::ColorAf clearColor ) { setClearColor( clearColor ); return *this; };
+            void setClearColor( ci::ColorAf clearColor ) { mClearColor = clearColor; };
+            ci::ColorAf getClearColor() { return mClearColor; };
+
+            Format& colorStoreAction( StoreAction colorStoreAction ) { setColorStoreAction( colorStoreAction ); return *this; };
+            void setColorStoreAction( StoreAction colorStoreAction ) { mColorStoreAction = colorStoreAction; };
+            StoreAction getColorStoreAction() { return mColorStoreAction; };
+
+            Format& shouldClearDepth( bool shouldClearDepth ) { setShouldClearDepth( shouldClearDepth ); return *this; };
+            void setShouldClearDepth( bool shouldClearDepth ) { mShouldClearDepth = shouldClearDepth; };
+            bool getShouldClearDepth() { return mShouldClearDepth; };
+
+            Format& clearDepth( float clearDepth ) { setClearDepth( clearDepth ); return *this; };
+            void setClearDepth( float clearDepth ) { mClearDepth = clearDepth; };
+            float getClearDepth() { return mClearDepth; };
+
+            Format& depthStoreAction( StoreAction depthStoreAction ) { setDepthStoreAction( depthStoreAction ); return *this; };
+            void setDepthStoreAction( StoreAction depthStoreAction ) { mDepthStoreAction = depthStoreAction; };
+            StoreAction getDepthStoreAction() { return mDepthStoreAction; };
+
+        protected:
+            
+            bool mShouldClearColor;
+            ci::ColorAf mClearColor;
+            StoreAction mColorStoreAction;
+            bool mShouldClearDepth;
+            float mClearDepth;
+            StoreAction mDepthStoreAction;
+            
         };
         
         static RenderPassDescriptorRef create( const Format & format = Format() )

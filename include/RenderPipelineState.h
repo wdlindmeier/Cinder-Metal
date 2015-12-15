@@ -36,16 +36,61 @@ namespace cinder { namespace mtl {
             ,mPixelFormat(PixelFormatBGRA8Unorm)
             {}
 
-            FORMAT_OPTION(sampleCount, SampleCount, int)
-            FORMAT_OPTION(blendingEnabled, BlendingEnabled, bool)
-            FORMAT_OPTION(colorBlendOperation, ColorBlendOperation, BlendOperation)
-            FORMAT_OPTION(alphaBlendOperation, AlphaBlendOperation, BlendOperation)
-            FORMAT_OPTION(srcColorBlendFactor, SrcColorBlendFactor, BlendFactor)
-            FORMAT_OPTION(srcAlphaBlendFactor, SrcAlphaBlendFactor, BlendFactor)
-            FORMAT_OPTION(dstColorBlendFactor, DstColorBlendFactor, BlendFactor)
-            FORMAT_OPTION(dstAlphaBlendFactor, DstAlphaBlendFactor, BlendFactor)
-            FORMAT_OPTION(label, Label, std::string)
-            FORMAT_OPTION(pixelFormat, PixelFormat, PixelFormat) 
+        public:
+
+            Format& sampleCount( int sampleCount ) { setSampleCount( sampleCount ); return *this; };
+            void setSampleCount( int sampleCount ) { mSampleCount = sampleCount; };
+            int getSampleCount() { return mSampleCount; };
+
+            Format& blendingEnabled( bool blendingEnabled ) { setBlendingEnabled( blendingEnabled ); return *this; };
+            void setBlendingEnabled( bool blendingEnabled ) { mBlendingEnabled = blendingEnabled; };
+            bool getBlendingEnabled() { return mBlendingEnabled; };
+
+            Format& colorBlendOperation( BlendOperation colorBlendOperation ) { setColorBlendOperation( colorBlendOperation ); return *this; };
+            void setColorBlendOperation( BlendOperation colorBlendOperation ) { mColorBlendOperation = colorBlendOperation; };
+            BlendOperation getColorBlendOperation() { return mColorBlendOperation; };
+
+            Format& alphaBlendOperation( BlendOperation alphaBlendOperation ) { setAlphaBlendOperation( alphaBlendOperation ); return *this; };
+            void setAlphaBlendOperation( BlendOperation alphaBlendOperation ) { mAlphaBlendOperation = alphaBlendOperation; };
+            BlendOperation getAlphaBlendOperation() { return mAlphaBlendOperation; };
+
+            Format& srcColorBlendFactor( BlendFactor srcColorBlendFactor ) { setSrcColorBlendFactor( srcColorBlendFactor ); return *this; };
+            void setSrcColorBlendFactor( BlendFactor srcColorBlendFactor ) { mSrcColorBlendFactor = srcColorBlendFactor; };
+            BlendFactor getSrcColorBlendFactor() { return mSrcColorBlendFactor; };
+
+            Format& srcAlphaBlendFactor( BlendFactor srcAlphaBlendFactor ) { setSrcAlphaBlendFactor( srcAlphaBlendFactor ); return *this; };
+            void setSrcAlphaBlendFactor( BlendFactor srcAlphaBlendFactor ) { mSrcAlphaBlendFactor = srcAlphaBlendFactor; };
+            BlendFactor getSrcAlphaBlendFactor() { return mSrcAlphaBlendFactor; };
+
+            Format& dstColorBlendFactor( BlendFactor dstColorBlendFactor ) { setDstColorBlendFactor( dstColorBlendFactor ); return *this; };
+            void setDstColorBlendFactor( BlendFactor dstColorBlendFactor ) { mDstColorBlendFactor = dstColorBlendFactor; };
+            BlendFactor getDstColorBlendFactor() { return mDstColorBlendFactor; };
+
+            Format& dstAlphaBlendFactor( BlendFactor dstAlphaBlendFactor ) { setDstAlphaBlendFactor( dstAlphaBlendFactor ); return *this; };
+            void setDstAlphaBlendFactor( BlendFactor dstAlphaBlendFactor ) { mDstAlphaBlendFactor = dstAlphaBlendFactor; };
+            BlendFactor getDstAlphaBlendFactor() { return mDstAlphaBlendFactor; };
+
+            Format& label( std::string label ) { setLabel( label ); return *this; };
+            void setLabel( std::string label ) { mLabel = label; };
+            std::string getLabel() { return mLabel; };
+
+            Format& pixelFormat( PixelFormat pixelFormat ) { setPixelFormat( pixelFormat ); return *this; };
+            void setPixelFormat( PixelFormat pixelFormat ) { mPixelFormat = pixelFormat; };
+            PixelFormat getPixelFormat() { return mPixelFormat; };
+
+        protected:
+            
+            int mSampleCount;
+            bool mBlendingEnabled;
+            BlendOperation mColorBlendOperation;
+            BlendOperation mAlphaBlendOperation;
+            BlendFactor mSrcColorBlendFactor;
+            BlendFactor mSrcAlphaBlendFactor;
+            BlendFactor mDstColorBlendFactor;
+            BlendFactor mDstAlphaBlendFactor;
+            std::string mLabel;
+            PixelFormat mPixelFormat;
+            
         };
         
         static RenderPipelineStateRef create( const std::string & vertShaderName,

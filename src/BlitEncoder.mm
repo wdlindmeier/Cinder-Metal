@@ -44,6 +44,7 @@ void BlitEncoder::endEncoding()
     [(__bridge id<MTLBlitCommandEncoder>)mImpl endEncoding];
 }
 
+#if !defined( CINDER_COCOA_TOUCH )
 void BlitEncoder::synchronizeResource( void * mtlResource ) // MTLResource
 {
     [IMPL synchronizeResource:(__bridge id <MTLResource>)mtlResource];
@@ -53,6 +54,7 @@ void BlitEncoder::synchronizeTexture( const TextureBufferRef & texture, uint sli
 {
     [IMPL synchronizeTexture:(__bridge id <MTLTexture>)texture->getNative() slice:slice level:level];
 }
+#endif
 
 void BlitEncoder::copyFromTextureToTexture(const TextureBufferRef & sourceTexture, uint sourceSlice, uint sourceLevel, ivec3 sourceOrigin, ivec3 sourceSize, TextureBufferRef & destTexture, uint destSlice, uint destLevel, ivec3 destOrigin)
 {

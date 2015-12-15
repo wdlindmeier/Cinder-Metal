@@ -31,12 +31,37 @@ namespace cinder { namespace mtl {
             ,mLabel("Default Depth State")
             {}
 
-            FORMAT_OPTION(depthCompareFunction, DepthCompareFunction, CompareFunction)
-            FORMAT_OPTION(depthWriteEnabled, DepthWriteEnabled, bool)
+        public:
+
+            Format& depthCompareFunction( CompareFunction depthCompareFunction ) { setDepthCompareFunction( depthCompareFunction ); return *this; };
+            void setDepthCompareFunction( CompareFunction depthCompareFunction ) { mDepthCompareFunction = depthCompareFunction; };
+            CompareFunction getDepthCompareFunction() { return mDepthCompareFunction; };
+
+            Format& depthWriteEnabled( bool depthWriteEnabled ) { setDepthWriteEnabled( depthWriteEnabled ); return *this; };
+            void setDepthWriteEnabled( bool depthWriteEnabled ) { mDepthWriteEnabled = depthWriteEnabled; };
+            bool getDepthWriteEnabled() { return mDepthWriteEnabled; };
+
             // TODO: Maybe the back/front stencil descriptors don't belong in the format...
-            FORMAT_OPTION(frontFaceStencil, FrontFaceStencil, void *) // MTLStencilDescriptor
-            FORMAT_OPTION(backFaceStencil, BackFaceStencil, void *) // MTLStencilDescriptor
-            FORMAT_OPTION(label, Label, std::string)
+            Format& frontFaceStencil( void * frontFaceStencil ) { setFrontFaceStencil( frontFaceStencil ); return *this; };
+            void setFrontFaceStencil( void * frontFaceStencil ) { mFrontFaceStencil = frontFaceStencil; };
+            void * getFrontFaceStencil() { return mFrontFaceStencil; };
+
+            Format& backFaceStencil( void * backFaceStencil ) { setBackFaceStencil( backFaceStencil ); return *this; };
+            void setBackFaceStencil( void * backFaceStencil ) { mBackFaceStencil = backFaceStencil; };
+            void * getBackFaceStencil() { return mBackFaceStencil; };
+
+            Format& label( std::string label ) { setLabel( label ); return *this; };
+            void setLabel( std::string label ) { mLabel = label; };
+            std::string getLabel() { return mLabel; };
+
+        protected:
+            
+            CompareFunction mDepthCompareFunction;
+            bool mDepthWriteEnabled;
+            void * mFrontFaceStencil;
+            void * mBackFaceStencil;
+            std::string mLabel;
+            
         };
         
         static DepthStateRef create( const Format & format = Format() )
