@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/samples/MetalCube/xcode/MetalCube.xcodeproj">
    </FileRef>
 </Workspace>
