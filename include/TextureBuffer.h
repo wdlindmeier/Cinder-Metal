@@ -1,6 +1,6 @@
 //
 //  TextureBuffer.hpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/30/15.
 //
@@ -36,6 +36,7 @@ namespace cinder { namespace mtl {
             ,mDepth(1)
             ,mArrayLength(1)
             ,mUsage(TextureUsageShaderRead)
+            ,mFlipVertically(true)
             {};
 
         public:
@@ -55,6 +56,10 @@ namespace cinder { namespace mtl {
             Format& pixelFormat( PixelFormat pixelFormat ) { setPixelFormat( pixelFormat ); return *this; };
             void setPixelFormat( PixelFormat pixelFormat ) { mPixelFormat = pixelFormat; };
             PixelFormat getPixelFormat() { return mPixelFormat; };
+
+            Format& flipVertically( bool flipVertically ) { setFlipVertically( flipVertically ); return *this; };
+            void setFlipVertically( bool flipVertically ) { mFlipVertically = flipVertically; };
+            bool getFlipVertically() { return mFlipVertically; };
 
             Format& depth( int depth ) { setDepth( depth ); return *this; };
             void setDepth( int depth ) { mDepth = depth; };
@@ -77,7 +82,7 @@ namespace cinder { namespace mtl {
             int mDepth;
             int mArrayLength;
             TextureUsage mUsage;
-            
+            bool mFlipVertically;
         };
         
         static TextureBufferRef create( const ImageSourceRef & imageSource, const Format & format = Format() )
@@ -134,7 +139,7 @@ namespace cinder { namespace mtl {
         TextureBuffer( uint width, uint height, Format format );
         TextureBuffer( void * mtlTexture );
 
-        void updateWidthCGImage( void * );
+        void updateWithCGImage( void *, bool flipVertically );
         void generateMipmap();
         
         void *mImpl = NULL; // <MTLTexture>

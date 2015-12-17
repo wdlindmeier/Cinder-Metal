@@ -1,6 +1,6 @@
 //
 //  RenderEncoder.cpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/16/15.
 //

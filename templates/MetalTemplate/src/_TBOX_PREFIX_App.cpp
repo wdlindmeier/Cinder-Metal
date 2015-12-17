@@ -24,6 +24,9 @@ void _TBOX_PREFIX_App::setup()
     // 2) Enable "Automatic Reference Counting" in the Target Build Settings
     // 3) Add the Metal Framework to your target in Build Phases > Link Binaries with Libraries
     // 4) If you're building for OS X, also add the QuartzCore Framework 
+    // 5) If you want to include block headers in your Metal shaders, add this path to 
+    //    Build Settings > Metal > Header Search Paths:
+    //          $(CINDER_PATH)/blocks/Cinder-Metal/include
     
     // NOTE: You cannot build the project for the iOS Simulator
 

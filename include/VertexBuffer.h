@@ -1,6 +1,6 @@
 //
 //  GeomTarget.hpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/24/15.
 //
@@ -24,6 +24,11 @@ namespace cinder { namespace mtl {
     public:
 
         static VertexBufferRef create( const ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
+
+        static VertexBufferRef create( const ci::geom::Source & source,
+                                       const std::vector<ci::geom::Attrib> & orderedAttribs = {{}},
+                                       const DataBuffer::Format & format = DataBuffer::Format()
+                                                                           .label("Vertex Buffer") );
 
         // The DataBuffer::Format will be used to create the index and interleaved data buffers.
         static VertexBufferRef create( const ci::geom::Source & source,
@@ -74,7 +79,7 @@ namespace cinder { namespace mtl {
 
         void createDefaultIndices();
         
-        void setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs );
+        //void setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs );
 
         ci::mtl::geom::Primitive mPrimitive;
         std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;

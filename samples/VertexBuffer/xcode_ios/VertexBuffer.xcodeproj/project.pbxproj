@@ -13,7 +13,7 @@
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		22F02BB9C5664FB8B79128FD /* MetalCubeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */; };
+		22F02BB9C5664FB8B79128FD /* VertexBufferApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5E69B2F1E1A4F9F859E92BD /* VertexBufferApp.cpp */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		6906BCA7A507477F8CDF073E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FC99894E58E4A5BB1D605B9 /* LaunchScreen.xib */; };
 		A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */; };
@@ -52,7 +52,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		00692BCF14FF149000D0A05E /* MetalCube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalCube.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00692BCF14FF149000D0A05E /* VertexBuffer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VertexBuffer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00748057165D41390024B57A /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
 		0087D25412CD809F002CD69F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		00A66A351965AC8800B17EB3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -63,7 +63,7 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5FC99894E58E4A5BB1D605B9 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = LaunchScreen.xib; sourceTree = "<group>"; };
-		65CD774DDC2946EC81C22090 /* MetalCube_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = MetalCube_Prefix.pch; sourceTree = "<group>"; };
+		65CD774DDC2946EC81C22090 /* VertexBuffer_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VertexBuffer_Prefix.pch; sourceTree = "<group>"; };
 		A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexBuffer.cpp; sourceTree = "<group>"; };
 		A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
 		A90BF5AD1BDC3A86002C9257 /* MetalGeom.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalGeom.mm; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		C727C02D121B400300192073 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C7FB19D5124BC0D70045AFD2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DDDDDF6A1138442D0091DDDD /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MetalCubeApp.cpp; path = ../src/MetalCubeApp.cpp; sourceTree = "<group>"; };
+		E5E69B2F1E1A4F9F859E92BD /* VertexBufferApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VertexBufferApp.cpp; path = ../src/VertexBufferApp.cpp; sourceTree = "<group>"; };
 		F53509B74BC44AA0911A6377 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -165,7 +165,7 @@
 		00692BD014FF149000D0A05E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				00692BCF14FF149000D0A05E /* MetalCube.app */,
+				00692BCF14FF149000D0A05E /* VertexBuffer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -197,7 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				A92044A01BCB0AD000CC8AAB /* Shaders.metal */,
-				E5E69B2F1E1A4F9F859E92BD /* MetalCubeApp.cpp */,
+				E5E69B2F1E1A4F9F859E92BD /* VertexBufferApp.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -217,7 +217,7 @@
 		99692BD914FF149000D0A05F /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				65CD774DDC2946EC81C22090 /* MetalCube_Prefix.pch */,
+				65CD774DDC2946EC81C22090 /* VertexBuffer_Prefix.pch */,
 				A92232891C138A4000EF5D03 /* SharedData.h */,
 			);
 			name = Headers;
@@ -301,9 +301,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00692BCE14FF149000D0A05E /* MetalCube */ = {
+		00692BCE14FF149000D0A05E /* VertexBuffer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "MetalCube" */;
+			buildConfigurationList = 00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "VertexBuffer" */;
 			buildPhases = (
 				00692BCB14FF149000D0A05E /* Sources */,
 				00692BCC14FF149000D0A05E /* Frameworks */,
@@ -313,9 +313,9 @@
 			);
 			dependencies = (
 			);
-			name = MetalCube;
+			name = VertexBuffer;
 			productName = MetalCube;
-			productReference = 00692BCF14FF149000D0A05E /* MetalCube.app */;
+			productReference = 00692BCF14FF149000D0A05E /* VertexBuffer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -330,7 +330,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 00692BC914FF149000D0A05E /* Build configuration list for PBXProject "MetalCube" */;
+			buildConfigurationList = 00692BC914FF149000D0A05E /* Build configuration list for PBXProject "VertexBuffer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -342,7 +342,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				00692BCE14FF149000D0A05E /* MetalCube */,
+				00692BCE14FF149000D0A05E /* VertexBuffer */,
 			);
 		};
 /* End PBXProject section */
@@ -369,7 +369,7 @@
 			files = (
 				A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */,
 				A96C5E5C1BCDD87C001DD6D3 /* RenderPassDescriptor.mm in Sources */,
-				22F02BB9C5664FB8B79128FD /* MetalCubeApp.cpp in Sources */,
+				22F02BB9C5664FB8B79128FD /* VertexBufferApp.cpp in Sources */,
 				A916E31B1BD2A51A0012573E /* DataBuffer.mm in Sources */,
 				A96C283F1BEE6D5900D847C0 /* DepthState.mm in Sources */,
 				A9EF82B51C07CF6000923994 /* RenderPipelineState.mm in Sources */,
@@ -469,7 +469,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
+				GCC_PREFIX_HEADER = VertexBuffer_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_HEADER_SEARCH_PATHS = "$(inherited)";
@@ -482,7 +482,7 @@
 					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a\"",
 					"-lz",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = VertexBuffer;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -494,7 +494,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
+				GCC_PREFIX_HEADER = VertexBuffer_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_HEADER_SEARCH_PATHS = "$(inherited)";
@@ -507,7 +507,7 @@
 					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim.a\"",
 					"-lz",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = VertexBuffer;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -516,7 +516,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00692BC914FF149000D0A05E /* Build configuration list for PBXProject "MetalCube" */ = {
+		00692BC914FF149000D0A05E /* Build configuration list for PBXProject "VertexBuffer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00692BF314FF149000D0A05E /* Debug */,
@@ -525,7 +525,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "MetalCube" */ = {
+		00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "VertexBuffer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00692BF614FF149000D0A05E /* Debug */,

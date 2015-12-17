@@ -1,6 +1,6 @@
 //
 //  SamplerState.cpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 11/7/15.
 //

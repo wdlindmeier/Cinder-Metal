@@ -15,8 +15,12 @@ class RendererMetalImpl;
 namespace cinder {
     
     namespace mtl {
+
+        const static int DEFAULT_NUM_INFLIGHT_BUFFERS = 3;
+
         class CommandBuffer;
     }
+    
     
     namespace app {
     
@@ -31,7 +35,7 @@ namespace cinder {
             public:
                 
                 Options() :
-                mMaxInflightBuffers(3)
+                mMaxInflightBuffers( mtl::DEFAULT_NUM_INFLIGHT_BUFFERS )
                 ,mFramebufferOnly(true)
                 {}
                 

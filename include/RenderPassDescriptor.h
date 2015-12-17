@@ -1,6 +1,6 @@
 //
 //  MetalRenderPass.hpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/13/15.
 //

@@ -1,6 +1,6 @@
 //
 //  Buffer.cpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/17/15.
 //

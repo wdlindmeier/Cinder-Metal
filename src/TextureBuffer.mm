@@ -1,6 +1,6 @@
 //
 //  TextureBuffer.cpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/30/15.
 //
@@ -107,7 +107,7 @@ mFormat(format)
     // Does this need to be CFRetained?
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device newTextureWithDescriptor:desc];
     
-    updateWidthCGImage( imageRef );
+    updateWithCGImage( imageRef, mFormat.getFlipVertically() );
     
     CFRelease(imageRef);
 }
@@ -141,20 +141,58 @@ void TextureBuffer::getPixelData( void *pixelBytes )
 
 void TextureBuffer::update( const ImageSourceRef & imageSource )
 {
-    CGImageRef imageRef = cocoa::createCgImage( imageSource, ImageTarget::Options() );
+    CGImageRef imageRef = cocoa::createCgImage( imageSource );
     assert(mChannelOrder == imageSource->getChannelOrder());
     assert(mDataType == imageSource->getDataType());
     assert(mColorModel == imageSource->getColorModel());
-    updateWidthCGImage( imageRef );
+    updateWithCGImage( imageRef, mFormat.getFlipVertically() );
     CFRelease(imageRef);
 }
 
-void TextureBuffer::updateWidthCGImage( void * imageRef ) // CGImageRef
+static CGImageRef createCGImageFlippedVertically( CGImageRef imageRef )
+{
+    NSUInteger width = CGImageGetWidth((CGImageRef)imageRef);
+    NSUInteger height = CGImageGetHeight((CGImageRef)imageRef);
+    size_t bitsPerComponent = CGImageGetBitsPerComponent((CGImageRef)imageRef);
+    size_t bytesPerRow = CGImageGetBytesPerRow((CGImageRef)imageRef);
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace((CGImageRef)imageRef);
+    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo((CGImageRef)imageRef);
+    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo((CGImageRef)imageRef);
+    if ( alphaInfo == kCGImageAlphaNone )
+    {
+        alphaInfo = kCGImageAlphaNoneSkipLast;
+        bytesPerRow += bytesPerRow / 3;
+    }
+    CGContextRef context = CGBitmapContextCreate(nil,
+                                                 width,
+                                                 height,
+                                                 bitsPerComponent,
+                                                 bytesPerRow,
+                                                 colorSpace,
+                                                 bitmapInfo | alphaInfo );
+    
+    CGRect bounds = CGRectMake(0, 0, width, height);
+    CGContextClearRect(context, bounds);
+    CGContextTranslateCTM(context, 0, CGFloat(height));
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextDrawImage(context, bounds, (CGImageRef)imageRef);
+    CGImageRef imgRef = CGBitmapContextCreateImage(context);
+    assert(imgRef);
+    CGContextRelease(context);
+    return imgRef;
+}
+
+void TextureBuffer::updateWithCGImage( void * imageRef, bool flipVertically ) // CGImageRef
 {
     NSUInteger width = CGImageGetWidth((CGImageRef)imageRef);
     NSUInteger height = CGImageGetHeight((CGImageRef)imageRef);
     assert(width == getWidth());
     assert(height == getHeight());
+    
+    if ( flipVertically )
+    {
+        imageRef = createCGImageFlippedVertically((CGImageRef)imageRef);
+    }
     
     CFDataRef imgData = CGDataProviderCopyData( CGImageGetDataProvider( (CGImageRef)imageRef ) );
     
@@ -180,6 +218,11 @@ void TextureBuffer::updateWidthCGImage( void * imageRef ) // CGImageRef
     else
     {
         CFRelease(imgData);
+    }
+    
+    if ( flipVertically )
+    {
+        CGImageRelease((CGImageRef)imageRef);
     }
     
     if ( [IMPL mipmapLevelCount] > 1 )

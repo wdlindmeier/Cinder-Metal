@@ -29,12 +29,12 @@
 		91A4626DA1D24E3DAE19ADDA /* BlitEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 586B5D2180154121B965919D /* BlitEncoder.mm */; };
 		922225B1182340EEA117E85C /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B01807E0304B4EB1BA7FA1A6 /* CommandBuffer.mm */; };
 		9BD540119ED54934A989A3B8 /* ImageHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA3596C3BD87487BB74B6F9D /* ImageHelpers.mm */; };
+		A93D65EB1C20858500A76A79 /* VertexBufferApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A93D65EA1C20858500A76A79 /* VertexBufferApp.cpp */; };
 		A9AA4B0A1C0E8DA40023916E /* checker.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B051C0E8DA40023916E /* checker.png */; };
 		A9AA4B0B1C0E8DA40023916E /* checker_trans.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B061C0E8DA40023916E /* checker_trans.png */; };
 		A9AA4B0C1C0E8DA40023916E /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B071C0E8DA40023916E /* texture.jpg */; };
 		A9AA4B0D1C0E8DA40023916E /* texture.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B081C0E8DA40023916E /* texture.png */; };
 		A9AA4B0E1C0E8DA40023916E /* texture_trans.png in Resources */ = {isa = PBXBuildFile; fileRef = A9AA4B091C0E8DA40023916E /* texture_trans.png */; };
-		A9BDFEBC1C0CB92000A76FD0 /* MetalCubeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BDFEBB1C0CB92000A76FD0 /* MetalCubeApp.cpp */; };
 		A9BDFEBF1C0CBA0700A76FD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BDFEBE1C0CBA0700A76FD0 /* QuartzCore.framework */; };
 		A9BDFEC11C0CBA1000A76FD0 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BDFEC01C0CBA1000A76FD0 /* Metal.framework */; };
 		AF6BE77172E64354814BDA84 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA761922784575B2A8335E /* Shaders.metal */; };
@@ -83,7 +83,7 @@
 		7DD048FC7EB94A1D9DC0F81D /* RendererMetal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetal.mm; path = ../../../src/RendererMetal.mm; sourceTree = "<group>"; };
 		8523B681E85B4CC0BB4D1250 /* ComputeEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputeEncoder.mm; path = ../../../src/ComputeEncoder.mm; sourceTree = "<group>"; };
 		884B2E6828EB48DABC9FA568 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* MetalCube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalCube.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* VertexBuffer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VertexBuffer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F22AC7611C649C182A77805 /* RenderPassDescriptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPassDescriptor.h; path = ../../../include/RenderPassDescriptor.h; sourceTree = "<group>"; };
 		939AFFE20C784B2D8BC81CCD /* RenderEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderEncoder.h; path = ../../../include/RenderEncoder.h; sourceTree = "<group>"; };
 		98DF0EB4443E4FB1B276594C /* RendererMetalImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetalImpl.h; path = ../../../include/RendererMetalImpl.h; sourceTree = "<group>"; };
@@ -94,13 +94,13 @@
 		A76F7CCC4A3E4136B26BC02B /* ImageHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageHelpers.h; path = ../../../include/ImageHelpers.h; sourceTree = "<group>"; };
 		A92232881C1387FF00EF5D03 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedData.h; path = ../include/SharedData.h; sourceTree = "<group>"; };
 		A92F6CDC1C190CC300E55016 /* MetalEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalEnums.h; path = ../../../include/MetalEnums.h; sourceTree = "<group>"; };
+		A93D65EA1C20858500A76A79 /* VertexBufferApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VertexBufferApp.cpp; path = ../src/VertexBufferApp.cpp; sourceTree = "<group>"; };
 		A9AA4B051C0E8DA40023916E /* checker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker.png; sourceTree = "<group>"; };
 		A9AA4B061C0E8DA40023916E /* checker_trans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker_trans.png; sourceTree = "<group>"; };
 		A9AA4B071C0E8DA40023916E /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 		A9AA4B081C0E8DA40023916E /* texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture.png; sourceTree = "<group>"; };
 		A9AA4B091C0E8DA40023916E /* texture_trans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture_trans.png; sourceTree = "<group>"; };
-		A9BDFEBB1C0CB92000A76FD0 /* MetalCubeApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MetalCubeApp.cpp; path = ../src/MetalCubeApp.cpp; sourceTree = "<group>"; };
-		A9BDFEBD1C0CB93800A76FD0 /* MetalCube_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalCube_Prefix.pch; sourceTree = "<group>"; };
+		A9BDFEBD1C0CB93800A76FD0 /* VertexBuffer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer_Prefix.pch; sourceTree = "<group>"; };
 		A9BDFEBE1C0CBA0700A76FD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9BDFEC01C0CBA1000A76FD0 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		AB312FAD1EB44FB2B6D5A18B /* DepthState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DepthState.h; path = ../../../include/DepthState.h; sourceTree = "<group>"; };
@@ -156,8 +156,8 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				A9BDFEBB1C0CB92000A76FD0 /* MetalCubeApp.cpp */,
 				9CDA761922784575B2A8335E /* Shaders.metal */,
+				A93D65EA1C20858500A76A79 /* VertexBufferApp.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -194,7 +194,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* MetalCube.app */,
+				8D1107320486CEB800E47090 /* VertexBuffer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -245,7 +245,7 @@
 		29B97315FDCFA39411CA2CEA /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				A9BDFEBD1C0CB93800A76FD0 /* MetalCube_Prefix.pch */,
+				A9BDFEBD1C0CB93800A76FD0 /* VertexBuffer_Prefix.pch */,
 				A92232881C1387FF00EF5D03 /* SharedData.h */,
 			);
 			name = Headers;
@@ -321,9 +321,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* MetalCube */ = {
+		8D1107260486CEB800E47090 /* VertexBuffer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "MetalCube" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "VertexBuffer" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -333,10 +333,10 @@
 			);
 			dependencies = (
 			);
-			name = MetalCube;
+			name = VertexBuffer;
 			productInstallPath = "$(HOME)/Applications";
 			productName = MacMetalCube;
-			productReference = 8D1107320486CEB800E47090 /* MetalCube.app */;
+			productReference = 8D1107320486CEB800E47090 /* VertexBuffer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -346,7 +346,7 @@
 			isa = PBXProject;
 			attributes = {
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MetalCube" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "VertexBuffer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -360,7 +360,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* MetalCube */,
+				8D1107260486CEB800E47090 /* VertexBuffer */,
 			);
 		};
 /* End PBXProject section */
@@ -392,6 +392,7 @@
 				922225B1182340EEA117E85C /* CommandBuffer.mm in Sources */,
 				40D24D01E2D248F8BED6A410 /* CommandEncoder.mm in Sources */,
 				55273999F8214C648FDB8973 /* ComputeEncoder.mm in Sources */,
+				A93D65EB1C20858500A76A79 /* VertexBufferApp.cpp in Sources */,
 				FB803AE85F1F4A59B3833807 /* ComputePipelineState.mm in Sources */,
 				77B454F1F8714961A337BB37 /* DataBuffer.mm in Sources */,
 				E0B4EC9E513C43FD91B7B277 /* DepthState.mm in Sources */,
@@ -401,7 +402,6 @@
 				CDD5FDF63D07458FAC8AD5C1 /* RenderEncoder.mm in Sources */,
 				E5532362275A4386BF6834AE /* RendererMetal.mm in Sources */,
 				EA133CDD607D4BA89F0F67BF /* RendererMetalImpl.mm in Sources */,
-				A9BDFEBC1C0CB92000A76FD0 /* MetalCubeApp.cpp in Sources */,
 				2DFBB4B80CEE456AA8C8DB34 /* RenderPassDescriptor.mm in Sources */,
 				FD72E42E175F441699734CFB /* RenderPipelineState.mm in Sources */,
 				13BE67EA7F214F86905D0F78 /* SamplerState.mm in Sources */,
@@ -423,7 +423,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
+				GCC_PREFIX_HEADER = VertexBuffer_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -433,7 +433,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder_d.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = MetalCube;
+				PRODUCT_NAME = VertexBuffer;
 				SYMROOT = ./build;
 				WRAPPER_EXTENSION = app;
 			};
@@ -450,7 +450,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = MetalCube_Prefix.pch;
+				GCC_PREFIX_HEADER = VertexBuffer_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"NDEBUG=1",
 					"$(inherited)",
@@ -460,7 +460,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = MetalCube;
+				PRODUCT_NAME = VertexBuffer;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = ./build;
 				WRAPPER_EXTENSION = app;
@@ -508,7 +508,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "MetalCube" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "VertexBuffer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -517,7 +517,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MetalCube" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "VertexBuffer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

@@ -20,11 +20,11 @@ float cubeVertexData[216] =
 
 const static int kNumInflightBuffers = 3;
 
-class MetalCubeApp : public App
+class VertexBufferApp : public App
 {
   public:
     
-    MetalCubeApp() :
+    VertexBufferApp() :
     mRotation(0.f)
     {}
     
@@ -58,7 +58,7 @@ class MetalCubeApp : public App
     mtl::TextureBufferRef mTexture;
 };
 
-void MetalCubeApp::setup()
+void VertexBufferApp::setup()
 {
     mConstantDataBufferIndex = 0;
     
@@ -74,13 +74,13 @@ void MetalCubeApp::setup()
     loadAssets();
 }
 
-void MetalCubeApp::resize()
+void VertexBufferApp::resize()
 {
     mCamera = CameraPersp(getWindowWidth(), getWindowHeight(), 65.f, 0.1f, 100.f);
     mCamera.lookAt(vec3(0,0,-5), vec3(0));
 }
 
-void MetalCubeApp::loadAssets()
+void VertexBufferApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
     mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(ciUniforms_t) * kNumInflightBuffers,
@@ -94,8 +94,7 @@ void MetalCubeApp::loadAssets()
                                             mtl::DataBuffer::Format().label("Interleaved Vertices")); // the name of the buffer
     
     mPipelineInterleavedLighting = mtl::RenderPipelineState::create("lighting_vertex_interleaved",
-                                                                    "lighting_fragment",
-                                                                    mtl::RenderPipelineState::Format());
+                                                                    "lighting_fragment");
 
     // EXAMPLE 2
     // Use a geom source
@@ -106,8 +105,7 @@ void MetalCubeApp::loadAssets()
     mGeomBufferCube = mtl::VertexBuffer::create(ci::geom::Cube(), cubeLayout, mtl::DataBuffer::Format().label("Geom Cube"));
 
     mPipelineGeomLighting = mtl::RenderPipelineState::create("lighting_vertex_interleaved_src",
-                                                             "lighting_texture_fragment",
-                                                             mtl::RenderPipelineState::Format());
+                                                             "lighting_texture_fragment");
 
     // EXAMPLE 3
     // Use attribtue buffers
@@ -135,7 +133,7 @@ void MetalCubeApp::loadAssets()
                                                                mtl::RenderPipelineState::Format());
 }
 
-void MetalCubeApp::update()
+void VertexBufferApp::update()
 {
     mat4 modelMatrix = glm::rotate(mRotation, vec3(1.0f, 1.0f, 1.0f));
     mat4 normalMatrix = inverse(transpose(modelMatrix));
@@ -161,15 +159,16 @@ void MetalCubeApp::update()
     mAttribBufferCube->update(ci::geom::POSITION, newPositions);
 }
 
-void MetalCubeApp::draw()
+void VertexBufferApp::draw()
 {    
     mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
-    
+
+    uint constantsOffset = (uint)(mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex);
+
     // Enable depth
     renderEncoder.setDepthStencilState(mDepthEnabled);
 
-    uint constantsOffset = (uint)(mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex);
 
     // EXAMPLE 1
     // Using interleaved data
@@ -227,4 +226,4 @@ void MetalCubeApp::draw()
     mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }
 
-CINDER_APP( MetalCubeApp, RendererMetal( RendererMetal::Options().numInflightBuffers(kNumInflightBuffers) ) )
+CINDER_APP( VertexBufferApp, RendererMetal( RendererMetal::Options().numInflightBuffers(kNumInflightBuffers) ) )

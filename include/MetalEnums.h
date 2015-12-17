@@ -1,6 +1,6 @@
 //
 //  MetalEnums.h
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 12/9/15.
 //
@@ -10,7 +10,7 @@
 
 //
 //  MetalEnums.h
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 12/9/15.
 //

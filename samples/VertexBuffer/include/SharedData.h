@@ -1,6 +1,6 @@
 //
 //  SharedData.h
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 12/5/15.
 //

@@ -1,6 +1,6 @@
 //
 //  GeomTarget.cpp
-//  MetalCube
+//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/24/15.
 //
@@ -23,6 +23,43 @@ mPrimitive(primitive)
 ,mVertexLength(0)
 ,mIsIndexed(false)
 {}
+
+VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
+                                      const std::vector<ci::geom::Attrib> & orderedAttribs,
+                                      const DataBuffer::Format & format )
+{
+    size_t stride = 0;
+    
+    // If the user didn't request specific attributes, send them all in.
+    std::vector<ci::geom::Attrib> loadAttribs = orderedAttribs;
+    if ( loadAttribs.size() == 0 )
+    {
+        for ( ci::geom::Attrib a : source.getAvailableAttribs() )
+        {
+            loadAttribs.push_back(a);
+        }
+    }
+    
+    // First calculate the stride
+    for ( const ci::geom::Attrib & attrib : loadAttribs )
+    {
+        uint dimensions = source.getAttribDims(attrib);
+        stride += dimensions * sizeof(float);
+    }
+    
+    ci::geom::BufferLayout geomLayout;
+    size_t offset = 0;
+    // Next, create a BufferLayout for all available attributes
+    for ( const ci::geom::Attrib & attrib : loadAttribs )
+    {
+        uint dimensions = source.getAttribDims(attrib);
+        geomLayout.append(attrib, dimensions, stride, offset);
+        offset += dimensions * sizeof(float);
+    }
+    assert(offset == stride);
+    
+    return VertexBufferRef( new VertexBuffer( source, geomLayout, format ) );
+}
 
 VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
                                       const ci::geom::BufferLayout & layout,
@@ -58,7 +95,7 @@ mSource( source.clone() )
     mIndexBuffer = DataBuffer::create(mVertexLength * sizeof(unsigned int), NULL, indexFormat);
     
     // Create the buffer for the interleaved vert data
-    int numVertData = mSource->getNumVertices();
+    size_t numVertData = mSource->getNumVertices();
     size_t bufferLength = mBufferLayout.calcRequiredStorage( numVertData );
 
     DataBuffer::Format interleavedFormat = format;
@@ -82,13 +119,13 @@ mSource( source.clone() )
     }
 }
 
-void VertexBuffer::setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs )
-{
-    for ( ci::geom::Attrib a : requestedAttribs )
-    {
-        mRequestedAttribs[a] = geom::defaultShaderIndexForAttribute(a);
-    }
-}
+//void VertexBuffer::setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs )
+//{
+//    for ( ci::geom::Attrib a : requestedAttribs )
+//    {
+//        mRequestedAttribs[a] = geom::defaultShaderIndexForAttribute(a);
+//    }
+//}
 
 DataBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
 {
