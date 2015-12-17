@@ -12,6 +12,7 @@
 #include "SharedData.h"
 
 using namespace metal;
+using namespace cinder::mtl;
 
 typedef struct
 {

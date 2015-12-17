@@ -153,23 +153,32 @@ static CGImageRef createCGImageFlippedVertically( CGImageRef imageRef )
 {
     NSUInteger width = CGImageGetWidth((CGImageRef)imageRef);
     NSUInteger height = CGImageGetHeight((CGImageRef)imageRef);
-    size_t bitsPerComponent = CGImageGetBitsPerComponent((CGImageRef)imageRef);
-    size_t bytesPerRow = CGImageGetBytesPerRow((CGImageRef)imageRef);
     CGColorSpaceRef colorSpace = CGImageGetColorSpace((CGImageRef)imageRef);
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo((CGImageRef)imageRef);
-    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo((CGImageRef)imageRef);
-    if ( alphaInfo == kCGImageAlphaNone )
+    CGColorSpaceModel colorModel = CGColorSpaceGetModel(colorSpace);
+    CGContextRef context;
+    CGColorSpaceRef contextColorSpace;
+    if ( colorModel == kCGColorSpaceModelMonochrome )
     {
-        alphaInfo = kCGImageAlphaNoneSkipLast;
-        bytesPerRow += bytesPerRow / 3;
+        contextColorSpace = CGColorSpaceCreateDeviceGray();
+        context = CGBitmapContextCreate(nil,
+                                        width,
+                                        height,
+                                        8,
+                                        1 * width,
+                                        contextColorSpace,
+                                        kCGImageAlphaNone);
     }
-    CGContextRef context = CGBitmapContextCreate(nil,
+    else
+    {
+        contextColorSpace = CGColorSpaceCreateDeviceRGB();
+        context = CGBitmapContextCreate(nil,
                                                  width,
                                                  height,
-                                                 bitsPerComponent,
-                                                 bytesPerRow,
-                                                 colorSpace,
-                                                 bitmapInfo | alphaInfo );
+                                                 8,
+                                                 4 * width,
+                                                 contextColorSpace,
+                                                 kCGImageAlphaPremultipliedLast);
+    }
     
     CGRect bounds = CGRectMake(0, 0, width, height);
     CGContextClearRect(context, bounds);
@@ -179,6 +188,8 @@ static CGImageRef createCGImageFlippedVertically( CGImageRef imageRef )
     CGImageRef imgRef = CGBitmapContextCreateImage(context);
     assert(imgRef);
     CGContextRelease(context);
+    CGColorSpaceRelease(contextColorSpace);
+
     return imgRef;
 }
 

@@ -11,6 +11,7 @@
 #include "MetalConstants.h"
 
 using namespace metal;
+using namespace cinder::mtl;
 
 typedef struct
 {
@@ -34,6 +35,9 @@ vertex ColorInOut cube_vertex( device const VertexIn* vertexArray [[ buffer(ciBu
                                constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                unsigned int vid [[ vertex_id ]] )
 {
+    // NOTE: We're using index accessing rather than a MTLVertexDescriptor approach so we can
+    // use BufferLayouts to change the data layout on a per-model basis, rather than on a
+    // per-pipeline basis.
     uint vertIndex = indices[vid];
     VertexIn vert = vertexArray[vertIndex];
     ColorInOut out;

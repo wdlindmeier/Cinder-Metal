@@ -36,7 +36,7 @@ namespace cinder { namespace mtl {
             ,mDepth(1)
             ,mArrayLength(1)
             ,mUsage(TextureUsageShaderRead)
-            ,mFlipVertically(true)
+            ,mFlipVertically(false)
             {};
 
         public:
@@ -57,7 +57,7 @@ namespace cinder { namespace mtl {
             void setPixelFormat( PixelFormat pixelFormat ) { mPixelFormat = pixelFormat; };
             PixelFormat getPixelFormat() { return mPixelFormat; };
 
-            Format& flipVertically( bool flipVertically ) { setFlipVertically( flipVertically ); return *this; };
+            Format& flipVertically( bool flipVertically = true ) { setFlipVertically( flipVertically ); return *this; };
             void setFlipVertically( bool flipVertically ) { mFlipVertically = flipVertically; };
             bool getFlipVertically() { return mFlipVertically; };
 

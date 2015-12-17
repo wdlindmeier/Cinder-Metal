@@ -18,7 +18,7 @@ public:
     CameraPersp                     mCam;
     mat4                            mCubeRotation;
 
-    ciUniforms_t                    mUniforms;
+    mtl::ciUniforms_t               mUniforms;
 
     mtl::RenderPassDescriptorRef    mRenderDescriptor;
     mtl::VertexBufferRef            mCube;
@@ -35,12 +35,12 @@ void CubeApp::setup()
 
     mCam.lookAt( vec3( 3, 2, 4 ), vec3( 0 ) );
 
-    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(ciUniforms_t),
+    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(mtl::ciUniforms_t),
                                                      nullptr,
                                                      mtl::DataBuffer::Format().label("Uniform Buffer").isConstant(true));
     
     mTexture = mtl::TextureBuffer::create( loadImage(getAssetPath("texture.jpg") ),
-                                           mtl::TextureBuffer::Format().mipmapLevel(3) );
+                                           mtl::TextureBuffer::Format().mipmapLevel(3).flipVertically() );
 
     mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled(true) );
     

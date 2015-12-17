@@ -287,10 +287,10 @@ void ParticleSortingApp::draw()
     renderEncoder.setPipelineState(mPipelineParticles);
 
     // Pass in the unsorted particles
-    renderEncoder.setVertexBufferAtIndex(mParticlesUnsorted, ciBufferIndexInterleavedVerts);
+    renderEncoder.setVertexBufferAtIndex(mParticlesUnsorted, mtl::ciBufferIndexInterleavedVerts);
 
     // Pass in the sorted particle indices
-    renderEncoder.setVertexBufferAtIndex(mParticleIndices, ciBufferIndexIndicies);
+    renderEncoder.setVertexBufferAtIndex(mParticleIndices, mtl::ciBufferIndexIndicies);
 
     renderEncoder.setTexture(mTextureParticle);
     
