@@ -46,7 +46,7 @@ class VertexBufferApp : public App
     mtl::SamplerStateRef mSamplerMipMapped;
     mtl::DepthStateRef mDepthEnabled;
     
-    ciUniforms_t mUniforms;
+    mtl::ciUniforms_t mUniforms;
     mtl::DataBufferRef mDynamicConstantBuffer;
     uint8_t mConstantDataBufferIndex;
     
@@ -67,7 +67,7 @@ void VertexBufferApp::setup()
     
     mSamplerMipMapped = mtl::SamplerState::create();
     
-    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format().depthWriteEnabled(true));
+    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format().depthWriteEnabled());
     
     mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
                                                           .clearColor(ColorAf(1.f,0.f,0.f,1.f)));
@@ -83,9 +83,9 @@ void VertexBufferApp::resize()
 void VertexBufferApp::loadAssets()
 {
     // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(ciUniforms_t) * kNumInflightBuffers,
+    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(mtl::ciUniforms_t) * kNumInflightBuffers,
                                                      nullptr,
-                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant(true));
+                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant());
 
     // EXAMPLE 1
     // Use raw, interleaved vertex data
@@ -162,9 +162,9 @@ void VertexBufferApp::update()
 void VertexBufferApp::draw()
 {    
     mtl::ScopedRenderCommandBuffer renderBuffer;
-    mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
+    mtl::ScopedRenderEncoder & renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
-    uint constantsOffset = (uint)(mtlConstantSizeOf(ciUniforms_t) * mConstantDataBufferIndex);
+    uint constantsOffset = (uint)(mtlConstantSizeOf(mtl::ciUniforms_t) * mConstantDataBufferIndex);
 
     // Enable depth
     renderEncoder.setDepthStencilState(mDepthEnabled);

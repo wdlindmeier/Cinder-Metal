@@ -42,7 +42,7 @@ namespace cinder { namespace mtl {
             void setSampleCount( int sampleCount ) { mSampleCount = sampleCount; };
             int getSampleCount() { return mSampleCount; };
 
-            Format& blendingEnabled( bool blendingEnabled ) { setBlendingEnabled( blendingEnabled ); return *this; };
+            Format& blendingEnabled( bool blendingEnabled = true ) { setBlendingEnabled( blendingEnabled ); return *this; };
             void setBlendingEnabled( bool blendingEnabled ) { mBlendingEnabled = blendingEnabled; };
             bool getBlendingEnabled() { return mBlendingEnabled; };
 

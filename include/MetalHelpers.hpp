@@ -11,116 +11,128 @@
 #include <simd/simd.h>
 #include "glm/glm.hpp"
 
-// Conversions to simd types
+namespace cinder {
 
-matrix_float4x4 static inline toMtl( glm::mat4 mat )
-{
-    return *(matrix_float4x4 *)&mat;
+    // Conversions to simd types
+    
+    matrix_float4x4 static inline toMtl( glm::mat4 mat )
+    {
+        return *(matrix_float4x4 *)&mat;
+    }
+
+    glm::mat4 static inline fromMtl( matrix_float4x4 mat )
+    {
+        return *(glm::mat4 *)&mat;
+    }
+
+    matrix_float3x3 static inline toMtl( glm::mat3 mat )
+    {
+        return *(matrix_float3x3 *)&mat;
+    }
+
+    glm::mat3 static inline fromMtl( matrix_float3x3 mat )
+    {
+        return *(glm::mat3 *)&mat;
+    }
+
+    vector_float4 static inline toMtl( glm::vec4 vec )
+    {
+        return *(vector_float4 *)&vec;
+    }
+
+    vector_uint4 static inline toMtl( glm::uvec4 vec )
+    {
+        return *(vector_uint4 *)&vec;
+    }
+
+    vector_int4 static inline toMtl( glm::ivec4 vec )
+    {
+        return *(vector_int4 *)&vec;
+    }
+
+    glm::vec4 static inline fromMtl( vector_float4 vec )
+    {
+        return *(glm::vec4 *)&vec;
+    }
+
+    glm::uvec4 static inline fromMtl( vector_uint4 vec )
+    {
+        return *(glm::uvec4 *)&vec;
+    }
+
+    glm::ivec4 static inline fromMtl( vector_int4 vec )
+    {
+        return *(glm::ivec4 *)&vec;
+    }
+
+    vector_uint3 static inline toMtl( glm::uvec3 vec )
+    {
+        return *(vector_uint3 *)&vec;
+    }
+
+    vector_int3 static inline toMtl( glm::ivec3 vec )
+    {
+        return *(vector_int3 *)&vec;
+    }
+
+    vector_float3 static inline toMtl( glm::vec3 vec )
+    {
+        return *(vector_float3 *)&vec;
+    }
+
+    glm::vec3 static inline fromMtl( vector_float3 vec )
+    {
+        return *(glm::vec3 *)&vec;
+    }
+
+    glm::ivec3 static inline fromMtl( vector_int3 vec )
+    {
+        return *(glm::ivec3 *)&vec;
+    }
+
+    glm::uvec3 static inline fromMtl( vector_uint3 vec )
+    {
+        return *(glm::uvec3 *)&vec;
+    }
+
+    vector_int2 static inline toMtl( glm::ivec2 vec )
+    {
+        return *(vector_int2 *)&vec;
+    }
+
+    vector_uint2 static inline toMtl( glm::uvec2 vec )
+    {
+        return *(vector_uint2 *)&vec;
+    }
+
+    vector_float2 static inline toMtl( glm::vec2 vec )
+    {
+        return *(vector_float2 *)&vec;
+    }
+
+    glm::vec2 static inline fromMtl( vector_float2 vec )
+    {
+        return *(glm::vec2 *)&vec;
+    }
+
+    glm::uvec2 static inline fromMtl( vector_uint2 vec )
+    {
+        return *(glm::uvec2 *)&vec;
+    }
+
+    glm::ivec2 static inline fromMtl( vector_int2 vec )
+    {
+        return *(glm::ivec2 *)&vec;
+    }
+
 }
 
-glm::mat4 static inline fromMtl( matrix_float4x4 mat )
+namespace metal
 {
-    return *(glm::mat4 *)&mat;
-}
-
-matrix_float3x3 static inline toMtl( glm::mat3 mat )
-{
-    return *(matrix_float3x3 *)&mat;
-}
-
-glm::mat3 static inline fromMtl( matrix_float3x3 mat )
-{
-    return *(glm::mat3 *)&mat;
-}
-
-vector_float4 static inline toMtl( glm::vec4 vec )
-{
-    return *(vector_float4 *)&vec;
-}
-
-vector_uint4 static inline toMtl( glm::uvec4 vec )
-{
-    return *(vector_uint4 *)&vec;
-}
-
-vector_int4 static inline toMtl( glm::ivec4 vec )
-{
-    return *(vector_int4 *)&vec;
-}
-
-glm::vec4 static inline fromMtl( vector_float4 vec )
-{
-    return *(glm::vec4 *)&vec;
-}
-
-glm::uvec4 static inline fromMtl( vector_uint4 vec )
-{
-    return *(glm::uvec4 *)&vec;
-}
-
-glm::ivec4 static inline fromMtl( vector_int4 vec )
-{
-    return *(glm::ivec4 *)&vec;
-}
-
-vector_uint3 static inline toMtl( glm::uvec3 vec )
-{
-    return *(vector_uint3 *)&vec;
-}
-
-vector_int3 static inline toMtl( glm::ivec3 vec )
-{
-    return *(vector_int3 *)&vec;
-}
-
-vector_float3 static inline toMtl( glm::vec3 vec )
-{
-    return *(vector_float3 *)&vec;
-}
-
-glm::vec3 static inline fromMtl( vector_float3 vec )
-{
-    return *(glm::vec3 *)&vec;
-}
-
-glm::ivec3 static inline fromMtl( vector_int3 vec )
-{
-    return *(glm::ivec3 *)&vec;
-}
-
-glm::uvec3 static inline fromMtl( vector_uint3 vec )
-{
-    return *(glm::uvec3 *)&vec;
-}
-
-vector_int2 static inline toMtl( glm::ivec2 vec )
-{
-    return *(vector_int2 *)&vec;
-}
-
-vector_uint2 static inline toMtl( glm::uvec2 vec )
-{
-    return *(vector_uint2 *)&vec;
-}
-
-vector_float2 static inline toMtl( glm::vec2 vec )
-{
-    return *(vector_float2 *)&vec;
-}
-
-glm::vec2 static inline fromMtl( vector_float2 vec )
-{
-    return *(glm::vec2 *)&vec;
-}
-
-glm::uvec2 static inline fromMtl( vector_uint2 vec )
-{
-    return *(glm::uvec2 *)&vec;
-}
-
-glm::ivec2 static inline fromMtl( vector_int2 vec )
-{
-    return *(glm::ivec2 *)&vec;
+    // Map metal shader types to glm types so we can use shared structs between shaders and the app
+    typedef ci::vec4 packed_float4;
+    typedef ci::vec3 packed_float3;
+    typedef ci::vec2 packed_float2;
 }
 
 // For buffers in the constant address space, the offset must be aligned to 256 bytes in OS X.
@@ -138,11 +150,3 @@ glm::ivec2 static inline fromMtl( vector_int2 vec )
 #else
 #define mtlConstantSizeOf(T) mtlConstantBufferSize(sizeof(T))
 #endif
-
-// Map metal shader types to glm types so we can use shared structs between shaders and the app
-namespace metal
-{
-    #define packed_float4 glm::vec4
-    #define packed_float3 glm::vec3
-    #define packed_float2 glm::vec2
-}

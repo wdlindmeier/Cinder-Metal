@@ -279,6 +279,7 @@
 				EE79E2CFBB2D45BC99C66ABE /* MetalConstants.h */,
 				A93ECAE31F274BA0A7695983 /* MetalEnums.h */,
 				348198C51FDF44448F0A00EB /* MetalGeom.h */,
+				515CE8D628894923882BAE96 /* MetalHelpers.hpp */,
 				F39D09A083564730B895CCC5 /* RenderCommandBuffer.h */,
 				A2831E9D73E1439CBB50D167 /* RenderEncoder.h */,
 				75FDF3F5AF5B4D00AAED8BF7 /* RendererMetal.h */,
@@ -289,7 +290,6 @@
 				41A770091EED4232B7D411F7 /* Scope.h */,
 				1C20D25452C146179DDB8095 /* TextureBuffer.h */,
 				2B517DB208EC4A37A306E7F5 /* VertexBuffer.h */,
-				515CE8D628894923882BAE96 /* MetalHelpers.hpp */,
 			);
 			name = include;
 			sourceTree = "<group>";

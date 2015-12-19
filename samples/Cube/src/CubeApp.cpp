@@ -37,12 +37,12 @@ void CubeApp::setup()
 
     mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(mtl::ciUniforms_t),
                                                      nullptr,
-                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant(true));
+                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant());
     
     mTexture = mtl::TextureBuffer::create( loadImage(getAssetPath("texture.jpg") ),
                                            mtl::TextureBuffer::Format().mipmapLevel(3).flipVertically() );
 
-    mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled(true) );
+    mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled() );
     
     mPipeline = mtl::RenderPipelineState::create("cube_vertex", "cube_fragment");
     

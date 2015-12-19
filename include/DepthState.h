@@ -37,7 +37,7 @@ namespace cinder { namespace mtl {
             void setDepthCompareFunction( CompareFunction depthCompareFunction ) { mDepthCompareFunction = depthCompareFunction; };
             CompareFunction getDepthCompareFunction() { return mDepthCompareFunction; };
 
-            Format& depthWriteEnabled( bool depthWriteEnabled ) { setDepthWriteEnabled( depthWriteEnabled ); return *this; };
+            Format& depthWriteEnabled( bool depthWriteEnabled = true ) { setDepthWriteEnabled( depthWriteEnabled ); return *this; };
             void setDepthWriteEnabled( bool depthWriteEnabled ) { mDepthWriteEnabled = depthWriteEnabled; };
             bool getDepthWriteEnabled() { return mDepthWriteEnabled; };
 

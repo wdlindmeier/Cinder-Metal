@@ -89,11 +89,11 @@ void ParticleSortingApp::loadAssets()
 {
     mDynamicConstantBuffer = mtl::DataBuffer::create( mtlConstantSizeOf(myUniforms_t) * kNumInflightBuffers,
                                                       nullptr,
-                                                      mtl::DataBuffer::Format().label("Uniform Buffer").isConstant(true) );
+                                                      mtl::DataBuffer::Format().label("Uniform Buffer").isConstant() );
     
     mSortStateBuffer = mtl::DataBuffer::create( mtlConstantSizeOf(sortState_t) * kNumSortStateBuffers,
                                                 nullptr,
-                                                mtl::DataBuffer::Format().label("Sort State Buffer").isConstant(true) );
+                                                mtl::DataBuffer::Format().label("Sort State Buffer").isConstant() );
 
     // Set up the particles
     vector<Particle> particles;
@@ -119,7 +119,7 @@ void ParticleSortingApp::loadAssets()
     
     mPipelineParticles = mtl::RenderPipelineState::create("vertex_particles", "fragment_point_texture",
                                                           mtl::RenderPipelineState::Format()
-                                                          .blendingEnabled(true));
+                                                          .blendingEnabled());
     
     mTextureParticle = mtl::TextureBuffer::create(loadImage(getAssetPath("particle.png")));
     

@@ -10,11 +10,9 @@
 
 #include <simd/simd.h>
 
-using namespace metal;
-
 typedef struct
 {
-    packed_float3 position;
-    packed_float3 normal;
-    packed_float2 texCoord0;
+    metal::packed_float3 position;
+    metal::packed_float3 normal;
+    metal::packed_float2 texCoord0;
 } CubeVertex;

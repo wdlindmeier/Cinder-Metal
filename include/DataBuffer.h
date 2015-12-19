@@ -50,7 +50,7 @@ namespace cinder { namespace mtl {
             void setLabel( std::string label ) { mLabel = label; };
             std::string getLabel() { return mLabel; };
 
-            Format& isConstant( bool isConstant ) { setIsConstant( isConstant ); return *this; };
+            Format& isConstant( bool isConstant = true ) { setIsConstant( isConstant ); return *this; };
             void setIsConstant( bool isConstant ) { mIsConstant = isConstant; };
             bool getIsConstant() { return mIsConstant; };
 

@@ -12,6 +12,7 @@
 #include "SharedData.h"
 
 using namespace metal;
+using namespace cinder::mtl;
 
 // Variables in constant address space
 constant float3 light_position = float3(0.0, 1.0, -1.0);
