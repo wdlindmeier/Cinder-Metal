@@ -170,20 +170,20 @@ void VertexBufferApp::draw()
     renderEncoder.setDepthStencilState(mDepthEnabled);
 
 
-    // EXAMPLE 1
-    // Using interleaved data
-//    renderEncoder()->pushDebugGroup("Draw Interleaved Cube");
+//    // EXAMPLE 1
+//    // Using interleaved data
+//    renderEncoder.pushDebugGroup("Draw Interleaved Cube");
 //
 //    // Set the program
-//    renderEncoder()->setPipelineState( mPipelineInterleavedLighting );
+//    renderEncoder.setPipelineState( mPipelineInterleavedLighting );
 //
 //    // Set render state & resources
-//    renderEncoder()->setVertexBufferAtIndex( mVertexBuffer, ciBufferIndexInterleavedVerts );
-//    renderEncoder()->setVertexBufferAtIndex( mDynamicConstantBuffer, ciBufferIndexUniforms, constantsOffset );
+//    renderEncoder.setVertexBufferAtIndex( mVertexBuffer, mtl::ciBufferIndexInterleavedVerts );
+//    renderEncoder.setVertexBufferAtIndex( mDynamicConstantBuffer, mtl::ciBufferIndexUniforms, constantsOffset );
 //
 //    // Draw
-//    renderEncoder()->draw(mtl::geom::TRIANGLE, 36);
-//    renderEncoder()->popDebugGroup();
+//    renderEncoder.draw(mtl::geom::TRIANGLE, 36);
+//    renderEncoder.popDebugGroup();
 
     
     // EXAMPLE 2
