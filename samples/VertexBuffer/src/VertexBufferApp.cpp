@@ -162,7 +162,7 @@ void VertexBufferApp::update()
 void VertexBufferApp::draw()
 {    
     mtl::ScopedRenderCommandBuffer renderBuffer;
-    mtl::ScopedRenderEncoder & renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
+    mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
     uint constantsOffset = (uint)(mtlConstantSizeOf(mtl::ciUniforms_t) * mConstantDataBufferIndex);
 
