@@ -16,6 +16,14 @@ Once you've created an app using the Metal Basic template in TinderBox, follow t
 	Build Settings > Metal > Header Search Paths:
 	`$(CINDER_PATH)/blocks/Cinder-Metal/include`
 
+###Samples
+You could also start by editing one of the samples:
+
+* **Cube**: A bare-bones textured cube. Compare to Cinder's _opengl/Cube sample.  
+
+* **ParticleSorting**: Uses a compute shader to sort particles from back to front for alpha blending.  
+  
+* **VertexBuffer**: Demonstrates a few different approaches to loading geometry data into a buffer.
 
 ###Usage Notes
 
