@@ -1,5 +1,3 @@
-<img style="float:right; width:256px; margin:0 20px 20px 20px" src="https://raw.githubusercontent.com/wdlindmeier/Cinder-Metal/master/cinderblock.png">
-
 #Cinder-Metal
 
 ###Overview
