@@ -16,13 +16,13 @@ namespace cinder { namespace mtl {
     typedef std::shared_ptr<class ComputePipelineState> ComputePipelineStateRef;
     
     class ComputePipelineState
-    {
-        
+    {        
         public:
 
-        static ComputePipelineStateRef create( const std::string & computeShaderName )
+        static ComputePipelineStateRef create( const std::string & computeShaderName,
+                                               void * mtlLibrary = nullptr) // native <MTLLibrary>
         {
-            return ComputePipelineStateRef( new ComputePipelineState( computeShaderName ) );
+            return ComputePipelineStateRef( new ComputePipelineState( computeShaderName, mtlLibrary ) );
         }
 
         static ComputePipelineStateRef create( void * mtlComputePipelineState )
@@ -36,7 +36,7 @@ namespace cinder { namespace mtl {
         
         protected:
         
-        ComputePipelineState( const std::string & computeShaderName );
+        ComputePipelineState( const std::string & computeShaderName, void * mtlLibrary = nullptr );
         ComputePipelineState( void * mtlComputePipelineState );
         
         void * mImpl = NULL;  // <MTLComputePipelineState>

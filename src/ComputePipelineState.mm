@@ -22,12 +22,21 @@ mImpl(mtlComputePipelineState)
     CFRetain(mImpl);
 }
 
-ComputePipelineState::ComputePipelineState( const std::string & computeShaderName ) :
+ComputePipelineState::ComputePipelineState( const std::string & computeShaderName, void * mtlLibrary ) :
 mImpl(nullptr)
 {
     id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
-    id <MTLLibrary> library = [RendererMetalImpl sharedRenderer].library;
-    id<MTLFunction> kernelFunction = [library newFunctionWithName:[NSString stringWithUTF8String:computeShaderName.c_str()]];
+    id <MTLLibrary> library = (__bridge id<MTLLibrary>)mtlLibrary;
+    if ( library == nullptr )
+    {
+        library = [RendererMetalImpl sharedRenderer].library;
+    }
+    else
+    {
+        // Make sure the user passed in a valid library
+        assert( [library conformsToProtocol:@protocol(MTLLibrary)] );
+    }
+    id <MTLFunction> kernelFunction = [library newFunctionWithName:[NSString stringWithUTF8String:computeShaderName.c_str()]];
     NSError* error = NULL;
     mImpl = (__bridge_retained void *)[device newComputePipelineStateWithFunction:kernelFunction
                                                                             error:&error];

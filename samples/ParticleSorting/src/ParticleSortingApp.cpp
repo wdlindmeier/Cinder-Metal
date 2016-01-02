@@ -116,7 +116,7 @@ void ParticleSortingApp::loadAssets()
 
     // Make sure we've got the right number of indicies
     assert( float(indices.size()) == particles.size() / 4.0f );
-    
+
     mPipelineParticles = mtl::RenderPipelineState::create("vertex_particles", "fragment_point_texture",
                                                           mtl::RenderPipelineState::Format()
                                                           .blendingEnabled());

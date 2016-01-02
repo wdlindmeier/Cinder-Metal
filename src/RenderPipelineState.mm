@@ -14,23 +14,35 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
-RenderPipelineState::RenderPipelineState(const std::string & vertShaderName,
-                             const std::string & fragShaderName,
-                             Format format ) :
+RenderPipelineState::RenderPipelineState( const std::string & vertShaderName,
+                                          const std::string & fragShaderName,
+                                          Format format,
+                                          void * mtlLibrary ) :
 mFormat(format)
 ,mImpl(nullptr)
 {
     
     id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
-    id <MTLLibrary> library = [RendererMetalImpl sharedRenderer].library;
+    id <MTLLibrary> library = (__bridge id<MTLLibrary>)mtlLibrary;
+    if ( library == nullptr )
+    {
+        library = [RendererMetalImpl sharedRenderer].library;
+    }
+    else
+    {
+        // Make sure the user passed in a valid library
+        assert( [library conformsToProtocol:@protocol(MTLLibrary)] );
+    }
     
-    // Load the fragment program into the library
+    // Load the fragment program from the library
     id <MTLFunction> fragmentProgram = [library newFunctionWithName:
                                         [NSString stringWithUTF8String:fragShaderName.c_str()]];
+    assert(fragmentProgram != nil);
     
-    // Load the vertex program into the library
+    // Load the vertex program from the library
     id <MTLFunction> vertexProgram = [library newFunctionWithName:
                                       [NSString stringWithUTF8String:vertShaderName.c_str()]];
+    assert(vertexProgram != nil);
     
     // Create a reusable pipeline state
     MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];

@@ -95,9 +95,13 @@ namespace cinder { namespace mtl {
         
         static RenderPipelineStateRef create( const std::string & vertShaderName,
                                               const std::string & fragShaderName,
-                                              const Format & format = Format() )
+                                              const Format & format = Format(),
+                                              void * mtlLibrary = nullptr ) // native <MTLLibrary>
         {
-            return RenderPipelineStateRef( new RenderPipelineState(vertShaderName, fragShaderName, format) );
+            return RenderPipelineStateRef( new RenderPipelineState(vertShaderName,
+                                                                   fragShaderName,
+                                                                   format,
+                                                                   mtlLibrary) );
         }
         
         static RenderPipelineStateRef create( void * mtlRenderPipelineStateRef )
@@ -111,7 +115,11 @@ namespace cinder { namespace mtl {
 
     protected:
         
-        RenderPipelineState( const std::string & vertShaderName, const std::string & fragShaderName, Format format );
+        RenderPipelineState( const std::string & vertShaderName,
+                             const std::string & fragShaderName,
+                             Format format,
+                             void * mtlLibrary );
+        
         RenderPipelineState( void * mtlRenderPipelineStateRef );
 
         void * mImpl = NULL;  // <MTLRenderPipelineState>
