@@ -232,12 +232,21 @@ uint8_t VertexBuffer::getAttribDims( ci::geom::Attrib attr ) const
 
 void VertexBuffer::draw( RenderEncoder & renderEncoder )
 {
+    drawInstanced(renderEncoder, 1);
+}
+
+void VertexBuffer::drawInstanced( RenderEncoder & renderEncoder, size_t instanceCount )
+{
+    if ( instanceCount <= 0 )
+    {
+        return;
+    }
     if ( mVertexLength == 0 )
     {
         CI_LOG_E("Vertex length must be > 0");
     }
     assert( mVertexLength > 0 );
-    draw( renderEncoder, mVertexLength );
+    draw( renderEncoder, mVertexLength, 0, instanceCount );
 }
 
 void VertexBuffer::draw( RenderEncoder & renderEncoder,

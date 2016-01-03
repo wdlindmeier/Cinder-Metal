@@ -145,9 +145,7 @@ namespace cinder { namespace mtl {
         void *mImpl = NULL; // <MTLTexture>
         long mBytesPerRow;
         Format mFormat;
-        
-        ImageIo::ChannelOrder mChannelOrder;
-        ImageIo::ColorModel mColorModel;
+
         ImageIo::DataType mDataType;
 
     };

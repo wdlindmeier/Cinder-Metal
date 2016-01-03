@@ -248,9 +248,7 @@ ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat )
 ImageSourceTextureBuffer::ImageSourceTextureBuffer( TextureBuffer & texture )
 : ImageSourceMTLTexture( texture.getNative() )
 {
-    setChannelOrder( texture.mChannelOrder );
-    setColorModel( texture.mColorModel );
-    setDataType( texture.mDataType );
+    //...
 }
         
 ImageSourceMTLTexture::ImageSourceMTLTexture( void *texture )

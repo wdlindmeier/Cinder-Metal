@@ -39,8 +39,8 @@ void CubeApp::setup()
                                                      nullptr,
                                                      mtl::DataBuffer::Format().label("Uniform Buffer").isConstant());
     
-    mTexture = mtl::TextureBuffer::create( loadImage(getAssetPath("texture.jpg") ),
-                                           mtl::TextureBuffer::Format().mipmapLevel(3).flipVertically() );
+    mTexture = mtl::TextureBuffer::create(loadImage(getAssetPath("texture.jpg")),
+                                          mtl::TextureBuffer::Format().mipmapLevel(3).flipVertically());
 
     mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled() );
     

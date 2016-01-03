@@ -37,9 +37,7 @@ mFormat(format)
     desc.mipmapLevelCount = mFormat.getMipmapLevel();
     desc.sampleCount = mFormat.getSampleCount();
     
-    mChannelOrder = channelOrderFromPixelFormat(pxFormat);
     mDataType = dataTypeFromPixelFormat(pxFormat);
-    mColorModel = colorModelFromPixelFormat(pxFormat);
     mBytesPerRow = dataSizeForType( mDataType ) * width;
 
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device
@@ -54,9 +52,7 @@ mImpl(mtlTexture)
     CFRetain(mImpl);
     
     PixelFormat pxFormat = (PixelFormat)[IMPL pixelFormat];
-    mChannelOrder = channelOrderFromPixelFormat(pxFormat);
     mDataType = dataTypeFromPixelFormat(pxFormat);
-    mColorModel = colorModelFromPixelFormat(pxFormat);
     mBytesPerRow = dataSizeForType( mDataType ) * [IMPL width];
     
     mFormat = Format().pixelFormat(pxFormat);
@@ -69,13 +65,12 @@ mFormat(format)
 
     MTLPixelFormat pxFormat = (MTLPixelFormat)mFormat.getPixelFormat();
     
-    mChannelOrder = imageSource->getChannelOrder();
     mDataType = imageSource->getDataType();
-    mColorModel = imageSource->getColorModel();
+    ImageIo::ChannelOrder channelOrder = imageSource->getChannelOrder();
     
     if ( pxFormat == MTLPixelFormatInvalid )
     {
-        pxFormat = (MTLPixelFormat)pixelFormatFromChannelOrder(mChannelOrder, mDataType);
+        pxFormat = (MTLPixelFormat)pixelFormatFromChannelOrder(channelOrder, mDataType);
         mFormat.setPixelFormat((PixelFormat)pxFormat);
     }
     
@@ -142,9 +137,6 @@ void TextureBuffer::getPixelData( void *pixelBytes )
 void TextureBuffer::update( const ImageSourceRef & imageSource )
 {
     CGImageRef imageRef = cocoa::createCgImage( imageSource );
-    assert(mChannelOrder == imageSource->getChannelOrder());
-    assert(mDataType == imageSource->getDataType());
-    assert(mColorModel == imageSource->getColorModel());
     updateWithCGImage( imageRef, mFormat.getFlipVertically() );
     CFRelease(imageRef);
 }
@@ -215,7 +207,7 @@ void TextureBuffer::updateWithCGImage( void * imageRef, bool flipVertically ) //
     if ( numCalculatedChannels == 3 )
     {
         uint8_t *newRawData = createFourChannelFromThreeChannel( ivec2(width, height), mDataType, rawData);
-        CFRelease(imgData); // nee free( rawData );
+        CFRelease(imgData);
         shouldFreeData = true;
         rawData = newRawData;
     }

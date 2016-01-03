@@ -60,6 +60,7 @@ namespace cinder { namespace mtl {
         size_t getVertexLength(){ return mVertexLength; };
 
         void draw( RenderEncoder & renderEncoder );
+        void drawInstanced( RenderEncoder & renderEncoder, size_t instanceCount );
         void draw( RenderEncoder & renderEncoder, size_t vertexLength,
                    size_t vertexStart = 0, size_t instanceCount = 1 );
         
