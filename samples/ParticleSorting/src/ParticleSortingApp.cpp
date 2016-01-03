@@ -42,11 +42,9 @@ public:
     
     mtl::DepthStateRef mDepthEnabled;
     
-    myUniforms_t mUniforms;
-    mtl::DataBufferRef mDynamicConstantBuffer;
-    uint8_t mConstantDataBufferIndex;
-    uint mConstantsOffset;
-    
+    unsigned int mNumParticles;
+    mtl::UniformBlock<myUniforms_t> mUniforms;
+
     float mRotation;
     CameraPersp mCamera;
     vec2 mMousePos;
@@ -68,7 +66,7 @@ public:
 
 void ParticleSortingApp::setup()
 {
-    mConstantDataBufferIndex = 0;
+    mNumParticles = mUniforms.getData().numParticles;
     
     mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format()
                                             .depthCompareFunction(mtl::CompareFunctionLess)); // less than
@@ -87,10 +85,6 @@ void ParticleSortingApp::resize()
 
 void ParticleSortingApp::loadAssets()
 {
-    mDynamicConstantBuffer = mtl::DataBuffer::create( mtlConstantSizeOf(myUniforms_t) * kNumInflightBuffers,
-                                                      nullptr,
-                                                      mtl::DataBuffer::Format().label("Uniform Buffer").isConstant() );
-    
     mSortStateBuffer = mtl::DataBuffer::create( mtlConstantSizeOf(sortState_t) * kNumSortStateBuffers,
                                                 nullptr,
                                                 mtl::DataBuffer::Format().label("Sort State Buffer").isConstant() );
@@ -164,11 +158,13 @@ void ParticleSortingApp::update()
     mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
     
     // Set the uniform data
-    mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-    mUniforms.modelMatrix = toMtl(modelMatrix);
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
-    mConstantsOffset = mtlConstantSizeOf(myUniforms_t) * mConstantDataBufferIndex;
-    
+    mUniforms.updateData([&]( auto data )
+    {
+        data.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        data.modelMatrix = toMtl(modelMatrix);
+        return data;
+    });
+
     bitonicSort( false );
 }
 
@@ -180,7 +176,7 @@ void ParticleSortingApp::logComputeOutput( const myUniforms_t uniforms )
     Particle *particles = (Particle *)mParticlesUnsorted->contents();
 
     CI_LOG_I("Sorted Z values:");
-    for ( long i = 0; i < mUniforms.numParticles / 4; ++i )
+    for ( long i = 0; i < mNumParticles / 4; ++i )
     {
         ivec4 v = sortedIndices[i];
         for ( int j = 0; j < 4; ++j )
@@ -201,9 +197,9 @@ void ParticleSortingApp::calculateDepths( mtl::ScopedCommandBuffer & commandBuff
     computeEncoder.setPipelineState(mPipelineCalculateDepths);
     computeEncoder.setBufferAtIndex(mParticleDepths, 1);
     computeEncoder.setBufferAtIndex(mParticlesUnsorted, 2);
-    computeEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+    mUniforms.sendToEncoder(computeEncoder);
     
-    long arraySize = mUniforms.numParticles;
+    long arraySize = mNumParticles;
     computeEncoder.dispatch(ivec3(arraySize, 1, 1), ivec3(32,1,1));
 }
 
@@ -215,7 +211,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
     calculateDepths( commandBuffer );
 
     int passNum = 0;
-    uint arraySize = mUniforms.numParticles;
+    uint arraySize = mNumParticles;
     int numStages = 0;
     
     // Calculate the number of stages
@@ -229,7 +225,7 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
     // have already changed. This can be fixed by logging out in the completion handler.
     if ( shouldLogOutput )
     {
-        myUniforms_t uniformsCopy = mUniforms;
+        myUniforms_t uniformsCopy = mUniforms.getData();
         commandBuffer.addCompletionHandler([&]( void * mtlCommandBuffer )
         {
             logComputeOutput(uniformsCopy);
@@ -255,8 +251,8 @@ void ParticleSortingApp::bitonicSort( bool shouldLogOutput )
             computeEncoder.setBufferAtIndex(mParticleDepths, 2);
             computeEncoder.setBufferAtIndex(mSortStateBuffer, 3,
                                                mtlConstantSizeOf(sortState_t) * passNum);
-
-            computeEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+            
+            mUniforms.sendToEncoder(computeEncoder);
             
             size_t gsz = arraySize / (2*4);
             // NOTE: work size is not 1-per vector.
@@ -276,7 +272,7 @@ void ParticleSortingApp::draw()
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
     // Set uniforms
-    renderEncoder.setUniforms(mDynamicConstantBuffer, mConstantsOffset);
+    mUniforms.sendToEncoder(renderEncoder);
     
     // Enable depth
     renderEncoder.setDepthStencilState(mDepthEnabled);
@@ -294,11 +290,9 @@ void ParticleSortingApp::draw()
 
     renderEncoder.setTexture(mTextureParticle);
     
-    renderEncoder.draw(mtl::geom::POINT, mUniforms.numParticles);
+    renderEncoder.draw(mtl::geom::POINT, mNumParticles);
 
     renderEncoder.popDebugGroup();
-    
-    mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }
 
 CINDER_APP( ParticleSortingApp,

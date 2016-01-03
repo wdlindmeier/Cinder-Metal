@@ -42,6 +42,7 @@
 		A9EF82B21C07CF6000923994 /* CommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9EF82AE1C07CF6000923994 /* CommandEncoder.mm */; };
 		A9EF82B31C07CF6000923994 /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9EF82AF1C07CF6000923994 /* ComputePipelineState.mm */; };
 		A9EF82B51C07CF6000923994 /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9EF82B11C07CF6000923994 /* RenderPipelineState.mm */; };
+		A9F4A81E1C39E3C700B7B421 /* UniformBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9F4A81D1C39E3C700B7B421 /* UniformBlock.cpp */; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8F00FA186B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C725E000121DAC8F00FA186B /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8FFFFA18FF /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091FFFF /* ImageIO.framework */; };
@@ -113,6 +114,8 @@
 		A9EF82AE1C07CF6000923994 /* CommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandEncoder.mm; sourceTree = "<group>"; };
 		A9EF82AF1C07CF6000923994 /* ComputePipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputePipelineState.mm; sourceTree = "<group>"; };
 		A9EF82B11C07CF6000923994 /* RenderPipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderPipelineState.mm; sourceTree = "<group>"; };
+		A9F4A81C1C39E3C000B7B421 /* UniformBlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UniformBlock.hpp; sourceTree = "<group>"; };
+		A9F4A81D1C39E3C700B7B421 /* UniformBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UniformBlock.cpp; sourceTree = "<group>"; };
 		B1EDD2D86ED34798BCF5DADA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C727C02B121B400300192073 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -265,6 +268,7 @@
 				A96C28441BEE6D9B00D847C0 /* SamplerState.h */,
 				A90BF5D81BEA6DF5002C9257 /* Scope.h */,
 				A90BF5B01BE4257B002C9257 /* TextureBuffer.h */,
+				A9F4A81C1C39E3C000B7B421 /* UniformBlock.hpp */,
 				A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */,
 			);
 			name = include;
@@ -292,6 +296,7 @@
 				A96C28401BEE6D6000D847C0 /* SamplerState.mm */,
 				A90BF5DA1BEA6E09002C9257 /* Scope.mm */,
 				A90BF5B21BE42598002C9257 /* TextureBuffer.mm */,
+				A9F4A81D1C39E3C700B7B421 /* UniformBlock.cpp */,
 				A90BF5A91BDC29D1002C9257 /* VertexBuffer.cpp */,
 			);
 			name = src;
@@ -385,6 +390,7 @@
 				A916E34A1BD3182F0012573E /* ComputeEncoder.mm in Sources */,
 				A9EF82B21C07CF6000923994 /* CommandEncoder.mm in Sources */,
 				A96C28421BEE6D6000D847C0 /* SamplerState.mm in Sources */,
+				A9F4A81E1C39E3C700B7B421 /* UniformBlock.cpp in Sources */,
 				A90BF5DB1BEA6E09002C9257 /* Scope.mm in Sources */,
 				A92044A11BCB0AD000CC8AAB /* Shaders.metal in Sources */,
 				A90BF5AE1BDC3A86002C9257 /* MetalGeom.mm in Sources */,

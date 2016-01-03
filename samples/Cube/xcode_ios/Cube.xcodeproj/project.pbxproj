@@ -35,6 +35,7 @@
 		8EC8CA0CC7594309AF1E34C6 /* RenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29D4A567CDAB46468615C890 /* RenderEncoder.mm */; };
 		A006B85D7BAD42B580B76966 /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = EA6D498924394777A85E30D7 /* ComputePipelineState.mm */; };
 		A93D65F31C22822400A76A79 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93D65F21C22822400A76A79 /* Metal.framework */; };
+		A9F4A81B1C39E33B00B7B421 /* UniformBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9F4A81A1C39E33B00B7B421 /* UniformBlock.cpp */; };
 		C6F869047087420DA5E53DA2 /* MetalGeom.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8BCDBF7B545F4614B365E2F8 /* MetalGeom.mm */; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C725E001121DAC8F00FA186B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C725E000121DAC8F00FA186B /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -94,6 +95,8 @@
 		9BE063B5169B4634B3A76DE2 /* ComputeEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComputeEncoder.h; path = ../../../include/ComputeEncoder.h; sourceTree = "<group>"; };
 		A3C5D616081848AA83554C28 /* RenderPipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderPipelineState.mm; path = ../../../src/RenderPipelineState.mm; sourceTree = "<group>"; };
 		A93D65F21C22822400A76A79 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		A9F4A8191C39E32F00B7B421 /* UniformBlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UniformBlock.hpp; path = ../../../include/UniformBlock.hpp; sourceTree = "<group>"; };
+		A9F4A81A1C39E33B00B7B421 /* UniformBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UniformBlock.cpp; path = ../../../src/UniformBlock.cpp; sourceTree = "<group>"; };
 		B3399801009E428297B14EDB /* metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = metal.h; path = ../../../include/metal.h; sourceTree = "<group>"; };
 		B530A7DAC895422C854A5451 /* BlitEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlitEncoder.h; path = ../../../include/BlitEncoder.h; sourceTree = "<group>"; };
 		BFE1836EA895414E9FF49B5C /* ImageHelpers.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ImageHelpers.mm; path = ../../../src/ImageHelpers.mm; sourceTree = "<group>"; };
@@ -207,7 +210,6 @@
 		2A92325D1EE2418FB010FA94 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				5EA2C56FEA9D48069DA1AD1E /* VertexBuffer.cpp */,
 				EACA2CC11EFC49B884B7EF80 /* BlitEncoder.mm */,
 				78DD9AF745584C28A9C1FF1C /* CommandBuffer.mm */,
 				D0F4BD8765A041CEA8E7C122 /* CommandEncoder.mm */,
@@ -226,6 +228,8 @@
 				E542D824801F434489D20258 /* SamplerState.mm */,
 				401963E8F0D14D778FDD0E9F /* Scope.mm */,
 				46B3D31A6255454E9FCCFC6D /* TextureBuffer.mm */,
+				A9F4A81A1C39E33B00B7B421 /* UniformBlock.cpp */,
+				5EA2C56FEA9D48069DA1AD1E /* VertexBuffer.cpp */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -250,8 +254,8 @@
 		E2472422F340428C9EE4E6D3 /* Cinder-Metal */ = {
 			isa = PBXGroup;
 			children = (
-				2A92325D1EE2418FB010FA94 /* src */,
 				E44358DCD20941729F4BF1F0 /* include */,
+				2A92325D1EE2418FB010FA94 /* src */,
 			);
 			name = "Cinder-Metal";
 			sourceTree = "<group>";
@@ -271,6 +275,7 @@
 				62EC9C6ED4744331B46154EE /* MetalConstants.h */,
 				87BDAEF443B848ABB290520B /* MetalEnums.h */,
 				71B5C999B80649D4A1BDDFAC /* MetalGeom.h */,
+				8B8C9BCBE29D4FA8931A2C57 /* MetalHelpers.hpp */,
 				C2E20FDD7873476F9F1125A6 /* RenderCommandBuffer.h */,
 				439C8F7F1FFD483F95455EF6 /* RenderEncoder.h */,
 				F6AE7D78118C4985BAF64C28 /* RendererMetal.h */,
@@ -280,8 +285,8 @@
 				40C1F747B3624804AABDDDCB /* SamplerState.h */,
 				0265DD5D9A2041DF9774DBCE /* Scope.h */,
 				C589F40AB1C748E8AD8433F0 /* TextureBuffer.h */,
+				A9F4A8191C39E32F00B7B421 /* UniformBlock.hpp */,
 				95C8C9D4A5914F4BBD5FB5D5 /* VertexBuffer.h */,
-				8B8C9BCBE29D4FA8931A2C57 /* MetalHelpers.hpp */,
 			);
 			name = include;
 			sourceTree = "<group>";
@@ -372,6 +377,7 @@
 				6BC167AFBDDA4DF0AB80B2C3 /* RendererMetalImpl.mm in Sources */,
 				5EA441ED8CE14D5DAE3FC5D6 /* RenderPassDescriptor.mm in Sources */,
 				6B7D8B8A79AD4600A12CD90D /* RenderPipelineState.mm in Sources */,
+				A9F4A81B1C39E33B00B7B421 /* UniformBlock.cpp in Sources */,
 				F1C0BD375CF24A3785FB5050 /* SamplerState.mm in Sources */,
 				681F4D63EC114A56AF1B8FAC /* Scope.mm in Sources */,
 				FB832E182770401F8F65421C /* TextureBuffer.mm in Sources */,

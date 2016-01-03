@@ -20,6 +20,7 @@
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"
 #include "MetalGeom.h"
+#include "UniformBlock.hpp"
 #include "TextureBuffer.h"
 #include "MetalHelpers.hpp"
 #include "Scope.h"

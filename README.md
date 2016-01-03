@@ -33,8 +33,20 @@ Metal and OpenGL are mutually exclusive. To use Metal with your Cinder app,  rep
 **Buffers**  
 Most data is passed between the CPU and GPU as buffers. The Metal block uses the DataBuffer class for arbitrary data (e.g. uniforms and vertices) and the TextureBuffer class for image data.
 
-**Uniform Structs**  
-Uniforms are wrapped by structs and uploaded to the GPU with DataBuffers. Uniform buffers should be marked as "constant", which is an option in DataBuffer::Format. This also goes for any buffer data that's accessed concurrently in a shader (think uniforms, not attributes).
+**Uniform Blocks**  
+Uniforms generally take the form of structs shared by the App and shaders, and are uploaded to the GPU as a constant buffer. The `UniformBlock` class manages this for you. The struct data is modified in your `update()` function:  
+```c++  
+    mUniforms.updateData([&]( auto data )
+    {
+        data.normalMatrix = toMtl(normalMatrix);
+        data.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        return data;
+    });
+```  
+and then uploaded to the GPU by passing it to the Command Encoder in your `draw()` function:  
+```c++  
+	mUniforms.sendToEncoder(renderEncoder);
+```  
 
 **Scopes**  
 Command Buffers and Encoders are generally created, modified and committed once per draw loop. For convenience, the block has Scoped versions of these classes which will automatically be committed when they fall out of scope. 

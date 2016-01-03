@@ -139,12 +139,15 @@ namespace metal
 // In iOS, the offset must be aligned to the maximum of either the data type consumed by the vertex
 // shader function, or 4 bytes. A 16-byte alignment is always safe in iOS if you do not need to
 // worry about the data type.
+
+// mtlConstantBufferSize takes a number
 #if defined( CINDER_COCOA_TOUCH )
-#define mtlConstantBufferSize(T) size_t(16 * ceil(T / 16.0f))
+#define mtlConstantBufferSize(num) size_t(16 * ceil(num / 16.0f))
 #else
-#define mtlConstantBufferSize(T) size_t(256 * ceil(T / 256.0f))
+#define mtlConstantBufferSize(num) size_t(256 * ceil(num / 256.0f))
 #endif
 
+// mtlConstantBufferSize takes a type
 #if defined( CINDER_COCOA_TOUCH )
 #define mtlConstantSizeOf(T) mtlConstantBufferSize(sizeof(T))
 #else

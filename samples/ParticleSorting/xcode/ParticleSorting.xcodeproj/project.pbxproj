@@ -34,6 +34,7 @@
 		A9BDFEC31C0D356200A76FD0 /* ParticleSortingApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BDFEC21C0D356200A76FD0 /* ParticleSortingApp.cpp */; };
 		A9BDFEC51C0D356E00A76FD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BDFEC41C0D356E00A76FD0 /* QuartzCore.framework */; };
 		A9BDFEC71C0D357300A76FD0 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BDFEC61C0D357300A76FD0 /* Metal.framework */; };
+		A9F4A8141C39E1F200B7B421 /* UniformBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9F4A8131C39E1F200B7B421 /* UniformBlock.cpp */; };
 		AB9983F1885C4D548433C1AE /* DepthState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5BC619A1DD864CEA851B845B /* DepthState.mm */; };
 		BB63BD17EA8D4D37B3421C9D /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = B853451B6C0844498314C925 /* RenderPipelineState.mm */; };
 		C4250E435CA84D5BB5A8F62E /* RenderPassDescriptor.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE87EA95D3084E54A1894C80 /* RenderPassDescriptor.mm */; };
@@ -91,6 +92,8 @@
 		A9BDFEC41C0D356E00A76FD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9BDFEC61C0D357300A76FD0 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A9BDFEC81C0D35B100A76FD0 /* SharedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedData.h; path = ../include/SharedData.h; sourceTree = "<group>"; };
+		A9F4A8131C39E1F200B7B421 /* UniformBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UniformBlock.cpp; path = ../../../src/UniformBlock.cpp; sourceTree = "<group>"; };
+		A9F4A8151C39E20000B7B421 /* UniformBlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UniformBlock.hpp; path = ../../../include/UniformBlock.hpp; sourceTree = "<group>"; };
 		AFC8EAF25E134C62B23A98FC /* DataBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DataBuffer.mm; path = ../../../src/DataBuffer.mm; sourceTree = "<group>"; };
 		B267DEE36BED422DB1B9F348 /* RenderEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderEncoder.mm; path = ../../../src/RenderEncoder.mm; sourceTree = "<group>"; };
 		B63D27B9308E471899A13E99 /* Scope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Scope.h; path = ../../../include/Scope.h; sourceTree = "<group>"; };
@@ -251,6 +254,7 @@
 				51599BF7C9A247C296FEF7E4 /* SamplerState.h */,
 				B63D27B9308E471899A13E99 /* Scope.h */,
 				152C5E9B9D644D75883C946A /* TextureBuffer.h */,
+				A9F4A8151C39E20000B7B421 /* UniformBlock.hpp */,
 				B645E74057D243D8B032FA64 /* VertexBuffer.h */,
 			);
 			name = include;
@@ -277,6 +281,7 @@
 				8004C3DC632E4C59B8720E82 /* SamplerState.mm */,
 				C45FDBA59D9D4BA9B746FAD6 /* Scope.mm */,
 				58A854256EDA41F595256C5D /* TextureBuffer.mm */,
+				A9F4A8131C39E1F200B7B421 /* UniformBlock.cpp */,
 				E972C9E3FACB4126A9817E9D /* VertexBuffer.cpp */,
 			);
 			name = src;
@@ -371,6 +376,7 @@
 				84727379792F46B3BB957022 /* RendererMetalImpl.mm in Sources */,
 				C4250E435CA84D5BB5A8F62E /* RenderPassDescriptor.mm in Sources */,
 				BB63BD17EA8D4D37B3421C9D /* RenderPipelineState.mm in Sources */,
+				A9F4A8141C39E1F200B7B421 /* UniformBlock.cpp in Sources */,
 				E0921546A68A4E94B7FE1AA7 /* SamplerState.mm in Sources */,
 				1A81AEE1383B4AF3B24CC420 /* Scope.mm in Sources */,
 				C970E74C6B314EA68A45B912 /* TextureBuffer.mm in Sources */,

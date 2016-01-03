@@ -71,6 +71,8 @@ namespace cinder {
             void startDraw() override;
             void finishDraw() override;
             
+            int getNumInflightBuffers(){ return mOptions.getNumInflightBuffers(); };
+            
         protected:
 
             RendererMetalImpl *mImpl;

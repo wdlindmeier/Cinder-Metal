@@ -16,7 +16,8 @@ using namespace cinder::mtl;
 
 // Variables in constant address space
 constant float3 light_position = float3(0.0, 1.0, -1.0);
-constant float4 ambient_color  = float4(0.18, 0.24, 0.8, 1.0);
+constant float4 ambient_color_blue = float4(0.18, 0.24, 0.8, 1.0);
+constant float4 ambient_color_green = float4(0.24, 0.8, 0.18, 1.0);
 constant float4 diffuse_color  = float4(0.4, 0.4, 1.0, 1.0);
 // NOTE: samplers defined in the shader don't appear to have an anisotropy param
 constexpr sampler shaderSampler( coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
@@ -44,7 +45,8 @@ vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* v
 {
     ColorInOut out;
     
-    float4 in_position = float4(float3(vertex_array[vid].position), 1.0);
+    float3 offsetPosition = vertex_array[vid].position + float3(0,0,1.5);
+    float4 in_position = float4(offsetPosition, 1.0);
     out.position = uniforms.modelViewProjectionMatrix * in_position;
     
     float3 normal = vertex_array[vid].normal;
@@ -52,7 +54,7 @@ vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* v
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = ambient_color + diffuse_color * n_dot_l;
+    out.color = ambient_color_green + diffuse_color * n_dot_l;
 
     return out;
 }
@@ -97,7 +99,7 @@ vertex ColorInOut lighting_vertex_attrib_buffers( device const packed_float3* po
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = ambient_color + diffuse_color * n_dot_l;
+    out.color = ambient_color_blue + diffuse_color * n_dot_l;
 
     return out;
 }

@@ -46,10 +46,8 @@ class VertexBufferApp : public App
     mtl::SamplerStateRef mSamplerMipMapped;
     mtl::DepthStateRef mDepthEnabled;
     
-    mtl::ciUniforms_t mUniforms;
-    mtl::DataBufferRef mDynamicConstantBuffer;
-    uint8_t mConstantDataBufferIndex;
-    
+    mtl::UniformBlock<mtl::ciUniforms_t> mUniforms;
+
     float mRotation;
     CameraPersp mCamera;
     
@@ -60,7 +58,6 @@ class VertexBufferApp : public App
 
 void VertexBufferApp::setup()
 {
-    mConstantDataBufferIndex = 0;
     
     mTexture = mtl::TextureBuffer::create(loadImage(getAssetPath("checker.png")),
                                           mtl::TextureBuffer::Format().mipmapLevel(4));
@@ -82,11 +79,6 @@ void VertexBufferApp::resize()
 
 void VertexBufferApp::loadAssets()
 {
-    // Allocate one region of memory for the uniform buffer
-    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(mtl::ciUniforms_t) * kNumInflightBuffers,
-                                                     nullptr,
-                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant());
-
     // EXAMPLE 1
     // Use raw, interleaved vertex data
     mVertexBuffer = mtl::DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
@@ -141,12 +133,13 @@ void VertexBufferApp::update()
     mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
 
     // Pass the matrices into the uniform block
-    mUniforms.normalMatrix = toMtl(normalMatrix);
-    mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-    mUniforms.elapsedSeconds = getElapsedSeconds();
-    
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, mConstantDataBufferIndex);
-    
+    mUniforms.updateData([&]( auto data )
+    {
+        data.normalMatrix = toMtl(normalMatrix);
+        data.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        return data;
+    });
+
     mRotation += 0.01f;
 
     // Update the verts to grow and shrink w/ time
@@ -164,29 +157,28 @@ void VertexBufferApp::draw()
     mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
-    uint constantsOffset = (uint)(mtlConstantSizeOf(mtl::ciUniforms_t) * mConstantDataBufferIndex);
-
     // Enable depth
     renderEncoder.setDepthStencilState(mDepthEnabled);
 
-
-//    // EXAMPLE 1
-//    // Using interleaved data
-//    renderEncoder.pushDebugGroup("Draw Interleaved Cube");
-//
-//    // Set the program
-//    renderEncoder.setPipelineState( mPipelineInterleavedLighting );
-//
-//    // Set render state & resources
-//    renderEncoder.setVertexBufferAtIndex( mVertexBuffer, mtl::ciBufferIndexInterleavedVerts );
-//    renderEncoder.setVertexBufferAtIndex( mDynamicConstantBuffer, mtl::ciBufferIndexUniforms, constantsOffset );
-//
-//    // Draw
-//    renderEncoder.draw(mtl::geom::TRIANGLE, 36);
-//    renderEncoder.popDebugGroup();
-
+    // Pass in the uniforms
+    mUniforms.sendToEncoder(renderEncoder);
     
-    // EXAMPLE 2
+    // EXAMPLE 1 (Green)
+    // Using interleaved data
+    renderEncoder.pushDebugGroup("Draw Interleaved Cube");
+
+    // Set the program
+    renderEncoder.setPipelineState( mPipelineInterleavedLighting );
+
+    // Set render state & resources
+    renderEncoder.setVertexBufferAtIndex( mVertexBuffer, mtl::ciBufferIndexInterleavedVerts );
+
+    // Draw
+    renderEncoder.draw(mtl::geom::TRIANGLE, 36);
+
+    renderEncoder.popDebugGroup();
+    
+    // EXAMPLE 2 (Checkered)
     // Using Cinder geom to draw the cube
     
     // Geom Target
@@ -194,8 +186,6 @@ void VertexBufferApp::draw()
     
     // Set the program
     renderEncoder.setPipelineState(mPipelineGeomLighting);
-    
-    renderEncoder.setUniforms(mDynamicConstantBuffer, constantsOffset);
 
     // Set the texture
     renderEncoder.setTexture(mTexture);
@@ -208,7 +198,7 @@ void VertexBufferApp::draw()
 
     renderEncoder.popDebugGroup();
     
-    // EXAMPLE 3
+    // EXAMPLE 3 (Blue)
     // Using attrib buffers to draw the cube
     
     // Geom Target
@@ -217,13 +207,9 @@ void VertexBufferApp::draw()
     // Set the program
     renderEncoder.setPipelineState(mPipelineAttribLighting);
     
-    renderEncoder.setUniforms(mDynamicConstantBuffer, constantsOffset);
-
     mAttribBufferCube->draw(renderEncoder, 36);
     
     renderEncoder.popDebugGroup();
-    
-    mConstantDataBufferIndex = (mConstantDataBufferIndex + 1) % kNumInflightBuffers;
 }
 
 CINDER_APP( VertexBufferApp, RendererMetal( RendererMetal::Options().numInflightBuffers(kNumInflightBuffers) ) )

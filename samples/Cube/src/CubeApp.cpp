@@ -18,13 +18,11 @@ public:
     CameraPersp                     mCam;
     mat4                            mCubeRotation;
 
-    mtl::ciUniforms_t               mUniforms;
-
+    mtl::UniformBlock<mtl::ciUniforms_t> mUniforms;
     mtl::RenderPassDescriptorRef    mRenderDescriptor;
     mtl::VertexBufferRef            mCube;
     mtl::TextureBufferRef           mTexture;
     mtl::RenderPipelineStateRef     mPipeline;
-    mtl::DataBufferRef              mDynamicConstantBuffer;
     mtl::DepthStateRef              mDepthEnabled;
     
 };
@@ -35,10 +33,6 @@ void CubeApp::setup()
 
     mCam.lookAt( vec3( 3, 2, 4 ), vec3( 0 ) );
 
-    mDynamicConstantBuffer = mtl::DataBuffer::create(mtlConstantSizeOf(mtl::ciUniforms_t),
-                                                     nullptr,
-                                                     mtl::DataBuffer::Format().label("Uniform Buffer").isConstant());
-    
     mTexture = mtl::TextureBuffer::create(loadImage(getAssetPath("texture.jpg")),
                                           mtl::TextureBuffer::Format().mipmapLevel(3).flipVertically());
 
@@ -68,10 +62,12 @@ void CubeApp::update()
     mat4 modelViewProjectionMatrix = mCam.getProjectionMatrix() * modelViewMatrix;
     
     // Pass the matrices into the uniform block
-    mUniforms.normalMatrix = toMtl(normalMatrix);
-    mUniforms.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-    
-    mDynamicConstantBuffer->setDataAtIndex(&mUniforms, 0);
+    mUniforms.updateData([&]( auto data )
+    {
+        data.normalMatrix = toMtl(normalMatrix);
+        data.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        return data;
+    });
 }
 
 void CubeApp::draw()
@@ -83,7 +79,7 @@ void CubeApp::draw()
 
     renderEncoder.setPipelineState(mPipeline);
     
-    renderEncoder.setUniforms(mDynamicConstantBuffer);
+    mUniforms.sendToEncoder(renderEncoder);
     
     renderEncoder.setTexture(mTexture);
     
