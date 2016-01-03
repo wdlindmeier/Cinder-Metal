@@ -86,7 +86,7 @@ mSource( source.clone() )
     if ( !hasIndices )
     {
         mVertexLength = mSource->getNumVertices();
-        CI_LOG_I("Source doesnt have indices. Creating one for each vert");
+        // CI_LOG_I("Source doesnt have indices. Creating one for each vert");
     }
 
     // Create the data buffer for the indices
@@ -119,14 +119,6 @@ mSource( source.clone() )
     }
 }
 
-//void VertexBuffer::setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs )
-//{
-//    for ( ci::geom::Attrib a : requestedAttribs )
-//    {
-//        mRequestedAttribs[a] = geom::defaultShaderIndexForAttribute(a);
-//    }
-//}
-
 DataBufferRef VertexBuffer::getBufferForAttribute( const ci::geom::Attrib attr )
 {
     return mAttributeBuffers[attr];
@@ -154,7 +146,7 @@ void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, int sha
     mRequestedAttribs[attr] = shaderBufferIndex;
 }
 
-void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COOR_0 etc
+void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COORD_0 etc
                                uint8_t dims, // Number of floats
                                size_t strideBytes, // Stride. See srcData
                                const float *srcData, // Data representing the attribute ONLY. Not interleaved w/ other attrs

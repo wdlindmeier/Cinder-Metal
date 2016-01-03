@@ -28,13 +28,13 @@ namespace cinder { namespace mtl {
         static VertexBufferRef create( const ci::geom::Source & source,
                                        const std::vector<ci::geom::Attrib> & orderedAttribs = {{}},
                                        const DataBuffer::Format & format = DataBuffer::Format()
-                                                                           .label("Vertex Buffer") );
+                                                                           .label("Vert Buf") );
 
         // The DataBuffer::Format will be used to create the index and interleaved data buffers.
         static VertexBufferRef create( const ci::geom::Source & source,
                                        const ci::geom::BufferLayout & layout,
                                        const DataBuffer::Format & format = DataBuffer::Format()
-                                                                            .label("Vertex Buffer") );
+                                                                            .label("Vert Buf") );
         virtual ~VertexBuffer(){}
         
         ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
