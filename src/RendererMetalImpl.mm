@@ -14,6 +14,7 @@
 #import "metal.h"
 #import "RendererMetal.h"
 #import "RendererMetalImpl.h"
+#include "cinder/Log.h"
 
 #if defined( CINDER_MAC )
 #import <AppKit/AppKit.h>
@@ -106,6 +107,8 @@ static RendererMetalImpl * SharedRenderer = nil;
     _metalLayer.device = self.device;
     
     int numInflightBuffers = options.getNumInflightBuffers();
+    CI_LOG_I("Creating renderer with " << numInflightBuffers << " inflight buffers.");
+
     if ( numInflightBuffers > 1 )
     {
         mInflightSemaphore = dispatch_semaphore_create(numInflightBuffers);

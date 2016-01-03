@@ -3,7 +3,6 @@
 #include "RenderEncoder.h"
 #include "ImageHelpers.h"
 #include "cinder/ip/resize.h"
-#include "cinder/Log.h"
 
 using namespace cinder;
 using namespace cinder::app;
@@ -12,9 +11,7 @@ using namespace cinder::mtl;
 RendererMetal::RendererMetal( const Options & options ) :
 mImpl( nullptr )
 ,mOptions(options)
-{
-    CI_LOG_I("Creating renderer with " << mOptions.getNumInflightBuffers() << " inflight buffers.");
-}
+{}
 
 #if defined( CINDER_COCOA )
 #if defined( CINDER_MAC )
