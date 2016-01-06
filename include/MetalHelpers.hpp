@@ -15,114 +15,123 @@ namespace cinder {
 
     // Conversions to simd types
     
-    matrix_float4x4 static inline toMtl( glm::mat4 mat )
+    template <typename T, typename U >
+    const U static inline convert( const T & t )
     {
-        return *(matrix_float4x4 *)&mat;
+        U tmp;
+        memcpy(&tmp, &t, sizeof(U));
+        U ret = tmp;
+        return ret;
+    }
+    
+    const matrix_float4x4 static inline toMtl( const glm::mat4 & mat )
+    {
+        return convert<glm::mat4, matrix_float4x4>(mat);
     }
 
-    glm::mat4 static inline fromMtl( matrix_float4x4 mat )
+    const glm::mat4 static inline fromMtl( const matrix_float4x4 & mat )
     {
-        return *(glm::mat4 *)&mat;
+        return convert<matrix_float4x4, glm::mat4>(mat);
     }
 
-    matrix_float3x3 static inline toMtl( glm::mat3 mat )
+    const matrix_float3x3 static inline toMtl( const glm::mat3 & mat )
     {
-        return *(matrix_float3x3 *)&mat;
+        return convert<glm::mat3, matrix_float3x3>(mat);
     }
 
-    glm::mat3 static inline fromMtl( matrix_float3x3 mat )
+    const glm::mat3 static inline fromMtl( const matrix_float3x3 & mat )
     {
-        return *(glm::mat3 *)&mat;
+        return convert<matrix_float3x3, glm::mat3>(mat);
     }
 
-    vector_float4 static inline toMtl( glm::vec4 vec )
+    const vector_float4 static inline toMtl( const glm::vec4 & vec )
     {
-        return *(vector_float4 *)&vec;
+        return convert<glm::vec4, vector_float4>(vec);
     }
 
-    vector_uint4 static inline toMtl( glm::uvec4 vec )
+    const vector_uint4 static inline toMtl( const glm::uvec4 & vec )
     {
-        return *(vector_uint4 *)&vec;
+        return convert<glm::uvec4, vector_uint4>(vec);
     }
 
-    vector_int4 static inline toMtl( glm::ivec4 vec )
+    const vector_int4 static inline toMtl( const glm::ivec4 & vec )
     {
-        return *(vector_int4 *)&vec;
+        return convert<glm::ivec4, vector_int4>(vec);
     }
 
-    glm::vec4 static inline fromMtl( vector_float4 vec )
+    const glm::vec4 static inline fromMtl( const vector_float4 & vec )
     {
-        return *(glm::vec4 *)&vec;
+        return convert<vector_float4, glm::vec4>(vec);
     }
 
-    glm::uvec4 static inline fromMtl( vector_uint4 vec )
+    const glm::uvec4 static inline fromMtl( const vector_uint4 & vec )
     {
-        return *(glm::uvec4 *)&vec;
+        return convert<vector_uint4, glm::uvec4>(vec);
     }
 
-    glm::ivec4 static inline fromMtl( vector_int4 vec )
+    const glm::ivec4 static inline fromMtl( const vector_int4 & vec )
     {
-        return *(glm::ivec4 *)&vec;
+        return convert<vector_int4, glm::ivec4>(vec);
     }
 
-    vector_uint3 static inline toMtl( glm::uvec3 vec )
+    const vector_uint3 static inline toMtl( const glm::uvec3 & vec )
     {
-        return *(vector_uint3 *)&vec;
+        return convert<glm::uvec3, vector_uint3>(vec);
     }
 
-    vector_int3 static inline toMtl( glm::ivec3 vec )
+    const vector_int3 static inline toMtl( const glm::ivec3 & vec )
     {
-        return *(vector_int3 *)&vec;
+        return convert<glm::ivec3, vector_int3>(vec);
     }
 
-    vector_float3 static inline toMtl( glm::vec3 vec )
+    const vector_float3 static inline toMtl( const glm::vec3 & vec )
     {
-        return *(vector_float3 *)&vec;
+        return convert<glm::vec3, vector_float3>(vec);
     }
 
-    glm::vec3 static inline fromMtl( vector_float3 vec )
+    const glm::vec3 static inline fromMtl( const vector_float3 & vec )
     {
-        return *(glm::vec3 *)&vec;
+        return convert<vector_float3, glm::vec3>(vec);
     }
 
-    glm::ivec3 static inline fromMtl( vector_int3 vec )
+    const glm::ivec3 static inline fromMtl( const vector_int3 & vec )
     {
-        return *(glm::ivec3 *)&vec;
+        return convert<vector_int3, glm::ivec3>(vec);
     }
 
-    glm::uvec3 static inline fromMtl( vector_uint3 vec )
+    const glm::uvec3 static inline fromMtl( const vector_uint3 & vec )
     {
-        return *(glm::uvec3 *)&vec;
+        return convert<vector_uint3, glm::uvec3>(vec);
     }
 
-    vector_int2 static inline toMtl( glm::ivec2 vec )
+    const vector_int2 static inline toMtl( const glm::ivec2 & vec )
     {
-        return *(vector_int2 *)&vec;
+        return convert<glm::ivec2, vector_int2>(vec);
     }
 
-    vector_uint2 static inline toMtl( glm::uvec2 vec )
+    const vector_uint2 static inline toMtl( const glm::uvec2 & vec )
     {
-        return *(vector_uint2 *)&vec;
+        return convert<glm::uvec2, vector_uint2>(vec);
     }
 
-    vector_float2 static inline toMtl( glm::vec2 vec )
+    const vector_float2 static inline toMtl( const glm::vec2 & vec )
     {
-        return *(vector_float2 *)&vec;
+        return convert<glm::vec2, vector_float2>(vec);
     }
 
-    glm::vec2 static inline fromMtl( vector_float2 vec )
+    const glm::vec2 static inline fromMtl( const vector_float2 & vec )
     {
-        return *(glm::vec2 *)&vec;
+        return convert<vector_float2, glm::vec2>(vec);
     }
 
-    glm::uvec2 static inline fromMtl( vector_uint2 vec )
+    const glm::uvec2 static inline fromMtl( const vector_uint2 & vec )
     {
-        return *(glm::uvec2 *)&vec;
+        return convert<vector_uint2, glm::uvec2>(vec);
     }
 
-    glm::ivec2 static inline fromMtl( vector_int2 vec )
+    const glm::ivec2 static inline fromMtl( const vector_int2 & vec )
     {
-        return *(glm::ivec2 *)&vec;
+        return convert<vector_int2, glm::ivec2>(vec);
     }
 
 }
