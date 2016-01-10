@@ -9,16 +9,18 @@
 #pragma once
 
 #include "cinder/Cinder.h"
+
+#include "apple/MetalEnums.h"
+#include "apple/RenderPipelineState.h"
+#include "apple/CommandBuffer.h"
+#include "apple/DataBuffer.h"
+#include "apple/RenderPassDescriptor.h"
+#include "apple/RenderEncoder.h"
+#include "apple/ComputeEncoder.h"
+#include "apple/BlitEncoder.h"
+
 #include "MetalConstants.h"
-#include "MetalEnums.h"
 #include "RendererMetal.h"
-#include "RenderPipelineState.h"
-#include "CommandBuffer.h"
-#include "DataBuffer.h"
-#include "RenderPassDescriptor.h"
-#include "RenderEncoder.h"
-#include "ComputeEncoder.h"
-#include "BlitEncoder.h"
 #include "MetalGeom.h"
 #include "UniformBlock.hpp"
 #include "TextureBuffer.h"
