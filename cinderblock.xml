@@ -14,11 +14,14 @@
 		<supports os="macosx" />
 	
 		<sourcePattern>src/*.cpp</sourcePattern>	
-		<sourcePattern>src/*.mm</sourcePattern>
-		
+		<sourcePattern>src/*.mm</sourcePattern>		
+		<sourcePattern>src/apple/*.cpp</sourcePattern>	
+		<sourcePattern>src/apple/*.mm</sourcePattern>
+
 		<headerPattern>include/*.h</headerPattern>	
+		<headerPattern>include/apple/*.h</headerPattern>
 		<headerPattern>include/*.hpp</headerPattern>
-		
+		<headerPattern>include/apple/*.hpp</headerPattern>
 	</block>
 
 	<template>templates/MetalTemplate/template.xml</template>

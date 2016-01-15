@@ -21,6 +21,7 @@ VertexBufferRef VertexBuffer::create( const ci::mtl::geom::Primitive primitive )
 VertexBuffer::VertexBuffer( const ci::mtl::geom::Primitive primitive ) :
 mPrimitive(primitive)
 ,mVertexLength(0)
+,mIndexLength(0)
 ,mIsIndexed(false)
 {}
 
@@ -73,26 +74,22 @@ VertexBuffer::VertexBuffer( const ci::geom::Source & source,
                             DataBuffer::Format format ) :
 mSource( source.clone() )
 ,mVertexLength(0)
+,mIndexLength(0)
 ,mBufferLayout(layout)
 ,mIsIndexed(true)
 {
-    // Is there any reason to keep the source around?
+    // Is there any reason to keep the Source around?
     mPrimitive = geom::mtlPrimitiveTypeFromGeom( mSource->getPrimitive() );
-    mVertexLength = mSource->getNumIndices();
-    
-    // Currently assuming sources have indices
-    bool hasIndices = mVertexLength > 0;
-
-    if ( !hasIndices )
-    {
-        mVertexLength = mSource->getNumVertices();
-        // CI_LOG_I("Source doesnt have indices. Creating one for each vert");
-    }
+    mVertexLength = mSource->getNumVertices();
+    // NOTE: If there are no indices, we'll just generate them; 1 for each vert
+    size_t numSourceIndices = mSource->getNumIndices();
+    mIndexLength = std::max<size_t>(numSourceIndices, mVertexLength);
 
     // Create the data buffer for the indices
     DataBuffer::Format indexFormat = format;
     indexFormat.setLabel(format.getLabel() + ": Indices");
-    mIndexBuffer = DataBuffer::create(mVertexLength * sizeof(unsigned int), NULL, indexFormat);
+    //size_t indexLength = std::max<size_t>(mIndexLength, mVertexLength);
+    mIndexBuffer = DataBuffer::create(mIndexLength * sizeof(unsigned int), NULL, indexFormat);
     
     // Create the buffer for the interleaved vert data
     size_t numVertData = mSource->getNumVertices();
@@ -113,7 +110,7 @@ mSource( source.clone() )
     
     mInterleavedData->didModifyRange(0, bufferLength);
     
-    if ( !hasIndices )
+    if ( numSourceIndices <= 0 )
     {
         createDefaultIndices();
     }
@@ -202,6 +199,7 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
 
 void VertexBuffer::createDefaultIndices()
 {
+    assert(mIndexLength == mVertexLength);
     std::vector<unsigned int> indices;
     for ( size_t i = 0; i < mVertexLength; ++i )
     {
@@ -233,12 +231,12 @@ void VertexBuffer::drawInstanced( RenderEncoder & renderEncoder, size_t instance
     {
         return;
     }
-    if ( mVertexLength == 0 )
+    if ( mIndexLength == 0 )
     {
-        CI_LOG_E("Vertex length must be > 0");
+        CI_LOG_E("Indices length must be > 0");
     }
-    assert( mVertexLength > 0 );
-    draw( renderEncoder, mVertexLength, 0, instanceCount );
+    assert( mIndexLength > 0 );
+    draw( renderEncoder, mIndexLength, 0, instanceCount );
 }
 
 void VertexBuffer::draw( RenderEncoder & renderEncoder,

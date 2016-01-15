@@ -60,15 +60,15 @@ namespace cinder {
 
         typedef struct
         {
-            float elapsedSeconds;
-            matrix_float4x4 projectionMatrix;
-            matrix_float4x4 viewMatrix;
-            matrix_float4x4 modelMatrix;
-            matrix_float4x4 inverseModelMatrix;
-            matrix_float4x4 modelViewMatrix;
-            matrix_float4x4 modelViewProjectionMatrix;
-            matrix_float4x4 normalMatrix;
-            matrix_float4x4 inverseViewMatrix;
+            float ciElapsedSeconds;
+            matrix_float4x4 ciProjectionMatrix;
+            matrix_float4x4 ciViewMatrix;
+            matrix_float4x4 ciModelMatrix;
+            matrix_float4x4 ciInverseModelMatrix;
+            matrix_float4x4 ciModelViewMatrix;
+            matrix_float4x4 ciModelViewProjectionMatrix;
+            matrix_float4x4 ciNormalMatrix;
+            matrix_float4x4 ciInverseViewMatrix;
         } ciUniforms_t;
     }
 }

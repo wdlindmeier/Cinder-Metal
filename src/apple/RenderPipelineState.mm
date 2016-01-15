@@ -14,6 +14,9 @@ using namespace ci;
 using namespace ci::mtl;
 using namespace ci::cocoa;
 
+#define IMPL ((__bridge id<MTLRenderPipelineState>)mImpl)
+#define REFLECTION ((__bridge MTLRenderPipelineReflection *)mReflection)
+
 RenderPipelineState::RenderPipelineState( const std::string & vertShaderName,
                                           const std::string & fragShaderName,
                                           Format format,
@@ -64,19 +67,32 @@ mFormat(format)
     renderbufferAttachment.destinationAlphaBlendFactor = (MTLBlendFactor)mFormat.getDstAlphaBlendFactor();
     
     NSError* error = NULL;
-    mImpl = (__bridge_retained void *)[device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
+    MTLRenderPipelineReflection *reflect = nil;
+    mImpl = (__bridge_retained void *)[device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                           options:MTLPipelineOptionArgumentInfo |
+                                                                                   MTLPipelineOptionBufferTypeInfo
+                                                                        reflection:&reflect
+                                                                             error:&error];
     if ( error )
     {
         NSLog(@"Failed to created pipeline state, error %@", error);
     }
+    
+    assert( reflect != nil );
+    mReflection = (__bridge_retained void *)reflect;
 }
 
-RenderPipelineState::RenderPipelineState( void * mtlRenderPipelineStateRef ) :
+RenderPipelineState::RenderPipelineState( void * mtlRenderPipelineStateRef, void * mtlRenderPipelineReflection )
+:
 mImpl( mtlRenderPipelineStateRef )
+,mReflection( mtlRenderPipelineReflection )
 {
     assert(mImpl != NULL);
     assert([(__bridge id)mImpl conformsToProtocol:@protocol(MTLRenderPipelineState)]);
     CFRetain(mImpl);
+    assert(mReflection != NULL);
+    assert([(__bridge id)mReflection isKindOfClass:[MTLRenderPipelineReflection class]]);
+    CFRetain(mReflection);
 }
 
 RenderPipelineState::~RenderPipelineState()
@@ -85,4 +101,40 @@ RenderPipelineState::~RenderPipelineState()
     {
         CFRelease(mImpl);
     }
+    if ( mReflection )
+    {
+        CFRelease(mReflection);
+    }
+}
+
+const std::vector<ci::mtl::Argument> & RenderPipelineState::getVertexArguments()
+{
+    assert( mReflection != NULL );
+    if ( mVertexArguments.size() == 0 )
+    {
+        // No data. Load em up.
+        for ( MTLArgument *vertArg : [REFLECTION vertexArguments] )
+        {
+            if ( vertArg.type == MTLArgumentTypeBuffer && vertArg.bufferDataType == MTLDataTypeStruct )
+            {
+                NSLog(@"vertArg: %@ \n %@", vertArg.name, vertArg);
+            }
+            mVertexArguments.push_back(Argument((__bridge void*)vertArg));
+        }
+    }
+    return mVertexArguments;
+}
+
+const std::vector<ci::mtl::Argument> & RenderPipelineState::getFragmentArguments()
+{
+    assert( mReflection != NULL );
+    if ( mFragmentArguments.size() == 0 )
+    {
+        // No data. Load em up..
+        for ( MTLArgument *fragArg : [REFLECTION fragmentArguments] )
+        {
+            mFragmentArguments.push_back(Argument((__bridge void*)fragArg));
+        }
+    }
+    return mFragmentArguments;
 }

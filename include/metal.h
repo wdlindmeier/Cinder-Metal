@@ -18,6 +18,7 @@
 #include "apple/RenderEncoder.h"
 #include "apple/ComputeEncoder.h"
 #include "apple/BlitEncoder.h"
+#include "apple/Argument.h"
 
 #include "MetalConstants.h"
 #include "RendererMetal.h"

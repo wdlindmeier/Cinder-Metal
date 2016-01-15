@@ -28,13 +28,13 @@ namespace cinder { namespace mtl {
         static VertexBufferRef create( const ci::geom::Source & source,
                                        const std::vector<ci::geom::Attrib> & orderedAttribs = {{}},
                                        const DataBuffer::Format & format = DataBuffer::Format()
-                                                                           .label("Vertices") );
+                                                                           .label("Verts") );
 
         // The DataBuffer::Format will be used to create the index and interleaved data buffers.
         static VertexBufferRef create( const ci::geom::Source & source,
                                        const ci::geom::BufferLayout & layout,
                                        const DataBuffer::Format & format = DataBuffer::Format()
-                                                                            .label("Vertices") );
+                                                                            .label("Verts") );
         virtual ~VertexBuffer(){}
         
         ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
@@ -56,9 +56,12 @@ namespace cinder { namespace mtl {
             getBufferForAttribute(attr)->update(vectorData);
         }
         
-        void setVertexLength( size_t vertLength ){ mVertexLength = vertLength; };
-        size_t getVertexLength(){ return mVertexLength; };
+        void setNumVertices( size_t vertLength ){ mVertexLength = vertLength; };
+        size_t getNumVertices(){ return mVertexLength; };
 
+        void setNumIndices( size_t indexLength ){ mIndexLength = indexLength; };
+        size_t getNumIndices(){ return mIndexLength; };
+        
         void draw( RenderEncoder & renderEncoder );
         void drawInstanced( RenderEncoder & renderEncoder, size_t instanceCount );
         void draw( RenderEncoder & renderEncoder, size_t vertexLength,
@@ -73,21 +76,19 @@ namespace cinder { namespace mtl {
         VertexBuffer( const ci::mtl::geom::Primitive primitive );
 
         // geom::Target subclass
-        // Only use internally
         void copyAttrib( ci::geom::Attrib attr, uint8_t dims, size_t strideBytes, const float *srcData, size_t count );
         void copyIndices( ci::geom::Primitive primitive, const uint32_t *source, size_t numIndices, uint8_t requiredBytesPerIndex );
         uint8_t getAttribDims( ci::geom::Attrib attr ) const;
 
         void createDefaultIndices();
         
-        //void setDefaultAttribIndices( const ci::geom::AttribSet & requestedAttribs );
-
         ci::mtl::geom::Primitive mPrimitive;
         std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;
         
         std::map<ci::geom::Attrib, int> mRequestedAttribs;
         ci::geom::SourceRef mSource;
         size_t mVertexLength;
+        size_t mIndexLength;
         
         ci::geom::BufferLayout mBufferLayout;
         DataBufferRef mInterleavedData;

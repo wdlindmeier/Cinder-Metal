@@ -9,8 +9,10 @@
 #pragma once
 
 #include "cinder/Cinder.h"
+#include "cinder/GeomIo.h"
 #include "MetalHelpers.hpp"
 #include "MetalEnums.h"
+#include "Argument.h"
 
 namespace cinder { namespace mtl {
     
@@ -104,14 +106,19 @@ namespace cinder { namespace mtl {
                                                                    mtlLibrary) );
         }
         
-        static RenderPipelineStateRef create( void * mtlRenderPipelineStateRef )
+        static RenderPipelineStateRef create( void * mtlRenderPipelineStateRef, void *mtlRenderPipelineReflection )
         {
-            return RenderPipelineStateRef( new RenderPipelineState(mtlRenderPipelineStateRef) );
+            return RenderPipelineStateRef( new RenderPipelineState(mtlRenderPipelineStateRef, mtlRenderPipelineReflection) );
         }
         
         virtual ~RenderPipelineState();
         
         void * getNative(){ return mImpl; }
+        void sampleLog();
+        
+        //const std::vector<ci::geom::Attribute>&	getActiveAttributes() const { return mAttributes; }
+        const std::vector<ci::mtl::Argument> & getFragmentArguments();
+        const std::vector<ci::mtl::Argument> & getVertexArguments();
 
     protected:
         
@@ -120,11 +127,14 @@ namespace cinder { namespace mtl {
                              Format format,
                              void * mtlLibrary );
         
-        RenderPipelineState( void * mtlRenderPipelineStateRef );
+        RenderPipelineState( void * mtlRenderPipelineStateRef, void * mtlRenderPipelineReflection );
 
         void * mImpl = NULL;  // <MTLRenderPipelineState>
+        void * mReflection = NULL; // <MTLRenderPipelineReflection>
         Format mFormat;
         
+        std::vector<ci::mtl::Argument> mVertexArguments;
+        std::vector<ci::mtl::Argument> mFragmentArguments;
     };
     
 } }

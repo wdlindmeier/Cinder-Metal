@@ -30,6 +30,6 @@ namespace cinder { namespace mtl {
         
         // Returns the shader index associated with a given attribute
         extern int defaultShaderIndexForAttribute( const ci::geom::Attrib attr );
-        
+                
     }
 }}
