@@ -42,9 +42,9 @@ vertex ColorInOut cube_vertex( device const VertexIn* vertexArray [[ buffer(ciBu
     VertexIn vert = vertexArray[vertIndex];
     ColorInOut out;
     
-    out.position = uniforms.modelViewProjectionMatrix * float4(vert.position, 1.0);
+    out.position = uniforms.ciModelViewProjectionMatrix * float4(vert.position, 1.0);
     out.texCoords = float2(vert.texCoord0);
-    out.normal = normalize(uniforms.normalMatrix * float4(vert.normal, 0.0));
+    out.normal = normalize(uniforms.ciNormalMatrix * float4(vert.normal, 0.0));
     
     return out;
 }

@@ -115,10 +115,6 @@ const std::vector<ci::mtl::Argument> & RenderPipelineState::getVertexArguments()
         // No data. Load em up.
         for ( MTLArgument *vertArg : [REFLECTION vertexArguments] )
         {
-            if ( vertArg.type == MTLArgumentTypeBuffer && vertArg.bufferDataType == MTLDataTypeStruct )
-            {
-                NSLog(@"vertArg: %@ \n %@", vertArg.name, vertArg);
-            }
             mVertexArguments.push_back(Argument((__bridge void*)vertArg));
         }
     }

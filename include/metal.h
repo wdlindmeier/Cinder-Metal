@@ -25,6 +25,7 @@
 #include "MetalGeom.h"
 #include "UniformBlock.hpp"
 #include "TextureBuffer.h"
+#include "Batch.h"
 #include "MetalHelpers.hpp"
 #include "Scope.h"
 

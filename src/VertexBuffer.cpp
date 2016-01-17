@@ -13,16 +13,42 @@
 using namespace cinder;
 using namespace cinder::mtl;
 
-VertexBufferRef VertexBuffer::create( const ci::mtl::geom::Primitive primitive )
+VertexBufferRef VertexBuffer::create( uint32_t numVertices,
+                                      const DataBufferRef interleavedData,
+                                      const DataBufferRef bufferedIndices,
+                                      const ci::mtl::geom::Primitive primitive )
 {
-    return VertexBufferRef( new VertexBuffer( primitive ) );
+    return VertexBufferRef( new VertexBuffer( numVertices, interleavedData, bufferedIndices, primitive ) );
 }
 
-VertexBuffer::VertexBuffer( const ci::mtl::geom::Primitive primitive ) :
+VertexBuffer::VertexBuffer( uint32_t numVertices,
+                            const DataBufferRef interleavedData,
+                            const DataBufferRef bufferedIndices,
+                            const ci::mtl::geom::Primitive primitive ) :
 mPrimitive(primitive)
-,mVertexLength(0)
+,mVertexLength(numVertices)
+,mIsInterleaved(true)
 ,mIndexLength(0)
-,mIsIndexed(false)
+,mIndexBuffer(bufferedIndices)
+,mInterleavedData(interleavedData)
+{
+    if ( mIndexBuffer )
+    {
+        mIndexLength = numVertices;
+    }
+}
+
+VertexBufferRef VertexBuffer::create( uint32_t numVertices,
+                                      const ci::mtl::geom::Primitive primitive )
+{
+    return VertexBufferRef( new VertexBuffer( numVertices, primitive ) );
+}
+
+VertexBuffer::VertexBuffer( uint32_t numVertices, const ci::mtl::geom::Primitive primitive ) :
+mPrimitive(primitive)
+,mVertexLength(numVertices)
+,mIndexLength(0)
+,mIsInterleaved(false)
 {}
 
 VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
@@ -76,7 +102,7 @@ mSource( source.clone() )
 ,mVertexLength(0)
 ,mIndexLength(0)
 ,mBufferLayout(layout)
-,mIsIndexed(true)
+,mIsInterleaved(true)
 {
     // Is there any reason to keep the Source around?
     mPrimitive = geom::mtlPrimitiveTypeFromGeom( mSource->getPrimitive() );
@@ -88,7 +114,6 @@ mSource( source.clone() )
     // Create the data buffer for the indices
     DataBuffer::Format indexFormat = format;
     indexFormat.setLabel(format.getLabel() + ": Indices");
-    //size_t indexLength = std::max<size_t>(mIndexLength, mVertexLength);
     mIndexBuffer = DataBuffer::create(mIndexLength * sizeof(unsigned int), NULL, indexFormat);
     
     // Create the buffer for the interleaved vert data
@@ -131,16 +156,25 @@ void VertexBuffer::setBufferForAttribute( DataBufferRef buffer,
     {
         setAttributeShaderIndex(attr, shaderBufferIndex);
     }
-    else if ( mRequestedAttribs.count(attr) == 0 )
+    else if ( mAttributeBufferIndices.count(attr) == 0 )
     {
         // If we don't have an index, use the default
         setAttributeShaderIndex(attr, geom::defaultShaderIndexForAttribute(attr));
     }
 }
 
+int VertexBuffer::getAttributeShaderIndex( const ci::geom::Attrib attr )
+{
+    if ( mAttributeBufferIndices.count(attr) != 0 )
+    {
+        return mAttributeBufferIndices[attr];
+    }
+    return -1;
+}
+
 void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, int shaderBufferIndex )
 {
-    mRequestedAttribs[attr] = shaderBufferIndex;
+    mAttributeBufferIndices[attr] = shaderBufferIndex;
 }
 
 void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COORD_0 etc
@@ -231,12 +265,19 @@ void VertexBuffer::drawInstanced( RenderEncoder & renderEncoder, size_t instance
     {
         return;
     }
-    if ( mIndexLength == 0 )
+    if ( mIndexLength > 0 )
     {
-        CI_LOG_E("Indices length must be > 0");
+        draw( renderEncoder, mIndexLength, 0, instanceCount );
     }
-    assert( mIndexLength > 0 );
-    draw( renderEncoder, mIndexLength, 0, instanceCount );
+    else
+    {
+        if ( mVertexLength == 0 )
+        {
+            CI_LOG_E("Vertex length must be > 0 for non-indexed VertexBuffer");
+        }
+        assert( mVertexLength > 0 );
+        draw( renderEncoder, mVertexLength, 0, instanceCount );
+    }
 }
 
 void VertexBuffer::draw( RenderEncoder & renderEncoder,
@@ -244,18 +285,22 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
                          size_t vertexStart,
                          size_t instanceCount )
 {
-    if ( mIsIndexed )
+    if ( mIsInterleaved )
     {
         // NOTE: We're not using drawIndexed because Metal requires that we define
         // a MTLVertexDescriptor as part of the pipeline, which is less flexible
         // that using a known data layout with index access. This also lets us
         // use BufferLayouts, which follows the Cinder convention.
         renderEncoder.setVertexBufferAtIndex( mInterleavedData, ciBufferIndexInterleavedVerts );
-        renderEncoder.setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
+        
+        if ( mIndexBuffer )
+        {
+            renderEncoder.setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
+        }
     }
     else
     {
-        for ( auto kvp : mRequestedAttribs )
+        for ( auto kvp : mAttributeBufferIndices )
         {
             ci::geom::Attrib attr = kvp.first;
             DataBufferRef buffer = mAttributeBuffers[attr];

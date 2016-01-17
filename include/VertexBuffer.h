@@ -23,7 +23,14 @@ namespace cinder { namespace mtl {
         
     public:
 
-        static VertexBufferRef create( const ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
+        // Create a VertexBuffer with interleaved data. Optionally pass in indices if the data is indexed.
+        static VertexBufferRef create( uint32_t numVertices,
+                                       const DataBufferRef interleavedData,
+                                       const DataBufferRef bufferedIndices = DataBufferRef(),
+                                       const ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
+
+        static VertexBufferRef create( uint32_t numVertices,
+                                       const ci::mtl::geom::Primitive primitive = ci::mtl::geom::TRIANGLE );
 
         static VertexBufferRef create( const ci::geom::Source & source,
                                        const std::vector<ci::geom::Attrib> & orderedAttribs = {{}},
@@ -38,7 +45,7 @@ namespace cinder { namespace mtl {
         virtual ~VertexBuffer(){}
         
         ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
-        void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
+        //void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
         
         // Set shaderBufferIndex to something > -1 if you wish to update / assign the shader index for this attribute
         void setBufferForAttribute( DataBufferRef buffer,
@@ -49,6 +56,8 @@ namespace cinder { namespace mtl {
         // Override the default shader indices.
         // The default geom::Attr shader indices are defined in MetalConstants.h
         void setAttributeShaderIndex( const ci::geom::Attrib attr, int shaderBufferIndex );
+        // Returns -1 if the attr doesnt have an index
+        int getAttributeShaderIndex( const ci::geom::Attrib attr );
         
         template<typename T>
         void update( ci::geom::Attrib attr, std::vector<T> vectorData )
@@ -56,10 +65,9 @@ namespace cinder { namespace mtl {
             getBufferForAttribute(attr)->update(vectorData);
         }
         
-        void setNumVertices( size_t vertLength ){ mVertexLength = vertLength; };
+        bool getIsInterleaved(){ return mIsInterleaved; };
+        
         size_t getNumVertices(){ return mVertexLength; };
-
-        void setNumIndices( size_t indexLength ){ mIndexLength = indexLength; };
         size_t getNumIndices(){ return mIndexLength; };
         
         void draw( RenderEncoder & renderEncoder );
@@ -69,11 +77,17 @@ namespace cinder { namespace mtl {
         
     protected:
         
+        VertexBuffer( uint32_t numVertices,
+                      const DataBufferRef interleavedData,
+                      const DataBufferRef bufferedIndices,
+                      const ci::mtl::geom::Primitive primitive);
+
         VertexBuffer( const ci::geom::Source & source,
                       const ci::geom::BufferLayout & layout,
                       DataBuffer::Format format );
         
-        VertexBuffer( const ci::mtl::geom::Primitive primitive );
+        VertexBuffer( uint32_t numVertices,
+                      const ci::mtl::geom::Primitive primitive );
 
         // geom::Target subclass
         void copyAttrib( ci::geom::Attrib attr, uint8_t dims, size_t strideBytes, const float *srcData, size_t count );
@@ -83,9 +97,9 @@ namespace cinder { namespace mtl {
         void createDefaultIndices();
         
         ci::mtl::geom::Primitive mPrimitive;
-        std::map< ci::geom::Attrib, DataBufferRef > mAttributeBuffers;
+        std::map<ci::geom::Attrib, DataBufferRef> mAttributeBuffers;
         
-        std::map<ci::geom::Attrib, int> mRequestedAttribs;
+        std::map<ci::geom::Attrib, int> mAttributeBufferIndices;
         ci::geom::SourceRef mSource;
         size_t mVertexLength;
         size_t mIndexLength;
@@ -93,7 +107,7 @@ namespace cinder { namespace mtl {
         ci::geom::BufferLayout mBufferLayout;
         DataBufferRef mInterleavedData;
         DataBufferRef mIndexBuffer;
-        bool mIsIndexed;
+        bool mIsInterleaved;
         
     };
 }}

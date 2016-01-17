@@ -12,7 +12,6 @@
 using namespace cinder;
 using namespace cinder::mtl;
 
-//typedef std::map<std::string,ci::mtl::UniformSemantic>	UniformSemanticMap;
 typedef std::map<std::string,ci::geom::Attrib>	AttribSemanticMap;
 
 static AttribSemanticMap sDefaultAttribNameToSemanticMap;
@@ -33,13 +32,24 @@ static AttribSemanticMap & getDefaultAttribNameToSemanticMap()
         sDefaultAttribNameToSemanticMap["ciColor"] = ci::geom::Attrib::COLOR;
         sDefaultAttribNameToSemanticMap["ciBoneIndex"] = ci::geom::Attrib::BONE_INDEX;
         sDefaultAttribNameToSemanticMap["ciBoneWeight"] = ci::geom::Attrib::BONE_WEIGHT;
+        // And plural for attribute buffers
+        sDefaultAttribNameToSemanticMap["ciPositions"] = ci::geom::Attrib::POSITION;
+        sDefaultAttribNameToSemanticMap["ciNormals"] = ci::geom::Attrib::NORMAL;
+        sDefaultAttribNameToSemanticMap["ciTangents"] = ci::geom::Attrib::TANGENT;
+        sDefaultAttribNameToSemanticMap["ciBitangents"] = ci::geom::Attrib::BITANGENT;
+        sDefaultAttribNameToSemanticMap["ciTexCoords0"] = ci::geom::Attrib::TEX_COORD_0;
+        sDefaultAttribNameToSemanticMap["ciTexCoords1"] = ci::geom::Attrib::TEX_COORD_1;
+        sDefaultAttribNameToSemanticMap["ciTexCoords2"] = ci::geom::Attrib::TEX_COORD_2;
+        sDefaultAttribNameToSemanticMap["ciTexCoords3"] = ci::geom::Attrib::TEX_COORD_3;
+        sDefaultAttribNameToSemanticMap["ciColors"] = ci::geom::Attrib::COLOR;
+        sDefaultAttribNameToSemanticMap["ciBoneIndices"] = ci::geom::Attrib::BONE_INDEX;
+        sDefaultAttribNameToSemanticMap["ciBoneWeights"] = ci::geom::Attrib::BONE_WEIGHT;
         initialized = true;
     }
     
     return sDefaultAttribNameToSemanticMap;
 }
 
-// TODO
 Batch::Batch( const VertexBufferRef &vertexBuffer,
               const RenderPipelineStateRef & pipeline,
               const AttributeMapping &attributeMapping )
@@ -47,15 +57,10 @@ Batch::Batch( const VertexBufferRef &vertexBuffer,
 mRenderPipeline(pipeline),
 mVertexBuffer(vertexBuffer)
 {
-//    TODO: How do we add pipeline attrs to the vertexBuffer?
-//    attrs = mRenderPipeline->getActiveAttributes();
-//    mVertexBuffer -> addattrs(attrs)
-    
-    // TODO: Add attributes to the buffer
-    // this may require that we re-create it
-
-    // I guess we just assume that the attribute mapping is correct...
+    // NOTE: We're not really generating or formatting any vert data here,
+    // just checking that the shader and the VertBuffer are in agreement.
     initBufferLayout( attributeMapping );
+    checkBufferLayout();
 }
 
 Batch::Batch( const ci::geom::Source &source,
@@ -64,10 +69,8 @@ Batch::Batch( const ci::geom::Source &source,
 : mRenderPipeline(pipeline)
 {
     initBufferLayout( attributeMapping );
-    
-    // TODO: Can we get / set the attributes by name?
-    mVertexBuffer = mtl::VertexBuffer::create( source, mOrderedAttribs );
-    //mVboMesh = gl::VboMesh::create( source, attribs );
+    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedAttribs );
+    checkBufferLayout();
 }
 
 void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
@@ -79,116 +82,134 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
         inverseMapping[kvp.second] = kvp.first;
     }
     
-    std::vector<ci::geom::Attrib> orderedAttribs;
-    
+    std::vector<ci::geom::Attrib> interleavedAttribs;
+    std::map<ci::geom::Attrib, int> attribBufferIndices;
+
     AttribSemanticMap & defaultAttribMap = getDefaultAttribNameToSemanticMap();
     
-    // and then the attributes references by the GLSL
+    // and then the attributes references by the Pipeline
     for( ci::mtl::Argument argument : mRenderPipeline->getVertexArguments() )
     {
         mtl::ArgumentType aType = argument.getType();
         if ( aType == mtl::ArgumentTypeBuffer )
         {
-            mtl::DataType t = argument.getBufferDataType();
-            //            CI_LOG_I("vertex argument " << argument.getName() << " has type " << t);
-            if ( t == mtl::DataTypeStruct )
+            std::string argName = argument.getName();
+            
+            if ( argName == "ciVerts" )
             {
-                // NOTE: The struct data must be at ciBufferIndexInterleavedVerts
-                // or be named ciVerts and the member names must be known for this to work.
-                if ( argument.getIndex() == ciBufferIndexInterleavedVerts ||
-                     argument.getName() == "ciVerts" )
+                mtl::DataType t = argument.getBufferDataType();
+                if ( t == mtl::DataTypeStruct )
                 {
                     mtl::StructType s = argument.getBufferStructType();
-                    //                CI_LOG_I("struct with " << s.members.size() << " members");
-                    //orderedAttribs.assign( s.members.size(), ci::geom::NUM_ATTRIBS );
                     for ( const mtl::StructMember m : s.members )
                     {
                         std::string attrName = m.name;
-                        //int index = stoi(memberByName.first);
-                        
+                        // NOTE: Check inverseMapping first so it trumps the default.
                         if ( inverseMapping.count( attrName ) != 0 )
                         {
                             ci::geom::Attrib a = inverseMapping[attrName];
-                            //attribs.insert( a );
-//                            orderedAttribs.push_back(a);
-                            orderedAttribs.push_back(a);
+                            interleavedAttribs.push_back(a);
                         }
                         else if ( defaultAttribMap.count( attrName ) != 0 )
                         {
-//                        TODO: Use the key for the order rather than the implicit order
                             ci::geom::Attrib a = defaultAttribMap[attrName];
-                            //attribs.insert( a );
-//                            orderedAttribs.push_back(a);
-//                            orderedAttribs[index] = a;
-                            orderedAttribs.push_back(a);
+                            interleavedAttribs.push_back(a);
                         }
                         else
                         {
-                            CI_LOG_E( "Don't know how to handle attrib: " << attrName );
-                            //assert(false);
+                            CI_LOG_E( "Don't know how to handle attrib: " << attrName << ". Ignoring");
                         }
                     }
                 }
                 else
                 {
-                    CI_LOG_I( "Ignoring struct named: " << argument.getName() << " at index " <<  argument.getIndex() );
+                    CI_LOG_E( "ciVerts must be defined as a struct" );
+                    assert(false);
+                }
+            }
+            else
+            {
+                // Check if we know the name
+                // NOTE: Check inverseMapping first so it trumps the default.
+                if ( inverseMapping.count( argName ) != 0 )
+                {
+                    ci::geom::Attrib a = inverseMapping[argName];
+                    mAttribBufferIndices[a] = argument.getIndex();
+                }
+                else if ( defaultAttribMap.count( argName ) != 0 )
+                {
+                    ci::geom::Attrib a = defaultAttribMap[argName];
+                    mAttribBufferIndices[a] = argument.getIndex();
+                }
+//                else
+//                {
+//                    CI_LOG_E( "Don't know what to do attrib: " << argName << ". Ignoring" );
+//                }
+            }
+        }
+    }
+
+    mInterleavedAttribs = interleavedAttribs;
+    mAttribBufferIndices = attribBufferIndices;
+    mAttribMapping = attributeMapping;
+}
+
+
+void Batch::checkBufferLayout()
+{
+    if ( mAttribBufferIndices.size() > 0 )
+    {
+        // The shader wants attribute buffers.
+        // Make sure that's the format of the VertexBuffer.
+        assert( !mVertexBuffer->getIsInterleaved() );
+        
+        // Update the buffer indices to match the shader.
+        // One might argue this is bad form...
+        for ( auto attrWithIndex : mAttribBufferIndices )
+        {
+            // Make sure the buffer exists.
+            assert( mVertexBuffer->getBufferForAttribute(attrWithIndex.first) );
+            // Set the correct shader buffer index
+            int attrIndex = mVertexBuffer->getAttributeShaderIndex(attrWithIndex.first);
+            if ( attrIndex == -1 )
+            {
+                // Should this be a negative assertion?
+                mVertexBuffer->setAttributeShaderIndex(attrWithIndex.first,
+                                                       attrWithIndex.second);
+            }
+            else
+            {
+                if ( attrIndex != attrWithIndex.second )
+                {
+                    CI_LOG_E( "VertexBuffer and Pipeline disagree on attribute buffer index. VertexBuffer index: "
+                              << attrIndex << " Pipeline index: " << attrWithIndex.second );
+                    assert( false );
                 }
             }
         }
     }
-    
-    if ( orderedAttribs.size() == 0 )
+    else if ( mInterleavedAttribs.size() > 0 )
     {
-        // If there are no attributes, add position
-        // orderedAttribs.push_back(ci::geom::POSITION);
-        CI_LOG_I("ERROR: No attriutes found in shader.");
-        assert(false);
+        // The shader wants interleaved data.
+        // Make sure that's the format of the VertexBuffer.
+        assert( mVertexBuffer->getIsInterleaved() );
+        
+        // ...
+        // Assume the data format is correct
     }
-    
-    mOrderedAttribs = orderedAttribs;
-    mAttribMapping = attributeMapping;
 }
 
-//void Batch::replaceGlslProg( const GlslProgRef& glsl )
 void Batch::replacePipeline( const RenderPipelineStateRef& pipeline )
 {
-    //mGlsl = glsl;
     mRenderPipeline = pipeline;
     initBufferLayout( mAttribMapping );
 }
 
 void Batch::replaceVertexBuffer(const VertexBufferRef &vertexBuffer)
 {
-    CI_LOG_E("TODO: remap an existing buffer");
-    assert(false);
-    
     mVertexBuffer = vertexBuffer;
-//    mVboMesh = vboMesh;
-//    initVao( mAttribMapping );
     initBufferLayout( mAttribMapping );
 }
-
-//void Batch::draw( GLint first, GLsizei count )
-//{
-//    auto ctx = gl::context();
-//    
-//    gl::ScopedGlslProg ScopedGlslProg( mGlsl );
-//    gl::ScopedVao ScopedVao( mVao );
-//    ctx->setDefaultShaderVars();
-//    mVboMesh->drawImpl( first, count );
-//}
-//
-//#if defined( CINDER_GL_HAS_DRAW_INSTANCED )
-//
-//void Batch::drawInstanced( GLsizei instanceCount )
-//{
-//    auto ctx = gl::context();
-//    
-//    gl::ScopedGlslProg ScopedGlslProg( mGlsl );
-//    gl::ScopedVao ScopedVao( mVao );
-//    ctx->setDefaultShaderVars();
-//    mVboMesh->drawInstancedImpl( instanceCount );
-//}
 
 void Batch::draw( RenderEncoder & renderEncoder )
 {
@@ -217,8 +238,6 @@ void Batch::draw( RenderEncoder & renderEncoder,
     mVertexBuffer->draw(renderEncoder, vertexLength, vertexStart, instanceCount);
 }
 
-//#endif // defined( CINDER_GL_HAS_DRAW_INSTANCED )
-//
 //void Batch::bind()
 //{
 //    mGlsl->bind();

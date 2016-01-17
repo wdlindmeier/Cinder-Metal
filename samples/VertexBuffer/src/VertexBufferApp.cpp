@@ -113,7 +113,7 @@ void VertexBufferApp::loadAssets()
         normals.push_back(norm);
     }
     
-    mAttribBufferCube = mtl::VertexBuffer::create();
+    mAttribBufferCube = mtl::VertexBuffer::create( positions.size() );
     mPositions = positions;
     mtl::DataBufferRef positionBuffer = mtl::DataBuffer::create(mPositions, mtl::DataBuffer::Format().label("Positions"));
     mAttribBufferCube->setBufferForAttribute(positionBuffer, ci::geom::POSITION);
@@ -135,8 +135,8 @@ void VertexBufferApp::update()
     // Pass the matrices into the uniform block
     mUniforms.updateData([&]( auto data )
     {
-        data.normalMatrix = toMtl(normalMatrix);
-        data.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        data.ciNormalMatrix = toMtl(normalMatrix);
+        data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
         return data;
     });
 

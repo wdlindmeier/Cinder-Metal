@@ -64,8 +64,8 @@ void CubeApp::update()
     // Pass the matrices into the uniform block
     mUniforms.updateData([&]( auto data )
     {
-        data.normalMatrix = toMtl(normalMatrix);
-        data.modelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        data.ciNormalMatrix = toMtl(normalMatrix);
+        data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
         return data;
     });
 }

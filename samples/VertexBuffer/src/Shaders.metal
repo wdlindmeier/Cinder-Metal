@@ -47,10 +47,10 @@ vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* v
     
     float3 offsetPosition = vertex_array[vid].position + float3(0,0,1.5);
     float4 in_position = float4(offsetPosition, 1.0);
-    out.position = uniforms.modelViewProjectionMatrix * in_position;
+    out.position = uniforms.ciModelViewProjectionMatrix * in_position;
     
     float3 normal = vertex_array[vid].normal;
-    float4 eye_normal = normalize(uniforms.normalMatrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -71,9 +71,9 @@ vertex ColorInOut lighting_vertex_interleaved_src( device const CubeVertex* vert
     const uint idx = indices[vid];
     CubeVertex vert = verts[idx];
     float4 in_position = float4(vert.position, 1.0);
-    out.position = uniforms.modelViewProjectionMatrix * in_position;
+    out.position = uniforms.ciModelViewProjectionMatrix * in_position;
     
-    float4 eye_normal = normalize(uniforms.normalMatrix * float4(vert.normal, 0.0));
+    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(vert.normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -92,10 +92,10 @@ vertex ColorInOut lighting_vertex_attrib_buffers( device const packed_float3* po
     ColorInOut out;
     
     float4 in_position = float4(positions[vid], 1.0);
-    out.position = uniforms.modelViewProjectionMatrix * in_position;
+    out.position = uniforms.ciModelViewProjectionMatrix * in_position;
     
     float3 normal = normals[vid];
-    float4 eye_normal = normalize(uniforms.normalMatrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
