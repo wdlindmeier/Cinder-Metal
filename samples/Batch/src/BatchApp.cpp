@@ -29,8 +29,11 @@ public:
     mtl::RenderPipelineStateRef mPipelineSource;
     mtl::BatchRef mBatchSource;
 
-    mtl::RenderPipelineStateRef mPipelineVertBuffer;
-    mtl::BatchRef mBatchVertBuffer;
+    mtl::RenderPipelineStateRef mPipelineAttribBuffers;
+    mtl::BatchRef mBatchAttribBuffers;
+
+    mtl::RenderPipelineStateRef mPipelineRawInterleaved;
+    mtl::BatchRef mBatchRawInterleaved;
 
     mtl::DepthStateRef mDepthEnabled;
     mtl::DepthStateRef mDepthDisabled;
@@ -43,7 +46,7 @@ public:
 void BatchApp::setup()
 {
     mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
-                                                          .clearColor(ColorAf(0.f,1.f,1.f)));
+                                                          .clearColor(ColorAf(0.25f,0.2f,0.3f)));
     
     mPipelineSource = mtl::RenderPipelineState::create("lighting_vertex_interleaved_src",
                                                        "lighting_texture_fragment");
@@ -58,7 +61,19 @@ void BatchApp::setup()
     // Set up a couple different kinds of Batches.
     
     // Basic Geom Source
-    mBatchSource = mtl::Batch::create(geom::Cube(), mPipelineSource);
+    mBatchSource = mtl::Batch::create(geom::Teapot(),//geom::Cube(),
+                                      mPipelineSource);
+    
+    // Raw Interleaved Data
+    mtl::DataBufferRef rawBuffer = mtl::DataBuffer::create( sizeof(cubeVertexData),
+                                                            cubeVertexData,
+                                                            mtl::DataBuffer::Format().label("Interleaved Vertices"));
+    
+    mPipelineRawInterleaved = mtl::RenderPipelineState::create("lighting_vertex_interleaved",
+                                                               "lighting_fragment");
+    
+    mBatchRawInterleaved = mtl::Batch::create( cinder::mtl::VertexBuffer::create(36, rawBuffer),
+                                               mPipelineRawInterleaved );
 
     // Custom Vertex Buffer w/ non-interleaved attribute buffers
     vector<vec3> positions;
@@ -78,11 +93,11 @@ void BatchApp::setup()
     mtl::DataBufferRef normalBuffer = mtl::DataBuffer::create(normals, mtl::DataBuffer::Format().label("Normals"));
     attribBufferCube->setBufferForAttribute(normalBuffer, ci::geom::NORMAL);
     
-    mPipelineVertBuffer = mtl::RenderPipelineState::create("lighting_vertex_attrib_buffers",
-                                                           "lighting_fragment",
-                                                           mtl::RenderPipelineState::Format());
+    mPipelineAttribBuffers = mtl::RenderPipelineState::create("lighting_vertex_attrib_buffers",
+                                                              "lighting_fragment",
+                                                              mtl::RenderPipelineState::Format());
     
-    mBatchVertBuffer = mtl::Batch::create( attribBufferCube, mPipelineVertBuffer );
+    mBatchAttribBuffers = mtl::Batch::create( attribBufferCube, mPipelineAttribBuffers );
 }
 
 void BatchApp::resize()
@@ -94,19 +109,6 @@ void BatchApp::resize()
 void BatchApp::update()
 {
     mRotation += 0.01f;
-    mat4 modelMatrix = glm::rotate( mRotation, vec3(1.0f, 1.0f, 1.0f) );
-    mat4 normalMatrix = inverse(transpose(modelMatrix));
-    mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
-    mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
-
-    mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
-    {
-        data.ciModelMatrix = toMtl(modelMatrix);
-        data.ciNormalMatrix = toMtl(normalMatrix);
-        data.ciProjectionMatrix = toMtl(mCamera.getProjectionMatrix());
-        data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-        return data;
-    });
 }
 
 void BatchApp::draw()
@@ -116,9 +118,26 @@ void BatchApp::draw()
     
     renderEncoder.setDepthStencilState(mDepthEnabled);
     
-    mUniformBlock.sendToEncoder(renderEncoder);
-    
     renderEncoder.setTexture(mTexture);
+    
+    {
+        mat4 modelMatrix = glm::translate(mat4(1), vec3(0,-0.5,0));
+        modelMatrix = glm::rotate(modelMatrix, mRotation, vec3(1.0f, 1.0f, 1.0f));
+        modelMatrix = glm::scale(modelMatrix, vec3(2.f));
+        mat4 normalMatrix = inverse(transpose(modelMatrix));
+        mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
+        mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
+        
+        mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
+                                 {
+                                     data.ciModelMatrix = toMtl(modelMatrix);
+                                     data.ciNormalMatrix = toMtl(normalMatrix);
+                                     data.ciProjectionMatrix = toMtl(mCamera.getProjectionMatrix());
+                                     data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+                                     return data;
+                                 });
+        mUniformBlock.sendToEncoder(renderEncoder);
+    }
     
     // Put your drawing here
     mBatchSource->draw(renderEncoder);
@@ -127,26 +146,48 @@ void BatchApp::draw()
     
 // << START CONTEXT BLOCK
 //    renderEncoder.setDepthStencilState(mDepthDisabled);
-    
-    mat4 modelMatrix = glm::translate(mat4(1), vec3(2,0,0));
-    modelMatrix = glm::rotate(modelMatrix, -mRotation, vec3(1.0f, 1.0f, 1.0f));
-    
-    mat4 normalMatrix = inverse(transpose(modelMatrix));
-    mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
-    mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
-    
-    mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
-                              {
-                                 data.ciModelMatrix = toMtl(modelMatrix);
-                                 data.ciNormalMatrix = toMtl(normalMatrix);
-                                 data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-                                 return data;
-                              });
-    mUniformBlock.sendToEncoder( renderEncoder );
+    {
+        mat4 modelMatrix = glm::translate(mat4(1), vec3(2,0,0));
+        modelMatrix = glm::rotate(modelMatrix, -mRotation, vec3(-1.0f, 1.0f, -1.0f));
+        mat4 normalMatrix = inverse(transpose(modelMatrix));
+        mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
+        mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
+        
+        mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
+                                  {
+                                     data.ciModelMatrix = toMtl(modelMatrix);
+                                     data.ciNormalMatrix = toMtl(normalMatrix);
+                                     data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+                                     return data;
+                                  });
+        mUniformBlock.sendToEncoder( renderEncoder );
+    }
     
 // << END CONTEXT BLOCK
 
-    mBatchVertBuffer->draw(renderEncoder);
+    mBatchAttribBuffers->draw(renderEncoder);
+
+    // << START CONTEXT BLOCK
+    {
+        mat4 modelMatrix = glm::translate(mat4(1), vec3(-2,0,0));
+        modelMatrix = glm::rotate(modelMatrix, -mRotation, vec3(1.0f, -1.0f, 1.0f));
+        mat4 normalMatrix = inverse(transpose(modelMatrix));
+        mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
+        mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
+        
+        mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
+                                 {
+                                     data.ciModelMatrix = toMtl(modelMatrix);
+                                     data.ciNormalMatrix = toMtl(normalMatrix);
+                                     data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+                                     return data;
+                                 });
+        mUniformBlock.sendToEncoder( renderEncoder );
+    }
+    
+    // << END CONTEXT BLOCK
+    
+    mBatchRawInterleaved->draw(renderEncoder);
 }
 
 CINDER_APP( BatchApp, RendererMetal )

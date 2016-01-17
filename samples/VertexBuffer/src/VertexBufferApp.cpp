@@ -34,7 +34,7 @@ class VertexBufferApp : public App
 	void update() override;
 	void draw() override;
 
-    mtl::DataBufferRef mVertexBuffer;
+    mtl::VertexBufferRef mInterleavedBuffer;
     mtl::VertexBufferRef mGeomBufferCube;
     mtl::VertexBufferRef mAttribBufferCube;
     vector<vec3> mPositions;
@@ -81,10 +81,12 @@ void VertexBufferApp::loadAssets()
 {
     // EXAMPLE 1
     // Use raw, interleaved vertex data
-    mVertexBuffer = mtl::DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
-                                            cubeVertexData,          // the data
-                                            mtl::DataBuffer::Format().label("Interleaved Vertices")); // the name of the buffer
-    
+    mtl::DataBufferRef rawBuffer = mtl::DataBuffer::create(sizeof(cubeVertexData),  // the size of the buffer
+                                                           cubeVertexData,          // the data
+                                                           mtl::DataBuffer::Format().label("Interleaved Vertices")); // the name of the buffer
+
+    mInterleavedBuffer = cinder::mtl::VertexBuffer::create(36, rawBuffer);
+
     mPipelineInterleavedLighting = mtl::RenderPipelineState::create("lighting_vertex_interleaved",
                                                                     "lighting_fragment");
 
@@ -170,11 +172,8 @@ void VertexBufferApp::draw()
     // Set the program
     renderEncoder.setPipelineState( mPipelineInterleavedLighting );
 
-    // Set render state & resources
-    renderEncoder.setVertexBufferAtIndex( mVertexBuffer, mtl::ciBufferIndexInterleavedVerts );
-
     // Draw
-    renderEncoder.draw(mtl::geom::TRIANGLE, 36);
+    mInterleavedBuffer->draw(renderEncoder);
 
     renderEncoder.popDebugGroup();
     

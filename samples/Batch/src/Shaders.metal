@@ -41,25 +41,24 @@ typedef struct
 } VertOut;
 
 // Vertex shader function
-//vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* vertex_array [[ buffer(ciBufferIndexInterleavedVerts) ]],
-//                                               constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-//                                               unsigned int vid [[ vertex_id ]] )
-//{
-//    ColorInOut out;
-//    
-//    float3 offsetPosition = vertex_array[vid].ciPosition + float3(0,0,1.5);
-//    float4 in_position = float4(offsetPosition, 1.0);
-//    out.position = uniforms.ciModelViewProjectionMatrix * in_position;
-//    
-//    float3 normal = vertex_array[vid].ciNormal;
-//    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal, 0.0));
-//    float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
-//    n_dot_l = fmax(0.0, n_dot_l);
-//    
-//    out.color = ambient_color_green + diffuse_color * n_dot_l;
-//    
-//    return out;
-//}
+vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+                                            constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                            unsigned int vid [[ vertex_id ]] )
+{
+    VertOut out;
+    
+    float4 in_position = float4(ciVerts[vid].ciPosition, 1.0);
+    out.position = ciUniforms.ciModelViewProjectionMatrix * in_position;
+    
+    float3 normal = ciVerts[vid].ciNormal;
+    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(normal, 0.0));
+    float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
+    n_dot_l = fmax(0.0, n_dot_l);
+    
+    out.color = ambient_color_green + diffuse_color * n_dot_l;
+    
+    return out;
+}
 
 // Vertex Bhader using an interleaved geom::Source
 // CubeVertex is found in SharedData.h
