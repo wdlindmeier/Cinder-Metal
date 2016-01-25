@@ -11,6 +11,7 @@
 #include <Metal/Metal.h>
 #include "RendererMetal.h"
 #include "CommandBuffer.h"
+#include "Context.h"
 #import <QuartzCore/CAMetalLayer.h>
 
 @interface RendererMetalImpl : NSObject
@@ -22,6 +23,7 @@
 #elif defined( CINDER_COCOA_TOUCH )
     UIView  *mCinderView;
 #endif
+    cinder::mtl::ContextRef	mCinderContext;
 }
 
 @property (nonatomic, strong) id <MTLDevice> device;
@@ -46,6 +48,7 @@
 
 - (void)startDraw;
 - (void)finishDraw;
+- (void)makeCurrentContext:(bool)force;
 - (dispatch_semaphore_t)inflightSemaphore;
 
 @end

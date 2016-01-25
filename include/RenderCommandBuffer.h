@@ -8,7 +8,6 @@
 
 #pragma once
 
-
 #include "cinder/Cinder.h"
 #include "CommandBuffer.h"
 

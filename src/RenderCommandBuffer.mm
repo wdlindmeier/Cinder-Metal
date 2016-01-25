@@ -29,7 +29,7 @@ CommandBuffer( bufferName )
 }
 
 RenderEncoderRef RenderCommandBuffer::createRenderEncoder( const RenderPassDescriptorRef & descriptor,
-                                                    const std::string & encoderName )
+                                                           const std::string & encoderName )
 {
     return CommandBuffer::createRenderEncoder(descriptor, (__bridge void *)DRAWABLE.texture);
 }

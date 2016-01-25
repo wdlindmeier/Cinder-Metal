@@ -48,7 +48,7 @@ namespace cinder { namespace mtl {
         void setFragSamplerState( const SamplerStateRef & samplerState, int samplerIndex = 0 );
         void setDepthStencilState( const DepthStateRef & depthState );
         
-        void setViewport( vec2 origin, vec2 size, float near = 0.1, float far = 1000.f );
+        void setViewport( vec2 origin, vec2 size, float near = 0.0, float far = 1.f );
         void setFrontFacingWinding( bool isClockwise );
         void setCullMode( int mtlCullMode );
         void setDepthClipMode( int mtlDepthClipMode );
@@ -74,6 +74,24 @@ namespace cinder { namespace mtl {
 #if !defined( CINDER_COCOA_TOUCH )
         void textureBarrier();
 #endif
+        
+        
+        // Convenience functions for setting encoder state
+        
+        void operator<<( mtl::DepthStateRef & depthState )
+        {
+            setDepthStencilState(depthState);
+        }
+        
+        void operator<<( mtl::SamplerStateRef & samplerState )
+        {
+            setFragSamplerState(samplerState);
+        }
+        
+        void operator<<( mtl::RenderPipelineStateRef & renderPipeline )
+        {
+            setPipelineState(renderPipeline);
+        }
         
     protected:
 

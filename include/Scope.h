@@ -12,6 +12,7 @@
 #include "cinder/Noncopyable.h"
 #include "CommandBuffer.h"
 #include "RenderCommandBuffer.h"
+#include "Context.h"
 
 namespace cinder { namespace mtl {
 
@@ -78,6 +79,33 @@ namespace cinder { namespace mtl {
     private:
         bool mWaitUntilCompleted;
         std::function< void( void * mtlCommandBuffer) > mCompletionHandler;        
+    };
+    
+    // Context Scopes
+    
+    struct ScopedModelMatrix : private Noncopyable
+    {
+        ScopedModelMatrix()		{ pushModelMatrix(); }
+        ~ScopedModelMatrix()	{ popModelMatrix(); }
+    };
+    
+    struct ScopedViewMatrix : private Noncopyable
+    {
+        ScopedViewMatrix()	{ pushViewMatrix(); }
+        ~ScopedViewMatrix()	{ popViewMatrix(); }
+    };
+    
+    struct ScopedProjectionMatrix : private Noncopyable
+    {
+        ScopedProjectionMatrix()	{ pushProjectionMatrix(); }
+        ~ScopedProjectionMatrix()	{ popProjectionMatrix(); }
+    };
+    
+    //! Preserves all matrices
+    struct ScopedMatrices : private Noncopyable
+    {
+        ScopedMatrices()	{ pushMatrices(); }
+        ~ScopedMatrices()	{ popMatrices(); }
     };
 
 }}

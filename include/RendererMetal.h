@@ -71,6 +71,8 @@ namespace cinder {
             void startDraw() override;
             void finishDraw() override;
             
+            void makeCurrentContext( bool force = false ) override;
+            
             int getNumInflightBuffers(){ return mOptions.getNumInflightBuffers(); };
             
         protected:

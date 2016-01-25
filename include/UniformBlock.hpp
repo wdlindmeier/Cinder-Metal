@@ -49,7 +49,7 @@ namespace cinder { namespace mtl {
             sync();
         }
         
-        const T getData(){ return mData; };
+        const T getData() const { return mData; };
         
     protected:
 
@@ -66,5 +66,11 @@ namespace cinder { namespace mtl {
         int mNumInflightBuffers;
         
     };
+    
+    template <typename T>
+    void operator<<( mtl::RenderEncoder & renderEncoder, mtl::UniformBlock<T> & uniformBlock )
+    {
+        uniformBlock.sendToEncoder( renderEncoder );
+    }
     
 }}

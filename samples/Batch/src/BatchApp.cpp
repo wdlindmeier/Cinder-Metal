@@ -116,7 +116,8 @@ void BatchApp::draw()
     mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
-    renderEncoder.setDepthStencilState(mDepthEnabled);
+    //renderEncoder.setDepthStencilState(mDepthEnabled);
+    renderEncoder << mDepthEnabled;
     
     renderEncoder.setTexture(mTexture);
     
@@ -124,8 +125,9 @@ void BatchApp::draw()
         mat4 modelMatrix = glm::translate(mat4(1), vec3(0,-0.5,0));
         modelMatrix = glm::rotate(modelMatrix, mRotation, vec3(1.0f, 1.0f, 1.0f));
         modelMatrix = glm::scale(modelMatrix, vec3(2.f));
-        mat4 normalMatrix = inverse(transpose(modelMatrix));
         mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
+        mat4 normalMatrix = inverse(transpose(modelMatrix));
+        //mat3 normalMatrix = glm::inverseTranspose( glm::mat3( modelMatrix ) );
         mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
         
         mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
@@ -133,10 +135,11 @@ void BatchApp::draw()
                                      data.ciModelMatrix = toMtl(modelMatrix);
                                      data.ciNormalMatrix = toMtl(normalMatrix);
                                      data.ciProjectionMatrix = toMtl(mCamera.getProjectionMatrix());
-                                     data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+                                     data.ciModelViewProjection = toMtl(modelViewProjectionMatrix);
                                      return data;
                                  });
-        mUniformBlock.sendToEncoder(renderEncoder);
+//        mUniformBlock.sendToEncoder(renderEncoder);
+        renderEncoder << mUniformBlock;
     }
     
     // Put your drawing here
@@ -145,22 +148,23 @@ void BatchApp::draw()
 //    // TEST
     
 // << START CONTEXT BLOCK
-//    renderEncoder.setDepthStencilState(mDepthDisabled);
     {
         mat4 modelMatrix = glm::translate(mat4(1), vec3(2,0,0));
         modelMatrix = glm::rotate(modelMatrix, -mRotation, vec3(-1.0f, 1.0f, -1.0f));
-        mat4 normalMatrix = inverse(transpose(modelMatrix));
         mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
+        mat4 normalMatrix = inverse(transpose(modelMatrix));
+        //mat3 normalMatrix = glm::inverseTranspose( glm::mat3( modelMatrix ) );
         mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
         
         mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
                                   {
                                      data.ciModelMatrix = toMtl(modelMatrix);
                                      data.ciNormalMatrix = toMtl(normalMatrix);
-                                     data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+                                     data.ciModelViewProjection = toMtl(modelViewProjectionMatrix);
                                      return data;
                                   });
-        mUniformBlock.sendToEncoder( renderEncoder );
+//        mUniformBlock.sendToEncoder( renderEncoder );
+        renderEncoder << mUniformBlock;
     }
     
 // << END CONTEXT BLOCK
@@ -171,18 +175,20 @@ void BatchApp::draw()
     {
         mat4 modelMatrix = glm::translate(mat4(1), vec3(-2,0,0));
         modelMatrix = glm::rotate(modelMatrix, -mRotation, vec3(1.0f, -1.0f, 1.0f));
-        mat4 normalMatrix = inverse(transpose(modelMatrix));
         mat4 modelViewMatrix = mCamera.getViewMatrix() * modelMatrix;
+        mat4 normalMatrix = inverse(transpose(modelMatrix));
+//        mat3 normalMatrix = glm::inverseTranspose( glm::mat3( modelMatrix ) );
         mat4 modelViewProjectionMatrix = mCamera.getProjectionMatrix() * modelViewMatrix;
         
         mUniformBlock.updateData( [&]( mtl::ciUniforms_t data )
                                  {
                                      data.ciModelMatrix = toMtl(modelMatrix);
                                      data.ciNormalMatrix = toMtl(normalMatrix);
-                                     data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+                                     data.ciModelViewProjection = toMtl(modelViewProjectionMatrix);
                                      return data;
                                  });
-        mUniformBlock.sendToEncoder( renderEncoder );
+//        mUniformBlock.sendToEncoder( renderEncoder );
+        renderEncoder << mUniformBlock;
     }
     
     // << END CONTEXT BLOCK

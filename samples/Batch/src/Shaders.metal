@@ -42,16 +42,18 @@ typedef struct
 
 // Vertex shader function
 vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                            constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                            //constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                           constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                             unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
     float4 in_position = float4(ciVerts[vid].ciPosition, 1.0);
-    out.position = ciUniforms.ciModelViewProjectionMatrix * in_position;
+    out.position = uniforms.ciModelViewProjection * in_position;
     
     float3 normal = ciVerts[vid].ciNormal;
-    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal,0.0));
+//    float3 eye_normal = normalize(uniforms.ciNormalMatrix * normal);
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -64,7 +66,8 @@ vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVe
 // CubeVertex is found in SharedData.h
 vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                                 device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
-                                                constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                //constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                 unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
@@ -72,9 +75,10 @@ vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts
     const uint idx = ciIndices[vid];
     CubeVertex vert = ciVerts[idx];
     float4 in_position = float4(vert.ciPosition, 1.0);
-    out.position = ciUniforms.ciModelViewProjectionMatrix * in_position;
+    out.position = uniforms.ciModelViewProjection * in_position;
     
-    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(vert.ciNormal, 0.0));
+    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(vert.ciNormal,0.0));
+    //float3 eye_normal = normalize(uniforms.ciNormalMatrix * float3(vert.ciNormal));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -87,16 +91,18 @@ vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts
 //// Vertex Buffer using attrib buffers
 vertex VertOut lighting_vertex_attrib_buffers( device const packed_float3* ciPositions [[ buffer(ciBufferIndexPositions) ]],
                                                   device const packed_float3* ciNormals [[ buffer(ciBufferIndexNormals) ]],
-                                                  constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                  //constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                  constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                   unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
     float4 in_position = float4(ciPositions[vid], 1.0);
-    out.position = ciUniforms.ciModelViewProjectionMatrix * in_position;
+    out.position = uniforms.ciModelViewProjection * in_position;
     
     float3 normal = ciNormals[vid];
-    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(normal, 0.0));
+    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal,0.0));
+    //float3 eye_normal = normalize(uniforms.ciNormalMatrix * normal);
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     

@@ -60,15 +60,24 @@ namespace cinder {
 
         typedef struct
         {
-            float ciElapsedSeconds;
-            matrix_float4x4 ciProjectionMatrix;
-            matrix_float4x4 ciViewMatrix;
             matrix_float4x4 ciModelMatrix;
-            matrix_float4x4 ciInverseModelMatrix;
-            matrix_float4x4 ciModelViewMatrix;
-            matrix_float4x4 ciModelViewProjectionMatrix;
+            matrix_float4x4 ciModelMatrixInverse;
+            matrix_float3x3 ciModelMatrixInverseTranspose;
+            matrix_float4x4 ciViewMatrix;
+            matrix_float4x4 ciViewMatrixInverse;
+            matrix_float4x4 ciModelView;
+            matrix_float4x4 ciModelViewInverse;
+            matrix_float3x3 ciModelViewInverseTranspose;
+            matrix_float4x4 ciModelViewProjection;
+            matrix_float4x4 ciModelViewProjectionInverse;
+            matrix_float4x4 ciProjectionMatrix;
+            matrix_float4x4 ciProjectionMatrixInverse;
+            matrix_float4x4 ciViewProjection;
+//            matrix_float3x3 ciNormalMatrix;
             matrix_float4x4 ciNormalMatrix;
-            matrix_float4x4 ciInverseViewMatrix;
+//            matrix_float4x4 ciViewportMatrix;
+            vector_int2 ciWindowSize;
+            float ciElapsedSeconds;
         } ciUniforms_t;
     }
 }

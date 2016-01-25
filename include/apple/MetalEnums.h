@@ -8,16 +8,6 @@
 
 #pragma once
 
-//
-//  MetalEnums.h
-//  Cinder-Metal
-//
-//  Created by William Lindmeier on 12/9/15.
-//
-//
-
-#pragma once
-
 namespace cinder { namespace mtl {
     
     #define ResourceCPUCacheModeShift 0

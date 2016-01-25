@@ -89,6 +89,9 @@ static RendererMetalImpl * SharedRenderer = nil;
     
     SharedRenderer = self;
     
+    std::shared_ptr<cinder::mtl::Context::PlatformData> platformData( new cinder::mtl::Context::PlatformData() );
+    mCinderContext = cinder::mtl::Context::createFromExisting( platformData );
+    
     return self;
 }
 
@@ -155,6 +158,12 @@ static RendererMetalImpl * SharedRenderer = nil;
 - (void)finishDraw
 {
     //...
+}
+
+- (void)makeCurrentContext:(bool)force
+{
+//    CI_LOG_I("Making current context");
+    mCinderContext->makeCurrent( force );
 }
 
 @end

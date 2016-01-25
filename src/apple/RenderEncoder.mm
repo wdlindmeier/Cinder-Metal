@@ -6,7 +6,7 @@
 //
 //
 
-#include "RenderEncoder.h"
+#import "RenderEncoder.h"
 #include "cinder/cocoa/CinderCocoa.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>

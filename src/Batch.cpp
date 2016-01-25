@@ -8,6 +8,7 @@
 
 #include "Batch.h"
 #include "cinder/Log.h"
+#include "Context.h"
 
 using namespace cinder;
 using namespace cinder::mtl;
@@ -213,16 +214,14 @@ void Batch::replaceVertexBuffer(const VertexBufferRef &vertexBuffer)
 
 void Batch::draw( RenderEncoder & renderEncoder )
 {
-    // Not sure this makes sense yet
-//    setDefaultShaderVars();
+    setDefaultShaderVars(renderEncoder, mRenderPipeline);
     renderEncoder.setPipelineState(mRenderPipeline);
     mVertexBuffer->draw(renderEncoder);
 }
 
 void Batch::drawInstanced( RenderEncoder & renderEncoder, size_t instanceCount )
 {
-    // Not sure this makes sense yet
-//    setDefaultShaderVars();
+    setDefaultShaderVars(renderEncoder, mRenderPipeline);
     renderEncoder.setPipelineState(mRenderPipeline);
     mVertexBuffer->drawInstanced(renderEncoder, instanceCount);
 }
@@ -232,8 +231,7 @@ void Batch::draw( RenderEncoder & renderEncoder,
                   size_t vertexLength,
                   size_t instanceCount )
 {
-    // Not sure this makes sense yet
-//    setDefaultShaderVars();
+    setDefaultShaderVars(renderEncoder, mRenderPipeline);
     renderEncoder.setPipelineState(mRenderPipeline);
     mVertexBuffer->draw(renderEncoder, vertexLength, vertexStart, instanceCount);
 }

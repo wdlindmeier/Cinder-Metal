@@ -11,6 +11,7 @@
 #include "RenderPassDescriptor.h"
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"
+#include "cinder/Log.h"
 
 using namespace cinder;
 using namespace cinder::mtl;

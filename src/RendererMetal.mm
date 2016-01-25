@@ -64,3 +64,8 @@ void RendererMetal::finishDraw()
 {
     [mImpl finishDraw];
 }
+
+void RendererMetal::makeCurrentContext( bool force )
+{
+    [mImpl makeCurrentContext:force];
+}
