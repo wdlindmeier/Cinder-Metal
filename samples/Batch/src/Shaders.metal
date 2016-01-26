@@ -17,7 +17,7 @@ using namespace metal;
 using namespace cinder::mtl;
 
 // Variables in constant address space
-constant float3 light_position = float3(0.0, 1.0, -1.0);
+constant float3 light_position = float3(0.0, 1.0, 1.0);
 constant float4 ambient_color_blue = float4(0.18, 0.24, 0.8, 1.0);
 constant float4 ambient_color_green = float4(0.24, 0.8, 0.18, 1.0);
 constant float4 diffuse_color  = float4(0.4, 0.4, 1.0, 1.0);
@@ -40,20 +40,18 @@ typedef struct
     float2 texCoords;
 } VertOut;
 
-// Vertex shader function
+// Batch using raw interleaved data
 vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                            //constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                           constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                            constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                             unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
     float4 in_position = float4(ciVerts[vid].ciPosition, 1.0);
-    out.position = uniforms.ciModelViewProjection * in_position;
+    out.position = ciUniforms.ciModelViewProjection * in_position;
     
     float3 normal = ciVerts[vid].ciNormal;
-    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal,0.0));
-//    float3 eye_normal = normalize(uniforms.ciNormalMatrix * normal);
+    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(normal,0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -62,12 +60,11 @@ vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVe
     return out;
 }
 
-// Vertex Bhader using an interleaved geom::Source
+// Batch using an interleaved geom::Source
 // CubeVertex is found in SharedData.h
 vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                                 device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
-                                                //constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                                constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                 unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
@@ -75,11 +72,11 @@ vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts
     const uint idx = ciIndices[vid];
     CubeVertex vert = ciVerts[idx];
     float4 in_position = float4(vert.ciPosition, 1.0);
-    out.position = uniforms.ciModelViewProjection * in_position;
+    out.position = ciUniforms.ciModelViewProjection * in_position;
     
-    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(vert.ciNormal,0.0));
-    //float3 eye_normal = normalize(uniforms.ciNormalMatrix * float3(vert.ciNormal));
+    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(vert.ciNormal,0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
+
     n_dot_l = fmax(0.0, n_dot_l);
     
     out.texCoords = vert.ciTexCoord0;
@@ -88,21 +85,19 @@ vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts
     return out;
 }
 
-//// Vertex Buffer using attrib buffers
+// Batch using attrib buffers
 vertex VertOut lighting_vertex_attrib_buffers( device const packed_float3* ciPositions [[ buffer(ciBufferIndexPositions) ]],
                                                   device const packed_float3* ciNormals [[ buffer(ciBufferIndexNormals) ]],
-                                                  //constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                                  constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                                  constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                   unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
     float4 in_position = float4(ciPositions[vid], 1.0);
-    out.position = uniforms.ciModelViewProjection * in_position;
+    out.position = ciUniforms.ciModelViewProjection * in_position;
     
     float3 normal = ciNormals[vid];
-    float4 eye_normal = normalize(uniforms.ciNormalMatrix * float4(normal,0.0));
-    //float3 eye_normal = normalize(uniforms.ciNormalMatrix * normal);
+    float4 eye_normal = normalize(ciUniforms.ciNormalMatrix * float4(normal,0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
@@ -113,13 +108,12 @@ vertex VertOut lighting_vertex_attrib_buffers( device const packed_float3* ciPos
 
 // Fragment shader function
 fragment float4 lighting_texture_fragment( VertOut in [[ stage_in ]],
-                                           texture2d<float> textureCube [[ texture(ciTextureIndex0) ]]) //,
-                                          //sampler objcSampler [[ sampler(ciSamplerIndex0) ]] )
+                                           texture2d<float> textureCube [[ texture(ciTextureIndex0) ]])
 {
     // Use the shader sampler
     float4 texColor = textureCube.sample(shaderSampler, in.texCoords);
     // Use the sampler passed in from the app:
-    //float4 texColor = textureCube.sample(objcSampler, in.texCoords);
+    // float4 texColor = textureCube.sample(objcSampler, in.texCoords);
     return float4(texColor.rgb * in.color.rgb, texColor.a);
 }
 
