@@ -36,7 +36,6 @@ public:
     mtl::BatchRef mBatchRawInterleaved;
 
     mtl::DepthStateRef mDepthEnabled;
-    mtl::DepthStateRef mDepthDisabled;
     
     mtl::TextureBufferRef mTexture;
     
@@ -52,9 +51,7 @@ void BatchApp::setup()
                                           mtl::TextureBuffer::Format().mipmapLevel(4));
 
     mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled() );
-    mDepthDisabled = mtl::DepthState::create( mtl::DepthState::Format()
-                                              .depthWriteEnabled(false) );
-    
+
     // Set up a couple different kinds of Batches.
     
     // Basic Geom Source

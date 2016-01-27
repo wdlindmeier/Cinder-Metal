@@ -73,8 +73,8 @@ namespace cinder {
             matrix_float4x4 ciProjectionMatrix;
             matrix_float4x4 ciProjectionMatrixInverse;
             matrix_float4x4 ciViewProjection;
-//            matrix_float3x3 ciNormalMatrix;
-            matrix_float4x4 ciNormalMatrix;
+            matrix_float3x3 ciNormalMatrix;
+            matrix_float4x4 ciNormalMatrix4x4;
 //            matrix_float4x4 ciViewportMatrix;
             vector_int2 ciWindowSize;
             float ciElapsedSeconds;

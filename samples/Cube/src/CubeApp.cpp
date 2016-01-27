@@ -1,7 +1,7 @@
 #include "cinder/app/App.h"
 #include "metal.h"
 #include "VertexBuffer.h"
-
+#include "Batch.h"
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -17,13 +17,12 @@ public:
     
     CameraPersp                     mCam;
     mat4                            mCubeRotation;
-
-    mtl::UniformBlock<mtl::ciUniforms_t> mUniforms;
+    
     mtl::RenderPassDescriptorRef    mRenderDescriptor;
-    mtl::VertexBufferRef            mCube;
     mtl::TextureBufferRef           mTexture;
     mtl::RenderPipelineStateRef     mPipeline;
-    mtl::DepthStateRef              mDepthEnabled;
+    mtl::DepthStateRef              mDepthEnabled;    
+    mtl::BatchRef                   mBatchCube;
     
 };
 
@@ -37,12 +36,10 @@ void CubeApp::setup()
                                           mtl::TextureBuffer::Format().mipmapLevel(3).flipVertically());
 
     mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled() );
-    
-    mPipeline = mtl::RenderPipelineState::create("cube_vertex", "cube_fragment");
-    
-    mCube = mtl::VertexBuffer::create(geom::Cube(), {{ ci::geom::POSITION,
-                                                       ci::geom::NORMAL,
-                                                       ci::geom::TEX_COORD_0 }});
+
+    mPipeline = mtl::RenderPipelineState::create("batch_vertex", "cube_fragment");
+    mBatchCube = mtl::Batch::create(geom::Cube(), mPipeline);
+
 }
 
 void CubeApp::resize()
@@ -54,20 +51,6 @@ void CubeApp::update()
 {
     // Rotate the cube by 0.2 degrees around the y-axis
     mCubeRotation *= rotate( toRadians( 0.2f ), normalize( vec3( 0, 1, 0 ) ) );
-    
-    // Create the matrices
-    mat4 modelMatrix = mCubeRotation;
-    mat4 normalMatrix = inverse(transpose(modelMatrix));
-    mat4 modelViewMatrix = mCam.getViewMatrix() * modelMatrix;
-    mat4 modelViewProjectionMatrix = mCam.getProjectionMatrix() * modelViewMatrix;
-    
-    // Pass the matrices into the uniform block
-    mUniforms.updateData([&]( auto data )
-    {
-        data.ciNormalMatrix = toMtl(normalMatrix);
-        data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
-        return data;
-    });
 }
 
 void CubeApp::draw()
@@ -76,14 +59,11 @@ void CubeApp::draw()
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
 
     renderEncoder.setDepthStencilState(mDepthEnabled);
-
-    renderEncoder.setPipelineState(mPipeline);
-    
-    mUniforms.sendToEncoder(renderEncoder);
-    
     renderEncoder.setTexture(mTexture);
     
-    mCube->draw(renderEncoder);
+    mtl::setMatrices(mCam);
+    mtl::setModelMatrix(mCubeRotation);
+    mBatchCube->draw(renderEncoder);
 }
 
 CINDER_APP( CubeApp, RendererMetal( RendererMetal::Options().numInflightBuffers(1) ) )

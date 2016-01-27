@@ -37,6 +37,7 @@
 		A90C317D1C45E08300D8E64F /* Batch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A90C317C1C45E08300D8E64F /* Batch.cpp */; };
 		A90C31811C45E0CF00D8E64F /* Argument.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C31801C45E0CF00D8E64F /* Argument.mm */; };
 		A90C31861C46C27D00D8E64F /* Library.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C31851C46C27D00D8E64F /* Library.mm */; };
+		A95C10A41C593B8700F7C5EB /* Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A95C10A31C593B8700F7C5EB /* Context.cpp */; };
 		B04212C4DBA94FFEB95C14BD /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A3139EC323DB42C6A07E6920 /* ComputePipelineState.mm */; };
 		B2F53CA17CFE44E88E28F44A /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7711317B5C3B4964AC539D36 /* RendererMetal.mm */; };
 		B7837EEFE3CB4F98B69D10D1 /* ComputeEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD47AE519F8F4A5F8FC63526 /* ComputeEncoder.mm */; };
@@ -104,6 +105,8 @@
 		A90C31801C45E0CF00D8E64F /* Argument.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Argument.mm; path = ../../../src/apple/Argument.mm; sourceTree = "<group>"; };
 		A90C31851C46C27D00D8E64F /* Library.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Library.mm; path = ../../../src/apple/Library.mm; sourceTree = "<group>"; };
 		A90C31871C46C2BD00D8E64F /* Library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Library.h; path = ../../../include/apple/Library.h; sourceTree = "<group>"; };
+		A95C10A31C593B8700F7C5EB /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Context.cpp; path = ../../../src/Context.cpp; sourceTree = "<group>"; };
+		A95C10A51C593B9700F7C5EB /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Context.h; path = ../../../include/Context.h; sourceTree = "<group>"; };
 		AC967C8568C24E1087F1A6E2 /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalGeom.h; path = ../../../include/MetalGeom.h; sourceTree = "<group>"; };
 		B1616D65224741C1B36C9F55 /* CommandEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandEncoder.h; path = ../../../include/apple/CommandEncoder.h; sourceTree = "<group>"; };
 		C4AF671F4B894EC69F22682D /* RenderPassDescriptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPassDescriptor.h; path = ../../../include/apple/RenderPassDescriptor.h; sourceTree = "<group>"; };
@@ -243,6 +246,7 @@
 			children = (
 				760A5F8BD9284FF3B489DA20 /* apple */,
 				A90C317C1C45E08300D8E64F /* Batch.cpp */,
+				A95C10A31C593B8700F7C5EB /* Context.cpp */,
 				38E0DA1BB26B4C609E289392 /* ImageHelpers.mm */,
 				D4AB9BD4CC6947AB8A6EEAD8 /* RenderCommandBuffer.mm */,
 				7711317B5C3B4964AC539D36 /* RendererMetal.mm */,
@@ -276,6 +280,7 @@
 			children = (
 				F921A51290024BD28F502D1A /* apple */,
 				A90C317E1C45E08F00D8E64F /* Batch.h */,
+				A95C10A51C593B9700F7C5EB /* Context.h */,
 				68D86216C85048338644F74D /* ImageHelpers.h */,
 				92E7372A4244421087FA136A /* metal.h */,
 				D1A9EFB5676C476CBBBB9D3F /* MetalConstants.h */,
@@ -390,6 +395,7 @@
 				26A8ECADEA80438C88424A5D /* UniformBlock.cpp in Sources */,
 				862205FB9A384FD1B3A2E488 /* VertexBuffer.cpp in Sources */,
 				A90C31861C46C27D00D8E64F /* Library.mm in Sources */,
+				A95C10A41C593B8700F7C5EB /* Context.cpp in Sources */,
 				6D4CD5B0A9824A1EA18549B3 /* ImageHelpers.mm in Sources */,
 				4D1F36148CB44419B5131417 /* RenderCommandBuffer.mm in Sources */,
 				B2F53CA17CFE44E88E28F44A /* RendererMetal.mm in Sources */,

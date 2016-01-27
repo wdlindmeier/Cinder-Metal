@@ -155,7 +155,8 @@ namespace cinder { namespace mtl {
             uniforms.ciProjectionMatrixInverse = toMtl(glm::inverse( mtl::getProjectionMatrix()));
             uniforms.ciViewProjection = toMtl(mtl::getProjectionMatrix() * mtl::getViewMatrix());            
             // TMP: rm `mat4(`
-            uniforms.ciNormalMatrix = toMtl(mat4(mtl::calcNormalMatrix()));
+            uniforms.ciNormalMatrix = toMtl(mtl::calcNormalMatrix());
+            uniforms.ciNormalMatrix4x4 = toMtl(mat4(mtl::calcNormalMatrix()));
 //            uniforms.ciViewportMatrix = toMtl(mtl::calcViewportMatrix());
             uniforms.ciWindowSize = toMtl( app::getWindowSize() );
             uniforms.ciElapsedSeconds = float( app::getElapsedSeconds() );

@@ -17,9 +17,9 @@ typedef struct
 {
     // Must be in the same order as the attributes were requested
     // in VertexBuffer::create
-    packed_float3 position;
-    packed_float3 normal;
-    packed_float2 texCoord0;
+    packed_float3 ciPosition;
+    packed_float3 ciNormal;
+    packed_float2 ciTexCoord0;
 } VertexIn;
 
 typedef struct
@@ -29,22 +29,21 @@ typedef struct
     float2 texCoords;
 } ColorInOut;
 
-// Vertex shader function
-vertex ColorInOut cube_vertex( device const VertexIn* vertexArray [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                               device const uint* indices [[ buffer(ciBufferIndexIndicies) ]],
-                               constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
-                               unsigned int vid [[ vertex_id ]] )
+vertex ColorInOut batch_vertex( device const VertexIn* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+                                device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
+                                constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                unsigned int vid [[ vertex_id ]] )
 {
     // NOTE: We're using index accessing rather than a MTLVertexDescriptor approach so we can
     // use BufferLayouts to change the data layout on a per-model basis, rather than on a
     // per-pipeline basis.
-    uint vertIndex = indices[vid];
-    VertexIn vert = vertexArray[vertIndex];
+    uint vertIndex = ciIndices[vid];
+    VertexIn vert = ciVerts[vertIndex];
     ColorInOut out;
-    
-    out.position = uniforms.ciModelViewProjectionMatrix * float4(vert.position, 1.0);
-    out.texCoords = float2(vert.texCoord0);
-    out.normal = normalize(uniforms.ciNormalMatrix * float4(vert.normal, 0.0));
+
+    out.position = ciUniforms.ciModelViewProjection * float4(vert.ciPosition, 1.0);
+    out.texCoords = float2(vert.ciTexCoord0);
+    out.normal = normalize(ciUniforms.ciNormalMatrix4x4 * float4(vert.ciNormal, 0.0));
     
     return out;
 }
