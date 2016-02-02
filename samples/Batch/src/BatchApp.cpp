@@ -127,17 +127,21 @@ void BatchApp::draw()
         mBatchSource->draw(renderEncoder);
     }
     
+    // Left
     {
         mtl::ScopedMatrices matAttribBuffer;
         mtl::translate(vec3(2,0,0));
         mtl::rotate(-mRotation, vec3(-1.0f, 1.0f, -1.0f));
+        mtl::ScopedColor green(0,1,0);
         mBatchAttribBuffers->draw(renderEncoder);
     }
 
+    // Right
     {
         mtl::ScopedMatrices matInterleaved;
         mtl::translate(vec3(-2,0,0));
         mtl::rotate(-mRotation, vec3(1.0f, -1.0f, 1.0f));
+        mtl::ScopedColor red(1,0,0);
         mBatchRawInterleaved->draw(renderEncoder);
     }
 }

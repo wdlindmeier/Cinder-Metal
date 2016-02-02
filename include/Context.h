@@ -10,7 +10,7 @@
 
 //#include "cinder/gl/platform.h"
 //#include "cinder/Camera.h"
-//#include "cinder/Color.h"
+#include "cinder/Color.h"
 //#include "cinder/GeomIo.h"
 //#include "cinder/Matrix44.h"
 
@@ -63,6 +63,10 @@ namespace cinder { namespace mtl {
         std::vector<mat4>&			getProjectionMatrixStack() { return mProjectionMatrixStack; }
         //! Returns a const reference to the stack of Projection matrices
         const std::vector<mat4>&	getProjectionMatrixStack() const { return mProjectionMatrixStack; }
+        
+        //! Returns the current active color, used in immediate-mode emulation and as UNIFORM_COLOR
+        const ColorAf&              getCurrentColor() const { return mColor; }
+        void                        setCurrentColor( const ColorAf &color ) { mColor = color; }
 
         private:
         
@@ -70,6 +74,7 @@ namespace cinder { namespace mtl {
 
         std::shared_ptr<PlatformData>	mPlatformData;
 
+        ci::ColorAf				mColor;
         std::vector<mat4>		mModelMatrixStack;
         std::vector<mat4>		mViewMatrixStack;	
         std::vector<mat4>		mProjectionMatrixStack;
@@ -195,6 +200,13 @@ namespace cinder { namespace mtl {
     inline vec3 windowToWorldCoord( const vec2 &coordinate, const std::pair<vec2,vec2> &viewport, float z = 0.0f ) { return windowToObjectCoord( mat4(), coordinate, viewport, z ); }
     //! Returns the window coordinate of the specified world \a coordinate, using the currently active view and projection matrices.
     inline vec2 worldToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> & viewport ) { return objectToWindowCoord( mat4(), coordinate, viewport ); }
+    
+    void color( float r, float g, float b );
+    void color( float r, float g, float b, float a );
+    void color( const ci::Color &c );
+    void color( const ci::ColorA &c );
+    void color( const ci::Color8u &c );
+    void color( const ci::ColorA8u &c );
     
     //! Converts a UniformSemantic to its name
     std::string uniformSemanticToString( UniformSemantic uniformSemantic );

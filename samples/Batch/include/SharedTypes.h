@@ -9,11 +9,6 @@
 #pragma once
 
 #include <simd/simd.h>
-//
-//typedef struct
-//{
-//    matrix_float4x4 ciProjectionMatrix;
-//} myUniforms_t;
 
 typedef struct
 {
@@ -21,7 +16,3 @@ typedef struct
     metal::packed_float3 ciNormal;
     metal::packed_float2 ciTexCoord0;
 } CubeVertex;
-
-//struct myUniforms_t {
-//    
-//};

@@ -133,6 +133,16 @@ namespace cinder {
     {
         return convert<vector_int2, glm::ivec2>(vec);
     }
+    
+    const vector_float4 static inline toMtl( const ci::ColorAf & color )
+    {
+        return {color.r,color.g,color.b,color.a};
+    }
+    
+    const vector_float3 static inline toMtl( const ci::Color & color )
+    {
+        return {color.r,color.g,color.b};
+    }
 
 }
 
@@ -156,7 +166,7 @@ namespace metal
 #define mtlConstantBufferSize(num) size_t(256 * ceil(num / 256.0f))
 #endif
 
-// mtlConstantBufferSize takes a type
+// mtlConstantSizeOf takes a type
 #if defined( CINDER_COCOA_TOUCH )
 #define mtlConstantSizeOf(T) mtlConstantBufferSize(sizeof(T))
 #else

@@ -23,7 +23,7 @@ namespace cinder { namespace mtl {
     :
     mPlatformData( platformData )
     {
-        // set thread's active Context to 'this' in case anything calls gl::context() (like the GlslProg constructor)
+        // set thread's active Context to 'this' in case anything calls mtl::context() (like the GlslProg constructor)
         auto prevCtx = Context::getCurrent();
         Context::reflectCurrent( this );
 
@@ -160,6 +160,7 @@ namespace cinder { namespace mtl {
 //            uniforms.ciViewportMatrix = toMtl(mtl::calcViewportMatrix());
             uniforms.ciWindowSize = toMtl( app::getWindowSize() );
             uniforms.ciElapsedSeconds = float( app::getElapsedSeconds() );
+            uniforms.ciColor = toMtl(context()->getCurrentColor());
             
             DataBufferRef uniformBuffer = DataBuffer::create(mtlConstantSizeOf(ciUniforms_t),
                                                              &uniforms,
@@ -435,6 +436,42 @@ namespace cinder { namespace mtl {
         vec2 p = vec2( glm::project( coordinate, modelMatrix, viewProjectionMatrix, vp ) );
         
         return p;
+    }
+    
+    void color( float r, float g, float b )
+    {
+        auto ctx = mtl::context();
+        ctx->setCurrentColor( ColorAf( r, g, b, 1.0f ) );
+    }
+    
+    void color( float r, float g, float b, float a )
+    {
+        auto ctx = mtl::context();
+        ctx->setCurrentColor( ColorAf( r, g, b, a ) );
+    }
+    
+    void color( const ci::Color &c )
+    {
+        auto ctx = mtl::context();
+        ctx->setCurrentColor( c );
+    }
+    
+    void color( const ci::ColorA &c )
+    {
+        auto ctx = mtl::context();
+        ctx->setCurrentColor( c );
+    }
+    
+    void color( const ci::Color8u &c )
+    {
+        auto ctx = mtl::context();
+        ctx->setCurrentColor( c );
+    }
+    
+    void color( const ci::ColorA8u &c )
+    {
+        auto ctx = mtl::context();
+        ctx->setCurrentColor( c );
     }
 
     std::string uniformSemanticToString( UniformSemantic uniformSemantic )

@@ -77,6 +77,7 @@ namespace cinder {
             matrix_float4x4 ciNormalMatrix4x4;
 //            matrix_float4x4 ciViewportMatrix;
             vector_int2 ciWindowSize;
+            vector_float4 ciColor;
             float ciElapsedSeconds;
         } ciUniforms_t;
     }

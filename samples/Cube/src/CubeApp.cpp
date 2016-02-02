@@ -21,7 +21,7 @@ public:
     mtl::RenderPassDescriptorRef    mRenderDescriptor;
     mtl::TextureBufferRef           mTexture;
     mtl::RenderPipelineStateRef     mPipeline;
-    mtl::DepthStateRef              mDepthEnabled;    
+    mtl::DepthStateRef              mDepthEnabled;
     mtl::BatchRef                   mBatchCube;
     
 };

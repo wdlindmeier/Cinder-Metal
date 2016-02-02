@@ -18,8 +18,6 @@ using namespace cinder::mtl;
 
 // Variables in constant address space
 constant float3 light_position = float3(0.0, 1.0, 1.0);
-constant float4 ambient_color_blue = float4(0.18, 0.24, 0.8, 1.0);
-constant float4 ambient_color_green = float4(0.24, 0.8, 0.18, 1.0);
 constant float4 diffuse_color  = float4(0.4, 0.4, 1.0, 1.0);
 // NOTE: samplers defined in the shader don't appear to have an anisotropy param
 constexpr sampler shaderSampler( coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
@@ -54,8 +52,8 @@ vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVe
     float4 eye_normal = normalize(ciUniforms.ciNormalMatrix4x4 * float4(normal,0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
-    
-    out.color = ambient_color_green + diffuse_color * n_dot_l;
+
+    out.color = ciUniforms.ciColor + diffuse_color * n_dot_l;
     
     return out;
 }
@@ -87,9 +85,9 @@ vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts
 
 // Batch using attrib buffers
 vertex VertOut lighting_vertex_attrib_buffers( device const packed_float3* ciPositions [[ buffer(ciBufferIndexPositions) ]],
-                                                  device const packed_float3* ciNormals [[ buffer(ciBufferIndexNormals) ]],
-                                                  constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
-                                                  unsigned int vid [[ vertex_id ]] )
+                                               device const packed_float3* ciNormals [[ buffer(ciBufferIndexNormals) ]],
+                                               constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                               unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
@@ -101,7 +99,7 @@ vertex VertOut lighting_vertex_attrib_buffers( device const packed_float3* ciPos
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = ambient_color_blue + diffuse_color * n_dot_l;
+    out.color = ciUniforms.ciColor + diffuse_color * n_dot_l;
     
     return out;
 }

@@ -285,6 +285,14 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
                          size_t vertexStart,
                          size_t instanceCount )
 {
+    for ( auto kvp : mAttributeBufferIndices )
+    {
+        ci::geom::Attrib attr = kvp.first;
+        DataBufferRef buffer = mAttributeBuffers[attr];
+        assert( !!buffer );
+        renderEncoder.setVertexBufferAtIndex( buffer, kvp.second );
+    }
+
     if ( mIsInterleaved )
     {
         // NOTE: We're not using drawIndexed because Metal requires that we define
@@ -298,16 +306,16 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
             renderEncoder.setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
         }
     }
-    else
-    {
-        for ( auto kvp : mAttributeBufferIndices )
-        {
-            ci::geom::Attrib attr = kvp.first;
-            DataBufferRef buffer = mAttributeBuffers[attr];
-            assert( !!buffer );
-            renderEncoder.setVertexBufferAtIndex( buffer, kvp.second );
-        }
-    }
+//    else
+//    {
+//        for ( auto kvp : mAttributeBufferIndices )
+//        {
+//            ci::geom::Attrib attr = kvp.first;
+//            DataBufferRef buffer = mAttributeBuffers[attr];
+//            assert( !!buffer );
+//            renderEncoder.setVertexBufferAtIndex( buffer, kvp.second );
+//        }
+//    }
     
     renderEncoder.draw( mPrimitive,
                         vertexLength,

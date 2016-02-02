@@ -107,5 +107,18 @@ namespace cinder { namespace mtl {
         ScopedMatrices()	{ pushMatrices(); }
         ~ScopedMatrices()	{ popMatrices(); }
     };
+    
+    struct ScopedColor : private Noncopyable
+    {
+        ScopedColor();
+        ScopedColor( const ColorAf &color );
+        ScopedColor( float red, float green, float blue, float alpha = 1 );
+        ~ScopedColor();
+        
+    private:
+        Context		*mCtx;
+        ColorAf		mColor;
+    };
+
 
 }}
