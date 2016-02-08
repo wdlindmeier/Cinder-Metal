@@ -37,6 +37,15 @@ namespace cinder { namespace mtl {
             ,mArrayLength(1)
             ,mUsage(TextureUsageShaderRead)
             ,mFlipVertically(false)
+#if defined( CINDER_COCOA_TOUCH )
+            ,mStorageMode( StorageModeShared )
+#else
+            // NOTE: On OS X, programs run faster in "Shared" mode when using the integrated GPU,
+            // and faster in "Managed" mode when using the descreet GPU.
+            ,mStorageMode( StorageModeManaged )
+#endif
+            ,mCacheMode( CPUCacheModeDefaultCache )
+
             {};
 
         public:
@@ -73,6 +82,14 @@ namespace cinder { namespace mtl {
             void setUsage( TextureUsage usage ) { mUsage = usage; };
             TextureUsage getUsage() { return mUsage; };
 
+            Format& storageMode( StorageMode storageMode ) { setStorageMode( storageMode ); return *this; };
+            void setStorageMode( StorageMode storageMode ) { mStorageMode = storageMode; };
+            StorageMode getStorageMode() { return mStorageMode; };
+            
+            Format& cacheMode( CPUCacheMode cacheMode ) { setCacheMode( cacheMode ); return *this; };
+            void setCacheMode( CPUCacheMode cacheMode ) { mCacheMode = cacheMode; };
+            CPUCacheMode getCacheMode() { return mCacheMode; };
+
         protected:
             
             int mMipmapLevel;
@@ -83,6 +100,8 @@ namespace cinder { namespace mtl {
             int mArrayLength;
             TextureUsage mUsage;
             bool mFlipVertically;
+            StorageMode mStorageMode;
+            CPUCacheMode mCacheMode;
         };
         
         static TextureBufferRef create( const ImageSourceRef & imageSource, const Format & format = Format() )

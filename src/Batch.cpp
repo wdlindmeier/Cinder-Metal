@@ -155,7 +155,6 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
     mAttribMapping = attributeMapping;
 }
 
-
 void Batch::checkBufferLayout()
 {
     if ( mAttribBufferIndices.size() > 0 )

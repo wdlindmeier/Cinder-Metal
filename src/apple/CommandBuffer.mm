@@ -74,14 +74,19 @@ BlitEncoderRef CommandBuffer::createBlitEncoder( const std::string & encoderName
     return BlitEncoder::create((__bridge void *)blitEncoder);
 }
 
+void CommandBuffer::addCompletionHandler( std::function< void( void * mtlCommandBuffer) > completionHandler )
+{
+    [IMPL addCompletedHandler:^(id<MTLCommandBuffer> buffer)
+     {
+         completionHandler( (__bridge void *) buffer );
+     }];
+}
+
 void CommandBuffer::commit( std::function< void( void * mtlCommandBuffer) > completionHandler )
 {
     if ( completionHandler != NULL )
     {
-        [IMPL addCompletedHandler:^(id<MTLCommandBuffer> buffer)
-         {
-             completionHandler( (__bridge void *) buffer );
-         }];
+        addCompletionHandler(completionHandler);
     }
     [IMPL commit];
 }

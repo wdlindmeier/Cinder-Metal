@@ -1,5 +1,5 @@
 //
-//  RenderBuffer.hpp
+//  RenderCommandBuffer.hpp
 //  ParticleSorting
 //
 //  Created by William Lindmeier on 11/15/15.
@@ -37,6 +37,13 @@ namespace cinder { namespace mtl {
         RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & renderDescriptor,
                                               const std::string & encoderName = "Default Render Encoder" );
         
+        virtual RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & descriptor,
+                                                      void *drawableTexture,
+                                                      const std::string & encoderName = "Default Render Encoder" )
+        {
+            return CommandBuffer::createRenderEncoder(descriptor, drawableTexture, encoderName);
+        }
+
         void * getDrawable(){ return mDrawable; }
         
     protected:

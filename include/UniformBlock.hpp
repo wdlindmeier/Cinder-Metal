@@ -24,7 +24,7 @@ namespace cinder { namespace mtl {
         
         // TODO: How can we make a shared pointer with a templated class?
         UniformBlock( const std::string & name = "Uniforms" ) :
-        mInflightBufferIndex(-1)
+        mInflightBufferIndex(0)
         {
             app::RendererMetalRef metalRenderer = std::static_pointer_cast<app::RendererMetal>(ci::app::getWindow()->getRenderer());
             assert( metalRenderer );

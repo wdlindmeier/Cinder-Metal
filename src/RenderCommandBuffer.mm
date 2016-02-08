@@ -1,5 +1,5 @@
 //
-//  RenderBuffer.cpp
+//  RenderCommandBuffer.cpp
 //  ParticleSorting
 //
 //  Created by William Lindmeier on 11/15/15.

@@ -1,0 +1,549 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		006D720419952D00008149E2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006D720219952D00008149E2 /* AVFoundation.framework */; };
+		006D720519952D00008149E2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006D720319952D00008149E2 /* CoreMedia.framework */; };
+		0091D8F90E81B9330029341E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0091D8F80E81B9330029341E /* OpenGL.framework */; };
+		00B784B30FF439BC000DE1D7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784AF0FF439BC000DE1D7 /* Accelerate.framework */; };
+		00B784B40FF439BC000DE1D7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */; };
+		00B784B50FF439BC000DE1D7 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B10FF439BC000DE1D7 /* AudioUnit.framework */; };
+		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
+		00B9955A1B128DF400A5C623 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B995581B128DF400A5C623 /* IOKit.framework */; };
+		00B9955B1B128DF400A5C623 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B995591B128DF400A5C623 /* IOSurface.framework */; };
+		10E7FF3586744058BF3A3F41 /* BlitEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 90269A7E2D834127B7E49FA1 /* BlitEncoder.mm */; };
+		165690DE9F8C4044A612A3FE /* FboBasicApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23CC1258E07944F2A5AED6CC /* FboBasicApp.cpp */; };
+		1CC97F663AC24A00A847D593 /* CommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4CF24664B31A412192EAE42A /* CommandEncoder.mm */; };
+		22A8EF15976543838E270020 /* MetalGeom.mm in Sources */ = {isa = PBXBuildFile; fileRef = D8F4C3BAC8994E2DA2C1FEFC /* MetalGeom.mm */; };
+		237CDB4216384B9CA4163C03 /* Library.mm in Sources */ = {isa = PBXBuildFile; fileRef = B67777533672415A90C35F4E /* Library.mm */; };
+		27DCF9C57819432CB579D6B3 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0FAF0AF9BA094264B67ACAB9 /* CinderApp.icns */; };
+		2D5D57ACAF824E018C97BE2C /* Scope.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1519DA2C06EB4BA2BBA062D9 /* Scope.mm */; };
+		327A95983E8645F6866891B5 /* RendererMetalImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = D39A29FECEA84C01BD22B1A3 /* RendererMetalImpl.mm */; };
+		343B93C2FFD04290BEBD828E /* RenderCommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0F0F8B5A19D248ACB36B98D3 /* RenderCommandBuffer.mm */; };
+		3E04B908CAAA4517BEEBA981 /* SamplerState.mm in Sources */ = {isa = PBXBuildFile; fileRef = D40CBFB7E8254E76B67A6C67 /* SamplerState.mm */; };
+		44B498BA8F974DA9B56E3FDF /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 172B75C9DF9944E991F006DA /* RenderPipelineState.mm */; };
+		4C0B1BB1E0E34E5992F29E65 /* Argument.mm in Sources */ = {isa = PBXBuildFile; fileRef = D08559C06C9D4EC38DF7250C /* Argument.mm */; };
+		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
+		55E8C747A6D8474DAB9181D7 /* UniformBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7C63C7CE2C4C8489F518C8 /* UniformBlock.cpp */; };
+		5D6F9E0D50C94E448B990CE7 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0F35E5BFEA71460F989ED053 /* Shaders.metal */; };
+		638F227595D94EC5850A6E4E /* RenderPassDescriptor.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9CA28CA71AD4C529F8A145E /* RenderPassDescriptor.mm */; };
+		7ADC93F345F24189913457CC /* ImageHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = 965A640D9A274C20B65FF446 /* ImageHelpers.mm */; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		8E9C5AEAB7864CC9ABF6DDB1 /* RenderEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 037E5EADA64E441097ED4324 /* RenderEncoder.mm */; };
+		9199BAE452014327A6185B23 /* Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9236657ED3CA451591FA325A /* Context.cpp */; };
+		97FA93E8258E4116AAA7BD20 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6B5EB691594D2893DF2F42 /* VertexBuffer.cpp */; };
+		9F1D8A30E6D548EE9D3DA4D1 /* TextureBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 39CDE26831964F7B9C3283B8 /* TextureBuffer.mm */; };
+		A502DFEB943949BCADC0D486 /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52181C9AF23B419185E6D07B /* ComputePipelineState.mm */; };
+		A8EC75DCE492430CB5B7B953 /* Batch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3321EABEA68A4621ABE07B2E /* Batch.cpp */; };
+		A94FE5B01C62A5CF0050E7DA /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94FE5AF1C62A5CF0050E7DA /* Metal.framework */; };
+		A94FE5B21C62A5D60050E7DA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94FE5B11C62A5D60050E7DA /* QuartzCore.framework */; };
+		AD741DB0EC1047D8AAFA3D9A /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 447530B80882460D9ED62208 /* RendererMetal.mm */; };
+		B8E0E81216094C298F69A188 /* ComputeEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F22506C09A4B379D24717F /* ComputeEncoder.mm */; };
+		C06FE1E29882492EA280E009 /* DepthState.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEBE020FC5084A32939F4D5A /* DepthState.mm */; };
+		D70FA933D4A04018949653A0 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 168D60BAF8FB428AB3023EA1 /* CommandBuffer.mm */; };
+		E365873E8F2B431297CE17C2 /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 61E2CDFF89A64D7B9BFDBF9E /* DataBuffer.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		006D720219952D00008149E2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		006D720319952D00008149E2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		0091D8F80E81B9330029341E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		00B784AF0FF439BC000DE1D7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		00B784B10FF439BC000DE1D7 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		00B784B20FF439BC000DE1D7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		00B995581B128DF400A5C623 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		00B995591B128DF400A5C623 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		00BB523586554848B9F42BBA /* DataBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataBuffer.h; path = ../../../include/apple/DataBuffer.h; sourceTree = "<group>"; };
+		01A5C94E525F424C9FB0522B /* Argument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Argument.h; path = ../../../include/apple/Argument.h; sourceTree = "<group>"; };
+		037E5EADA64E441097ED4324 /* RenderEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderEncoder.mm; path = ../../../src/apple/RenderEncoder.mm; sourceTree = "<group>"; };
+		0A3AD9754C7942929A466A4C /* ComputeEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComputeEncoder.h; path = ../../../include/apple/ComputeEncoder.h; sourceTree = "<group>"; };
+		0F0F8B5A19D248ACB36B98D3 /* RenderCommandBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderCommandBuffer.mm; path = ../../../src/RenderCommandBuffer.mm; sourceTree = "<group>"; };
+		0F35E5BFEA71460F989ED053 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = Shaders.metal; path = ../src/Shaders.metal; sourceTree = "<group>"; };
+		0FAF0AF9BA094264B67ACAB9 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		14F01E6583F3409588C31F94 /* RenderPassDescriptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPassDescriptor.h; path = ../../../include/apple/RenderPassDescriptor.h; sourceTree = "<group>"; };
+		1519DA2C06EB4BA2BBA062D9 /* Scope.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Scope.mm; path = ../../../src/Scope.mm; sourceTree = "<group>"; };
+		168D60BAF8FB428AB3023EA1 /* CommandBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CommandBuffer.mm; path = ../../../src/apple/CommandBuffer.mm; sourceTree = "<group>"; };
+		172B75C9DF9944E991F006DA /* RenderPipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderPipelineState.mm; path = ../../../src/apple/RenderPipelineState.mm; sourceTree = "<group>"; };
+		1B0116624B994755AA095482 /* RendererMetalImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetalImpl.h; path = ../../../include/RendererMetalImpl.h; sourceTree = "<group>"; };
+		1FFF853ED8E142FCAB1E2159 /* CommandBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandBuffer.h; path = ../../../include/apple/CommandBuffer.h; sourceTree = "<group>"; };
+		23CC1258E07944F2A5AED6CC /* FboBasicApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = FboBasicApp.cpp; path = ../src/FboBasicApp.cpp; sourceTree = "<group>"; };
+		248029DF88C74FF5BCD70747 /* DepthState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DepthState.h; path = ../../../include/apple/DepthState.h; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		3321EABEA68A4621ABE07B2E /* Batch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = Batch.cpp; path = ../../../src/Batch.cpp; sourceTree = "<group>"; };
+		39CDE26831964F7B9C3283B8 /* TextureBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = TextureBuffer.mm; path = ../../../src/apple/TextureBuffer.mm; sourceTree = "<group>"; };
+		3C7C63C7CE2C4C8489F518C8 /* UniformBlock.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = UniformBlock.cpp; path = ../../../src/UniformBlock.cpp; sourceTree = "<group>"; };
+		447530B80882460D9ED62208 /* RendererMetal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetal.mm; path = ../../../src/RendererMetal.mm; sourceTree = "<group>"; };
+		4489F663D9AD400FBF855CA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		46D4B05C200242038F42CF54 /* RenderEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderEncoder.h; path = ../../../include/apple/RenderEncoder.h; sourceTree = "<group>"; };
+		4A6E8AFB190E4A66968CFC31 /* MetalHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = MetalHelpers.hpp; path = ../../../include/MetalHelpers.hpp; sourceTree = "<group>"; };
+		4CF24664B31A412192EAE42A /* CommandEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CommandEncoder.mm; path = ../../../src/apple/CommandEncoder.mm; sourceTree = "<group>"; };
+		4D09A79261184778B6B2548A /* VertexBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VertexBuffer.h; path = ../../../include/VertexBuffer.h; sourceTree = "<group>"; };
+		4D6B5EB691594D2893DF2F42 /* VertexBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = VertexBuffer.cpp; path = ../../../src/VertexBuffer.cpp; sourceTree = "<group>"; };
+		52181C9AF23B419185E6D07B /* ComputePipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputePipelineState.mm; path = ../../../src/apple/ComputePipelineState.mm; sourceTree = "<group>"; };
+		52D4B69AB6254E1F94BF93C6 /* ComputePipelineState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComputePipelineState.h; path = ../../../include/apple/ComputePipelineState.h; sourceTree = "<group>"; };
+		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
+		57C57736AAAF48BAADE705B3 /* UniformBlock.hpp */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = UniformBlock.hpp; path = ../../../include/UniformBlock.hpp; sourceTree = "<group>"; };
+		61E2CDFF89A64D7B9BFDBF9E /* DataBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DataBuffer.mm; path = ../../../src/apple/DataBuffer.mm; sourceTree = "<group>"; };
+		62103212567E42B2A7542651 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Batch.h; path = ../../../include/Batch.h; sourceTree = "<group>"; };
+		676C00CAC1954EE282A4FD80 /* RendererMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetal.h; path = ../../../include/RendererMetal.h; sourceTree = "<group>"; };
+		695754E44D0A46AA99D933AD /* ImageHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageHelpers.h; path = ../../../include/ImageHelpers.h; sourceTree = "<group>"; };
+		6F3438D00B274861A903E25B /* SamplerState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SamplerState.h; path = ../../../include/apple/SamplerState.h; sourceTree = "<group>"; };
+		7CB9F27DA5A2440995084EB2 /* MetalConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalConstants.h; path = ../../../include/MetalConstants.h; sourceTree = "<group>"; };
+		841C15CF58ED4FCEACDF6898 /* FboBasic_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = FboBasic_Prefix.pch; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* FboBasic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FboBasic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F2B091A81AD472DB0EB231C /* RenderPipelineState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderPipelineState.h; path = ../../../include/apple/RenderPipelineState.h; sourceTree = "<group>"; };
+		90269A7E2D834127B7E49FA1 /* BlitEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = BlitEncoder.mm; path = ../../../src/apple/BlitEncoder.mm; sourceTree = "<group>"; };
+		9236657ED3CA451591FA325A /* Context.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = Context.cpp; path = ../../../src/Context.cpp; sourceTree = "<group>"; };
+		965A640D9A274C20B65FF446 /* ImageHelpers.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ImageHelpers.mm; path = ../../../src/ImageHelpers.mm; sourceTree = "<group>"; };
+		97B3F9954E4D4482B6A83C39 /* Scope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Scope.h; path = ../../../include/Scope.h; sourceTree = "<group>"; };
+		A88CD25FF9794BD591D4AB25 /* TextureBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TextureBuffer.h; path = ../../../include/apple/TextureBuffer.h; sourceTree = "<group>"; };
+		A94FE5AF1C62A5CF0050E7DA /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		A94FE5B11C62A5D60050E7DA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B2F22506C09A4B379D24717F /* ComputeEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputeEncoder.mm; path = ../../../src/apple/ComputeEncoder.mm; sourceTree = "<group>"; };
+		B67777533672415A90C35F4E /* Library.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Library.mm; path = ../../../src/apple/Library.mm; sourceTree = "<group>"; };
+		B9719515C4BA4A469FCCFCE9 /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalGeom.h; path = ../../../include/MetalGeom.h; sourceTree = "<group>"; };
+		BBFC71EDB93E445F81AB15DC /* MetalEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalEnums.h; path = ../../../include/apple/MetalEnums.h; sourceTree = "<group>"; };
+		BD919CA10CF54C73BD9C961C /* CommandEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandEncoder.h; path = ../../../include/apple/CommandEncoder.h; sourceTree = "<group>"; };
+		BEBE020FC5084A32939F4D5A /* DepthState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DepthState.mm; path = ../../../src/apple/DepthState.mm; sourceTree = "<group>"; };
+		CB895963BD194CC7B7348F20 /* metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = metal.h; path = ../../../include/metal.h; sourceTree = "<group>"; };
+		D08559C06C9D4EC38DF7250C /* Argument.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Argument.mm; path = ../../../src/apple/Argument.mm; sourceTree = "<group>"; };
+		D39A29FECEA84C01BD22B1A3 /* RendererMetalImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetalImpl.mm; path = ../../../src/RendererMetalImpl.mm; sourceTree = "<group>"; };
+		D40CBFB7E8254E76B67A6C67 /* SamplerState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = SamplerState.mm; path = ../../../src/apple/SamplerState.mm; sourceTree = "<group>"; };
+		D8F4C3BAC8994E2DA2C1FEFC /* MetalGeom.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MetalGeom.mm; path = ../../../src/apple/MetalGeom.mm; sourceTree = "<group>"; };
+		D9639FDD7BB34D2F9EEC083C /* Library.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Library.h; path = ../../../include/apple/Library.h; sourceTree = "<group>"; };
+		DE245CC2C1BE4A7FB33A2492 /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Context.h; path = ../../../include/Context.h; sourceTree = "<group>"; };
+		E9CA28CA71AD4C529F8A145E /* RenderPassDescriptor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderPassDescriptor.mm; path = ../../../src/apple/RenderPassDescriptor.mm; sourceTree = "<group>"; };
+		F862925631354F6B8E9B424D /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
+		F8EFCE86762F45569E987FAF /* BlitEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlitEncoder.h; path = ../../../include/apple/BlitEncoder.h; sourceTree = "<group>"; };
+		FEE5DBB7BC404CB381FC65E1 /* RenderCommandBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderCommandBuffer.h; path = ../../../include/RenderCommandBuffer.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A94FE5B21C62A5D60050E7DA /* QuartzCore.framework in Frameworks */,
+				A94FE5B01C62A5CF0050E7DA /* Metal.framework in Frameworks */,
+				006D720419952D00008149E2 /* AVFoundation.framework in Frameworks */,
+				006D720519952D00008149E2 /* CoreMedia.framework in Frameworks */,
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				0091D8F90E81B9330029341E /* OpenGL.framework in Frameworks */,
+				5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */,
+				00B784B30FF439BC000DE1D7 /* Accelerate.framework in Frameworks */,
+				00B784B40FF439BC000DE1D7 /* AudioToolbox.framework in Frameworks */,
+				00B784B50FF439BC000DE1D7 /* AudioUnit.framework in Frameworks */,
+				00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */,
+				00B9955A1B128DF400A5C623 /* IOKit.framework in Frameworks */,
+				00B9955B1B128DF400A5C623 /* IOSurface.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01B97315FEAEA392516A2CEA /* Blocks */ = {
+			isa = PBXGroup;
+			children = (
+				DBD21C08CF66479585B14D11 /* Cinder-Metal */,
+			);
+			name = Blocks;
+			sourceTree = "<group>";
+		};
+		080E96DDFE201D6D7F000001 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				23CC1258E07944F2A5AED6CC /* FboBasicApp.cpp */,
+				0F35E5BFEA71460F989ED053 /* Shaders.metal */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				006D720219952D00008149E2 /* AVFoundation.framework */,
+				006D720319952D00008149E2 /* CoreMedia.framework */,
+				00B784AF0FF439BC000DE1D7 /* Accelerate.framework */,
+				00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */,
+				00B784B10FF439BC000DE1D7 /* AudioUnit.framework */,
+				00B784B20FF439BC000DE1D7 /* CoreAudio.framework */,
+				5323E6B10EAFCA74003A9687 /* CoreVideo.framework */,
+				0091D8F80E81B9330029341E /* OpenGL.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				00B995581B128DF400A5C623 /* IOKit.framework */,
+				00B995591B128DF400A5C623 /* IOSurface.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* FboBasic.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* FboBasic */ = {
+			isa = PBXGroup;
+			children = (
+				01B97315FEAEA392516A2CEA /* Blocks */,
+				29B97315FDCFA39411CA2CEA /* Headers */,
+				080E96DDFE201D6D7F000001 /* Source */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = FboBasic;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				F862925631354F6B8E9B424D /* Resources.h */,
+				841C15CF58ED4FCEACDF6898 /* FboBasic_Prefix.pch */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0FAF0AF9BA094264B67ACAB9 /* CinderApp.icns */,
+				4489F663D9AD400FBF855CA1 /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A94FE5B11C62A5D60050E7DA /* QuartzCore.framework */,
+				A94FE5AF1C62A5CF0050E7DA /* Metal.framework */,
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		33A0D81E5110441A93BECDA7 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				3321EABEA68A4621ABE07B2E /* Batch.cpp */,
+				9236657ED3CA451591FA325A /* Context.cpp */,
+				3C7C63C7CE2C4C8489F518C8 /* UniformBlock.cpp */,
+				4D6B5EB691594D2893DF2F42 /* VertexBuffer.cpp */,
+				965A640D9A274C20B65FF446 /* ImageHelpers.mm */,
+				0F0F8B5A19D248ACB36B98D3 /* RenderCommandBuffer.mm */,
+				447530B80882460D9ED62208 /* RendererMetal.mm */,
+				D39A29FECEA84C01BD22B1A3 /* RendererMetalImpl.mm */,
+				1519DA2C06EB4BA2BBA062D9 /* Scope.mm */,
+				58053811CF454174968FBB56 /* apple */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		58053811CF454174968FBB56 /* apple */ = {
+			isa = PBXGroup;
+			children = (
+				D08559C06C9D4EC38DF7250C /* Argument.mm */,
+				90269A7E2D834127B7E49FA1 /* BlitEncoder.mm */,
+				168D60BAF8FB428AB3023EA1 /* CommandBuffer.mm */,
+				4CF24664B31A412192EAE42A /* CommandEncoder.mm */,
+				B2F22506C09A4B379D24717F /* ComputeEncoder.mm */,
+				52181C9AF23B419185E6D07B /* ComputePipelineState.mm */,
+				61E2CDFF89A64D7B9BFDBF9E /* DataBuffer.mm */,
+				BEBE020FC5084A32939F4D5A /* DepthState.mm */,
+				B67777533672415A90C35F4E /* Library.mm */,
+				D8F4C3BAC8994E2DA2C1FEFC /* MetalGeom.mm */,
+				037E5EADA64E441097ED4324 /* RenderEncoder.mm */,
+				E9CA28CA71AD4C529F8A145E /* RenderPassDescriptor.mm */,
+				172B75C9DF9944E991F006DA /* RenderPipelineState.mm */,
+				D40CBFB7E8254E76B67A6C67 /* SamplerState.mm */,
+				39CDE26831964F7B9C3283B8 /* TextureBuffer.mm */,
+			);
+			name = apple;
+			sourceTree = "<group>";
+		};
+		7A70C4B6D9BC44BBB3FCB253 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				62103212567E42B2A7542651 /* Batch.h */,
+				DE245CC2C1BE4A7FB33A2492 /* Context.h */,
+				695754E44D0A46AA99D933AD /* ImageHelpers.h */,
+				CB895963BD194CC7B7348F20 /* metal.h */,
+				7CB9F27DA5A2440995084EB2 /* MetalConstants.h */,
+				B9719515C4BA4A469FCCFCE9 /* MetalGeom.h */,
+				FEE5DBB7BC404CB381FC65E1 /* RenderCommandBuffer.h */,
+				676C00CAC1954EE282A4FD80 /* RendererMetal.h */,
+				1B0116624B994755AA095482 /* RendererMetalImpl.h */,
+				97B3F9954E4D4482B6A83C39 /* Scope.h */,
+				4D09A79261184778B6B2548A /* VertexBuffer.h */,
+				E678BB39984A4E9FA0772640 /* apple */,
+				4A6E8AFB190E4A66968CFC31 /* MetalHelpers.hpp */,
+				57C57736AAAF48BAADE705B3 /* UniformBlock.hpp */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		DBD21C08CF66479585B14D11 /* Cinder-Metal */ = {
+			isa = PBXGroup;
+			children = (
+				33A0D81E5110441A93BECDA7 /* src */,
+				7A70C4B6D9BC44BBB3FCB253 /* include */,
+			);
+			name = "Cinder-Metal";
+			sourceTree = "<group>";
+		};
+		E678BB39984A4E9FA0772640 /* apple */ = {
+			isa = PBXGroup;
+			children = (
+				01A5C94E525F424C9FB0522B /* Argument.h */,
+				F8EFCE86762F45569E987FAF /* BlitEncoder.h */,
+				1FFF853ED8E142FCAB1E2159 /* CommandBuffer.h */,
+				BD919CA10CF54C73BD9C961C /* CommandEncoder.h */,
+				0A3AD9754C7942929A466A4C /* ComputeEncoder.h */,
+				52D4B69AB6254E1F94BF93C6 /* ComputePipelineState.h */,
+				00BB523586554848B9F42BBA /* DataBuffer.h */,
+				248029DF88C74FF5BCD70747 /* DepthState.h */,
+				D9639FDD7BB34D2F9EEC083C /* Library.h */,
+				BBFC71EDB93E445F81AB15DC /* MetalEnums.h */,
+				46D4B05C200242038F42CF54 /* RenderEncoder.h */,
+				14F01E6583F3409588C31F94 /* RenderPassDescriptor.h */,
+				8F2B091A81AD472DB0EB231C /* RenderPipelineState.h */,
+				6F3438D00B274861A903E25B /* SamplerState.h */,
+				A88CD25FF9794BD591D4AB25 /* TextureBuffer.h */,
+			);
+			name = apple;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* FboBasic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "FboBasic" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FboBasic;
+			productInstallPath = "$(HOME)/Applications";
+			productName = FboBasic;
+			productReference = 8D1107320486CEB800E47090 /* FboBasic.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "FboBasic" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* FboBasic */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* FboBasic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27DCF9C57819432CB579D6B3 /* CinderApp.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				165690DE9F8C4044A612A3FE /* FboBasicApp.cpp in Sources */,
+				5D6F9E0D50C94E448B990CE7 /* Shaders.metal in Sources */,
+				A8EC75DCE492430CB5B7B953 /* Batch.cpp in Sources */,
+				9199BAE452014327A6185B23 /* Context.cpp in Sources */,
+				55E8C747A6D8474DAB9181D7 /* UniformBlock.cpp in Sources */,
+				97FA93E8258E4116AAA7BD20 /* VertexBuffer.cpp in Sources */,
+				7ADC93F345F24189913457CC /* ImageHelpers.mm in Sources */,
+				343B93C2FFD04290BEBD828E /* RenderCommandBuffer.mm in Sources */,
+				AD741DB0EC1047D8AAFA3D9A /* RendererMetal.mm in Sources */,
+				327A95983E8645F6866891B5 /* RendererMetalImpl.mm in Sources */,
+				2D5D57ACAF824E018C97BE2C /* Scope.mm in Sources */,
+				4C0B1BB1E0E34E5992F29E65 /* Argument.mm in Sources */,
+				10E7FF3586744058BF3A3F41 /* BlitEncoder.mm in Sources */,
+				D70FA933D4A04018949653A0 /* CommandBuffer.mm in Sources */,
+				1CC97F663AC24A00A847D593 /* CommandEncoder.mm in Sources */,
+				B8E0E81216094C298F69A188 /* ComputeEncoder.mm in Sources */,
+				A502DFEB943949BCADC0D486 /* ComputePipelineState.mm in Sources */,
+				E365873E8F2B431297CE17C2 /* DataBuffer.mm in Sources */,
+				C06FE1E29882492EA280E009 /* DepthState.mm in Sources */,
+				237CDB4216384B9CA4163C03 /* Library.mm in Sources */,
+				22A8EF15976543838E270020 /* MetalGeom.mm in Sources */,
+				8E9C5AEAB7864CC9ABF6DDB1 /* RenderEncoder.mm in Sources */,
+				638F227595D94EC5850A6E4E /* RenderPassDescriptor.mm in Sources */,
+				44B498BA8F974DA9B56E3FDF /* RenderPipelineState.mm in Sources */,
+				3E04B908CAAA4517BEEBA981 /* SamplerState.mm in Sources */,
+				9F1D8A30E6D548EE9D3DA4D1 /* TextureBuffer.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = FboBasic_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include";
+				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder_d.a\"";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = FboBasic;
+				SYMROOT = ./build;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = FboBasic_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include";
+				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder.a\"";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = FboBasic;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SYMROOT = ./build;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CINDER_PATH = ../../../../..;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include";
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CINDER_PATH = ../../../../..;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "FboBasic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "FboBasic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

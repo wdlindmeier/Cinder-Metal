@@ -62,6 +62,14 @@ ScopedBlitEncoder ScopedCommandBuffer::scopedBlitEncoder( const std::string & bu
     return ScopedBlitEncoder( blitEncoder->getNative() );
 }
 
+ScopedRenderEncoder ScopedCommandBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+                                                              mtl::TextureBufferRef & drawableTexture,
+                                                              const std::string & bufferName )
+{
+    RenderEncoderRef renderEncoder = createRenderEncoder(descriptor, drawableTexture->getNative(), bufferName);
+    return ScopedRenderEncoder(renderEncoder->getNative());
+}
+
 ScopedCommandBuffer::~ScopedCommandBuffer()
 {
     commit( mCompletionHandler );

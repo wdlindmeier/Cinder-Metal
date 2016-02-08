@@ -19,16 +19,17 @@ using namespace ci::mtl;
 
 RenderPassDescriptor::RenderPassDescriptor( Format format ) :
 mDepthTexture(nullptr)
+,mFormat(format)
 {
     mImpl = (__bridge void *)[MTLRenderPassDescriptor renderPassDescriptor];
     CFRetain(mImpl);
     
-    setShouldClearColor(format.getShouldClearColor());
-    setClearColor(format.getClearColor());
-    setColorStoreAction(format.getColorStoreAction());
-    setShouldClearDepth(format.getShouldClearDepth());
-    setClearDepth(format.getClearDepth());
-    setDepthStoreAction(format.getDepthStoreAction());
+    setShouldClearColor(mFormat.getShouldClearColor());
+    setClearColor(mFormat.getClearColor());
+    setColorStoreAction(mFormat.getColorStoreAction());
+    setShouldClearDepth(mFormat.getShouldClearDepth());
+    setClearDepth(mFormat.getClearDepth());
+    setDepthStoreAction(mFormat.getDepthStoreAction());
 }
 
 RenderPassDescriptor::RenderPassDescriptor( void * mtlRenderPassDescriptor ) :
@@ -50,7 +51,6 @@ RenderPassDescriptor::~RenderPassDescriptor()
         CFRelease(mDepthTexture);
     }
 }
-
 
 void RenderPassDescriptor::setShouldClearColor( bool shouldClear, int colorAttachementIndex )
 {
@@ -102,13 +102,32 @@ void RenderPassDescriptor::applyToDrawableTexture( void * texture, int colorAtta
                                                                                         width: colorTexture.width
                                                                                        height: colorTexture.height
                                                                                     mipmapped: NO];
+        
 #if defined( CINDER_MAC )
         desc.resourceOptions = MTLResourceStorageModePrivate;
-        desc.usage = MTLTextureUsageRenderTarget;
 #endif
+        
+//        // TODO: Make this an option
+//        MTLTextureUsage usage = MTLTextureUsageRenderTarget;
+//        // NOTE: If the user wants to keep the depth around, make the depth texture readable.
+//        if ( IMPL.depthAttachment.storeAction == MTLStoreActionStore )
+//        {
+//            usage = usage | MTLTextureUsageShaderRead;
+//        }
+//        desc.usage = usage;
+        
+        desc.usage = (MTLTextureUsage)mFormat.getDepthUsage();
+
         mDepthTexture = (__bridge_retained void *)[device newTextureWithDescriptor: desc];
         DEPTH_TEX.label = @"Default Depth Texture";
         
         IMPL.depthAttachment.texture = DEPTH_TEX; // NOTE: we dont have to retain
+        
+        mDepthTextureBuffer = mtl::TextureBuffer::create( mDepthTexture );
     }
+}
+
+mtl::TextureBufferRef RenderPassDescriptor::getDepthTexture()
+{
+    return mDepthTextureBuffer;
 }

@@ -11,6 +11,7 @@
 #include "cinder/Cinder.h"
 #include "MetalHelpers.hpp"
 #include "MetalEnums.h"
+#include "TextureBuffer.h"
 
 namespace cinder { namespace mtl {
     
@@ -33,6 +34,7 @@ namespace cinder { namespace mtl {
             ,mClearDepth(1.f)
             ,mColorStoreAction(StoreActionStore)
             ,mDepthStoreAction(StoreActionDontCare)
+            ,mDepthUsage(TextureUsageRenderTarget)            
             {};
             
             // Format Options
@@ -63,6 +65,10 @@ namespace cinder { namespace mtl {
             void setDepthStoreAction( StoreAction depthStoreAction ) { mDepthStoreAction = depthStoreAction; };
             StoreAction getDepthStoreAction() { return mDepthStoreAction; };
 
+            Format& depthUsage( TextureUsage depthUsage ) { setDepthUsage( depthUsage ); return *this; };
+            void setDepthUsage( TextureUsage depthUsage ) { mDepthUsage = depthUsage; };
+            TextureUsage getDepthUsage() { return mDepthUsage; };
+
         protected:
             
             bool mShouldClearColor;
@@ -71,6 +77,7 @@ namespace cinder { namespace mtl {
             bool mShouldClearDepth;
             float mClearDepth;
             StoreAction mDepthStoreAction;
+            TextureUsage mDepthUsage;
             
         };
         
@@ -87,6 +94,8 @@ namespace cinder { namespace mtl {
         ~RenderPassDescriptor();
         
         void * getNative(){ return mImpl; };
+
+        mtl::TextureBufferRef getDepthTexture();
         
     protected:
 
@@ -104,7 +113,9 @@ namespace cinder { namespace mtl {
 
         void * mImpl = NULL; // MTLRenderPassDescriptor *
         void * mDepthTexture = NULL; // <MTLTexture>
+        mtl::TextureBufferRef mDepthTextureBuffer;
         
+        Format mFormat;
     };
     
 } }

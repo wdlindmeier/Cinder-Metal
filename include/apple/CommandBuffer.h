@@ -35,17 +35,19 @@ namespace cinder { namespace mtl {
         
         virtual ~CommandBuffer();
 
+        void addCompletionHandler( std::function< void( void * mtlCommandBuffer) > completionHandler );
+        
         void commit( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
-
+        
         void waitUntilCompleted();
 
         void * getNative(){ return mImpl; }
 
-        RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & descriptor,
-                                              void *drawableTexture,
-                                              const std::string & encoderName = "Default Render Encoder" );
-        ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Default Compute Encoder" );
-        BlitEncoderRef createBlitEncoder( const std::string & encoderName = "Default Blit Encoder" );
+        virtual RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & descriptor,
+                                                      void *drawableTexture,
+                                                      const std::string & encoderName = "Default Render Encoder" );
+        virtual ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Default Compute Encoder" );
+        virtual BlitEncoderRef createBlitEncoder( const std::string & encoderName = "Default Blit Encoder" );
         
     protected:
                 

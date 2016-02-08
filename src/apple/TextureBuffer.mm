@@ -36,6 +36,8 @@ mFormat(format)
     desc.usage = mFormat.getUsage();
     desc.mipmapLevelCount = mFormat.getMipmapLevel();
     desc.sampleCount = mFormat.getSampleCount();
+    desc.storageMode = (MTLStorageMode)mFormat.getStorageMode();
+    desc.cpuCacheMode = (MTLCPUCacheMode)mFormat.getCacheMode();
     
     mDataType = dataTypeFromPixelFormat(pxFormat);
     mBytesPerRow = dataSizeForType( mDataType ) * width;

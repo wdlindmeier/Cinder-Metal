@@ -235,6 +235,7 @@ ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat )
         case PixelFormatRGBA32Float:
         case PixelFormatR32Float:
         case PixelFormatRG32Float:
+        case PixelFormatDepth32Float:
             return ImageIo::FLOAT32;
             break;
         default:
