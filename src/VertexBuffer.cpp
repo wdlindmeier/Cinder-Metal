@@ -163,7 +163,7 @@ void VertexBuffer::setBufferForAttribute( DataBufferRef buffer,
     }
 }
 
-int VertexBuffer::getAttributeShaderIndex( const ci::geom::Attrib attr )
+unsigned long VertexBuffer::getAttributeShaderIndex( const ci::geom::Attrib attr )
 {
     if ( mAttributeBufferIndices.count(attr) != 0 )
     {
@@ -172,7 +172,7 @@ int VertexBuffer::getAttributeShaderIndex( const ci::geom::Attrib attr )
     return -1;
 }
 
-void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, int shaderBufferIndex )
+void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, unsigned long shaderBufferIndex )
 {
     mAttributeBufferIndices[attr] = shaderBufferIndex;
 }
@@ -235,7 +235,7 @@ void VertexBuffer::createDefaultIndices()
 {
     assert(mIndexLength == mVertexLength);
     std::vector<unsigned int> indices;
-    for ( size_t i = 0; i < mVertexLength; ++i )
+    for ( unsigned int i = 0; i < mVertexLength; ++i )
     {
         indices.push_back(i);
     }

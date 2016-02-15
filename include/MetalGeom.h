@@ -20,7 +20,7 @@ namespace cinder { namespace mtl {
         // Converts ci::geom::Primitive into (ObjC) MTLPrimitiveType
         // Returns MTLPrimitiveType (must be cast)
         extern int nativeMTLPrimativeTypeFromGeom( const ci::geom::Primitive geomPrimitive );
-
+        
         // Converts ci::mtl::geom::Primitive into (ObjC) MTLPrimitiveType
         // Returns MTLPrimitiveType (must be cast)
         extern int nativeMTLPrimitiveType( const ci::mtl::geom::Primitive primitive );

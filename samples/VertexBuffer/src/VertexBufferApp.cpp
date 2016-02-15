@@ -137,8 +137,8 @@ void VertexBufferApp::update()
     // Pass the matrices into the uniform block
     mUniforms.updateData([&]( auto data )
     {
-        data.ciNormalMatrix = toMtl(normalMatrix);
-        data.ciModelViewProjectionMatrix = toMtl(modelViewProjectionMatrix);
+        data.ciNormalMatrix4x4 = toMtl(normalMatrix);
+        data.ciModelViewProjection = toMtl(modelViewProjectionMatrix);
         return data;
     });
 

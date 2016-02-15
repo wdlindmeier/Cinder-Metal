@@ -84,7 +84,7 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
     }
     
     std::vector<ci::geom::Attrib> interleavedAttribs;
-    std::map<ci::geom::Attrib, int> attribBufferIndices;
+    std::map<ci::geom::Attrib, unsigned long> attribBufferIndices;
 
     AttribSemanticMap & defaultAttribMap = getDefaultAttribNameToSemanticMap();
     
@@ -170,7 +170,7 @@ void Batch::checkBufferLayout()
             // Make sure the buffer exists.
             assert( mVertexBuffer->getBufferForAttribute(attrWithIndex.first) );
             // Set the correct shader buffer index
-            int attrIndex = mVertexBuffer->getAttributeShaderIndex(attrWithIndex.first);
+            unsigned long attrIndex = mVertexBuffer->getAttributeShaderIndex(attrWithIndex.first);
             if ( attrIndex == -1 )
             {
                 // Should this be a negative assertion?

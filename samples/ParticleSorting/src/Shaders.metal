@@ -323,7 +323,7 @@ constexpr sampler shaderSampler(coord::normalized, // normalized (0-1) or coord:
 fragment float4 fragment_point_texture( ColorInOut in [[stage_in]],
                                         texture2d<float> textureParticle [[ texture(ciTextureIndex0) ]],
                                         float2 pointTexCoord [[ point_coord ]] )
-{    
+{
     float4 texColor = textureParticle.sample(shaderSampler, pointTexCoord);
     float4 inColor = in.color;
     inColor[3] *= texColor[3];

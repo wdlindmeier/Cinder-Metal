@@ -38,6 +38,7 @@
 		A90C30EF1C42E9D000D8E64F /* SamplerState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C30E21C42E9D000D8E64F /* SamplerState.mm */; };
 		A90C30F01C42E9D000D8E64F /* TextureBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C30E31C42E9D000D8E64F /* TextureBuffer.mm */; };
 		A93D65DD1C1BB6E600A76A79 /* RenderCommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A93D65DC1C1BB6E600A76A79 /* RenderCommandBuffer.mm */; };
+		A95B95051C7298D500A8F747 /* Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A95B95041C7298D500A8F747 /* Context.cpp */; };
 		A95C10231C4C106600F7C5EB /* Batch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A95C10221C4C106600F7C5EB /* Batch.cpp */; };
 		A95C10311C4C10EA00F7C5EB /* Argument.mm in Sources */ = {isa = PBXBuildFile; fileRef = A95C102F1C4C10EA00F7C5EB /* Argument.mm */; };
 		A95C10321C4C10EA00F7C5EB /* Library.mm in Sources */ = {isa = PBXBuildFile; fileRef = A95C10301C4C10EA00F7C5EB /* Library.mm */; };
@@ -99,6 +100,8 @@
 		A90C30E31C42E9D000D8E64F /* TextureBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureBuffer.mm; sourceTree = "<group>"; };
 		A93D65DB1C1BB6D500A76A79 /* RenderCommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderCommandBuffer.h; path = ../../../include/RenderCommandBuffer.h; sourceTree = "<group>"; };
 		A93D65DC1C1BB6E600A76A79 /* RenderCommandBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderCommandBuffer.mm; path = ../../../src/RenderCommandBuffer.mm; sourceTree = "<group>"; };
+		A95B95031C7298CA00A8F747 /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Context.h; path = ../../../include/Context.h; sourceTree = "<group>"; };
+		A95B95041C7298D500A8F747 /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Context.cpp; path = ../../../src/Context.cpp; sourceTree = "<group>"; };
 		A95C10211C4C105E00F7C5EB /* Batch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Batch.h; path = ../../../include/Batch.h; sourceTree = "<group>"; };
 		A95C10221C4C106600F7C5EB /* Batch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Batch.cpp; path = ../../../src/Batch.cpp; sourceTree = "<group>"; };
 		A95C102D1C4C10E000F7C5EB /* Argument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Argument.h; sourceTree = "<group>"; };
@@ -243,6 +246,7 @@
 			children = (
 				A90C30C81C42E9C700D8E64F /* apple */,
 				A95C10211C4C105E00F7C5EB /* Batch.h */,
+				A95B95031C7298CA00A8F747 /* Context.h */,
 				800DE8C21AB143E084F7624C /* ImageHelpers.h */,
 				501E9C0385DA4D1181840188 /* metal.h */,
 				B6EFF6EFCABF47219BB97C7D /* MetalConstants.h */,
@@ -263,6 +267,7 @@
 			children = (
 				A90C30D61C42E9D000D8E64F /* apple */,
 				A95C10221C4C106600F7C5EB /* Batch.cpp */,
+				A95B95041C7298D500A8F747 /* Context.cpp */,
 				5EBFD06B422845A088D8B11E /* ImageHelpers.mm */,
 				A93D65DC1C1BB6E600A76A79 /* RenderCommandBuffer.mm */,
 				5D63AF43D9F647559D6B5DB2 /* RendererMetal.mm */,
@@ -396,6 +401,7 @@
 				A90C30EF1C42E9D000D8E64F /* SamplerState.mm in Sources */,
 				A9BDFEC31C0D356200A76FD0 /* ParticleSortingApp.cpp in Sources */,
 				A95C10321C4C10EA00F7C5EB /* Library.mm in Sources */,
+				A95B95051C7298D500A8F747 /* Context.cpp in Sources */,
 				A90C30E71C42E9D000D8E64F /* ComputeEncoder.mm in Sources */,
 				06148DB9EF264AB6BAC7517B /* VertexBuffer.cpp in Sources */,
 				A90C30EB1C42E9D000D8E64F /* MetalGeom.mm in Sources */,

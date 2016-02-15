@@ -45,7 +45,7 @@ namespace cinder { namespace mtl {
         virtual ~VertexBuffer(){}
         
         ci::mtl::geom::Primitive getPrimitive(){ return mPrimitive; };
-        //void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
+        void setPrimitive( const ci::mtl::geom::Primitive primitive ){ mPrimitive = primitive; };
         
         // Set shaderBufferIndex to something > -1 if you wish to update / assign the shader index for this attribute
         void setBufferForAttribute( DataBufferRef buffer,
@@ -55,9 +55,9 @@ namespace cinder { namespace mtl {
         
         // Override the default shader indices.
         // The default geom::Attr shader indices are defined in MetalConstants.h
-        void setAttributeShaderIndex( const ci::geom::Attrib attr, int shaderBufferIndex );
+        void setAttributeShaderIndex( const ci::geom::Attrib attr, unsigned long shaderBufferIndex );
         // Returns -1 if the attr doesnt have an index
-        int getAttributeShaderIndex( const ci::geom::Attrib attr );
+        unsigned long getAttributeShaderIndex( const ci::geom::Attrib attr );
         
         template<typename T>
         void update( ci::geom::Attrib attr, std::vector<T> vectorData )
@@ -99,7 +99,7 @@ namespace cinder { namespace mtl {
         ci::mtl::geom::Primitive mPrimitive;
         std::map<ci::geom::Attrib, DataBufferRef> mAttributeBuffers;
         
-        std::map<ci::geom::Attrib, int> mAttributeBufferIndices;
+        std::map<ci::geom::Attrib, unsigned long> mAttributeBufferIndices;
         ci::geom::SourceRef mSource;
         size_t mVertexLength;
         size_t mIndexLength;

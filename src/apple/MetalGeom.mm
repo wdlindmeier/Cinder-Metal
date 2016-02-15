@@ -6,7 +6,7 @@
 
 namespace cinder { namespace mtl { namespace geom {
 
-    int nativeMTLPrimativeTypeFromGL( const ci::geom::Primitive primitive )
+    int nativeMTLPrimativeTypeFromGeom( const ci::geom::Primitive primitive )
     {
         switch ( primitive )
         {
@@ -80,8 +80,6 @@ namespace cinder { namespace mtl { namespace geom {
     {
         switch (attr)
         {
-//            case ci::geom::INDEX:
-//                return ciBufferIndexIndicies;
             case ci::geom::POSITION:
                 return ciBufferIndexPositions;
             case ci::geom::COLOR:
@@ -124,6 +122,8 @@ namespace cinder { namespace mtl { namespace geom {
                 return ciBufferIndexCustom8;
             case ci::geom::CUSTOM_9:
                 return ciBufferIndexCustom9;
+            default:
+                return -1;
         }
     }
     

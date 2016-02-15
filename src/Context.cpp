@@ -109,8 +109,8 @@ namespace cinder { namespace mtl {
     void setDefaultShaderVars( RenderEncoder & renderEncoder,
                                RenderPipelineStateRef pipeline )
     {
-        int vertBufferIndex = -1;
-        int fragBufferIndex = -1;
+        unsigned long vertBufferIndex = -1;
+        unsigned long fragBufferIndex = -1;
         
         // Check the vertex shader for a param named "ciUniforms"
         for( ci::mtl::Argument argument : pipeline->getVertexArguments() )

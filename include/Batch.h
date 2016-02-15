@@ -101,7 +101,7 @@ namespace cinder { namespace mtl {
             AttributeMapping		mAttribMapping;
         
             std::vector<ci::geom::Attrib> mInterleavedAttribs;
-            std::map<ci::geom::Attrib, int> mAttribBufferIndices;
+            std::map<ci::geom::Attrib, unsigned long> mAttribBufferIndices;
 
     };
 }}
