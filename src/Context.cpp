@@ -27,6 +27,8 @@ namespace cinder { namespace mtl {
         auto prevCtx = Context::getCurrent();
         Context::reflectCurrent( this );
 
+        mColor = ColorAf(1,1,1,1);
+        
         mModelMatrixStack.push_back( mat4() );
         mViewMatrixStack.push_back( mat4() );
         mProjectionMatrixStack.push_back( mat4() );
@@ -98,7 +100,7 @@ namespace cinder { namespace mtl {
         }
         pthread_setspecific( sThreadSpecificCurrentContextKey, context );
     }
-
+    
     Context* context()
     {
         auto ctx = Context::getCurrent();
@@ -167,7 +169,7 @@ namespace cinder { namespace mtl {
                                                              mtl::DataBuffer::Format()
                                                              .label("Default Uniforms")
                                                              .isConstant());
-            
+
             if ( vertBufferIndex != -1 )
             {
                 renderEncoder.setVertexBufferAtIndex(uniformBuffer, vertBufferIndex, 0);
@@ -424,8 +426,8 @@ namespace cinder { namespace mtl {
         // Calculate world position.
         return ci::lerp( nearPlane, farPlane, ( z - nearPlane.z ) / ( farPlane.z - nearPlane.z ) );
     }
-    
-    vec2 objectToWindowCoord( const mat4 &modelMatrix, const ci::vec3 &coordinate, const std::pair<vec2,vec2> &viewport )
+
+    vec3 objectToWindowCoord( const mat4 &modelMatrix, const ci::vec3 &coordinate, const std::pair<vec2,vec2> &viewport )
     {
         // Build the viewport (x, y, width, height).
         vec4 vp = vec4( viewport.first.x, viewport.first.y, viewport.second.x, viewport.second.y );
@@ -433,10 +435,13 @@ namespace cinder { namespace mtl {
         // Calculate the view-projection matrix.
         mat4 viewProjectionMatrix = mtl::getProjectionMatrix() * mtl::getViewMatrix();
         
-        vec2 p = vec2( glm::project( coordinate, modelMatrix, viewProjectionMatrix, vp ) );
-        
-        return p;
+        return glm::project( coordinate, modelMatrix, viewProjectionMatrix, vp );
     }
+
+//    vec2 objectToWindowCoord( const mat4 &modelMatrix, const ci::vec3 &coordinate, const std::pair<vec2,vec2> &viewport )
+//    {
+//        return vec2( objectToWindowCoord(modelMatrix, coordinate, viewport) );
+//    }
     
     void color( float r, float g, float b )
     {

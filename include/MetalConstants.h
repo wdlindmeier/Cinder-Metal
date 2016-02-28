@@ -42,6 +42,7 @@ namespace cinder {
             ciBufferIndexCustom7 = 21,
             ciBufferIndexCustom8 = 22,
             ciBufferIndexCustom9 = 23,
+            ciBufferIndexInstanceData = 24,
         };
         
         enum DefaultSamplerShaderIndices

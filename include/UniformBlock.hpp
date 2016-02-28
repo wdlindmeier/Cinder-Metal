@@ -22,13 +22,16 @@ namespace cinder { namespace mtl {
         
     public:
         
-        // TODO: How can we make a shared pointer with a templated class?
-        UniformBlock( const std::string & name = "Uniforms" ) :
+        UniformBlock( int numBuffers = -1, const std::string & name = "Uniforms" ) :
         mInflightBufferIndex(0)
+        ,mNumInflightBuffers(numBuffers)
         {
-            app::RendererMetalRef metalRenderer = std::static_pointer_cast<app::RendererMetal>(ci::app::getWindow()->getRenderer());
-            assert( metalRenderer );
-            mNumInflightBuffers = metalRenderer->getNumInflightBuffers();
+            if ( mNumInflightBuffers == -1 )
+            {
+                app::RendererMetalRef metalRenderer = std::static_pointer_cast<app::RendererMetal>(ci::app::getWindow()->getRenderer());
+                assert( metalRenderer );
+                mNumInflightBuffers = metalRenderer->getNumInflightBuffers();
+            }
             mDynamicUniformBuffer = DataBuffer::create(mtlConstantSizeOf(T) * mNumInflightBuffers,
                                                        nullptr,
                                                        mtl::DataBuffer::Format()

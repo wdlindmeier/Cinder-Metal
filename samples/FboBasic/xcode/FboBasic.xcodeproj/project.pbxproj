@@ -42,6 +42,7 @@
 		A8EC75DCE492430CB5B7B953 /* Batch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3321EABEA68A4621ABE07B2E /* Batch.cpp */; };
 		A94FE5B01C62A5CF0050E7DA /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94FE5AF1C62A5CF0050E7DA /* Metal.framework */; };
 		A94FE5B21C62A5D60050E7DA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94FE5B11C62A5D60050E7DA /* QuartzCore.framework */; };
+		A99D51E21C82D24400E7B1D2 /* Draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A99D51E01C82D24400E7B1D2 /* Draw.cpp */; };
 		AD741DB0EC1047D8AAFA3D9A /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 447530B80882460D9ED62208 /* RendererMetal.mm */; };
 		B8E0E81216094C298F69A188 /* ComputeEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F22506C09A4B379D24717F /* ComputeEncoder.mm */; };
 		C06FE1E29882492EA280E009 /* DepthState.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEBE020FC5084A32939F4D5A /* DepthState.mm */; };
@@ -107,6 +108,9 @@
 		A88CD25FF9794BD591D4AB25 /* TextureBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TextureBuffer.h; path = ../../../include/apple/TextureBuffer.h; sourceTree = "<group>"; };
 		A94FE5AF1C62A5CF0050E7DA /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A94FE5B11C62A5D60050E7DA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A990FC571C7CE542002F4160 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
+		A99D51E01C82D24400E7B1D2 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
+		A99D51E11C82D24400E7B1D2 /* InstanceShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = InstanceShaders.metal; path = ../../../src/InstanceShaders.metal; sourceTree = "<group>"; };
 		B2F22506C09A4B379D24717F /* ComputeEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputeEncoder.mm; path = ../../../src/apple/ComputeEncoder.mm; sourceTree = "<group>"; };
 		B67777533672415A90C35F4E /* Library.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Library.mm; path = ../../../src/apple/Library.mm; sourceTree = "<group>"; };
 		B9719515C4BA4A469FCCFCE9 /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalGeom.h; path = ../../../include/MetalGeom.h; sourceTree = "<group>"; };
@@ -247,16 +251,18 @@
 		33A0D81E5110441A93BECDA7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				58053811CF454174968FBB56 /* apple */,
 				3321EABEA68A4621ABE07B2E /* Batch.cpp */,
 				9236657ED3CA451591FA325A /* Context.cpp */,
-				3C7C63C7CE2C4C8489F518C8 /* UniformBlock.cpp */,
-				4D6B5EB691594D2893DF2F42 /* VertexBuffer.cpp */,
+				A99D51E01C82D24400E7B1D2 /* Draw.cpp */,
 				965A640D9A274C20B65FF446 /* ImageHelpers.mm */,
+				A99D51E11C82D24400E7B1D2 /* InstanceShaders.metal */,
 				0F0F8B5A19D248ACB36B98D3 /* RenderCommandBuffer.mm */,
 				447530B80882460D9ED62208 /* RendererMetal.mm */,
 				D39A29FECEA84C01BD22B1A3 /* RendererMetalImpl.mm */,
 				1519DA2C06EB4BA2BBA062D9 /* Scope.mm */,
-				58053811CF454174968FBB56 /* apple */,
+				3C7C63C7CE2C4C8489F518C8 /* UniformBlock.cpp */,
+				4D6B5EB691594D2893DF2F42 /* VertexBuffer.cpp */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -286,6 +292,7 @@
 		7A70C4B6D9BC44BBB3FCB253 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				A990FC571C7CE542002F4160 /* Draw.h */,
 				62103212567E42B2A7542651 /* Batch.h */,
 				DE245CC2C1BE4A7FB33A2492 /* Context.h */,
 				695754E44D0A46AA99D933AD /* ImageHelpers.h */,
@@ -398,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A99D51E21C82D24400E7B1D2 /* Draw.cpp in Sources */,
 				165690DE9F8C4044A612A3FE /* FboBasicApp.cpp in Sources */,
 				5D6F9E0D50C94E448B990CE7 /* Shaders.metal in Sources */,
 				A8EC75DCE492430CB5B7B953 /* Batch.cpp in Sources */,

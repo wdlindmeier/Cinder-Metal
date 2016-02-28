@@ -192,14 +192,22 @@ void VertexBuffer::copyAttrib( ci::geom::Attrib attr, // POSITION, TEX_COORD_0 e
     
     ci::geom::AttribInfo attrInfo = mBufferLayout.getAttribInfo(attr);
     
-    uint8_t *bufferPointer = (uint8_t*)mInterleavedData->contents();
-
-    // Copied from VBOMesh
     uint8_t *dstData = nullptr;
     uint8_t dstDims;
     size_t dstStride, dstDataSize;
     dstDims = attrInfo.getDims();
     dstStride = attrInfo.getStride();
+
+    // TODO: if dstDims == 0, handle gracefully.
+    // TODO: If the dimensions are different, pad the values with zeros.
+    assert( dstDims > 0 );
+//    if ( dstDims == 0 )
+//    {
+//        CI_LOG_I("Skipping attr " << attr << ". Not available in source." );
+//        return;
+//    }    
+
+    uint8_t *bufferPointer = (uint8_t*)mInterleavedData->contents();
     dstData = bufferPointer + attrInfo.getOffset();
     dstDataSize = mInterleavedData->getLength();
     

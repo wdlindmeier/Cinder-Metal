@@ -28,6 +28,7 @@
 //#include "Batch.h"
 #include "MetalHelpers.hpp"
 #include "Scope.h"
+//#include "Draw.h"
 //#include "Context.h"
 
 #if defined( __OBJC__ )

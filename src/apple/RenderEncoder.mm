@@ -74,6 +74,16 @@ void RenderEncoder::setFragmentBufferAtIndex( const DataBufferRef & buffer, size
                     atIndex:index];
 }
 
+void RenderEncoder::setVertexBytesAtIndex( const void * bytes, size_t length , size_t index )
+{
+    [IMPL setVertexBytes:bytes length:length atIndex:index];
+}
+
+void RenderEncoder::setFragmentBytesAtIndex( const void * bytes, size_t length , size_t index )
+{
+    [IMPL setFragmentBytes:bytes length:length atIndex:index];
+}
+
 void RenderEncoder::setViewport( vec2 origin, vec2 size, float near, float far )
 {
     [IMPL setViewport:{ origin.x, origin.y, size.x, size.y, near, far }];

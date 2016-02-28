@@ -20,6 +20,10 @@
 #include "DataBuffer.h"
 //#include "metal.h"
 
+// The capacity for simultaneous uniform buffers.
+// Should be enough for multiple batches.
+const static int kNumUniformBuffers = 5;
+
 namespace cinder { namespace mtl {
     
     class Context;
@@ -191,15 +195,18 @@ namespace cinder { namespace mtl {
     //! Returns the object space coordinate of the specified window \a coordinate, using the specified \a modelMatrix and the currently active view and projection matrices.
     vec3 windowToObjectCoord( const mat4 &modelMatrix, const vec2 &coordinate, const std::pair<vec2,vec2> & viewport, float z = 0.0f );
     //! Returns the window coordinate of the specified world \a coordinate, using the specified \a modelMatrix and the currently active view and projection matrices.
-    vec2 objectToWindowCoord( const mat4 &modelMatrix, const vec3 &coordinate, const std::pair<vec2,vec2> & viewport );
+    vec3 objectToWindowCoord( const mat4 &modelMatrix, const vec3 &coordinate, const std::pair<vec2,vec2> & viewport );
+    //vec2 objectToWindowCoord( const mat4 &modelMatrix, const vec3 &coordinate, const std::pair<vec2,vec2> & viewport );
     //! Returns the object space coordinate of the specified window \a coordinate, using the currently active model, view and projection matrices.
     inline vec3 windowToObjectCoord( const vec2 &coordinate, const std::pair<vec2,vec2> &viewport, float z = 0.0f ) { return windowToObjectCoord( mtl::getModelMatrix(), coordinate, viewport, z ); }
     //! Returns the window coordinate of the specified world \a coordinate, using the currently active model, view and projection matrices.
-    inline vec2 objectToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> &viewport ) { return objectToWindowCoord( mtl::getModelMatrix(), coordinate, viewport ); }
+    inline vec3 objectToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> &viewport ) { return objectToWindowCoord( mtl::getModelMatrix(), coordinate, viewport ); }
+//    inline vec2 objectToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> &viewport ) { return objectToWindowCoord( mtl::getModelMatrix(), coordinate, viewport ); }
     //! Returns the world space coordinate of the specified window \a coordinate, using the currently active view and projection matrices.
     inline vec3 windowToWorldCoord( const vec2 &coordinate, const std::pair<vec2,vec2> &viewport, float z = 0.0f ) { return windowToObjectCoord( mat4(), coordinate, viewport, z ); }
     //! Returns the window coordinate of the specified world \a coordinate, using the currently active view and projection matrices.
-    inline vec2 worldToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> & viewport ) { return objectToWindowCoord( mat4(), coordinate, viewport ); }
+//    inline vec2 worldToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> & viewport ) { return objectToWindowCoord( mat4(), coordinate, viewport ); }
+    inline vec3 worldToWindowCoord( const vec3 &coordinate, const std::pair<vec2,vec2> & viewport ) { return objectToWindowCoord( mat4(), coordinate, viewport ); }
     
     void color( float r, float g, float b );
     void color( float r, float g, float b, float a );

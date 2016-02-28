@@ -1,6 +1,7 @@
 #include "cinder/app/App.h"
 #include "metal.h"
 #include "Batch.h"
+#include "Draw.h"
 #include "VertexBuffer.h"
 
 using namespace ci;
@@ -89,17 +90,17 @@ void FboBasicApp::update()
 }
 
 // TODO: Start a mtl::draw header
-namespace cinder { namespace mtl {
-    
-    void draw( VertexBufferRef vertBuffer,
-               RenderPipelineStateRef pipeline,
-               RenderEncoder & renderEncoder )
-    {
-        setDefaultShaderVars(renderEncoder, pipeline);
-        renderEncoder.setPipelineState(pipeline);
-        vertBuffer->draw(renderEncoder);
-    }
-}}
+//namespace cinder { namespace mtl {
+//    
+//    void draw( VertexBufferRef vertBuffer,
+//               RenderPipelineStateRef pipeline,
+//               RenderEncoder & renderEncoder )
+//    {
+//        setDefaultShaderVars(renderEncoder, pipeline);
+//        renderEncoder.setPipelineState(pipeline);
+//        vertBuffer->draw(renderEncoder);
+//    }
+//}}
 
 void FboBasicApp::draw()
 {

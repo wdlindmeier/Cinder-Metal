@@ -42,8 +42,12 @@ namespace cinder { namespace mtl {
         virtual void setTexture( const TextureBufferRef & texture, size_t index = ciTextureIndex0 );
         // Sets buffer at ciBufferIndexUniforms for both vertex and fragment shaders
         virtual void setUniforms( const DataBufferRef & buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
+        
         void setVertexBufferAtIndex( const DataBufferRef & buffer, size_t bufferIndex , size_t bytesOffset = 0 );
         void setFragmentBufferAtIndex( const DataBufferRef & buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        
+        void setVertexBytesAtIndex( const void * bytes, size_t length , size_t index );
+        void setFragmentBytesAtIndex( const void * bytes, size_t length , size_t index );
         
         void setFragSamplerState( const SamplerStateRef & samplerState, int samplerIndex = 0 );
         void setDepthStencilState( const DepthStateRef & depthState );

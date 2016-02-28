@@ -108,6 +108,7 @@
 		A5B044ECCA6D48ECBB0817E7 /* RendererMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetal.h; path = ../../../include/RendererMetal.h; sourceTree = "<group>"; };
 		A67AD4C0360A4695B0164573 /* ComputeEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComputeEncoder.h; path = ../../../include/apple/ComputeEncoder.h; sourceTree = "<group>"; };
 		A94FE5B31C62A5E50050E7DA /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		A990FC561C7CE500002F4160 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
 		AF81C8986B224E11960D02A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B367482F9E024497BED17054 /* Argument.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Argument.mm; path = ../../../src/apple/Argument.mm; sourceTree = "<group>"; };
 		B9AE8ED63862443FA39D4EB6 /* ComputePipelineState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputePipelineState.mm; path = ../../../src/apple/ComputePipelineState.mm; sourceTree = "<group>"; };
@@ -309,20 +310,21 @@
 		ECC55C8279FA472BA328E2BA /* include */ = {
 			isa = PBXGroup;
 			children = (
+				B1382BB3734142E2A8D9BBA3 /* apple */,
 				A3E0E3A48F7C4A76B1C5C760 /* Batch.h */,
 				24FD5501BB7F42208F6D7211 /* Context.h */,
+				A990FC561C7CE500002F4160 /* Draw.h */,
 				3580427FD24643A089BB1CB4 /* ImageHelpers.h */,
 				2E60435FDC684E0A9A902FDA /* metal.h */,
 				99C2AD5AB0C74B898BB9E5CB /* MetalConstants.h */,
 				3D801C2319894DEFB9E4CCE2 /* MetalGeom.h */,
+				3D1E782665B045BFA179FD8E /* MetalHelpers.hpp */,
 				282B7BEAC8E14CB69D6BC6F2 /* RenderCommandBuffer.h */,
 				A5B044ECCA6D48ECBB0817E7 /* RendererMetal.h */,
 				CB1C67DD3B1E4524A23E083B /* RendererMetalImpl.h */,
 				E3D2BB5F0DF44F3087A5F500 /* Scope.h */,
-				54B84A5ED9BD4B5589B1B633 /* VertexBuffer.h */,
-				B1382BB3734142E2A8D9BBA3 /* apple */,
-				3D1E782665B045BFA179FD8E /* MetalHelpers.hpp */,
 				3A2C26F6297D414A9CEBF401 /* UniformBlock.hpp */,
+				54B84A5ED9BD4B5589B1B633 /* VertexBuffer.h */,
 			);
 			name = include;
 			sourceTree = "<group>";

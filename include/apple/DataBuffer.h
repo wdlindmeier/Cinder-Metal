@@ -100,14 +100,14 @@ namespace cinder { namespace mtl {
         }
         
         template <typename T>
-        void update( const std::vector<T> & vectorData )
+        void update( const std::vector<T> & vectorData, const size_t offsetBytes = 0 )
         {
             size_t length = sizeof(T) * vectorData.size();
             if ( mFormat.getIsConstant() )
             {
                 length = mtlConstantBufferSize(length);
             }
-            update(vectorData.data(), length);
+            update(vectorData.data(), length, offsetBytes);
         }
         
         template <typename BufferObjectType>
