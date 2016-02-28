@@ -17,13 +17,7 @@ Once you've created an app using the Metal Basic template in TinderBox, follow t
 	`$(CINDER_PATH)/blocks/Cinder-Metal/include`
 
 ###Samples
-You could also start by editing one of the samples:
-
-* **Cube**: A bare-bones textured cube. Compare to Cinder's _opengl/Cube sample.  
-
-* **ParticleSorting**: Uses a compute shader to sort particles from back to front for alpha blending.  
-  
-* **VertexBuffer**: Demonstrates a few different approaches to loading geometry data into a buffer.
+The easiest way to get started is to edit a sample project found in samples/.
 
 ###Usage Notes
 
@@ -55,6 +49,3 @@ For indexed draw calls, Metal has a class called [MTLVertexDescriptor](https://d
 
 **GPU Support**  
 While Metal on iOS devices is pretty solid, driver support for laptop GPUs is still catching up. On MacBooks, the discreet and integrated GPUs have been known to render things slightly differently. You can download [gfxCardStatus](https://gfx.io/) to show which GPU you're using, and manually switch between them for debugging.
-
-###Contributions
-This block is not an exhaustive mapping of the Metal API (and may never be). If you spot missing functionality, silly design decisions, or bugs, please submit a Pull Request or open an Issue on Github.
