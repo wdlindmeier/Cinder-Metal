@@ -54,19 +54,30 @@ namespace cinder { namespace mtl {
 
 #pragma mark - Drawing Convenience Functions
     
-    void drawStrokedCircle( ci::vec3 position, float radius, ci::mtl::RenderEncoder & renderEncoder );
-    void drawSolidCircle( ci::vec3 position, float radius, ci::mtl::RenderEncoder & renderEncoder );
-    void drawRing( ci::vec3 position, float outerRadius, float innerRadius, ci::mtl::RenderEncoder & renderEncoder );
-    void drawRing( ci::vec3 position, float outerRadius, float innerRadius, ci::mtl::RenderEncoder & renderEncoder );
-    void drawStrokedRect( ci::Rectf rect, ci::mtl::RenderEncoder & renderEncoder );
-    void drawSolidRect( ci::Rectf rect, ci::mtl::RenderEncoder & renderEncoder );
-    void drawCube( ci::vec3 position, ci::vec3 size, ci::mtl::RenderEncoder & renderEncoder );
-    void drawSphere( ci::vec3 position, float radius, ci::mtl::RenderEncoder & renderEncoder );
+    void drawStrokedCircle( ci::vec3 position, float radius,
+                            ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawSolidCircle( ci::vec3 position, float radius,
+                         ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawRing( ci::vec3 position, float outerRadius, float innerRadius,
+                  ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawStrokedRect( ci::Rectf rect,
+                          ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawSolidRect( ci::Rectf rect,
+                        ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawCube( ci::vec3 position, ci::vec3 size,
+                   ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawSphere( ci::vec3 position, float radius,
+                     ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
     // NOTE: This is not designed to be fast—just convenient
-    void drawLines( std::vector<ci::vec3> lines, ci::mtl::RenderEncoder & renderEncoder, bool isLineStrip = false );
+    void drawLines( std::vector<ci::vec3> lines,
+                    bool isLineStrip = false,
+                    ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
     // NOTE: This is not designed to be fast—just convenient
-    void drawLine( ci::vec3 from, ci::vec3 to, ci::mtl::RenderEncoder & renderEncoder );
-    void drawColoredCube( ci::vec3 position, ci::vec3 size, ci::mtl::RenderEncoder & renderEncoder );
-    void draw( ci::mtl::TextureBufferRef & texture, ci::mtl::RenderEncoder & renderEncoder, ci::Rectf rect = ci::Rectf(0,0,0,0) );
+    void drawLine( ci::vec3 from, ci::vec3 to,
+                   ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void drawColoredCube( ci::vec3 position, ci::vec3 size,
+                          ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder() );
+    void draw( ci::mtl::TextureBufferRef & texture, ci::Rectf rect = ci::Rectf(0,0,0,0),
+               ci::mtl::RenderEncoder & renderEncoder = *mtl::context()->getCurrentRenderEncoder());
     
 }}

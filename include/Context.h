@@ -72,6 +72,9 @@ namespace cinder { namespace mtl {
         const ColorAf&              getCurrentColor() const { return mColor; }
         void                        setCurrentColor( const ColorAf &color ) { mColor = color; }
 
+        RenderEncoder *             getCurrentRenderEncoder() { return mRenderEncoder; }
+        void                        setCurrentRenderEncoder( RenderEncoder * encoder ) { mRenderEncoder = encoder; }
+
         private:
         
         Context( const std::shared_ptr<PlatformData> &platformData );
@@ -82,6 +85,8 @@ namespace cinder { namespace mtl {
         std::vector<mat4>		mModelMatrixStack;
         std::vector<mat4>		mViewMatrixStack;	
         std::vector<mat4>		mProjectionMatrixStack;
+        
+        RenderEncoder *         mRenderEncoder;
     };
 
     // Remember to add a matching case to uniformSemanticToString

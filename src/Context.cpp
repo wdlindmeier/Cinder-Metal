@@ -22,6 +22,7 @@ namespace cinder { namespace mtl {
     Context::Context( const std::shared_ptr<PlatformData> &platformData )
     :
     mPlatformData( platformData )
+    ,mRenderEncoder(NULL)
     {
         // set thread's active Context to 'this' in case anything calls mtl::context() (like the GlslProg constructor)
         auto prevCtx = Context::getCurrent();

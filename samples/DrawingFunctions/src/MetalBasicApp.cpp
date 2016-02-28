@@ -61,43 +61,43 @@ void MetalBasicApp::draw()
     
     // Draw a Texture
     mtl::color(1,1,1);
-    mtl::draw(mTexture, renderEncoder, Rectf(-2,-1,0,1));
+    mtl::draw(mTexture, Rectf(-2,-1,0,1));
 
     // Draw a circle
     mtl::color(1,0,0);
-    mtl::drawStrokedCircle(vec3(0), 1.f, renderEncoder);
+    mtl::drawStrokedCircle(vec3(0), 1.f);
 
     // Draw a solid circle
     mtl::color(1,1,0);
-    mtl::drawSolidCircle(vec3(2,0,0), 1.f, renderEncoder);
+    mtl::drawSolidCircle(vec3(2,0,0), 1.f);
 
     // Draw a square
     mtl::color(0,1,1);
-    mtl::drawStrokedRect(Rectf(-1,-1,1,1), renderEncoder);
+    mtl::drawStrokedRect(Rectf(-1,-1,1,1));
 
     // Draw a solid square
     mtl::color(1,0,1);
-    mtl::drawSolidRect(Rectf(3,-1,5,1), renderEncoder);
+    mtl::drawSolidRect(Rectf(3,-1,5,1));
 
     // Draw a sphere
     mtl::color(0,1,0);
-    mtl::drawSphere(vec3(6,0,0), 1.f, renderEncoder);
+    mtl::drawSphere(vec3(6,0,0), 1.f);
 
     // Draw a cube
     mtl::color(1,0,1);
-    mtl::drawCube(vec3(8,0,0), vec3(2.f), renderEncoder);
+    mtl::drawCube(vec3(8,0,0), vec3(2.f));
 
     // Draw a line
     mtl::color(1,1,1);
-    mtl::drawLine(vec3(0), vec3(10,0,0), renderEncoder);
+    mtl::drawLine(vec3(0), vec3(10,0,0));
 
     // Draw a ring
     mtl::color(0,0,1);
-    mtl::drawRing(vec3(10,0,0), 1.f, 0.5, renderEncoder );
+    mtl::drawRing(vec3(10,0,0), 1.f, 0.5);
     
     // Draw a colored cube
     mtl::color(1,1,1);
-    mtl::drawColoredCube(vec3(12,0,0), vec3(2.f), renderEncoder);
+    mtl::drawColoredCube(vec3(12,0,0), vec3(2.f));
 }
 
 CINDER_APP( MetalBasicApp, RendererMetal, [](MetalBasicApp::Settings *settings)

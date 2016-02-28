@@ -12,16 +12,25 @@
 #include "ComputeEncoder.h"
 #include "BlitEncoder.h"
 #include "cinder/Log.h"
+#include "Context.h"
 
 using namespace cinder;
 using namespace cinder::mtl;
 
 ScopedRenderEncoder::ScopedRenderEncoder( void * mtlRenderCommandEncoder ) :
 RenderEncoder(mtlRenderCommandEncoder)
-{}
+,mCtx( mtl::context() )
+{
+    // Create a pointer to the current render encoder for convenience methods that require an encoder
+    mCtx->setCurrentRenderEncoder( this );
+}
 
 ScopedRenderEncoder::~ScopedRenderEncoder()
 {
+    if ( mCtx->getCurrentRenderEncoder() == this )
+    {
+        mCtx->setCurrentRenderEncoder( NULL );
+    }
     endEncoding();
 }
 
@@ -89,8 +98,9 @@ RenderCommandBuffer(bufferName)
 ScopedRenderEncoder ScopedRenderCommandBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
                                                                     const std::string & bufferName )
 {
-    RenderEncoderRef renderEncoder = createRenderEncoder(descriptor, bufferName);
-    return ScopedRenderEncoder(renderEncoder->getNative());
+    RenderEncoderRef renderEncoder = createRenderEncoder( descriptor, bufferName );
+    
+    return ScopedRenderEncoder( renderEncoder->getNative() );
 }
 
 ScopedRenderCommandBuffer::~ScopedRenderCommandBuffer()

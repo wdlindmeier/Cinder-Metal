@@ -380,7 +380,7 @@ void drawSphere( ci::vec3 position, float radius, mtl::RenderEncoder & renderEnc
     mtl::drawOne(mtl::getStockBatchSphere(), renderEncoder);
 }
 
-void drawLines( std::vector<ci::vec3> lines, mtl::RenderEncoder & renderEncoder, bool isLineStrip )
+void drawLines( std::vector<ci::vec3> lines, bool isLineStrip, mtl::RenderEncoder & renderEncoder )
 {
     vector<unsigned int> indices;
     for ( int i = 0; i < lines.size(); ++i )
@@ -397,7 +397,7 @@ void drawLines( std::vector<ci::vec3> lines, mtl::RenderEncoder & renderEncoder,
 
 void drawLine( ci::vec3 from, ci::vec3 to, mtl::RenderEncoder & renderEncoder )
 {
-    drawLines({{from, to}}, renderEncoder);
+    drawLines({{from, to}}, false, renderEncoder);
 }
 
 static mtl::VertexBufferRef sColoredCubeBuffer;
@@ -419,7 +419,7 @@ void drawColoredCube( ci::vec3 position, ci::vec3 size, mtl::RenderEncoder & ren
 }
 
 // Draw a texture
-void draw( mtl::TextureBufferRef & texture, mtl::RenderEncoder & renderEncoder, ci::Rectf rect )
+void draw( mtl::TextureBufferRef & texture, ci::Rectf rect, mtl::RenderEncoder & renderEncoder )
 {
     renderEncoder.setTexture(texture);
     mtl::ScopedModelMatrix matModel;

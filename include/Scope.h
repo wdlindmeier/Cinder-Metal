@@ -24,6 +24,7 @@ namespace cinder { namespace mtl {
         ~ScopedRenderEncoder();
     private:
         ScopedRenderEncoder( void * mtlRenderCommandEncoder );
+        Context		*mCtx;
     };
     
     class ScopedComputeEncoder : public ComputeEncoder
