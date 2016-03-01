@@ -13,60 +13,13 @@ using namespace ci::mtl;
 using namespace std;
 
 namespace cinder { namespace mtl {
-    
-void draw( ci::mtl::VertexBufferRef vertBuffer,
-           ci::mtl::RenderPipelineStateRef pipeline,
-           ci::mtl::RenderEncoder & renderEncoder )
-{
-    setDefaultShaderVars(renderEncoder, pipeline);
-    renderEncoder.setPipelineState(pipeline);
-    vertBuffer->draw(renderEncoder);
-}
-
-#pragma mark - Instancing Draw Calls
-
-static ci::mtl::DataBufferRef sInstanceBuffer;
-
-void setInstanceData( ci::mtl::DataBufferRef & instanceBuffer, ci::mtl::RenderEncoder & renderEncoder )
-{
-    renderEncoder.setVertexBufferAtIndex(instanceBuffer, ci::mtl::ciBufferIndexInstanceData);
-}
-
-void setIdentityInstance( ci::mtl::RenderEncoder & renderEncoder )
-{
-    if ( !sInstanceBuffer )
-    {
-        // Cache the vanilla buffer.
-        Instance i;
-        i.modelMatrix = toMtl(mat4(1)); // identity
-        i.color = toMtl(vec4(1,1,1,1)); // white
-        i.position = toMtl(vec3(0.f));
-        std::vector<Instance> is = {i};
-        sInstanceBuffer = ci::mtl::DataBuffer::create(is);
-    }
-    setInstanceData(sInstanceBuffer, renderEncoder);
-}
-
-void drawOne( ci::mtl::BatchRef batch, ci::mtl::RenderEncoder & renderEncoder )
-{
-    setIdentityInstance( renderEncoder );
-    batch->drawInstanced(renderEncoder, 1);
-}
-
-void drawOne( ci::mtl::BatchRef batch, ci::mtl::RenderEncoder & renderEncoder, const Instance & i)
-{
-    std::vector<Instance> is = {i};
-    ci::mtl::DataBufferRef iBuffer = ci::mtl::DataBuffer::create(is);
-    setInstanceData(iBuffer, renderEncoder);
-    batch->drawInstanced(renderEncoder, 1);
-}
-
+ 
 #pragma mark - Generic Pipelines
 
 // TODO: REPLACE these with a shader builder
 
 ci::mtl::RenderPipelineStateRef sPipelineRing;
-static ci::mtl::RenderPipelineStateRef getStockPipelineRing()
+ci::mtl::RenderPipelineStateRef getStockPipelineRing()
 {
     if ( !sPipelineRing )
     {
@@ -79,7 +32,7 @@ static ci::mtl::RenderPipelineStateRef getStockPipelineRing()
 }
 
 mtl::RenderPipelineStateRef sPipelineBillboardRing;
-static mtl::RenderPipelineStateRef getStockPipelineBillboardRing()
+mtl::RenderPipelineStateRef getStockPipelineBillboardRing()
 {
     if ( !sPipelineBillboardRing )
     {
@@ -92,7 +45,7 @@ static mtl::RenderPipelineStateRef getStockPipelineBillboardRing()
 }
 
 mtl::RenderPipelineStateRef sPipelineWire;
-static mtl::RenderPipelineStateRef getStockPipelineWire()
+mtl::RenderPipelineStateRef getStockPipelineWire()
 {
     if ( !sPipelineWire )
     {
@@ -105,7 +58,7 @@ static mtl::RenderPipelineStateRef getStockPipelineWire()
 }
 
 mtl::RenderPipelineStateRef sPipelineTexturedRect;
-static mtl::RenderPipelineStateRef getStockPipelineTexturedRect()
+mtl::RenderPipelineStateRef getStockPipelineTexturedRect()
 {
     if ( !sPipelineTexturedRect )
     {
@@ -117,8 +70,21 @@ static mtl::RenderPipelineStateRef getStockPipelineTexturedRect()
     return sPipelineTexturedRect;
 }
 
+mtl::RenderPipelineStateRef sPipelineMultiTexturedRect;
+mtl::RenderPipelineStateRef getStockPipelineMultiTexturedRect()
+{
+    if ( !sPipelineMultiTexturedRect )
+    {
+        sPipelineMultiTexturedRect = mtl::RenderPipelineState::create("rect_vertex", "texture_array_fragment",
+                                                                      mtl::RenderPipelineState::Format()
+                                                                      .blendingEnabled()
+                                                                      );
+    }
+    return sPipelineMultiTexturedRect;
+}
+
 mtl::RenderPipelineStateRef sPipelineBillboardTexture;
-static mtl::RenderPipelineStateRef getStockPipelineBillboardTexture()
+mtl::RenderPipelineStateRef getStockPipelineBillboardTexture()
 {
     if ( !sPipelineBillboardTexture )
     {
@@ -129,9 +95,22 @@ static mtl::RenderPipelineStateRef getStockPipelineBillboardTexture()
     }
     return sPipelineBillboardTexture;
 }
+        
+mtl::RenderPipelineStateRef sPipelineBillboardMultiTexture;
+mtl::RenderPipelineStateRef getStockPipelineBillboardMultiTexture()
+{
+    if ( !sPipelineBillboardMultiTexture )
+    {
+        sPipelineBillboardMultiTexture = mtl::RenderPipelineState::create("billboard_rect_vertex", "texture_array_fragment",
+                                                                          mtl::RenderPipelineState::Format()
+                                                                          .blendingEnabled()
+                                                                          );
+    }
+    return sPipelineBillboardMultiTexture;
+}
 
 mtl::RenderPipelineStateRef sPipelineSolidRect;
-static mtl::RenderPipelineStateRef getStockPipelineSolidRect()
+mtl::RenderPipelineStateRef getStockPipelineSolidRect()
 {
     if ( !sPipelineSolidRect )
     {
@@ -144,7 +123,7 @@ static mtl::RenderPipelineStateRef getStockPipelineSolidRect()
 }
 
 mtl::RenderPipelineStateRef sPipelineGeom;
-static mtl::RenderPipelineStateRef getStockPipelineGeom()
+mtl::RenderPipelineStateRef getStockPipelineGeom()
 {
     if ( !sPipelineGeom )
     {
@@ -157,7 +136,7 @@ static mtl::RenderPipelineStateRef getStockPipelineGeom()
 }
 
 mtl::RenderPipelineStateRef sPipelineColoredGeom;
-static mtl::RenderPipelineStateRef getStockPipelineColoredGeom()
+mtl::RenderPipelineStateRef getStockPipelineColoredGeom()
 {
     if ( !sPipelineColoredGeom )
     {
@@ -223,6 +202,16 @@ mtl::BatchRef getStockBatchTexturedRect()
     return sBatchTexturedRect;
 }
 
+mtl::BatchRef sBatchMultiTexturedRect;
+mtl::BatchRef getStockBatchMultiTexturedRect()
+{
+    if ( !sBatchMultiTexturedRect )
+    {
+        sBatchMultiTexturedRect = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineMultiTexturedRect() );
+    }
+    return sBatchMultiTexturedRect;
+}
+
 mtl::BatchRef sBatchBillboard;
 mtl::BatchRef getStockBatchBillboard()
 {
@@ -231,6 +220,16 @@ mtl::BatchRef getStockBatchBillboard()
         sBatchBillboard = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineBillboardTexture() );
     }
     return sBatchBillboard;
+}
+    
+mtl::BatchRef sBatchMultiBillboard;
+mtl::BatchRef getStockBatchMultiBillboard()
+{
+    if ( !sBatchMultiBillboard )
+    {
+        sBatchMultiBillboard = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineBillboardMultiTexture() );
+    }
+    return sBatchMultiBillboard;
 }
 
 mtl::BatchRef sBatchSolidRect;
@@ -316,123 +315,6 @@ mtl::BatchRef getStockBatchBillboardRing()
         sBatchBillboardRing = mtl::Batch::create( getRingBuffer(), getStockPipelineBillboardRing() );
     }
     return sBatchBillboardRing;
-}
-
-#pragma mark - Drawing Convenience Functions
-
-void drawStrokedCircle( ci::vec3 position, float radius, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(position);
-    mtl::scale(vec3(radius));
-    mtl::drawOne(mtl::getStockBatchWireCircle(), renderEncoder);
-}
-
-void drawSolidCircle( ci::vec3 position, float radius, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(position);
-    mtl::scale(vec3(radius));
-    const float circleInnerRadius = 0.f;
-    renderEncoder.setVertexBytesAtIndex(&circleInnerRadius, sizeof(float), ciBufferIndexCustom0);
-    mtl::drawOne(mtl::getStockBatchRing(), renderEncoder);
-}
-
-void drawRing( ci::vec3 position, float outerRadius, float innerRadius, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(position);
-    mtl::scale(vec3(outerRadius));
-    const float circleInnerRadius = innerRadius / outerRadius;
-    renderEncoder.setVertexBytesAtIndex(&circleInnerRadius, sizeof(float), ciBufferIndexCustom0);
-    mtl::drawOne(mtl::getStockBatchRing(), renderEncoder);
-}
-
-void drawStrokedRect( ci::Rectf rect, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(ci::vec3(rect.getCenter(), 0));
-    mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
-    mtl::drawOne(mtl::getStockBatchWireRect(), renderEncoder);
-}
-
-void drawSolidRect( ci::Rectf rect, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(ci::vec3(rect.getCenter(), 0));
-    mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
-    mtl::drawOne(mtl::getStockBatchSolidRect(), renderEncoder);
-}
-
-void drawCube( ci::vec3 position, ci::vec3 size, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(position);
-    mtl::scale(size);
-    mtl::drawOne(mtl::getStockBatchCube(), renderEncoder);
-}
-
-void drawSphere( ci::vec3 position, float radius, mtl::RenderEncoder & renderEncoder )
-{
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(position);
-    mtl::scale(vec3(radius * 2.f)); // NOTE: default sphere radius is 0.5
-    mtl::drawOne(mtl::getStockBatchSphere(), renderEncoder);
-}
-
-void drawLines( std::vector<ci::vec3> lines, bool isLineStrip, mtl::RenderEncoder & renderEncoder )
-{
-    vector<unsigned int> indices;
-    for ( int i = 0; i < lines.size(); ++i )
-    {
-        indices.push_back(i);
-    }
-    auto lineBuffer = mtl::VertexBuffer::create(lines.size(),
-                                                mtl::DataBuffer::create(lines, mtl::DataBuffer::Format().label("LineVerts")),
-                                                mtl::DataBuffer::create(indices),
-                                                isLineStrip ? mtl::geom::LINE_STRIP : mtl::geom::LINE);
-    setIdentityInstance( renderEncoder );
-    mtl::draw(lineBuffer, mtl::getStockPipelineWire(), renderEncoder);
-}
-
-void drawLine( ci::vec3 from, ci::vec3 to, mtl::RenderEncoder & renderEncoder )
-{
-    drawLines({{from, to}}, false, renderEncoder);
-}
-
-static mtl::VertexBufferRef sColoredCubeBuffer;
-void drawColoredCube( ci::vec3 position, ci::vec3 size, mtl::RenderEncoder & renderEncoder )
-{
-    if ( !sColoredCubeBuffer )
-    {
-        sColoredCubeBuffer = mtl::VertexBuffer::create( ci::geom::Cube()
-                                                       .size(vec3(1.f))
-                                                       .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),
-                                                               Color(1,1,0),Color(0,1,1),Color(1,0,1)),
-                                                       {{ ci::geom::POSITION, ci::geom::NORMAL, ci::geom::COLOR }});
-    }
-    mtl::ScopedModelMatrix matModel;
-    mtl::translate(position);
-    mtl::scale(size);
-    setIdentityInstance( renderEncoder );
-    mtl::draw(sColoredCubeBuffer, mtl::getStockPipelineColoredGeom(), renderEncoder);
-}
-
-// Draw a texture
-void draw( mtl::TextureBufferRef & texture, ci::Rectf rect, mtl::RenderEncoder & renderEncoder )
-{
-    renderEncoder.setTexture(texture);
-    mtl::ScopedModelMatrix matModel;
-    if ( rect.getWidth() != 0 && rect.getHeight() != 0 )
-    {
-        mtl::translate(ci::vec3(rect.getCenter(), 0));
-        mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
-    }
-    else
-    {
-        mtl::scale(vec3(texture->getWidth(), texture->getHeight(), 1));
-    }
-    mtl::drawOne(mtl::getStockBatchTexturedRect(), renderEncoder);
 }
 
 }};

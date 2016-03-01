@@ -72,8 +72,8 @@ namespace cinder { namespace mtl {
         const ColorAf&              getCurrentColor() const { return mColor; }
         void                        setCurrentColor( const ColorAf &color ) { mColor = color; }
 
-        RenderEncoder *             getCurrentRenderEncoder() { return mRenderEncoder; }
-        void                        setCurrentRenderEncoder( RenderEncoder * encoder ) { mRenderEncoder = encoder; }
+//        RenderEncoder *             getCurrentRenderEncoder() { return mRenderEncoder; }
+//        void                        setCurrentRenderEncoder( RenderEncoder * encoder ) { mRenderEncoder = encoder; }
 
         private:
         

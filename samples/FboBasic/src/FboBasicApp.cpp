@@ -52,8 +52,8 @@ void FboBasicApp::setup()
 
     mDepthEnabled = mtl::DepthState::create( mtl::DepthState::Format().depthWriteEnabled() );
     
-    mPipelineCube = mtl::RenderPipelineState::create("geom_vertex", "color_fragment");
-    mPipelineTexturedGeom = mtl::RenderPipelineState::create("geom_vertex", "rgb_texture_fragment");
+    mPipelineCube = mtl::RenderPipelineState::create("cube_vertex", "color_fragment");
+    mPipelineTexturedGeom = mtl::RenderPipelineState::create("cube_vertex", "rgb_texture_fragment");
     mPipelineTextureRGB = mtl::RenderPipelineState::create("rect_vertex", "rgb_texture_fragment");
     mPipelineTextureGray = mtl::RenderPipelineState::create("rect_vertex", "gray_texture_fragment");
     
@@ -89,19 +89,6 @@ void FboBasicApp::update()
     mRotation *= rotate( 0.06f, normalize( vec3( 0.16666f, 0.333333f, 0.666666f ) ) );
 }
 
-// TODO: Start a mtl::draw header
-//namespace cinder { namespace mtl {
-//    
-//    void draw( VertexBufferRef vertBuffer,
-//               RenderPipelineStateRef pipeline,
-//               RenderEncoder & renderEncoder )
-//    {
-//        setDefaultShaderVars(renderEncoder, pipeline);
-//        renderEncoder.setPipelineState(pipeline);
-//        vertBuffer->draw(renderEncoder);
-//    }
-//}}
-
 void FboBasicApp::draw()
 {
     {
@@ -118,7 +105,7 @@ void FboBasicApp::draw()
         mtl::setMatrices(cam);
         mtl::setModelMatrix(mRotation);
         mtl::ScopedColor blue(0, 0, 1);
-        mtl::draw(mCube, mPipelineCube, fboEncoder);
+        fboEncoder.draw(mCube, mPipelineCube);
     }
     
     // Draw the FBO texture
@@ -135,7 +122,7 @@ void FboBasicApp::draw()
         mtl::setMatrices( cam );
         
         renderEncoder.setTexture(mFBO);
-        mtl::draw(mCube, mPipelineTexturedGeom, renderEncoder);
+        renderEncoder.draw(mCube, mPipelineTexturedGeom);
     }
     
     {
@@ -145,13 +132,13 @@ void FboBasicApp::draw()
         mtl::scale(vec2(128)); // draw @ 128 px
         
         renderEncoder.setTexture(mFBO);
-        mtl::draw(mRect, mPipelineTextureRGB, renderEncoder);
+        renderEncoder.draw(mRect, mPipelineTextureRGB, true);
 
         mtl::TextureBufferRef depthTex = mRenderDescriptorFbo->getDepthTexture();
         renderEncoder.setTexture(depthTex);
 
         mtl::translate(vec2(1, 0)); // 1 == 128px here
-        mtl::draw(mRect, mPipelineTextureGray, renderEncoder);
+        renderEncoder.draw(mRect, mPipelineTextureGray);
     }
 }
 

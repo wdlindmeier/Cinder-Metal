@@ -31,6 +31,9 @@
 		A90C31691C42EB5A00D8E64F /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C315C1C42EB5A00D8E64F /* RenderPipelineState.mm */; };
 		A90C316A1C42EB5A00D8E64F /* SamplerState.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C315D1C42EB5A00D8E64F /* SamplerState.mm */; };
 		A90C316B1C42EB5A00D8E64F /* TextureBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90C315E1C42EB5A00D8E64F /* TextureBuffer.mm */; };
+		A91F69F41C86153A009EE353 /* Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91F69F11C86153A009EE353 /* Context.cpp */; };
+		A91F69F51C86153A009EE353 /* Draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91F69F21C86153A009EE353 /* Draw.cpp */; };
+		A91F69F61C86153A009EE353 /* InstanceShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A91F69F31C86153A009EE353 /* InstanceShaders.metal */; };
 		A92044871BCAD14500CC8AAB /* src in Resources */ = {isa = PBXBuildFile; fileRef = A92044851BCAD14500CC8AAB /* src */; };
 		A920448E1BCAD4BA00CC8AAB /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A92044881BCAD17700CC8AAB /* Metal.framework */; };
 		A920448F1BCAD4BA00CC8AAB /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A92044891BCAD17700CC8AAB /* MetalKit.framework */; };
@@ -100,6 +103,13 @@
 		A90C315D1C42EB5A00D8E64F /* SamplerState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SamplerState.mm; sourceTree = "<group>"; };
 		A90C315E1C42EB5A00D8E64F /* TextureBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureBuffer.mm; sourceTree = "<group>"; };
 		A916E3161BD2A47F0012573E /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalGeom.h; sourceTree = "<group>"; };
+		A91F69ED1C86152E009EE353 /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
+		A91F69EE1C86152E009EE353 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Draw.h; sourceTree = "<group>"; };
+		A91F69EF1C86152E009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstanceTypes.h; sourceTree = "<group>"; };
+		A91F69F01C86152E009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderUtils.h; sourceTree = "<group>"; };
+		A91F69F11C86153A009EE353 /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; };
+		A91F69F21C86153A009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Draw.cpp; sourceTree = "<group>"; };
+		A91F69F31C86153A009EE353 /* InstanceShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = InstanceShaders.metal; sourceTree = "<group>"; };
 		A92044851BCAD14500CC8AAB /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/src"; sourceTree = "<absolute>"; };
 		A92044881BCAD17700CC8AAB /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A92044891BCAD17700CC8AAB /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
@@ -301,7 +311,10 @@
 			children = (
 				A90C31431C42EB4C00D8E64F /* apple */,
 				A95C104E1C4C12A100F7C5EB /* Batch.h */,
+				A91F69ED1C86152E009EE353 /* Context.h */,
+				A91F69EE1C86152E009EE353 /* Draw.h */,
 				A9BDFE881C09253900A76FD0 /* ImageHelpers.h */,
+				A91F69EF1C86152E009EE353 /* InstanceTypes.h */,
 				A96C5E511BCD6FAA001DD6D3 /* metal.h */,
 				A991662F1BF02655006F710D /* MetalConstants.h */,
 				A916E3161BD2A47F0012573E /* MetalGeom.h */,
@@ -310,6 +323,7 @@
 				A92044971BCADD5E00CC8AAB /* RendererMetal.h */,
 				A920449F1BCAE05200CC8AAB /* RendererMetalImpl.h */,
 				A90BF5D81BEA6DF5002C9257 /* Scope.h */,
+				A91F69F01C86152E009EE353 /* ShaderUtils.h */,
 				A9F4A81C1C39E3C000B7B421 /* UniformBlock.hpp */,
 				A90BF5AC1BDC29E7002C9257 /* VertexBuffer.h */,
 			);
@@ -322,7 +336,10 @@
 			children = (
 				A90C31511C42EB5A00D8E64F /* apple */,
 				A95C10511C4C12AE00F7C5EB /* Batch.cpp */,
+				A91F69F11C86153A009EE353 /* Context.cpp */,
+				A91F69F21C86153A009EE353 /* Draw.cpp */,
 				A9BDFE891C09253F00A76FD0 /* ImageHelpers.mm */,
+				A91F69F31C86153A009EE353 /* InstanceShaders.metal */,
 				A93D65E41C1BB74900A76A79 /* RenderCommandBuffer.mm */,
 				A920449A1BCADD5E00CC8AAB /* RendererMetal.mm */,
 				A920449D1BCAE04100CC8AAB /* RendererMetalImpl.mm */,
@@ -403,11 +420,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A91F69F51C86153A009EE353 /* Draw.cpp in Sources */,
 				A90C31611C42EB5A00D8E64F /* CommandEncoder.mm in Sources */,
 				A90BF5AB1BDC29D1002C9257 /* VertexBuffer.cpp in Sources */,
 				A90C316A1C42EB5A00D8E64F /* SamplerState.mm in Sources */,
 				22F02BB9C5664FB8B79128FD /* VertexBufferApp.cpp in Sources */,
 				A95C10561C4C12B300F7C5EB /* Library.mm in Sources */,
+				A91F69F41C86153A009EE353 /* Context.cpp in Sources */,
 				A90C31621C42EB5A00D8E64F /* ComputeEncoder.mm in Sources */,
 				A9BDFE8A1C09253F00A76FD0 /* ImageHelpers.mm in Sources */,
 				A90C31661C42EB5A00D8E64F /* MetalGeom.mm in Sources */,
@@ -426,6 +445,7 @@
 				A90BF5DB1BEA6E09002C9257 /* Scope.mm in Sources */,
 				A90C316B1C42EB5A00D8E64F /* TextureBuffer.mm in Sources */,
 				A92044A11BCB0AD000CC8AAB /* Shaders.metal in Sources */,
+				A91F69F61C86153A009EE353 /* InstanceShaders.metal in Sources */,
 				A95C10551C4C12B300F7C5EB /* Argument.mm in Sources */,
 				A90C315F1C42EB5A00D8E64F /* BlitEncoder.mm in Sources */,
 			);

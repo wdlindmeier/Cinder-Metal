@@ -121,11 +121,11 @@ namespace cinder { namespace mtl {
 
         virtual ~TextureBuffer();
 
-        void update( const ImageSourceRef & imageSource );
+        void update( const ImageSourceRef & imageSource, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         
         // Getting & Setting Data for 2D images
-        void setPixelData( const void *pixelBytes );
-        void getPixelData( void *pixelBytes );
+        void setPixelData( const void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
+        void getPixelData( void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         
         ci::ImageSourceRef createSource();
 
@@ -145,7 +145,7 @@ namespace cinder { namespace mtl {
                       uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0);
         
         void replaceRegion( const ivec3 regionOrigin, const ivec3 regionSize, const void * newBytes,
-                           uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0 );
+                            uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0 );
         
         TextureBufferRef newTexture( PixelFormat pixelFormat, TextureType type, uint levelOffset = 0,
                                     uint levelLength = 1, uint sliceOffset = 0, uint sliceLength = 1 );
@@ -158,7 +158,7 @@ namespace cinder { namespace mtl {
         TextureBuffer( uint width, uint height, Format format );
         TextureBuffer( void * mtlTexture );
 
-        void updateWithCGImage( void *, bool flipVertically );
+        void updateWithCGImage( void *, bool flipVertically, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         void generateMipmap();
         
         void *mImpl = NULL; // <MTLTexture>

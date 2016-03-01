@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00748058165D41390024B57A /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 00748057165D41390024B57A /* assets */; };
 		0087D25512CD809F002CD69F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0087D25412CD809F002CD69F /* CoreText.framework */; };
 		00A66A361965AC8800B17EB3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A66A351965AC8800B17EB3 /* Accelerate.framework */; };
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
@@ -33,6 +32,8 @@
 		99D18FEA9E2E4D969A169B96 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5CB08B2D835B44C78B6B4FBD /* LaunchScreen.xib */; };
 		9B9F05D908C349BE968E11DD /* FboBasicApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D0E14C12F942A692938A76 /* FboBasicApp.cpp */; };
 		9BAFF81245CB4C2F90465DA8 /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED5EE081B2DE47A79BEBD51C /* RendererMetal.mm */; };
+		A91F69D51C860FC7009EE353 /* Draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91F69D31C860FC7009EE353 /* Draw.cpp */; };
+		A91F69D61C860FC7009EE353 /* InstanceShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A91F69D41C860FC7009EE353 /* InstanceShaders.metal */; };
 		A94FE5B41C62A5E50050E7DA /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94FE5B31C62A5E50050E7DA /* Metal.framework */; };
 		AA4DD9E528F24713A4258465 /* DepthState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45876513129D4E778B21552D /* DepthState.mm */; };
 		AF987E467FAF44F692D54ABA /* ComputePipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8ED63862443FA39D4EB6 /* ComputePipelineState.mm */; };
@@ -55,7 +56,6 @@
 
 /* Begin PBXFileReference section */
 		00692BCF14FF149000D0A05E /* FboBasic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FboBasic.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		00748057165D41390024B57A /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
 		0087D25412CD809F002CD69F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		00A66A351965AC8800B17EB3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		00CFDF6A1138442D0091E310 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -107,6 +107,10 @@
 		A3E0E3A48F7C4A76B1C5C760 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Batch.h; path = ../../../include/Batch.h; sourceTree = "<group>"; };
 		A5B044ECCA6D48ECBB0817E7 /* RendererMetal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererMetal.h; path = ../../../include/RendererMetal.h; sourceTree = "<group>"; };
 		A67AD4C0360A4695B0164573 /* ComputeEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComputeEncoder.h; path = ../../../include/apple/ComputeEncoder.h; sourceTree = "<group>"; };
+		A91F69D11C860FB9009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
+		A91F69D21C860FB9009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
+		A91F69D31C860FC7009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
+		A91F69D41C860FC7009EE353 /* InstanceShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = InstanceShaders.metal; path = ../../../src/InstanceShaders.metal; sourceTree = "<group>"; };
 		A94FE5B31C62A5E50050E7DA /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A990FC561C7CE500002F4160 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
 		AF81C8986B224E11960D02A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -211,7 +215,6 @@
 		00692BD914FF149000D0FFFF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				00748057165D41390024B57A /* assets */,
 				C7A4AF9D5DB7452F84C80BA1 /* CinderApp_ios.png */,
 				C123D738C2784F729F1C8E2A /* Images.xcassets */,
 				5CB08B2D835B44C78B6B4FBD /* LaunchScreen.xib */,
@@ -293,16 +296,18 @@
 		DD35443D4C434D558134174E /* src */ = {
 			isa = PBXGroup;
 			children = (
+				8D51426CB43C454DA77928BE /* apple */,
 				CBF021EB790F4D15A761B064 /* Batch.cpp */,
 				842A268FCAC24680A8F78FB5 /* Context.cpp */,
-				554B2ACB18B24FFCAA0106EB /* UniformBlock.cpp */,
-				9DB326F35E9343CBADF624D7 /* VertexBuffer.cpp */,
+				A91F69D31C860FC7009EE353 /* Draw.cpp */,
 				1D4820BDB1FB4A5F944F551B /* ImageHelpers.mm */,
+				A91F69D41C860FC7009EE353 /* InstanceShaders.metal */,
 				D6E55EBB53054DC8A70F2887 /* RenderCommandBuffer.mm */,
 				ED5EE081B2DE47A79BEBD51C /* RendererMetal.mm */,
 				46F4724C9A484C408CA8040B /* RendererMetalImpl.mm */,
 				1F6BB7B307114EF1973CB5E6 /* Scope.mm */,
-				8D51426CB43C454DA77928BE /* apple */,
+				554B2ACB18B24FFCAA0106EB /* UniformBlock.cpp */,
+				9DB326F35E9343CBADF624D7 /* VertexBuffer.cpp */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -315,6 +320,7 @@
 				24FD5501BB7F42208F6D7211 /* Context.h */,
 				A990FC561C7CE500002F4160 /* Draw.h */,
 				3580427FD24643A089BB1CB4 /* ImageHelpers.h */,
+				A91F69D11C860FB9009EE353 /* InstanceTypes.h */,
 				2E60435FDC684E0A9A902FDA /* metal.h */,
 				99C2AD5AB0C74B898BB9E5CB /* MetalConstants.h */,
 				3D801C2319894DEFB9E4CCE2 /* MetalGeom.h */,
@@ -323,6 +329,7 @@
 				A5B044ECCA6D48ECBB0817E7 /* RendererMetal.h */,
 				CB1C67DD3B1E4524A23E083B /* RendererMetalImpl.h */,
 				E3D2BB5F0DF44F3087A5F500 /* Scope.h */,
+				A91F69D21C860FB9009EE353 /* ShaderUtils.h */,
 				3A2C26F6297D414A9CEBF401 /* UniformBlock.hpp */,
 				54B84A5ED9BD4B5589B1B633 /* VertexBuffer.h */,
 			);
@@ -378,7 +385,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00748058165D41390024B57A /* assets in Resources */,
 				4E3BE5F37D5B4F9DB01D49F4 /* CinderApp_ios.png in Resources */,
 				B6F267C213BB48958E8A1C03 /* Images.xcassets in Resources */,
 				99D18FEA9E2E4D969A169B96 /* LaunchScreen.xib in Resources */,
@@ -392,6 +398,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A91F69D51C860FC7009EE353 /* Draw.cpp in Sources */,
 				9B9F05D908C349BE968E11DD /* FboBasicApp.cpp in Sources */,
 				3D210107439340DDBFC0CBB6 /* Shaders.metal in Sources */,
 				F4783A67BBB445F3B7B60C34 /* Batch.cpp in Sources */,
@@ -416,6 +423,7 @@
 				1D7EB38EF2D34DDCB3F7B8A4 /* RenderEncoder.mm in Sources */,
 				FFBB114AADC64B1A92B69883 /* RenderPassDescriptor.mm in Sources */,
 				3CBCFEAC53DC409AA44ACFCF /* RenderPipelineState.mm in Sources */,
+				A91F69D61C860FC7009EE353 /* InstanceShaders.metal in Sources */,
 				994CCDB76BC142138B23008C /* SamplerState.mm in Sources */,
 				08BCE17991D44A758094DE8C /* TextureBuffer.mm in Sources */,
 			);

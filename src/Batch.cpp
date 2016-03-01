@@ -234,14 +234,3 @@ void Batch::draw( RenderEncoder & renderEncoder,
     renderEncoder.setPipelineState(mRenderPipeline);
     mVertexBuffer->draw(renderEncoder, vertexLength, vertexStart, instanceCount);
 }
-
-//void Batch::bind()
-//{
-//    mGlsl->bind();
-//    mVao->bind();
-//}
-//
-//void Batch::reassignContext( Context *context )
-//{
-//    mVao->reassignContext( context );
-//}

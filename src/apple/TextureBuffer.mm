@@ -40,7 +40,7 @@ mFormat(format)
     desc.cpuCacheMode = (MTLCPUCacheMode)mFormat.getCacheMode();
     
     mDataType = dataTypeFromPixelFormat(pxFormat);
-    mBytesPerRow = dataSizeForType( mDataType ) * width;
+    mBytesPerRow = dataSizeForType( mDataType ) * width * desc.arrayLength;
 
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device
                                        newTextureWithDescriptor:desc];
@@ -124,22 +124,22 @@ ImageSourceRef TextureBuffer::createSource()
     return ImageSourceRef( new ImageSourceTextureBuffer( *this ) );
 }
 
-void TextureBuffer::getPixelData( void *pixelBytes )
+void TextureBuffer::getPixelData( void *pixelBytes, unsigned int slice, unsigned int mipmapLevel )
 {
     [IMPL getBytes:pixelBytes
        bytesPerRow:mBytesPerRow
      bytesPerImage:mBytesPerRow * getHeight()
         fromRegion:MTLRegionMake2D(0, 0, getWidth(), getHeight())
-       mipmapLevel:0
-             slice:0];
+       mipmapLevel:mipmapLevel
+             slice:slice];
 }
 
 #pragma mark - Setting Data
 
-void TextureBuffer::update( const ImageSourceRef & imageSource )
+void TextureBuffer::update( const ImageSourceRef & imageSource, unsigned int slice, unsigned int mipmapLevel )
 {
     CGImageRef imageRef = cocoa::createCgImage( imageSource );
-    updateWithCGImage( imageRef, mFormat.getFlipVertically() );
+    updateWithCGImage( imageRef, mFormat.getFlipVertically(), slice, mipmapLevel );
     CFRelease(imageRef);
 }
 
@@ -187,7 +187,7 @@ static CGImageRef createCGImageFlippedVertically( CGImageRef imageRef )
     return imgRef;
 }
 
-void TextureBuffer::updateWithCGImage( void * imageRef, bool flipVertically ) // CGImageRef
+void TextureBuffer::updateWithCGImage( void * imageRef, bool flipVertically, unsigned int slice, unsigned int mipmapLevel ) // CGImageRef
 {
     NSUInteger width = CGImageGetWidth((CGImageRef)imageRef);
     NSUInteger height = CGImageGetHeight((CGImageRef)imageRef);
@@ -214,7 +214,7 @@ void TextureBuffer::updateWithCGImage( void * imageRef, bool flipVertically ) //
         rawData = newRawData;
     }
     
-    setPixelData(rawData);
+    setPixelData(rawData, slice, mipmapLevel);
     
     if ( shouldFreeData )
     {
@@ -250,15 +250,15 @@ void TextureBuffer::generateMipmap()
     [commandBuffer commit];
 }
 
-void TextureBuffer::setPixelData( const void *pixelBytes )
+void TextureBuffer::setPixelData( const void *pixelBytes, unsigned int slice, unsigned int mipmapLevel )
 {
     ivec2 size = getSize();
     assert( size.x > 0 );
     assert( size.y > 0 );
 
     [IMPL replaceRegion:MTLRegionMake2D(0, 0, size.x, size.y)
-            mipmapLevel:0
-                  slice:0
+            mipmapLevel:mipmapLevel
+                  slice:slice
               withBytes:pixelBytes
             bytesPerRow:mBytesPerRow
           bytesPerImage:mBytesPerRow * size.y];

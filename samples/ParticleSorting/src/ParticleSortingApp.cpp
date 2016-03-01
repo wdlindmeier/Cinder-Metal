@@ -40,8 +40,6 @@ public:
     void logComputeOutput( const myUniforms_t uniforms );
     void calculateDepths( mtl::ScopedCommandBuffer & commandBuffer );
     
-    mtl::DepthStateRef mDepthEnabled;
-    
     unsigned int mNumParticles;
     mtl::UniformBlock<myUniforms_t> mUniforms;
 
@@ -67,9 +65,6 @@ public:
 void ParticleSortingApp::setup()
 {
     mNumParticles = mUniforms.getData().numParticles;
-    
-    mDepthEnabled = mtl::DepthState::create(mtl::DepthState::Format()
-                                            .depthCompareFunction(mtl::CompareFunctionLess)); // less than
     
     mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
                                                           .clearColor( ColorAf(0.5f,0.f,1.f,1.f)));
@@ -273,12 +268,7 @@ void ParticleSortingApp::draw()
 
     // Set uniforms
     mUniforms.sendToEncoder(renderEncoder);
-    
-    // Enable depth
-    renderEncoder.setDepthStencilState(mDepthEnabled);
-
-    renderEncoder.pushDebugGroup("Draw Particles");
-    
+   
     // Set the program
     renderEncoder.setPipelineState(mPipelineParticles);
 
@@ -291,8 +281,6 @@ void ParticleSortingApp::draw()
     renderEncoder.setTexture(mTextureParticle);
     
     renderEncoder.draw(mtl::geom::POINT, mNumParticles);
-
-    renderEncoder.popDebugGroup();
 }
 
 CINDER_APP( ParticleSortingApp,

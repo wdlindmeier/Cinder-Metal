@@ -50,9 +50,6 @@ namespace cinder { namespace mtl {
                        size_t vertexLength,
                        size_t instanceCount = 1 );
 
-            // Does bind apply to Metal?
-            // void			bind();
-            
             //! Returns OpenGL primitive type (GL_TRIANGLES, GL_TRIANGLE_STRIP, etc)
             ci::mtl::geom::Primitive getPrimitive(){ return mVertexBuffer->getPrimitive(); };
         
@@ -70,8 +67,6 @@ namespace cinder { namespace mtl {
         
             //! Replaces the shader pipeline associated with the Batch.
             void			replacePipeline( const RenderPipelineStateRef& pipeline );
-        
-            //const VaoRef	getVao() const { return mVao; }
         
             //! Returns the VertexBuffer associated with the Batch
             VertexBufferRef getVertexBuffer() const { return mVertexBuffer; };
