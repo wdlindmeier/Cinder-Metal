@@ -119,6 +119,7 @@ namespace cinder { namespace mtl {
         void setInstanceData( ci::mtl::DataBufferRef & instanceBuffer );
         void draw( ci::mtl::VertexBufferRef vertBuffer, ci::mtl::RenderPipelineStateRef pipeline, bool shouldSetIdentityInstance = false );
         void draw( ci::mtl::BatchRef batch );
+        void draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart );
         void drawOne( ci::mtl::BatchRef batch, const Instance & i);
         void drawStrokedCircle( ci::vec3 position, float radius );
         void drawSolidCircle( ci::vec3 position, float radius );

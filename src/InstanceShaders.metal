@@ -77,7 +77,7 @@ vertex VertOut billboard_rect_vertex(device const RectVertex* ciVerts [[ buffer(
     
     matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;
     // Billboard the texture
-    modelMat = modelMat * rotationMatrix(ciUniforms.ciViewMatrixInverse);
+    modelMat = modelMat * rotationMatrix(ciUniforms.ciModelViewInverse);
     
     matrix_float4x4 mat = ciUniforms.ciViewProjection * modelMat;
     out.position = mat * float4(p.ciPosition, 0.f, 1.0f);
@@ -142,7 +142,7 @@ vertex VertOut billboard_ring_vertex( device const GeomVertex* ciVerts [[ buffer
     
     matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;
     // Billboard the circle
-    modelMat = modelMat * rotationMatrix(ciUniforms.ciViewMatrixInverse);
+    modelMat = modelMat * rotationMatrix(ciUniforms.ciModelViewInverse);
     matrix_float4x4 mat = ciUniforms.ciViewProjection * modelMat;
     
     float4 position = float4(p.ciPosition, 1.0f);

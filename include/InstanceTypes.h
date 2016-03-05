@@ -56,6 +56,12 @@
             (vector_float4){0,0,1,0},
             (vector_float4){0,0,0,1}
         }; // Identity
+        matrix_float4x4 normalMatrix = {
+            (vector_float4){1,0,0,0},
+            (vector_float4){0,1,0,0},
+            (vector_float4){0,0,1,0},
+            (vector_float4){0,0,0,1}
+        }; // Identity
     } Instance;
     
 //}

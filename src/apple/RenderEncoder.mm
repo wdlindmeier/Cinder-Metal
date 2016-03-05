@@ -218,6 +218,12 @@ void RenderEncoder::setIdentityInstance()
     setInstanceData(sInstanceBuffer);
 }
 
+void RenderEncoder::draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart )
+{
+    setIdentityInstance();
+    batch->draw(*this, vertexLength, vertexStart, 1);
+}
+
 void RenderEncoder::draw( ci::mtl::BatchRef batch )
 {
     setIdentityInstance();
