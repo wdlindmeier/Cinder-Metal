@@ -97,9 +97,7 @@ void MetalBasicApp::draw()
     mtl::setMatrices(mCam);
     
     mtl::color(1,1,1);
-    renderEncoder.setInstanceData(mInstanceData);
-    renderEncoder.setTexture(mTextureArray);
-    mtl::getStockBatchMultiTexturedRect()->drawInstanced(renderEncoder, kNumImages);
+    renderEncoder.draw(mTextureArray, Rectf(-0.5,-0.5,0.5,0.5), mInstanceData, kNumImages);
 }
 
 CINDER_APP( MetalBasicApp, RendererMetal, [](MetalBasicApp::Settings *settings)

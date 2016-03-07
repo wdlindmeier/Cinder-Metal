@@ -270,12 +270,12 @@ mtl::VertexBufferRef getRingBuffer()
         // Create a "ring"
         vector<GeomVertex> circVerts;
         vector<unsigned int> indices;
-        for ( int i = 0; i < 361; ++i )
+        for ( int i = 0; i < 37; ++i )
         {
             indices.push_back(i*2);
             indices.push_back(i*2+1);
             
-            float rads = ci::toRadians(float(i));
+            float rads = ci::toRadians(float(min(361, i*10)));
             float x = cos(rads);
             float y = sin(rads);
             

@@ -8,6 +8,7 @@
 
 #import "RenderEncoder.h"
 #include "cinder/cocoa/CinderCocoa.h"
+#include "cinder/Log.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -186,15 +187,22 @@ void RenderEncoder::textureBarrier()
 
 void RenderEncoder::draw( ci::mtl::VertexBufferRef vertBuffer,
                           ci::mtl::RenderPipelineStateRef pipeline,
-                          bool shouldSetIdentityInstance )
+                          //bool shouldSetIdentityInstance,
+                          ci::mtl::DataBufferRef instanceBuffer,
+                          unsigned int numInstances )
 {
     setDefaultShaderVars(*this, pipeline);
-    if ( shouldSetIdentityInstance )
+    if ( !instanceBuffer )
     {
+        assert( numInstances == 1 );
         setIdentityInstance();
     }
+    else
+    {
+        setInstanceData(instanceBuffer);
+    }
     setPipelineState(pipeline);
-    vertBuffer->draw(*this);
+    vertBuffer->drawInstanced(*this, numInstances);
 }
 
 #pragma mark - Instancing Draw Calls
@@ -218,16 +226,34 @@ void RenderEncoder::setIdentityInstance()
     setInstanceData(sInstanceBuffer);
 }
 
-void RenderEncoder::draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart )
+void RenderEncoder::draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart,
+                          ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    setIdentityInstance();
-    batch->draw(*this, vertexLength, vertexStart, 1);
+    if ( !instanceBuffer )
+    {
+        assert( numInstances == 1 );
+        setIdentityInstance();
+    }
+    else
+    {
+        setInstanceData(instanceBuffer);
+    }
+    batch->draw(*this, vertexStart, vertexLength, numInstances);
 }
 
-void RenderEncoder::draw( ci::mtl::BatchRef batch )
+void RenderEncoder::draw( ci::mtl::BatchRef batch,
+                          ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    setIdentityInstance();
-    batch->drawInstanced(*this, 1);
+    if ( !instanceBuffer )
+    {
+        assert( numInstances == 1 );
+        setIdentityInstance();
+    }
+    else
+    {
+        setInstanceData(instanceBuffer);
+    }
+    batch->drawInstanced(*this, numInstances);
 }
 
 void RenderEncoder::drawOne( ci::mtl::BatchRef batch, const Instance & i )
@@ -237,67 +263,87 @@ void RenderEncoder::drawOne( ci::mtl::BatchRef batch, const Instance & i )
     setInstanceData(iBuffer);
     batch->drawInstanced(*this, 1);
 }
-void RenderEncoder::drawStrokedCircle( ci::vec3 position, float radius )
+
+void RenderEncoder::drawStrokedCircle( ci::vec3 position, float radius,
+                                       ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(vec3(radius));
-    draw(mtl::getStockBatchWireCircle());
+    draw( mtl::getStockBatchWireCircle(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawSolidCircle( ci::vec3 position, float radius )
+void RenderEncoder::drawSolidCircle( ci::vec3 position, float radius,
+                                    ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(vec3(radius));
     const float circleInnerRadius = 0.f;
     setVertexBytesAtIndex(&circleInnerRadius, sizeof(float), ciBufferIndexCustom0);
-    draw(mtl::getStockBatchRing());
+    draw( mtl::getStockBatchRing(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawRing( ci::vec3 position, float outerRadius, float innerRadius )
+void RenderEncoder::drawBillboardCircle( ci::vec3 position, float radius,
+                                         ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
+{
+    mtl::ScopedModelMatrix matModel;
+    mtl::translate(position);
+    mtl::scale(vec3(radius));
+    const float circleInnerRadius = 0.f;
+    setVertexBytesAtIndex(&circleInnerRadius, sizeof(float), ciBufferIndexCustom0);
+    draw( mtl::getStockBatchBillboardRing(), instanceBuffer, numInstances );
+}
+
+void RenderEncoder::drawRing( ci::vec3 position, float outerRadius, float innerRadius,
+                              ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(vec3(outerRadius));
     const float circleInnerRadius = innerRadius / outerRadius;
     setVertexBytesAtIndex(&circleInnerRadius, sizeof(float), ciBufferIndexCustom0);
-    draw(mtl::getStockBatchRing());
+    draw( mtl::getStockBatchRing(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawStrokedRect( ci::Rectf rect )
+void RenderEncoder::drawStrokedRect( ci::Rectf rect,
+                                     ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(ci::vec3(rect.getCenter(), 0));
     mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
-    draw(mtl::getStockBatchWireRect());
+    draw( mtl::getStockBatchWireRect(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawSolidRect( ci::Rectf rect )
+void RenderEncoder::drawSolidRect( ci::Rectf rect,
+                                   ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(ci::vec3(rect.getCenter(), 0));
     mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
-    draw(mtl::getStockBatchSolidRect());
+    draw( mtl::getStockBatchSolidRect(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawCube( ci::vec3 position, ci::vec3 size )
+void RenderEncoder::drawCube( ci::vec3 position, ci::vec3 size,
+                              ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(size);
-    draw(mtl::getStockBatchCube());
+    draw( mtl::getStockBatchCube(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawSphere( ci::vec3 position, float radius )
+void RenderEncoder::drawSphere( ci::vec3 position, float radius,
+                                ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(vec3(radius * 2.f)); // NOTE: default sphere radius is 0.5
-    draw(mtl::getStockBatchSphere());
+    draw( mtl::getStockBatchSphere(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawLines( std::vector<ci::vec3> lines, bool isLineStrip )
+void RenderEncoder::drawLines( std::vector<ci::vec3> lines, bool isLineStrip,
+                               ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     vector<unsigned int> indices;
     for ( int i = 0; i < lines.size(); ++i )
@@ -309,16 +355,18 @@ void RenderEncoder::drawLines( std::vector<ci::vec3> lines, bool isLineStrip )
                                                 mtl::DataBuffer::create(indices),
                                                 isLineStrip ? mtl::geom::LINE_STRIP : mtl::geom::LINE);
     setIdentityInstance();
-    draw(lineBuffer, mtl::getStockPipelineWire());
+    draw( lineBuffer, mtl::getStockPipelineWire(), instanceBuffer, numInstances );
 }
 
-void RenderEncoder::drawLine( ci::vec3 from, ci::vec3 to )
+void RenderEncoder::drawLine( ci::vec3 from, ci::vec3 to,
+                              ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    drawLines({{from, to}}, false);
+    drawLines({{from, to}}, false, instanceBuffer, numInstances );
 }
 
 static mtl::VertexBufferRef sColoredCubeBuffer;
-void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size )
+void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size,
+                                     ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     if ( !sColoredCubeBuffer )
     {
@@ -332,11 +380,12 @@ void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size )
     mtl::translate(position);
     mtl::scale(size);
     setIdentityInstance();
-    draw(sColoredCubeBuffer, mtl::getStockPipelineColoredGeom());
+    draw(sColoredCubeBuffer, mtl::getStockPipelineColoredGeom(), instanceBuffer, numInstances);
 }
 
 // Draw a texture
-void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect )
+void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect,
+                          ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     setTexture(texture);
     mtl::ScopedModelMatrix matModel;
@@ -349,11 +398,27 @@ void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect )
     {
         mtl::scale(vec3(texture->getWidth(), texture->getHeight(), 1));
     }
-    draw(mtl::getStockBatchTexturedRect());
+    
+    setTexture(texture);
+    
+    switch ( texture->getFormat().getTextureType() )
+    {
+        case mtl::TextureType2DArray:
+            draw(mtl::getStockBatchMultiTexturedRect(), instanceBuffer, numInstances);
+            break;
+        case mtl::TextureType2D:
+            draw(mtl::getStockBatchTexturedRect(), instanceBuffer, numInstances);
+            break;
+        default:
+            CI_LOG_E("No default shader for texture type " << texture->getFormat().getTextureType());
+            assert(false);
+            break;
+    }
 }
 
 // Draw a texture facing the cam
-void RenderEncoder::drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect )
+void RenderEncoder::drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect,
+                                   ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     setTexture(texture);
     mtl::ScopedModelMatrix matModel;
@@ -366,5 +431,20 @@ void RenderEncoder::drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf re
     {
         mtl::scale(vec3(texture->getWidth(), texture->getHeight(), 1));
     }
-    draw(mtl::getStockBatchBillboard());
+    
+    setTexture(texture);
+    
+    switch ( texture->getFormat().getTextureType() )
+    {
+        case mtl::TextureType2DArray:
+            draw(mtl::getStockBatchMultiBillboard(), instanceBuffer, numInstances);
+            break;
+        case mtl::TextureType2D:
+             draw(mtl::getStockBatchBillboard(), instanceBuffer, numInstances);
+            break;
+        default:
+            CI_LOG_E("No default shader for texture type " << texture->getFormat().getTextureType());
+            assert(false);
+            break;
+    }
 }

@@ -182,6 +182,39 @@ ImageIo::ChannelOrder channelOrderFromPixelFormat( PixelFormat pixelFormat )
     }
 }
 
+int channelCountFromPixelFormat( PixelFormat pixelFormat )
+{
+    switch( pixelFormat )
+    {
+        case PixelFormatRGBA8Unorm:
+        case PixelFormatRGBA16Unorm:
+        case PixelFormatRGBA16Float:
+        case PixelFormatRGBA32Float:
+        case PixelFormatBGRA8Unorm:
+            return 4;
+            break;
+        case PixelFormatRG8Unorm:
+        case PixelFormatRG16Unorm:
+        case PixelFormatRG16Float:
+        case PixelFormatRG32Float:
+            return 2;
+            break;
+        case PixelFormatR8Unorm:
+        case PixelFormatR16Unorm:
+        case PixelFormatR16Float:
+        case PixelFormatR32Float:
+        case PixelFormatDepth32Float:
+            return 1;
+            break;
+        default:
+            // TODO: Add more switch cases
+            CI_LOG_E("Don't know how to get channel count from pixel format " << pixelFormat );
+            assert(false);
+    }
+    return -1;
+}
+
+    
 ImageIo::ColorModel colorModelFromPixelFormat( PixelFormat pixelFormat )
 {
     switch( pixelFormat )

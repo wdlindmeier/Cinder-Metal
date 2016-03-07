@@ -40,7 +40,10 @@ mFormat(format)
     desc.cpuCacheMode = (MTLCPUCacheMode)mFormat.getCacheMode();
     
     mDataType = dataTypeFromPixelFormat(pxFormat);
-    mBytesPerRow = dataSizeForType( mDataType ) * width * desc.arrayLength;
+    
+    int numChannels = channelCountFromPixelFormat(pxFormat);
+    assert( numChannels > 0 && numChannels != 3 );
+    mBytesPerRow = dataSizeForType( mDataType ) * width * numChannels;
 
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device
                                        newTextureWithDescriptor:desc];
@@ -55,7 +58,11 @@ mImpl(mtlTexture)
     
     PixelFormat pxFormat = (PixelFormat)[IMPL pixelFormat];
     mDataType = dataTypeFromPixelFormat(pxFormat);
-    mBytesPerRow = dataSizeForType( mDataType ) * [IMPL width];
+    
+    int numChannels = channelCountFromPixelFormat(pxFormat);
+    assert( numChannels > 0 && numChannels != 3 );
+
+    mBytesPerRow = dataSizeForType( mDataType ) * [IMPL width] * numChannels;
     
     mFormat = Format().pixelFormat(pxFormat);
 }
@@ -213,6 +220,10 @@ void TextureBuffer::updateWithCGImage( void * imageRef, bool flipVertically, uns
         shouldFreeData = true;
         rawData = newRawData;
     }
+    else
+    {
+        assert( bytesPerImageRow == mBytesPerRow );
+    }
     
     setPixelData(rawData, slice, mipmapLevel);
     
@@ -245,7 +256,7 @@ void TextureBuffer::generateMipmap()
     [commandEncoder generateMipmapsForTexture:IMPL];
     [commandEncoder endEncoding];
     [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> _Nonnull) {
-        NSLog(@"mipmap generation complete");
+        //NSLog(@"mipmap generation complete");
     }];
     [commandBuffer commit];
 }

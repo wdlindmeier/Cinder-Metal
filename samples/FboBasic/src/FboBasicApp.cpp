@@ -54,16 +54,11 @@ void FboBasicApp::setup()
     
     mPipelineCube = mtl::RenderPipelineState::create("cube_vertex", "color_fragment");
     mPipelineTexturedGeom = mtl::RenderPipelineState::create("cube_vertex", "rgb_texture_fragment");
-    mPipelineTextureRGB = mtl::RenderPipelineState::create("rect_vertex", "rgb_texture_fragment");
-    mPipelineTextureGray = mtl::RenderPipelineState::create("rect_vertex", "gray_texture_fragment");
-    
+
     mCube = mtl::VertexBuffer::create( ci::geom::Cube()
                                       .size(vec3(2.2f))
                                       .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(1,1,0),Color(0,1,1),Color(1,0,1)),
                                       {{ ci::geom::POSITION, ci::geom::NORMAL, ci::geom::TEX_COORD_0, ci::geom::COLOR }} );
-
-    mRect = mtl::VertexBuffer::create( ci::geom::Rect(Rectf(0,0,1,1)),
-                                      {{ ci::geom::POSITION, ci::geom::TEX_COORD_0 }} );
 }
 
 void FboBasicApp::resize()
@@ -129,16 +124,9 @@ void FboBasicApp::draw()
         // Draw the textures
         mtl::ScopedMatrices matBackground;
         mtl::setMatricesWindow(getWindowSize());
-        mtl::scale(vec2(128)); // draw @ 128 px
-        
-        renderEncoder.setTexture(mFBO);
-        renderEncoder.draw(mRect, mPipelineTextureRGB, true);
-
+        renderEncoder.draw(mFBO, Rectf(0,0,128,128));
         mtl::TextureBufferRef depthTex = mRenderDescriptorFbo->getDepthTexture();
-        renderEncoder.setTexture(depthTex);
-
-        mtl::translate(vec2(1, 0)); // 1 == 128px here
-        renderEncoder.draw(mRect, mPipelineTextureGray);
+        renderEncoder.draw(depthTex, Rectf(128,0,256,128));
     }
 }
 

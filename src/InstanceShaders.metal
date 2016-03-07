@@ -218,9 +218,9 @@ fragment float4 color_fragment( VertOut in [[stage_in]] )
 }
 
 constexpr sampler shaderSampler( coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
-                                address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
-                                filter::linear, // nearest or linear
-                                mip_filter::linear ); // nearest or linear or none
+                                 address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
+                                 filter::linear, // nearest or linear
+                                 mip_filter::linear ); // nearest or linear or none
 
 fragment float4 texture_fragment( VertOut in [[ stage_in ]],
                                  texture2d<float> texture [[ texture(ciTextureIndex0) ]] )
@@ -229,9 +229,14 @@ fragment float4 texture_fragment( VertOut in [[ stage_in ]],
     return texColor * in.color;
 }
 
+constexpr sampler shaderMultiSampler( coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
+                                      address::clamp_to_zero, // repeat, clamp_to_zero, clamp_to_edge,
+                                      filter::linear, // nearest or linear
+                                      mip_filter::linear ); // nearest or linear or none
+
 fragment float4 texture_array_fragment( VertOut in [[ stage_in ]],
                                         texture2d_array<float> texture [[ texture(ciTextureIndex0) ]] )
 {
-    float4 texColor = texture.sample(shaderSampler, in.texCoords, in.texIndex);
+    float4 texColor = texture.sample(shaderMultiSampler, in.texCoords, in.texIndex);
     return texColor * in.color;
 }

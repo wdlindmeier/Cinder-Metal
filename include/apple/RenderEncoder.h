@@ -116,27 +116,64 @@ namespace cinder { namespace mtl {
         
 #pragma mark - Drawing Convenience Functions
         
-        void setInstanceData( ci::mtl::DataBufferRef & instanceBuffer );
-        void draw( ci::mtl::VertexBufferRef vertBuffer, ci::mtl::RenderPipelineStateRef pipeline, bool shouldSetIdentityInstance = false );
-        void draw( ci::mtl::BatchRef batch );
-        void draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart );
+//        void draw( ci::mtl::VertexBufferRef vertBuffer, ci::mtl::RenderPipelineStateRef pipeline, bool shouldSetIdentityInstance = false );
+//        void draw( ci::mtl::BatchRef batch );
+//        void draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart );
+//        void drawOne( ci::mtl::BatchRef batch, const Instance & i);
+//        void drawStrokedCircle( ci::vec3 position, float radius );
+//        void drawSolidCircle( ci::vec3 position, float radius );
+//        void drawRing( ci::vec3 position, float outerRadius, float innerRadius );
+//        void drawStrokedRect( ci::Rectf rect );
+//        void drawSolidRect( ci::Rectf rect );
+//        void drawCube( ci::vec3 position, ci::vec3 size );
+//        void drawSphere( ci::vec3 position, float radius );
+//        // NOTE: This is not designed to be fast—just convenient
+//        void drawLines( std::vector<ci::vec3> lines, bool isLineStrip = false );
+//        // NOTE: This is not designed to be fast—just convenient
+//        void drawLine( ci::vec3 from, ci::vec3 to );
+//        void drawColoredCube( ci::vec3 position, ci::vec3 size );
+//        void draw( ci::mtl::TextureBufferRef & texture, ci::Rectf rect = ci::Rectf(0,0,0,0) );
+//        void drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect );
+
+        void draw( ci::mtl::VertexBufferRef vertBuffer, ci::mtl::RenderPipelineStateRef pipeline,
+                   ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void draw( ci::mtl::BatchRef batch,
+                  ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart,
+                  ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void drawOne( ci::mtl::BatchRef batch, const Instance & i);
-        void drawStrokedCircle( ci::vec3 position, float radius );
-        void drawSolidCircle( ci::vec3 position, float radius );
-        void drawRing( ci::vec3 position, float outerRadius, float innerRadius );
-        void drawStrokedRect( ci::Rectf rect );
-        void drawSolidRect( ci::Rectf rect );
-        void drawCube( ci::vec3 position, ci::vec3 size );
-        void drawSphere( ci::vec3 position, float radius );
+        void drawStrokedCircle( ci::vec3 position, float radius,
+                               ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawSolidCircle( ci::vec3 position, float radius,
+                              ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawBillboardCircle( ci::vec3 position, float radius,
+                                 ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawRing( ci::vec3 position, float outerRadius, float innerRadius,
+                       ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawStrokedRect( ci::Rectf rect,
+                             ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawSolidRect( ci::Rectf rect,
+                           ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawCube( ci::vec3 position, ci::vec3 size,
+                      ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawSphere( ci::vec3 position, float radius,
+                        ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         // NOTE: This is not designed to be fast—just convenient
-        void drawLines( std::vector<ci::vec3> lines, bool isLineStrip = false );
+        void drawLines( std::vector<ci::vec3> lines, bool isLineStrip = false,
+                        ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         // NOTE: This is not designed to be fast—just convenient
-        void drawLine( ci::vec3 from, ci::vec3 to );
-        void drawColoredCube( ci::vec3 position, ci::vec3 size );
-        void draw( ci::mtl::TextureBufferRef & texture, ci::Rectf rect = ci::Rectf(0,0,0,0) );
-        void drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect );
+        void drawLine( ci::vec3 from, ci::vec3 to,
+                       ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawColoredCube( ci::vec3 position, ci::vec3 size,
+                              ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void draw( ci::mtl::TextureBufferRef & texture, ci::Rectf rect = ci::Rectf(0,0,0,0),
+                   ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect,
+                            ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
 
         void setIdentityInstance();
+
+        void setInstanceData( ci::mtl::DataBufferRef & instanceBuffer );        
 
     protected:
 

@@ -164,21 +164,15 @@ namespace cinder { namespace mtl {
             uniforms.ciWindowSize = toMtl( app::getWindowSize() );
             uniforms.ciElapsedSeconds = float( app::getElapsedSeconds() );
             uniforms.ciColor = toMtl(context()->getCurrentColor());
-            
-            DataBufferRef uniformBuffer = DataBuffer::create(mtlConstantSizeOf(ciUniforms_t),
-                                                             &uniforms,
-                                                             mtl::DataBuffer::Format()
-                                                             .label("Default Uniforms")
-                                                             .isConstant());
 
             if ( vertBufferIndex != -1 )
             {
-                renderEncoder.setVertexBufferAtIndex(uniformBuffer, vertBufferIndex, 0);
+                renderEncoder.setVertexBytesAtIndex(&uniforms, mtlConstantSizeOf(ciUniforms_t), vertBufferIndex);
             }
             
             if ( fragBufferIndex != -1 )
             {
-                renderEncoder.setFragmentBufferAtIndex(uniformBuffer, fragBufferIndex, 0);
+                renderEncoder.setFragmentBytesAtIndex(&uniforms, mtlConstantSizeOf(ciUniforms_t), fragBufferIndex);
             }
         }
     }

@@ -52,9 +52,9 @@ fragment float4 rgb_texture_fragment( VertOut in [[ stage_in ]],
     return texture.sample(shaderSampler, in.texCoords);
 }
 
-fragment float4 gray_texture_fragment( VertOut in [[ stage_in ]],
-                                       texture2d<float> texture [[ texture(ciTextureIndex0) ]] )
-{
-    float4 c = texture.sample(shaderSampler, in.texCoords);
-    return float4(c.r, c.r, c.r, c.a);
-}
+//fragment float4 gray_texture_fragment( VertOut in [[ stage_in ]],
+//                                       texture2d<float> texture [[ texture(ciTextureIndex0) ]] )
+//{
+//    float4 c = texture.sample(shaderSampler, in.texCoords);
+//    return float4(c.r, c.r, c.r, c.a);
+//}

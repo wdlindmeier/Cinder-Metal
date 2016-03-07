@@ -23,6 +23,8 @@ extern PixelFormat pixelFormatFromChannelOrder( ImageIo::ChannelOrder channelOrd
                                                 ImageIo::DataType dataType );
 
 extern ImageIo::ChannelOrder channelOrderFromPixelFormat( PixelFormat pixelFormat );
+    
+extern int channelCountFromPixelFormat( PixelFormat pixelFormat );
 
 extern ImageIo::ColorModel colorModelFromPixelFormat( PixelFormat pixelFormat );
     
