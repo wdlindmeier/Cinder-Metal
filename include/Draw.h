@@ -48,4 +48,5 @@ namespace cinder { namespace mtl {
     ci::mtl::BatchRef getStockBatchRing();
     ci::mtl::BatchRef getStockBatchBillboardRing();
     
+    ci::mtl::VertexBufferRef getRingBuffer();
 }}

@@ -44,7 +44,10 @@ namespace cinder { namespace mtl {
         virtual ~RenderEncoder(){};
         
         virtual void setPipelineState( const RenderPipelineStateRef & pipeline );
+        // NOTE: setTexture is an alias for setFragmentTextureAtIndex
         virtual void setTexture( const TextureBufferRef & texture, size_t index = ciTextureIndex0 );
+        virtual void setFragmentTexture( const TextureBufferRef & texture, size_t index );
+        virtual void setVertexTexture( const TextureBufferRef & texture, size_t index );
         // Sets buffer at ciBufferIndexUniforms for both vertex and fragment shaders
         virtual void setUniforms( const DataBufferRef & buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
         
@@ -115,26 +118,8 @@ namespace cinder { namespace mtl {
         }
         
 #pragma mark - Drawing Convenience Functions
-        
-//        void draw( ci::mtl::VertexBufferRef vertBuffer, ci::mtl::RenderPipelineStateRef pipeline, bool shouldSetIdentityInstance = false );
-//        void draw( ci::mtl::BatchRef batch );
-//        void draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart );
-//        void drawOne( ci::mtl::BatchRef batch, const Instance & i);
-//        void drawStrokedCircle( ci::vec3 position, float radius );
-//        void drawSolidCircle( ci::vec3 position, float radius );
-//        void drawRing( ci::vec3 position, float outerRadius, float innerRadius );
-//        void drawStrokedRect( ci::Rectf rect );
-//        void drawSolidRect( ci::Rectf rect );
-//        void drawCube( ci::vec3 position, ci::vec3 size );
-//        void drawSphere( ci::vec3 position, float radius );
-//        // NOTE: This is not designed to be fast—just convenient
-//        void drawLines( std::vector<ci::vec3> lines, bool isLineStrip = false );
-//        // NOTE: This is not designed to be fast—just convenient
-//        void drawLine( ci::vec3 from, ci::vec3 to );
-//        void drawColoredCube( ci::vec3 position, ci::vec3 size );
-//        void draw( ci::mtl::TextureBufferRef & texture, ci::Rectf rect = ci::Rectf(0,0,0,0) );
-//        void drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect );
 
+        // Drawing helpers
         void draw( ci::mtl::VertexBufferRef vertBuffer, ci::mtl::RenderPipelineStateRef pipeline,
                    ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void draw( ci::mtl::BatchRef batch,
@@ -168,12 +153,18 @@ namespace cinder { namespace mtl {
                               ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void draw( ci::mtl::TextureBufferRef & texture, ci::Rectf rect = ci::Rectf(0,0,0,0),
                    ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
-        void drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect,
+        void drawBillboard( mtl::TextureBufferRef & texture,
                             ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
 
+        // Instance data
         void setIdentityInstance();
 
-        void setInstanceData( ci::mtl::DataBufferRef & instanceBuffer );        
+        void setInstanceData( ci::mtl::DataBufferRef & instanceBuffer );
+        
+        // Basic state changes
+        
+        void enableDepth();
+        void disableDepth();
 
     protected:
 

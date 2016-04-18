@@ -55,8 +55,19 @@ void RenderEncoder::setPipelineState( const RenderPipelineStateRef & pipeline )
 
 void RenderEncoder::setTexture( const TextureBufferRef & texture, size_t index )
 {
+    setFragmentTexture(texture, index);
+}
+
+void RenderEncoder::setFragmentTexture( const TextureBufferRef & texture, size_t index )
+{
     [IMPL setFragmentTexture:(__bridge id <MTLTexture>)texture->getNative()
                      atIndex:index];
+}
+
+void RenderEncoder::setVertexTexture( const TextureBufferRef & texture, size_t index )
+{
+    [IMPL setVertexTexture:(__bridge id <MTLTexture>)texture->getNative()
+                   atIndex:index];
 }
 
 void RenderEncoder::setUniforms( const DataBufferRef & buffer, size_t bytesOffset, size_t bufferIndex )
@@ -387,7 +398,6 @@ void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size,
 void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect,
                           ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    setTexture(texture);
     mtl::ScopedModelMatrix matModel;
     if ( rect.getWidth() != 0 && rect.getHeight() != 0 )
     {
@@ -417,21 +427,9 @@ void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect,
 }
 
 // Draw a texture facing the cam
-void RenderEncoder::drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf rect,
+void RenderEncoder::drawBillboard( mtl::TextureBufferRef & texture,
                                    ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    setTexture(texture);
-    mtl::ScopedModelMatrix matModel;
-    if ( rect.getWidth() != 0 && rect.getHeight() != 0 )
-    {
-        mtl::translate(ci::vec3(rect.getCenter(), 0));
-        mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
-    }
-    else
-    {
-        mtl::scale(vec3(texture->getWidth(), texture->getHeight(), 1));
-    }
-    
     setTexture(texture);
     
     switch ( texture->getFormat().getTextureType() )
@@ -447,4 +445,28 @@ void RenderEncoder::drawBillboard( mtl::TextureBufferRef & texture, ci::Rectf re
             assert(false);
             break;
     }
+}
+
+static mtl::DepthStateRef sDepthEnabledState;
+void RenderEncoder::enableDepth()
+{
+    if ( !sDepthEnabledState )
+    {
+        sDepthEnabledState = mtl::DepthState::create(mtl::DepthState::Format()
+                                                     .depthWriteEnabled(true));
+        
+    }
+    setDepthStencilState(sDepthEnabledState);
+}
+
+static mtl::DepthStateRef sDepthDisabledState;
+void RenderEncoder::disableDepth()
+{
+    if ( !sDepthDisabledState )
+    {
+        sDepthDisabledState = mtl::DepthState::create(mtl::DepthState::Format()
+                                                      .depthWriteEnabled(false)
+                                                      .depthCompareFunction(mtl::CompareFunctionAlways));
+    }
+    setDepthStencilState(sDepthDisabledState);
 }

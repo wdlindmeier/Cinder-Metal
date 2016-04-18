@@ -23,7 +23,7 @@ ci::mtl::RenderPipelineStateRef getStockPipelineRing()
 {
     if ( !sPipelineRing )
     {
-        sPipelineRing = ci::mtl::RenderPipelineState::create("ring_vertex", "color_fragment",
+        sPipelineRing = ci::mtl::RenderPipelineState::create("ci_ring_vertex", "ci_color_fragment",
                                                              mtl::RenderPipelineState::Format()
                                                              .blendingEnabled()
                                                              );
@@ -36,7 +36,7 @@ mtl::RenderPipelineStateRef getStockPipelineBillboardRing()
 {
     if ( !sPipelineBillboardRing )
     {
-        sPipelineBillboardRing = mtl::RenderPipelineState::create("billboard_ring_vertex", "color_fragment",
+        sPipelineBillboardRing = mtl::RenderPipelineState::create("ci_billboard_ring_vertex", "ci_color_fragment",
                                                                   mtl::RenderPipelineState::Format()
                                                                   .blendingEnabled()
                                                                   );
@@ -49,7 +49,7 @@ mtl::RenderPipelineStateRef getStockPipelineWire()
 {
     if ( !sPipelineWire )
     {
-        sPipelineWire = mtl::RenderPipelineState::create("wire_vertex", "color_fragment",
+        sPipelineWire = mtl::RenderPipelineState::create("ci_wire_vertex", "ci_color_fragment",
                                                          mtl::RenderPipelineState::Format()
                                                          .blendingEnabled()
                                                          );
@@ -62,7 +62,7 @@ mtl::RenderPipelineStateRef getStockPipelineTexturedRect()
 {
     if ( !sPipelineTexturedRect )
     {
-        sPipelineTexturedRect = mtl::RenderPipelineState::create("rect_vertex", "texture_fragment",
+        sPipelineTexturedRect = mtl::RenderPipelineState::create("ci_rect_vertex", "ci_texture_fragment",
                                                                  mtl::RenderPipelineState::Format()
                                                                  .blendingEnabled()
                                                                  );
@@ -75,7 +75,7 @@ mtl::RenderPipelineStateRef getStockPipelineMultiTexturedRect()
 {
     if ( !sPipelineMultiTexturedRect )
     {
-        sPipelineMultiTexturedRect = mtl::RenderPipelineState::create("rect_vertex", "texture_array_fragment",
+        sPipelineMultiTexturedRect = mtl::RenderPipelineState::create("ci_rect_vertex", "ci_texture_array_fragment",
                                                                       mtl::RenderPipelineState::Format()
                                                                       .blendingEnabled()
                                                                       );
@@ -88,7 +88,7 @@ mtl::RenderPipelineStateRef getStockPipelineBillboardTexture()
 {
     if ( !sPipelineBillboardTexture )
     {
-        sPipelineBillboardTexture = mtl::RenderPipelineState::create("billboard_rect_vertex", "texture_fragment",
+        sPipelineBillboardTexture = mtl::RenderPipelineState::create("ci_billboard_rect_vertex", "ci_texture_fragment",
                                                                      mtl::RenderPipelineState::Format()
                                                                      .blendingEnabled()
                                                                      );
@@ -101,7 +101,7 @@ mtl::RenderPipelineStateRef getStockPipelineBillboardMultiTexture()
 {
     if ( !sPipelineBillboardMultiTexture )
     {
-        sPipelineBillboardMultiTexture = mtl::RenderPipelineState::create("billboard_rect_vertex", "texture_array_fragment",
+        sPipelineBillboardMultiTexture = mtl::RenderPipelineState::create("ci_billboard_rect_vertex", "ci_texture_array_fragment",
                                                                           mtl::RenderPipelineState::Format()
                                                                           .blendingEnabled()
                                                                           );
@@ -114,7 +114,7 @@ mtl::RenderPipelineStateRef getStockPipelineSolidRect()
 {
     if ( !sPipelineSolidRect )
     {
-        sPipelineSolidRect = mtl::RenderPipelineState::create("rect_vertex", "color_fragment",
+        sPipelineSolidRect = mtl::RenderPipelineState::create("ci_rect_vertex", "ci_color_fragment",
                                                               mtl::RenderPipelineState::Format()
                                                               .blendingEnabled()
                                                               );
@@ -127,7 +127,7 @@ mtl::RenderPipelineStateRef getStockPipelineGeom()
 {
     if ( !sPipelineGeom )
     {
-        sPipelineGeom = mtl::RenderPipelineState::create("geom_vertex", "color_fragment",
+        sPipelineGeom = mtl::RenderPipelineState::create("ci_geom_vertex", "ci_color_fragment",
                                                          mtl::RenderPipelineState::Format()
                                                          .blendingEnabled()
                                                          );
@@ -140,7 +140,7 @@ mtl::RenderPipelineStateRef getStockPipelineColoredGeom()
 {
     if ( !sPipelineColoredGeom )
     {
-        sPipelineColoredGeom = mtl::RenderPipelineState::create("colored_vertex", "color_fragment",
+        sPipelineColoredGeom = mtl::RenderPipelineState::create("ci_colored_vertex", "ci_color_fragment",
                                                                 mtl::RenderPipelineState::Format()
                                                                 .blendingEnabled()
                                                                 );

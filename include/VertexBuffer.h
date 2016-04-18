@@ -52,6 +52,9 @@ namespace cinder { namespace mtl {
                                     const ci::geom::Attrib attr,
                                     int shaderBufferIndex = -1 );
         DataBufferRef getBufferForAttribute( const ci::geom::Attrib attr );
+        
+        void setInterleavedBuffer( DataBufferRef buffer ){ mInterleavedData = buffer; };
+        DataBufferRef getInterleavedBuffer(){ return mInterleavedData; };
 
         // Override the default shader indices.
         // The default geom::Attr shader indices are defined in MetalConstants.h
