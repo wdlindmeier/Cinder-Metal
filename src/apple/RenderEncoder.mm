@@ -164,25 +164,65 @@ void RenderEncoder::setVisibilityResultMode( int mtlVisibilityResultMode, size_t
 void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount, size_t vertexStart,
                           size_t instanceCount, size_t baseInstance )
 {
-    [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
-             vertexStart:vertexStart
-             vertexCount:vertexCount
-           instanceCount:instanceCount
-            baseInstance:baseInstance];
+    if ( [[RendererMetalImpl sharedRenderer].device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1] )
+    {
+        [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                 vertexStart:vertexStart
+                 vertexCount:vertexCount
+               instanceCount:instanceCount
+                baseInstance:baseInstance];
+    }
+    else
+    {
+        if ( baseInstance > 1 )
+        {
+            CI_LOG_F("This device does not support baseInstance.");
+            // https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+        }
+        assert(baseInstance <= 1);
+        [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                 vertexStart:vertexStart
+                 vertexCount:vertexCount
+               instanceCount:instanceCount];
+    }
 }
 
 void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
                                  size_t indexCount, IndexType indexType, size_t bufferOffset,
                                  size_t instanceCount, size_t baseVertex, size_t baseInstance )
 {
-    [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
-                     indexCount:indexCount
-                      indexType:(MTLIndexType)indexType
-                    indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
-              indexBufferOffset:bufferOffset
-                  instanceCount:instanceCount
-                     baseVertex:baseVertex
-                   baseInstance:baseInstance];
+    if ( [[RendererMetalImpl sharedRenderer].device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1] )
+    {
+        [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                         indexCount:indexCount
+                          indexType:(MTLIndexType)indexType
+                        indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
+                  indexBufferOffset:bufferOffset
+                      instanceCount:instanceCount
+                         baseVertex:baseVertex
+                       baseInstance:baseInstance];
+    }
+    else
+    {
+        if ( baseInstance > 1 )
+        {
+            CI_LOG_F("This device does not support baseInstance.");
+            // https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+        }
+        assert(baseInstance <= 1);
+        if ( baseVertex > 0 )
+        {
+            CI_LOG_F("This device does not support baseVertex.");
+            // https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+        }
+        assert(baseVertex == 0);
+        [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                         indexCount:indexCount
+                          indexType:(MTLIndexType)indexType
+                        indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
+                  indexBufferOffset:bufferOffset
+                      instanceCount:instanceCount];
+    }
 }
 
 #if !defined( CINDER_COCOA_TOUCH )

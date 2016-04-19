@@ -99,6 +99,19 @@ static RendererMetalImpl * SharedRenderer = nil;
 {
     self.device = MTLCreateSystemDefaultDevice();
     
+#if DEBUG
+#ifdef CINDER_COCOA_TOUCH
+    CI_LOG_I("Metal Device Support:");
+    CI_LOG_I("MTLFeatureSet_iOS_GPUFamily1_v1 " << [self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily1_v1]);
+    CI_LOG_I("MTLFeatureSet_iOS_GPUFamily1_v2 " << [self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily1_v2]);
+    CI_LOG_I("MTLFeatureSet_iOS_GPUFamily2_v1 " << [self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily2_v1]);
+    CI_LOG_I("MTLFeatureSet_iOS_GPUFamily2_v2 " << [self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily2_v2]);
+    CI_LOG_I("MTLFeatureSet_iOS_GPUFamily3_v1 " << [self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1]);
+#else
+    CI_LOG_I("MTLFeatureSet_OSX_GPUFamily1_v1 " << [self.device supportsFeatureSet:MTLFeatureSet_OSX_GPUFamily1_v1]);
+#endif
+#endif
+
     // Create a new command queue
     self.commandQueue = [self.device newCommandQueue];
     
