@@ -125,5 +125,4 @@ namespace cinder { namespace mtl {
         ColorAf		mColor;
     };
 
-
 }}

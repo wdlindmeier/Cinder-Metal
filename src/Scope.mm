@@ -21,16 +21,10 @@ ScopedRenderEncoder::ScopedRenderEncoder( void * mtlRenderCommandEncoder ) :
 RenderEncoder(mtlRenderCommandEncoder)
 ,mCtx( mtl::context() )
 {
-    // Create a pointer to the current render encoder for convenience methods that require an encoder
-//    mCtx->setCurrentRenderEncoder( this );
 }
 
 ScopedRenderEncoder::~ScopedRenderEncoder()
 {
-//    if ( mCtx->getCurrentRenderEncoder() == this )
-//    {
-//        mCtx->setCurrentRenderEncoder( NULL );
-//    }
     endEncoding();
 }
 

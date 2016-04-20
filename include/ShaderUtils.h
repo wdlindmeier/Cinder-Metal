@@ -17,10 +17,11 @@ typedef struct
 {
     float4 position [[position]];
     float pointSize [[point_size]];
+    float3 normal;
     float4 color;
     float2 texCoords;
     int texIndex;
-} VertOut;
+} ciVertOut_t;
 
 inline float3 rgb2hsv(float3 c)
 {

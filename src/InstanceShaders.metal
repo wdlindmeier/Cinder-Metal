@@ -19,16 +19,14 @@ using namespace metal;
 using namespace cinder;
 using namespace cinder::mtl;
 
-using namespace metal;
-
-vertex VertOut ci_geom_vertex(device const GeomVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_geom_vertex(device const GeomVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                               device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                               device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                               constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                               unsigned int vid [[ vertex_id ]],
                               uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     GeomVertex p = ciVerts[vertIndex];
@@ -42,14 +40,14 @@ vertex VertOut ci_geom_vertex(device const GeomVertex* ciVerts [[ buffer(ciBuffe
     return out;
 }
 
-vertex VertOut ci_colored_vertex(device const ColoredVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_colored_vertex(device const ColoredVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                  device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                                  device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                  constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                  unsigned int vid [[ vertex_id ]],
                                  uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     ColoredVertex p = ciVerts[vertIndex];
@@ -63,14 +61,14 @@ vertex VertOut ci_colored_vertex(device const ColoredVertex* ciVerts [[ buffer(c
     return out;
 }
 
-vertex VertOut ci_billboard_rect_vertex(device const RectVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_billboard_rect_vertex(device const RectVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                         device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                                         device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                         constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                         unsigned int vid [[ vertex_id ]],
                                         uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     RectVertex p = ciVerts[vertIndex];
@@ -96,7 +94,7 @@ vertex VertOut ci_billboard_rect_vertex(device const RectVertex* ciVerts [[ buff
     return out;
 }
 
-vertex VertOut ci_ring_vertex(device const GeomVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_ring_vertex(device const GeomVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                               device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                               device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                               constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
@@ -104,7 +102,7 @@ vertex VertOut ci_ring_vertex(device const GeomVertex* ciVerts [[ buffer(ciBuffe
                               unsigned int vid [[ vertex_id ]],
                               uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     GeomVertex p = ciVerts[vertIndex];
@@ -128,7 +126,7 @@ vertex VertOut ci_ring_vertex(device const GeomVertex* ciVerts [[ buffer(ciBuffe
     return out;
 }
 
-vertex VertOut ci_billboard_ring_vertex(device const GeomVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_billboard_ring_vertex(device const GeomVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                         device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                                         device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                         constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
@@ -136,7 +134,7 @@ vertex VertOut ci_billboard_ring_vertex(device const GeomVertex* ciVerts [[ buff
                                         unsigned int vid [[ vertex_id ]],
                                         uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     GeomVertex p = ciVerts[vertIndex];
@@ -162,14 +160,14 @@ vertex VertOut ci_billboard_ring_vertex(device const GeomVertex* ciVerts [[ buff
     return out;
 }
 
-vertex VertOut ci_wire_vertex(device const WireVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_wire_vertex(device const WireVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                               device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                               constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                               device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                               unsigned int vid [[ vertex_id ]],
                               uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     WireVertex p = ciVerts[vertIndex];
@@ -184,14 +182,14 @@ vertex VertOut ci_wire_vertex(device const WireVertex* ciVerts [[ buffer(ciBuffe
     return out;
 }
 
-vertex VertOut ci_rect_vertex(device const RectVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
+vertex ciVertOut_t ci_rect_vertex(device const RectVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                               device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
                               constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                               device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                               unsigned int vid [[ vertex_id ]],
                               uint i [[ instance_id ]] )
 {
-    VertOut out;
+    ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     RectVertex p = ciVerts[vertIndex];
@@ -213,7 +211,7 @@ vertex VertOut ci_rect_vertex(device const RectVertex* ciVerts [[ buffer(ciBuffe
     return out;
 }
 
-fragment float4 ci_color_fragment( VertOut in [[stage_in]] )
+fragment float4 ci_color_fragment( ciVertOut_t in [[stage_in]] )
 {
     return in.color;
 }
@@ -223,14 +221,14 @@ constexpr sampler ci_shaderSampler( coord::normalized, // normalized (0-1) or co
                                     filter::linear, // nearest or linear
                                     mip_filter::linear ); // nearest or linear or none
 
-fragment float4 ci_texture_fragment( VertOut in [[ stage_in ]],
+fragment float4 ci_texture_fragment( ciVertOut_t in [[ stage_in ]],
                                      texture2d<float> texture [[ texture(ciTextureIndex0) ]] )
 {
     float4 texColor = texture.sample(ci_shaderSampler, in.texCoords);
     return texColor * in.color;
 }
 
-fragment float4 ci_point_fragment( VertOut in [[ stage_in ]],
+fragment float4 ci_point_fragment( ciVertOut_t in [[ stage_in ]],
                                    float2 pointCoord [[point_coord]],
                                    texture2d<float> texture [[ texture(ciTextureIndex0) ]] )
 {
@@ -238,7 +236,7 @@ fragment float4 ci_point_fragment( VertOut in [[ stage_in ]],
     return texColor * in.color;
 }
 
-fragment float4 ci_texture_array_fragment( VertOut in [[ stage_in ]],
+fragment float4 ci_texture_array_fragment( ciVertOut_t in [[ stage_in ]],
                                            texture2d_array<float> texture [[ texture(ciTextureIndex0) ]] )
 {
     float4 texColor = texture.sample(ci_shaderSampler, in.texCoords, in.texIndex);
