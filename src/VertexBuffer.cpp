@@ -128,7 +128,11 @@ mSource( source.clone() )
     ci::geom::AttribSet requestedAttribs;
     for( const auto &attribInfo : layout.getAttribs() )
     {
-        requestedAttribs.insert(attribInfo.getAttrib());
+        // Only add the requested attribute if the source has it
+        if ( source.getAttribDims(attribInfo.getAttrib()) > 0 )
+        {
+            requestedAttribs.insert(attribInfo.getAttrib());
+        }
     }
     
     mSource->loadInto( this, requestedAttribs );

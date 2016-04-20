@@ -164,7 +164,7 @@ mtl::BatchRef getStockBatchWireCircle()
     if ( !sBatchWireCircle )
     {
         sBatchWireCircle = mtl::Batch::create( ci::geom::WireCircle().subdivisions(360).radius(1),
-                                              getStockPipelineWire() );
+                                               getStockPipelineWire() );
     }
     return sBatchWireCircle;
 }
