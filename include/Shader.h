@@ -21,9 +21,7 @@ namespace cinder { namespace mtl {
         ShaderDef();
         
         ShaderDef&		color();
-        ShaderDef&		texture();
-        ShaderDef&		texture( const TextureBufferRef &tex = TextureBufferRef() );
-        ShaderDef&		texture( int target );
+        ShaderDef&		texture(); // const TextureBufferRef &tex = TextureBufferRef() );
         ShaderDef&		lambert();
         ShaderDef&		pointSize();
         ShaderDef&		uniformBasedPosAndTexCoord();
@@ -52,7 +50,7 @@ namespace cinder { namespace mtl {
     class PipelineBuilder
     {
     public:
-        static ci::mtl::RenderPipelineStateRef buildPipeline( const ShaderDef &shader,
+        static ci::mtl::RenderPipelineStateRef buildPipeline( const ShaderDef &shader = ShaderDef(), // defaults to basic shader
                                                               ci::mtl::RenderPipelineState::Format format =
                                                               ci::mtl::RenderPipelineState::Format() );
         static std::string	generateFragmentShader( const ShaderDef &shader );

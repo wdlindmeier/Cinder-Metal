@@ -31,17 +31,11 @@ namespace cinder { namespace mtl {
 //        mTextureSwizzleMask[3] = GL_ALPHA;
     }
     
-    ShaderDef& ShaderDef::texture( const TextureBufferRef &texture )
+    ShaderDef& ShaderDef::texture() // const TextureBufferRef &texture )
     {
         mTextureMapping = true;
 //        if( texture && ( ! TextureBase::supportsHardwareSwizzle() ) )
 //        mTextureSwizzleMask = texture->getSwizzleMask();
-        return *this;
-    }
-    
-    ShaderDef& ShaderDef::texture( int target )
-    {
-        mTextureMapping = true;
         return *this;
     }
     
@@ -141,7 +135,7 @@ namespace cinder { namespace mtl {
         "\n"
         "typedef struct\n"
         "{\n"
-        "    metal::packed_float3 ciPosition;\n";
+        "    metal::packed_float4 ciPosition;\n";
         if ( shader.mLambert )
         {
             library += "    metal::packed_float3 ciNormal;\n";
@@ -166,7 +160,7 @@ namespace cinder { namespace mtl {
         }
         if ( shader.mLambert )
         {
-            library += "    float3 normal;\n";
+            library += "    float4 normal;\n";
         }
 
         library += "    float4 color;\n";
@@ -219,7 +213,7 @@ namespace cinder { namespace mtl {
         "   ciVertexIn_t v = ciVerts[vertIndex];\n"
         "   matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;\n"
         "   matrix_float4x4 mat = ciUniforms.ciViewProjection * modelMat;\n"
-        "   float4 pos = float4(v.ciPosition, 1.0f);\n";
+        "   float4 pos = float4(v.ciPosition);\n";
         
         if( shader.mUniformBasedPosAndTexCoord )
         {
@@ -227,7 +221,7 @@ namespace cinder { namespace mtl {
         }
 
         s += "   out.position = mat * pos;\n";
-        s += "   out.color = instances[i].color * ciUniforms.ciColor;";
+        s += "   out.color = instances[i].color * ciUniforms.ciColor;\n";
         
         if ( shader.mColor )
         {
@@ -255,7 +249,7 @@ namespace cinder { namespace mtl {
         
         if( shader.mLambert )
         {
-            s += "   out.normal = ciUniforms.ciNormalMatrix * float3(v.ciNormal);\n";
+            s += "   out.normal = ciUniforms.ciNormalMatrix4x4 * float4(v.ciNormal, 0.0);\n";
         }
         
         if( shader.mPointSize )
@@ -307,9 +301,9 @@ namespace cinder { namespace mtl {
         {
             s +=
             "   float3 L = float3( 0, 0, 1 );\n"
-            "   float3 N = normalize( in.nonrmal );\n"
+            "   float3 N = normalize( in.normal.xyz );\n"
             "   float lambert = max( 0.0, dot( N, L ) );\n"
-            "   oColor *= float4( float3( lambert ), 1.0 )\n";
+            "   oColor *= float4( float3( lambert ), 1.0 );\n";
         }
 
         s +=
@@ -324,7 +318,7 @@ namespace cinder { namespace mtl {
     {
         id<MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
         std::string librarySource = PipelineBuilder::generateMetalLibrary(shader);
-        CI_LOG_I("Generated Library:\n" << librarySource);
+        CI_LOG_V("Generated Library:\n" << librarySource);
         NSError *compileError = nil;
         // Does this stick around or do we have to store it somewhere?
         id<MTLLibrary> library = [device newLibraryWithSource:[NSString stringWithUTF8String:librarySource.c_str()]
@@ -337,13 +331,6 @@ namespace cinder { namespace mtl {
         }
         RenderPipelineStateRef pipeline = RenderPipelineState::create( "ci_generated_vert", "ci_generated_frag", format, (__bridge void *)library );
         return pipeline;
-//        GlslProg::Format fmt = GlslProg::Format().vertex( generateVertexShader( shader ) )
-//        .fragment( generateFragmentShader( shader ) )
-//        .attribLocation( "ciPosition", 0 )
-//        .preprocess( false );
-//        if( shader.mTextureMapping )
-//        fmt.attribLocation( "ciTexCoord0", 1 );
-//        return GlslProg::create( fmt );		
     }
     
 } } // namespace cinder::mtl

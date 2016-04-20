@@ -1,4 +1,5 @@
 #include "cinder/app/App.h"
+#include "cinder/CameraUi.h"
 #include "metal.h"
 #include "Batch.h"
 #include "Shader.h"
@@ -19,31 +20,34 @@ public:
     mtl::RenderPassDescriptorRef mRenderDescriptor;
     
     CameraPersp mCam;
-    mtl::BatchRef mBatchStockColor;
+    CameraUi mCamUI;
+    
+    mtl::BatchRef mBatchStockBasic;
+    mtl::BatchRef mBatchStockTexture;
+    mtl::BatchRef mBatchStockLambert;
+    mtl::BatchRef mBatchStockWire;
+    mtl::TextureBufferRef mTextureLogo;
 };
 
 void StockShaderApp::setup()
 {
     mRenderDescriptor = mtl::RenderPassDescriptor::create();
     
-    mCam.lookAt(vec3(0,0,-10), vec3(0));
+    mCam.lookAt(vec3(0,0,7), vec3(0));
+    mCamUI = CameraUi(&mCam, getWindow());
     
-    ci::mtl::RenderPipelineStateRef renderPipeline = mtl::PipelineBuilder::buildPipeline(mtl::ShaderDef().color());
-    mBatchStockColor = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), renderPipeline);
+    ci::mtl::RenderPipelineStateRef renderPipelineBasic = mtl::PipelineBuilder::buildPipeline();
+    mBatchStockBasic = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5f,-0.5f,0.5f,0.5f)), renderPipelineBasic);
     
-//    mtl::RenderPipelineStateRef sPipelineWire;
-//    mtl::RenderPipelineStateRef getStockPipelineWire()
-//    {
-//        if ( !sPipelineWire )
-//        {
-//            sPipelineWire = mtl::RenderPipelineState::create("ci_wire_vertex", "ci_color_fragment",
-//                                                             mtl::RenderPipelineState::Format()
-//                                                             .blendingEnabled()
-//                                                             );
-//        }
-//        return sPipelineWire;
-//    }
+    ci::mtl::RenderPipelineStateRef renderPipelineTexture = mtl::PipelineBuilder::buildPipeline(mtl::ShaderDef().texture());
+    mBatchStockTexture = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5f,-0.5f,0.5f,0.5f)), renderPipelineTexture);
+    mTextureLogo = mtl::TextureBuffer::create(loadImage(getAssetPath("cinderblock.png")));
 
+    ci::mtl::RenderPipelineStateRef renderPipelineLambert = mtl::PipelineBuilder::buildPipeline(mtl::ShaderDef().lambert());
+    mBatchStockLambert = mtl::Batch::create(ci::geom::TorusKnot(), renderPipelineLambert);
+    
+    ci::mtl::RenderPipelineStateRef renderPipelineWire = mtl::PipelineBuilder::buildPipeline();
+    mBatchStockWire = mtl::Batch::create(ci::geom::WireIcosahedron(), renderPipelineWire);
 }
 
 void StockShaderApp::resize()
@@ -60,10 +64,39 @@ void StockShaderApp::draw()
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
     mtl::setMatrices(mCam);
-    // Put your drawing here
+    renderEncoder.enableDepth();
+
+    {
+        mtl::ScopedModelMatrix matBasic;
+        mtl::translate(vec3(0,-1,0));
+        mtl::color(0.25, 0.65, 1);
+        renderEncoder.draw(mBatchStockBasic);
+    }
     
-    mtl::color(1, 0, 0);
-    renderEncoder.drawSolidRect(Rectf(-0.5,-0.5,0.5,0.5));
+    {
+        mtl::ScopedModelMatrix matTexture;
+        mtl::translate(vec3(0,1,0));
+        mtl::color(1, 1, 1);
+        renderEncoder.setTexture(mTextureLogo);
+        renderEncoder.draw(mBatchStockTexture);
+    }
+    
+    {
+        mtl::ScopedModelMatrix matLambert;
+        mtl::translate(vec3(-1,0,0));
+        mtl::scale(vec3(0.5f));
+        mtl::color(1, 0, 1);
+        renderEncoder.draw(mBatchStockLambert);
+    }
+
+    {
+        mtl::ScopedModelMatrix matWire;
+        mtl::translate(vec3(1,0,0));
+        mtl::scale(vec3(0.75f));
+        mtl::color(1, 1, 1);
+        renderEncoder.draw(mBatchStockWire);
+    }
+    
 }
 
 CINDER_APP( StockShaderApp, RendererMetal )
