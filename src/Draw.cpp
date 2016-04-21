@@ -176,11 +176,11 @@ mtl::BatchRef getStockBatchWireRect()
     {
         // NOTE; ci::geom::WireRect doesn't exist for some reason
         vector<WireVertex> rectVerts = {
-            { vec3(-0.5f,-0.5f,0.f) },
-            { vec3(0.5f,-0.5f,0.f) },
-            { vec3(0.5f,0.5f,0.f) },
-            { vec3(-0.5f,0.5f,0.f) },
-            { vec3(-0.5f,-0.5f,0.f) }
+            { vec4(-0.5f,-0.5f,0.f,1.f) },
+            { vec4( 0.5f,-0.5f,0.f,1.f) },
+            { vec4( 0.5f, 0.5f,0.f,1.f) },
+            { vec4(-0.5f, 0.5f,0.f,1.f) },
+            { vec4(-0.5f,-0.5f,0.f,1.f) }
         };
         vector<unsigned int> indices = {{0,1,2,3,4}};
         auto rectBuffer = mtl::VertexBuffer::create(rectVerts.size(),
@@ -192,24 +192,44 @@ mtl::BatchRef getStockBatchWireRect()
     return sBatchWireRect;
 }
 
-mtl::BatchRef sBatchTexturedRect;
-mtl::BatchRef getStockBatchTexturedRect()
+mtl::BatchRef sBatchTexturedRectCentered;
+mtl::BatchRef sBatchTexturedRectUL;
+mtl::BatchRef getStockBatchTexturedRect( bool isCentered )
 {
-    if ( !sBatchTexturedRect )
+    if ( isCentered )
     {
-        sBatchTexturedRect = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineTexturedRect() );
+        if ( !sBatchTexturedRectCentered )
+        {
+            sBatchTexturedRectCentered = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineTexturedRect() );
+        }
+        return sBatchTexturedRectCentered;
     }
-    return sBatchTexturedRect;
+    // Else
+    if ( !sBatchTexturedRectUL )
+    {
+        sBatchTexturedRectUL = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)), getStockPipelineTexturedRect() );
+    }
+    return sBatchTexturedRectUL;
 }
 
-mtl::BatchRef sBatchMultiTexturedRect;
-mtl::BatchRef getStockBatchMultiTexturedRect()
+mtl::BatchRef sBatchMultiTexturedRectCentered;
+mtl::BatchRef sBatchMultiTexturedRectUL;
+mtl::BatchRef getStockBatchMultiTexturedRect( bool isCentered )
 {
-    if ( !sBatchMultiTexturedRect )
+    if ( isCentered )
     {
-        sBatchMultiTexturedRect = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineMultiTexturedRect() );
+        if ( !sBatchMultiTexturedRectCentered )
+        {
+            sBatchMultiTexturedRectCentered = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineMultiTexturedRect() );
+        }
+        return sBatchMultiTexturedRectCentered;
     }
-    return sBatchMultiTexturedRect;
+    // Else
+    if ( !sBatchMultiTexturedRectUL )
+    {
+        sBatchMultiTexturedRectUL = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)), getStockPipelineMultiTexturedRect() );
+    }
+    return sBatchMultiTexturedRectUL;
 }
 
 mtl::BatchRef sBatchBillboard;
@@ -280,11 +300,11 @@ mtl::VertexBufferRef getRingBuffer()
             float y = sin(rads);
             
             GeomVertex inner;
-            inner.ciPosition = vec3(x,y,0);
+            inner.ciPosition = vec4(x,y,0,1);
             circVerts.push_back(inner);
             
             GeomVertex outer;
-            outer.ciPosition = vec3(x,y,0);
+            outer.ciPosition = vec4(x,y,0,1);
             circVerts.push_back(outer);
         }
         

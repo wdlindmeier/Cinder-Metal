@@ -49,12 +49,9 @@ mFormat(format)
                                        newTextureWithDescriptor:desc];
 }
 
-TextureBuffer::TextureBuffer( void * mtlTexture ) :
-mImpl(mtlTexture)
+TextureBuffer::TextureBuffer( void * mtlTexture )
 {
-    assert( mtlTexture != NULL );
-    assert( [(__bridge id)mtlTexture conformsToProtocol:@protocol(MTLTexture)] );
-    CFRetain(mImpl);
+    update( mtlTexture );
     
     PixelFormat pxFormat = (PixelFormat)[IMPL pixelFormat];
     mDataType = dataTypeFromPixelFormat(pxFormat);
@@ -148,6 +145,22 @@ void TextureBuffer::update( const ImageSourceRef & imageSource, unsigned int sli
     CGImageRef imageRef = cocoa::createCgImage( imageSource );
     updateWithCGImage( imageRef, mFormat.getFlipVertically(), slice, mipmapLevel );
     CFRelease(imageRef);
+}
+
+void TextureBuffer::update( void * mtlTexture )
+{
+    if ( mImpl )
+    {
+        CFRelease(mImpl);
+        mImpl = NULL;
+    }
+    assert( mtlTexture != NULL );
+    assert( [(__bridge id)mtlTexture conformsToProtocol:@protocol(MTLTexture)] );
+    mImpl = mtlTexture;
+    CFRetain(mImpl);
+
+    // NOTE:
+    // This is called from the MTLTexture * constructor. Don't do anything too fancy.
 }
 
 static CGImageRef createCGImageFlippedVertically( CGImageRef imageRef )

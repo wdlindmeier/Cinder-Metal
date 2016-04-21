@@ -22,7 +22,9 @@ namespace cinder { namespace mtl {
     //,mTextureMappingRectangle( false )
     ,mColor( false )
     ,mLambert( false )
-    ,mPointSize( false )
+    ,mPoints( false )
+    ,mTextureArray( false )
+    ,mBillboard( false )
     ,mUniformBasedPosAndTexCoord( false )
     {
 //        mTextureSwizzleMask[0] = GL_RED;
@@ -57,12 +59,25 @@ namespace cinder { namespace mtl {
         return *this;
     }
     
-    ShaderDef& ShaderDef::pointSize()
+    ShaderDef& ShaderDef::points()
     {
-        mPointSize = true;
+        mPoints = true;
         return *this;
     }
-    
+
+    ShaderDef& ShaderDef::textureArray()
+    {
+        mTextureMapping = true;
+        mTextureArray = true;
+        return *this;
+    }
+
+    ShaderDef& ShaderDef::billboard()
+    {
+        mBillboard = true;
+        return *this;
+    }
+
 //    bool ShaderDef::isTextureSwizzleDefault() const
 //    {
 //        return mTextureSwizzleMask[0] == GL_RED &&
@@ -93,15 +108,19 @@ namespace cinder { namespace mtl {
     bool ShaderDef::operator<( const ShaderDef &rhs ) const
     {
         if( rhs.mTextureMapping != mTextureMapping )
-        return rhs.mTextureMapping;
-//#if ! defined( CINDER_GL_ES )
-//        if( rhs.mTextureMappingRectangle != mTextureMappingRectangle )
-//        return rhs.mTextureMappingRectangle;
-//#endif
+        {
+            return rhs.mTextureMapping;
+        }
+
         if( rhs.mUniformBasedPosAndTexCoord != mUniformBasedPosAndTexCoord )
-        return rhs.mUniformBasedPosAndTexCoord;
+        {
+            return rhs.mUniformBasedPosAndTexCoord;
+        }
+        
         if( rhs.mColor != mColor )
-        return rhs.mColor;
+        {
+            return rhs.mColor;
+        }
 //        else if( rhs.mTextureSwizzleMask[0] != mTextureSwizzleMask[0] )
 //        return mTextureSwizzleMask[0] < rhs.mTextureSwizzleMask[0];
 //        else if( rhs.mTextureSwizzleMask[1] != mTextureSwizzleMask[1] )
@@ -110,8 +129,26 @@ namespace cinder { namespace mtl {
 //        return mTextureSwizzleMask[2] < rhs.mTextureSwizzleMask[2];	
 //        else if( rhs.mTextureSwizzleMask[3] != mTextureSwizzleMask[3] )
 //        return mTextureSwizzleMask[3] < rhs.mTextureSwizzleMask[3];	
+
         if( rhs.mLambert != mLambert )
-        return rhs.mLambert;
+        {
+            return rhs.mLambert;
+        }
+        
+        if ( rhs.mBillboard != mBillboard )
+        {
+            return rhs.mBillboard;
+        }
+        
+        if ( rhs.mTextureArray != mTextureArray )
+        {
+            return rhs.mTextureArray;
+        }
+        
+        if ( rhs.mPoints )
+        {
+            return rhs.mPoints;
+        }
         
         return false;
     }
@@ -154,7 +191,7 @@ namespace cinder { namespace mtl {
         "typedef struct\n"
         "{\n"
         "    float4 position [[position]];\n";
-        if ( shader.mPointSize )
+        if ( shader.mPoints )
         {
             library += "    float pointSize [[point_size]];\n";
         }
@@ -211,16 +248,23 @@ namespace cinder { namespace mtl {
         s +=
         "   unsigned int vertIndex = ciIndices[vid];\n"
         "   ciVertexIn_t v = ciVerts[vertIndex];\n"
-        "   matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;\n"
-        "   matrix_float4x4 mat = ciUniforms.ciViewProjection * modelMat;\n"
-        "   float4 pos = float4(v.ciPosition);\n";
+        "   matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;\n";
+
+        if ( shader.mBillboard )
+        {
+            // Billboard the texture.
+            // NOTE: This only really works if the instance geometry is flat in the first place.
+            s += "   modelMat = modelMat * rotationMatrix(ciUniforms.ciModelViewInverse);\n";
+        }
+        s += "   matrix_float4x4 mvpMat = ciUniforms.ciViewProjection * modelMat;\n";
+        s += "   float4 pos = float4(v.ciPosition[0], v.ciPosition[1], v.ciPosition[2], 1.0f);\n";
         
-        if( shader.mUniformBasedPosAndTexCoord )
+        if ( shader.mUniformBasedPosAndTexCoord )
         {
             s += "   pos = float4( ciPositionOffset, 0 ) + float4( uPositionScale, 1 ) * pos;\n";
         }
 
-        s += "   out.position = mat * pos;\n";
+        s += "   out.position = mvpMat * pos;\n";
         s += "   out.color = instances[i].color * ciUniforms.ciColor;\n";
         
         if ( shader.mColor )
@@ -245,6 +289,11 @@ namespace cinder { namespace mtl {
             {
                 s += "   out.texCoords = instanceTexCoord;\n";
             }
+            
+            if ( shader.mTextureArray )
+            {
+                 s += "   out.texIndex = instances[i].textureSlice;\n";
+            }
         }
         
         if( shader.mLambert )
@@ -252,7 +301,7 @@ namespace cinder { namespace mtl {
             s += "   out.normal = ciUniforms.ciNormalMatrix4x4 * float4(v.ciNormal, 0.0);\n";
         }
         
-        if( shader.mPointSize )
+        if( shader.mPoints )
         {
             s += "   out.pointSize = instances[i].scale;\n";
         }
@@ -283,9 +332,22 @@ namespace cinder { namespace mtl {
         }
         
         s += "fragment float4 ci_generated_frag( ciVertexOut_t in [[ stage_in ]]";
+        
         if( shader.mTextureMapping )
         {
-            s += ",\n                               texture2d<float> texture [[ texture(ciTextureIndex0) ]]";
+            if ( shader.mTextureArray )
+            {
+                s += ",\n                               texture2d_array<float> texture [[ texture(ciTextureIndex0) ]]";
+            }
+            else
+            {
+                s += ",\n                               texture2d<float> texture [[ texture(ciTextureIndex0) ]]";
+            }
+            
+            if ( shader.mPoints )
+            {
+                s += ",\n                               float2 pointCoord [[point_coord]],";
+            }
         }
         s += " )\n"
         "{\n"
@@ -293,8 +355,29 @@ namespace cinder { namespace mtl {
 
         if( shader.mTextureMapping )
         {
-            s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords);\n"
-                 "   oColor *= texColor;\n";
+            if ( shader.mPoints )
+            {
+                if ( shader.mTextureArray )
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, pointCoord, in.texIndex);\n";
+                }
+                else
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, pointCoord);\n";
+                }
+            }
+            else
+            {
+                if ( shader.mTextureArray )
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords, in.texIndex);\n";
+                }
+                else
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords);\n";
+                }
+            }
+            s += "   oColor *= texColor;\n";
         }
 
         if( shader.mLambert )

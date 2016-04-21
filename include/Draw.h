@@ -38,8 +38,8 @@ namespace cinder { namespace mtl {
     ci::mtl::BatchRef getStockBatchWireCube();
     ci::mtl::BatchRef getStockBatchWireCircle();
     ci::mtl::BatchRef getStockBatchWireRect();
-    ci::mtl::BatchRef getStockBatchTexturedRect();
-    ci::mtl::BatchRef getStockBatchMultiTexturedRect();
+    ci::mtl::BatchRef getStockBatchTexturedRect( bool isCentered = true );
+    ci::mtl::BatchRef getStockBatchMultiTexturedRect( bool isCentered = true );
     ci::mtl::BatchRef getStockBatchBillboard();
     ci::mtl::BatchRef getStockBatchMultiBillboard();
     ci::mtl::BatchRef getStockBatchSolidRect();

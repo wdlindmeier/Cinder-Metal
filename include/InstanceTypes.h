@@ -18,7 +18,7 @@
 // TODO: NIX
     typedef struct
     {
-        metal::packed_float3 ciPosition;
+        metal::packed_float4 ciPosition;
         metal::packed_float3 ciNormal;
         metal::packed_float2 ciTexCoord0;
     } GeomVertex;
@@ -26,7 +26,7 @@
 // TODO: NIX
     typedef struct
     {
-        metal::packed_float3 ciPosition;
+        metal::packed_float4 ciPosition;
         metal::packed_float3 ciNormal;
         metal::packed_float4 ciColor;
     } ColoredVertex;
@@ -34,13 +34,13 @@
 // TODO: NIX
     typedef struct
     {
-        metal::packed_float3 ciPosition;
+        metal::packed_float4 ciPosition;
     } WireVertex;
 
 // TODO: NIX
     typedef struct
     {
-        metal::packed_float2 ciPosition;
+        metal::packed_float4 ciPosition;
         metal::packed_float2 ciTexCoord0;
     } RectVertex;
 

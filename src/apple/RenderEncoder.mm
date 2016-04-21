@@ -164,25 +164,70 @@ void RenderEncoder::setVisibilityResultMode( int mtlVisibilityResultMode, size_t
 void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount, size_t vertexStart,
                           size_t instanceCount, size_t baseInstance )
 {
-    [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
-             vertexStart:vertexStart
-             vertexCount:vertexCount
-           instanceCount:instanceCount
-            baseInstance:baseInstance];
+#ifdef CINDER_COCOA_TOUCH
+    if ( [[RendererMetalImpl sharedRenderer].device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1] )
+#endif
+    {
+        [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                 vertexStart:vertexStart
+                 vertexCount:vertexCount
+               instanceCount:instanceCount
+                baseInstance:baseInstance];
+    }
+#ifdef CINDER_COCOA_TOUCH
+    else
+    {
+        if ( baseInstance > 0 )
+        {
+            CI_LOG_F("ERROR: This hardware doesn't support baseInstance.");
+            assert(false);
+        }
+        [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                 vertexStart:vertexStart
+                 vertexCount:vertexCount
+               instanceCount:instanceCount];
+    }
+#endif
 }
 
 void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
                                  size_t indexCount, IndexType indexType, size_t bufferOffset,
                                  size_t instanceCount, size_t baseVertex, size_t baseInstance )
 {
-    [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
-                     indexCount:indexCount
-                      indexType:(MTLIndexType)indexType
-                    indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
-              indexBufferOffset:bufferOffset
-                  instanceCount:instanceCount
-                     baseVertex:baseVertex
-                   baseInstance:baseInstance];
+#ifdef CINDER_COCOA_TOUCH
+    if ( [[RendererMetalImpl sharedRenderer].device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1] )
+#endif
+    {
+        [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                         indexCount:indexCount
+                          indexType:(MTLIndexType)indexType
+                        indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
+                  indexBufferOffset:bufferOffset
+                      instanceCount:instanceCount
+                         baseVertex:baseVertex
+                       baseInstance:baseInstance];
+    }
+#ifdef CINDER_COCOA_TOUCH
+    else
+    {
+        if ( baseInstance > 0 )
+        {
+            CI_LOG_F("ERROR: This hardware doesn't support baseInstance.");
+            assert(false);
+        }
+        if ( baseVertex > 0 )
+        {
+            CI_LOG_F("ERROR: This hardware doesn't support baseVertex.");
+            assert(false);
+        }
+        [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
+                         indexCount:indexCount
+                          indexType:(MTLIndexType)indexType
+                        indexBuffer:( __bridge id <MTLBuffer> )indexBuffer->getNative()
+                  indexBufferOffset:bufferOffset
+                      instanceCount:instanceCount];
+    }
+#endif
 }
 
 #if !defined( CINDER_COCOA_TOUCH )
@@ -191,7 +236,6 @@ void RenderEncoder::textureBarrier()
     [IMPL textureBarrier];
 }
 #endif
-
 
 
 #pragma mark - Drawing Convenience Functions
@@ -399,7 +443,8 @@ void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect,
                           ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
-    if ( rect.getWidth() != 0 && rect.getHeight() != 0 )
+    bool hasRect = rect.getWidth() != 0 && rect.getHeight() != 0;
+    if ( hasRect )
     {
         mtl::translate(ci::vec3(rect.getCenter(), 0));
         mtl::scale(vec3(rect.getWidth(), rect.getHeight(), 1));
@@ -414,10 +459,10 @@ void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect,
     switch ( texture->getFormat().getTextureType() )
     {
         case mtl::TextureType2DArray:
-            draw(mtl::getStockBatchMultiTexturedRect(), instanceBuffer, numInstances);
+            draw(mtl::getStockBatchMultiTexturedRect( hasRect ), instanceBuffer, numInstances);
             break;
         case mtl::TextureType2D:
-            draw(mtl::getStockBatchTexturedRect(), instanceBuffer, numInstances);
+            draw(mtl::getStockBatchTexturedRect( hasRect ), instanceBuffer, numInstances);
             break;
         default:
             CI_LOG_E("No default shader for texture type " << texture->getFormat().getTextureType());

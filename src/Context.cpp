@@ -11,6 +11,7 @@
 #include "cinder/Log.h"
 #include "MetalConstants.h"
 #include "RendererMetal.h"
+#include "Shader.h"
 
 using namespace std;
 
@@ -22,7 +23,6 @@ namespace cinder { namespace mtl {
     Context::Context( const std::shared_ptr<PlatformData> &platformData )
     :
     mPlatformData( platformData )
-    ,mRenderEncoder(NULL)
     {
         // set thread's active Context to 'this' in case anything calls mtl::context() (like the GlslProg constructor)
         auto prevCtx = Context::getCurrent();
@@ -33,18 +33,6 @@ namespace cinder { namespace mtl {
         mModelMatrixStack.push_back( mat4() );
         mViewMatrixStack.push_back( mat4() );
         mProjectionMatrixStack.push_back( mat4() );
-
-#if defined( CINDER_GL_HAS_DEBUG_OUTPUT )
-        if( mPlatformData->mDebug ) {
-            mDebugLogSeverity = mPlatformData->mDebugLogSeverity;
-            mDebugBreakSeverity = mPlatformData->mDebugBreakSeverity;
-            if( (mDebugLogSeverity > 0) || (mDebugBreakSeverity > 0) ) {
-                //setBoolState( GL_DEBUG_OUTPUT_SYNCHRONOUS, GL_TRUE );
-                glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-                glDebugMessageCallback( (GLDEBUGPROC)debugMessageCallback, this );
-            }
-        }
-#endif // defined( CINDER_GL_HAS_DEBUG_OUTPUT )
         
         // restore current context thread-local to what it was previously
         Context::reflectCurrent( prevCtx );
@@ -102,13 +90,22 @@ namespace cinder { namespace mtl {
         pthread_setspecific( sThreadSpecificCurrentContextKey, context );
     }
     
+    mtl::RenderPipelineStateRef & Context::getStockPipeline( const mtl::ShaderDef &shaderDef )
+    {
+        if ( mStockShaders.count(shaderDef) == 0 )
+        {
+            mStockShaders[shaderDef] = PipelineBuilder::buildPipeline(shaderDef);
+        }
+        return mStockShaders.at(shaderDef);
+    }
+
     Context* context()
     {
         auto ctx = Context::getCurrent();
         assert( ctx != nullptr );
         return ctx;
     }
-
+    
     void setDefaultShaderVars( RenderEncoder & renderEncoder,
                                RenderPipelineStateRef pipeline )
     {
@@ -332,7 +329,13 @@ namespace cinder { namespace mtl {
         auto m = glm::inverseTranspose( getModelMatrix() );
         return mat3( m );
     }
-
+    
+    mtl::RenderPipelineStateRef & getStockPipeline( const mtl::ShaderDef &shaderDef )
+    {
+        auto ctx = mtl::context();
+        return ctx->getStockPipeline( shaderDef );
+    }
+    
     void setMatricesWindowPersp( int screenWidth, int screenHeight, float fovDegrees, float nearPlane, float farPlane, bool originUpperLeft )
     {
         auto ctx = mtl::context();
