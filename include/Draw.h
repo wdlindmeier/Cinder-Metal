@@ -23,18 +23,6 @@ namespace cinder { namespace mtl {
     
 #pragma mark - Generic Pipelines
     
-    // TODO: REPLACE these with a shader builder
-    ci::mtl::RenderPipelineStateRef getStockPipelineRing();
-    ci::mtl::RenderPipelineStateRef getStockPipelineBillboardRing();
-    ci::mtl::RenderPipelineStateRef getStockPipelineWire();
-    ci::mtl::RenderPipelineStateRef getStockPipelineTexturedRect();
-    ci::mtl::RenderPipelineStateRef getStockPipelineMultiTexturedRect();
-    ci::mtl::RenderPipelineStateRef getStockPipelineBillboardTexture();
-    ci::mtl::RenderPipelineStateRef getStockPipelineBillboardMultiTexture();
-    ci::mtl::RenderPipelineStateRef getStockPipelineSolidRect();
-    ci::mtl::RenderPipelineStateRef getStockPipelineGeom();
-    ci::mtl::RenderPipelineStateRef getStockPipelineColoredGeom();
-
     ci::mtl::BatchRef getStockBatchWireCube();
     ci::mtl::BatchRef getStockBatchWireCircle();
     ci::mtl::BatchRef getStockBatchWireRect();
@@ -45,6 +33,8 @@ namespace cinder { namespace mtl {
     ci::mtl::BatchRef getStockBatchSolidRect();
     ci::mtl::BatchRef getStockBatchSphere();
     ci::mtl::BatchRef getStockBatchCube();
+    ci::mtl::BatchRef getStockBatchColoredCube();
+    // NOTE: Ring can be a circle by passing in an inner radius of 0
     ci::mtl::BatchRef getStockBatchRing();
     ci::mtl::BatchRef getStockBatchBillboardRing();
     

@@ -77,9 +77,16 @@ namespace cinder {
             matrix_float3x3 ciNormalMatrix;
             matrix_float4x4 ciNormalMatrix4x4;
 //            matrix_float4x4 ciViewportMatrix;
+            
+            vector_float3 ciPositionOffset = {0,0,0};
+            vector_float3 ciPositionScale = {1,1,1};
+            vector_float2 ciTexCoordOffset = {0,0};
+            vector_float2 ciTexCoordScale = {1,1};
+
             vector_int2 ciWindowSize;
-            vector_float4 ciColor;
-            float ciElapsedSeconds;
+            vector_float4 ciColor = {1,1,1,1};
+            float ciElapsedSeconds = 0.f;
+            
         } ciUniforms_t;
     }
 }

@@ -17,6 +17,7 @@
 #import "Batch.h"
 #import "InstanceTypes.h"
 #import "Draw.h"
+#import "Shader.h"
 
 using namespace std;
 using namespace ci;
@@ -276,7 +277,7 @@ void RenderEncoder::setIdentityInstance()
         // Cache the vanilla buffer.
         Instance i;
         std::vector<Instance> is = {i};
-        sInstanceBuffer = ci::mtl::DataBuffer::create(is);
+        sInstanceBuffer = ci::mtl::DataBuffer::create(is, ci::mtl::DataBuffer::Format().label("Default Instance"));
     }
     setInstanceData(sInstanceBuffer);
 }
@@ -401,16 +402,18 @@ void RenderEncoder::drawLines( std::vector<ci::vec3> lines, bool isLineStrip,
                                ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     vector<unsigned int> indices;
+    vector<vec4> positions;
     for ( int i = 0; i < lines.size(); ++i )
     {
+        positions.push_back(vec4(lines[i], 1.f));
         indices.push_back(i);
     }
     auto lineBuffer = mtl::VertexBuffer::create(lines.size(),
-                                                mtl::DataBuffer::create(lines, mtl::DataBuffer::Format().label("LineVerts")),
-                                                mtl::DataBuffer::create(indices),
+                                                mtl::DataBuffer::create(positions, mtl::DataBuffer::Format().label("Line Verts")),
+                                                mtl::DataBuffer::create(indices, mtl::DataBuffer::Format().label("Line Indices")),
                                                 isLineStrip ? mtl::geom::LINE_STRIP : mtl::geom::LINE);
     setIdentityInstance();
-    draw( lineBuffer, mtl::getStockPipelineWire(), instanceBuffer, numInstances );
+    draw( lineBuffer, mtl::getStockPipeline(mtl::ShaderDef()), instanceBuffer, numInstances );
 }
 
 void RenderEncoder::drawLine( ci::vec3 from, ci::vec3 to,
@@ -419,23 +422,14 @@ void RenderEncoder::drawLine( ci::vec3 from, ci::vec3 to,
     drawLines({{from, to}}, false, instanceBuffer, numInstances );
 }
 
-static mtl::VertexBufferRef sColoredCubeBuffer;
 void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size,
                                      ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    if ( !sColoredCubeBuffer )
-    {
-        sColoredCubeBuffer = mtl::VertexBuffer::create( ci::geom::Cube()
-                                                       .size(vec3(1.f))
-                                                       .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),
-                                                               Color(1,1,0),Color(0,1,1),Color(1,0,1)),
-                                                       {{ ci::geom::POSITION, ci::geom::NORMAL, ci::geom::COLOR }});
-    }
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(size);
     setIdentityInstance();
-    draw(sColoredCubeBuffer, mtl::getStockPipelineColoredGeom(), instanceBuffer, numInstances);
+    draw(mtl::getStockBatchColoredCube(), instanceBuffer, numInstances);
 }
 
 // Draw a texture

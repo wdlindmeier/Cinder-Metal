@@ -20,13 +20,19 @@ namespace cinder { namespace mtl {
         public:
         ShaderDef();
         
+        // Attribs
         ShaderDef&		color();
         ShaderDef&		texture(); // const TextureBufferRef &tex = TextureBufferRef() );
         ShaderDef&		lambert();
         ShaderDef&		points();
         ShaderDef&		textureArray();
+        
+        // Display
         ShaderDef&		billboard();
         ShaderDef&		uniformBasedPosAndTexCoord();
+        
+        // Geom
+        ShaderDef&      ring();
         
     //    bool			isTextureSwizzleDefault() const;
     //    std::string		getTextureSwizzleString() const;
@@ -45,6 +51,7 @@ namespace cinder { namespace mtl {
         bool                    mPoints;
         bool					mTextureArray;
         bool                    mBillboard;
+        bool                    mRing;
         
     //    friend class EnvironmentCore;
     //    friend class EnvironmentEs;

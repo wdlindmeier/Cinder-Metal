@@ -25,6 +25,7 @@ namespace cinder { namespace mtl {
     ,mPoints( false )
     ,mTextureArray( false )
     ,mBillboard( false )
+    ,mRing(false)
     ,mUniformBasedPosAndTexCoord( false )
     {
 //        mTextureSwizzleMask[0] = GL_RED;
@@ -75,6 +76,12 @@ namespace cinder { namespace mtl {
     ShaderDef& ShaderDef::billboard()
     {
         mBillboard = true;
+        return *this;
+    }
+    
+    ShaderDef& ShaderDef::ring()
+    {
+        mRing = true;
         return *this;
     }
 
@@ -145,9 +152,14 @@ namespace cinder { namespace mtl {
             return rhs.mTextureArray;
         }
         
-        if ( rhs.mPoints )
+        if ( rhs.mPoints != mPoints )
         {
             return rhs.mPoints;
+        }
+        
+        if ( rhs.mRing != mRing )
+        {
+            return rhs.mRing;
         }
         
         return false;
@@ -223,25 +235,18 @@ namespace cinder { namespace mtl {
         std::string s;
         
         s +=
-        "vertex ciVertexOut_t ci_generated_vert(device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],\n"
-        "                                       device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],\n"
-        "                                       device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],\n"
-        "                                       constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],\n";
-
-        // TODO: Should these be in ciUniforms_t?
-        if( shader.mUniformBasedPosAndTexCoord )
+        "vertex ciVertexOut_t ci_generated_vert( device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],\n"
+        "                                        device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],\n"
+        "                                        device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],\n"
+        "                                        constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],\n";
+        if ( shader.mRing )
         {
-            s += "                                       constant float3 ciPositionOffset;\n"
-                 "                                       constant float3 ciPositionScale;\n";
-            if( shader.mTextureMapping )
-            {
-                s+= "                                       constant float2 ciTexCoordOffset;\n"
-                    "                                       constant float2 ciTexCoordScale;\n";
-            }
+            s += "                                        constant float *innerRadius [[ buffer(ciBufferIndexCustom0) ]],\n";
         }
+        
         s +=
-        "                                       unsigned int vid [[ vertex_id ]],\n"
-        "                                       uint i [[ instance_id ]] )\n"
+        "                                        unsigned int vid [[ vertex_id ]],\n"
+        "                                        uint i [[ instance_id ]] )\n"
         "{\n"
         "   ciVertexOut_t out;\n";
         
@@ -261,7 +266,17 @@ namespace cinder { namespace mtl {
         
         if ( shader.mUniformBasedPosAndTexCoord )
         {
-            s += "   pos = float4( ciPositionOffset, 0 ) + float4( uPositionScale, 1 ) * pos;\n";
+            s += "   pos = float4( ciUniforms.ciPositionOffset, 0 ) + float4( ciUniforms.ciPositionScale, 1 ) * pos;\n";
+        }
+        
+        if ( shader.mRing )
+        {
+            s +=
+            "   int segment = vid / 2;\n" // NOTE: % 2 doesn't work on Radeon GPUs
+            "   if ( (vid / 2.0f) == segment )\n"
+            "   {\n"
+            "       pos = float4(pos.rgb * innerRadius[0],1.0);\n"
+            "   }\n";
         }
 
         s += "   out.position = mvpMat * pos;\n";
@@ -283,7 +298,7 @@ namespace cinder { namespace mtl {
 
             if( shader.mUniformBasedPosAndTexCoord )
             {
-                s += "   out.texCoords = ciTexCoordOffset + ciTexCoordScale * instanceTexCoord;\n";
+                s += "   out.texCoords = ciUniforms.ciTexCoordOffset + ciUniforms.ciTexCoordScale * instanceTexCoord;\n";
             }
             else
             {
@@ -401,9 +416,8 @@ namespace cinder { namespace mtl {
     {
         id<MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
         std::string librarySource = PipelineBuilder::generateMetalLibrary(shader);
-        CI_LOG_V("Generated Library:\n" << librarySource);
+        // CI_LOG_V("Generated Library:\n" << librarySource);
         NSError *compileError = nil;
-        // Does this stick around or do we have to store it somewhere?
         id<MTLLibrary> library = [device newLibraryWithSource:[NSString stringWithUTF8String:librarySource.c_str()]
                                                       options:0
                                                         error:&compileError];
