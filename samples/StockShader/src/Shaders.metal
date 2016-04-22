@@ -12,7 +12,7 @@
 #include "SharedTypes.h"
 #include "ShaderUtils.h"
 #include "MetalConstants.h"
-#include "InstanceTypes.h"
+#include "ShaderTypes.h"
 
 using namespace metal;
 using namespace cinder;

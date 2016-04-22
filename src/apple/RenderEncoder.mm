@@ -15,7 +15,7 @@
 #import "RendererMetalImpl.h"
 #import "VertexBuffer.h"
 #import "Batch.h"
-#import "InstanceTypes.h"
+#import "ShaderTypes.h"
 #import "Draw.h"
 #import "Shader.h"
 
@@ -312,7 +312,7 @@ void RenderEncoder::draw( ci::mtl::BatchRef batch,
     batch->drawInstanced(*this, numInstances);
 }
 
-void RenderEncoder::drawOne( ci::mtl::BatchRef batch, const Instance & i )
+void RenderEncoder::drawOne( ci::mtl::BatchRef batch, const ci::mtl::Instance & i )
 {
     std::vector<Instance> is = {i};
     ci::mtl::DataBufferRef iBuffer = ci::mtl::DataBuffer::create(is);

@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "RendererMetalImpl.h"
 #include "cinder/Log.h"
+#include "MetalMacros.h"
 
 using namespace std;
 
@@ -167,17 +168,22 @@ namespace cinder { namespace mtl {
     
 #pragma mark Shader Builder
     
+#define STRINGIFY(s) str(s)
+#define str(...) #__VA_ARGS__
     
     std::string	PipelineBuilder::generateMetalLibrary( const ShaderDef &shader )
     {
-        
         string library = ""
         "#include <metal_stdlib>\n"
         "#include <simd/simd.h>\n"
-        "#include \"/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/include/InstanceTypes.h\"\n"
-        "#include \"/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/include/ShaderUtils.h\"\n"
-        "#include \"/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/include/MetalConstants.h\"\n"
-        "\n"
+        // Hey there! Here's a supper crappy way to share types with online shaders
+        STRINGIFY(ShaderTypes)
+        STRINGIFY(MetalConstants);
+        if ( shader.mBillboard )
+        {
+            library += STRINGIFY(ShaderUtils);
+        }
+        library += "\n"
         "using namespace metal;\n"
         "using namespace cinder;\n"
         "using namespace cinder::mtl;\n"
@@ -416,7 +422,7 @@ namespace cinder { namespace mtl {
     {
         id<MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
         std::string librarySource = PipelineBuilder::generateMetalLibrary(shader);
-        // CI_LOG_V("Generated Library:\n" << librarySource);
+        CI_LOG_V("Generated Library:\n" << librarySource);
         NSError *compileError = nil;
         id<MTLLibrary> library = [device newLibraryWithSource:[NSString stringWithUTF8String:librarySource.c_str()]
                                                       options:0

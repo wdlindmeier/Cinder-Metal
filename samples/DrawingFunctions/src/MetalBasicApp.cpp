@@ -42,7 +42,7 @@ void MetalBasicApp::setup()
 void MetalBasicApp::resize()
 {
     mCam.setPerspective(40, getWindowAspectRatio(), 0.01, 10000);
-    mCam.lookAt(vec3(6, 0, 6.f),
+    mCam.lookAt(vec3(6, 0, 8.f),
                 vec3(6, 0, 0));
 }
 

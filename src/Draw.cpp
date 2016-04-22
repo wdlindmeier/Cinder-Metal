@@ -44,7 +44,7 @@ mtl::BatchRef getStockBatchWireRect()
     if ( !sCachedBatches.count("BatchWireRect") )
     {
         // NOTE; ci::geom::WireRect doesn't exist for some reason
-        vector<WireVertex> rectVerts = {
+        vector<vec4> rectVerts = {
             { vec4(-0.5f,-0.5f,0.f,1.f) },
             { vec4( 0.5f,-0.5f,0.f,1.f) },
             { vec4( 0.5f, 0.5f,0.f,1.f) },

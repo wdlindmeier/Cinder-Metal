@@ -17,11 +17,11 @@
 #include "cinder/GeomIo.h"
 #include "metal.h"
 #include "Batch.h"
-#include "InstanceTypes.h"
+#include "ShaderTypes.h"
 
 namespace cinder { namespace mtl {
     
-#pragma mark - Generic Pipelines
+#pragma mark - Generic Batches
     
     ci::mtl::BatchRef getStockBatchWireCube();
     ci::mtl::BatchRef getStockBatchWireCircle();

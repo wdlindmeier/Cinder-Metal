@@ -43,7 +43,6 @@
 		A99D51AF1C82D0B300E7B1D2 /* Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DA81C82D0B300E7B1D2 /* Context.cpp */; };
 		A99D51B01C82D0B300E7B1D2 /* Draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DA91C82D0B300E7B1D2 /* Draw.cpp */; };
 		A99D51B11C82D0B300E7B1D2 /* ImageHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DAA1C82D0B300E7B1D2 /* ImageHelpers.mm */; };
-		A99D51B21C82D0B300E7B1D2 /* InstanceShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DAB1C82D0B300E7B1D2 /* InstanceShaders.metal */; };
 		A99D51B31C82D0B300E7B1D2 /* RenderCommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DAC1C82D0B300E7B1D2 /* RenderCommandBuffer.mm */; };
 		A99D51B41C82D0B300E7B1D2 /* RendererMetal.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DAD1C82D0B300E7B1D2 /* RendererMetal.mm */; };
 		A99D51B51C82D0B300E7B1D2 /* RendererMetalImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = A99D4DAE1C82D0B300E7B1D2 /* RendererMetalImpl.mm */; };
@@ -125,7 +124,6 @@
 		A99D4DA81C82D0B300E7B1D2 /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; };
 		A99D4DA91C82D0B300E7B1D2 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Draw.cpp; sourceTree = "<group>"; };
 		A99D4DAA1C82D0B300E7B1D2 /* ImageHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageHelpers.mm; sourceTree = "<group>"; };
-		A99D4DAB1C82D0B300E7B1D2 /* InstanceShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = InstanceShaders.metal; sourceTree = "<group>"; };
 		A99D4DAC1C82D0B300E7B1D2 /* RenderCommandBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderCommandBuffer.mm; sourceTree = "<group>"; };
 		A99D4DAD1C82D0B300E7B1D2 /* RendererMetal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererMetal.mm; sourceTree = "<group>"; };
 		A99D4DAE1C82D0B300E7B1D2 /* RendererMetalImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererMetalImpl.mm; sourceTree = "<group>"; };
@@ -322,7 +320,6 @@
 				A99D4DA81C82D0B300E7B1D2 /* Context.cpp */,
 				A99D4DA91C82D0B300E7B1D2 /* Draw.cpp */,
 				A99D4DAA1C82D0B300E7B1D2 /* ImageHelpers.mm */,
-				A99D4DAB1C82D0B300E7B1D2 /* InstanceShaders.metal */,
 				A99D4DAC1C82D0B300E7B1D2 /* RenderCommandBuffer.mm */,
 				A99D4DAD1C82D0B300E7B1D2 /* RendererMetal.mm */,
 				A99D4DAE1C82D0B300E7B1D2 /* RendererMetalImpl.mm */,
@@ -425,7 +422,6 @@
 				A99D51A21C82D0B300E7B1D2 /* CommandEncoder.mm in Sources */,
 				A99D51AB1C82D0B300E7B1D2 /* RenderPipelineState.mm in Sources */,
 				A99D51B31C82D0B300E7B1D2 /* RenderCommandBuffer.mm in Sources */,
-				A99D51B21C82D0B300E7B1D2 /* InstanceShaders.metal in Sources */,
 				A99D51A51C82D0B300E7B1D2 /* DataBuffer.mm in Sources */,
 				A99D51AF1C82D0B300E7B1D2 /* Context.cpp in Sources */,
 				A99D51A31C82D0B300E7B1D2 /* ComputeEncoder.mm in Sources */,

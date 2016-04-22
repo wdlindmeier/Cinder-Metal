@@ -36,9 +36,6 @@ void MetalBasicApp::draw()
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
     // Put your drawing here
-    
-    mtl::color(1, 0, 0);
-    renderEncoder.drawSolidRect(Rectf(-0.5,-0.5,0.5,0.5));
 }
 
 CINDER_APP( MetalBasicApp, RendererMetal )

@@ -10,6 +10,7 @@
 
 #include "cinder/Log.h"
 #include "MetalConstants.h"
+#include "ShaderTypes.h"
 #include "RendererMetal.h"
 #include "Shader.h"
 
