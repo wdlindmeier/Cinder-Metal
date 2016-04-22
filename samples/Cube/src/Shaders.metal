@@ -17,7 +17,7 @@ typedef struct
 {
     // Must be in the same order as the attributes were requested
     // in VertexBuffer::create
-    packed_float3 ciPosition;
+    packed_float4 ciPosition;
     packed_float3 ciNormal;
     packed_float2 ciTexCoord0;
 } VertexIn;
@@ -41,7 +41,7 @@ vertex ColorInOut batch_vertex( device const VertexIn* ciVerts [[ buffer(ciBuffe
     VertexIn vert = ciVerts[vertIndex];
     ColorInOut out;
 
-    out.position = ciUniforms.ciModelViewProjection * float4(vert.ciPosition, 1.0);
+    out.position = ciUniforms.ciModelViewProjection * float4(vert.ciPosition);
     out.texCoords = float2(vert.ciTexCoord0);
     out.normal = normalize(ciUniforms.ciNormalMatrix4x4 * float4(vert.ciNormal, 0.0));
     

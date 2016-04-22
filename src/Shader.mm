@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "RendererMetalImpl.h"
 #include "cinder/Log.h"
+#include "MetalMacros.h"
 
 using namespace std;
 
@@ -22,7 +23,10 @@ namespace cinder { namespace mtl {
     //,mTextureMappingRectangle( false )
     ,mColor( false )
     ,mLambert( false )
-    ,mPointSize( false )
+    ,mPoints( false )
+    ,mTextureArray( false )
+    ,mBillboard( false )
+    ,mRing(false)
     ,mUniformBasedPosAndTexCoord( false )
     {
 //        mTextureSwizzleMask[0] = GL_RED;
@@ -57,12 +61,31 @@ namespace cinder { namespace mtl {
         return *this;
     }
     
-    ShaderDef& ShaderDef::pointSize()
+    ShaderDef& ShaderDef::points()
     {
-        mPointSize = true;
+        mPoints = true;
+        return *this;
+    }
+
+    ShaderDef& ShaderDef::textureArray()
+    {
+        mTextureMapping = true;
+        mTextureArray = true;
+        return *this;
+    }
+
+    ShaderDef& ShaderDef::billboard()
+    {
+        mBillboard = true;
         return *this;
     }
     
+    ShaderDef& ShaderDef::ring()
+    {
+        mRing = true;
+        return *this;
+    }
+
 //    bool ShaderDef::isTextureSwizzleDefault() const
 //    {
 //        return mTextureSwizzleMask[0] == GL_RED &&
@@ -93,15 +116,19 @@ namespace cinder { namespace mtl {
     bool ShaderDef::operator<( const ShaderDef &rhs ) const
     {
         if( rhs.mTextureMapping != mTextureMapping )
-        return rhs.mTextureMapping;
-//#if ! defined( CINDER_GL_ES )
-//        if( rhs.mTextureMappingRectangle != mTextureMappingRectangle )
-//        return rhs.mTextureMappingRectangle;
-//#endif
+        {
+            return rhs.mTextureMapping;
+        }
+
         if( rhs.mUniformBasedPosAndTexCoord != mUniformBasedPosAndTexCoord )
-        return rhs.mUniformBasedPosAndTexCoord;
+        {
+            return rhs.mUniformBasedPosAndTexCoord;
+        }
+        
         if( rhs.mColor != mColor )
-        return rhs.mColor;
+        {
+            return rhs.mColor;
+        }
 //        else if( rhs.mTextureSwizzleMask[0] != mTextureSwizzleMask[0] )
 //        return mTextureSwizzleMask[0] < rhs.mTextureSwizzleMask[0];
 //        else if( rhs.mTextureSwizzleMask[1] != mTextureSwizzleMask[1] )
@@ -110,25 +137,53 @@ namespace cinder { namespace mtl {
 //        return mTextureSwizzleMask[2] < rhs.mTextureSwizzleMask[2];	
 //        else if( rhs.mTextureSwizzleMask[3] != mTextureSwizzleMask[3] )
 //        return mTextureSwizzleMask[3] < rhs.mTextureSwizzleMask[3];	
+
         if( rhs.mLambert != mLambert )
-        return rhs.mLambert;
+        {
+            return rhs.mLambert;
+        }
+        
+        if ( rhs.mBillboard != mBillboard )
+        {
+            return rhs.mBillboard;
+        }
+        
+        if ( rhs.mTextureArray != mTextureArray )
+        {
+            return rhs.mTextureArray;
+        }
+        
+        if ( rhs.mPoints != mPoints )
+        {
+            return rhs.mPoints;
+        }
+        
+        if ( rhs.mRing != mRing )
+        {
+            return rhs.mRing;
+        }
         
         return false;
     }
     
 #pragma mark Shader Builder
     
+#define STRINGIFY(s) str(s)
+#define str(...) #__VA_ARGS__
     
     std::string	PipelineBuilder::generateMetalLibrary( const ShaderDef &shader )
     {
-        
         string library = ""
         "#include <metal_stdlib>\n"
         "#include <simd/simd.h>\n"
-        "#include \"/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/include/InstanceTypes.h\"\n"
-        "#include \"/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/include/ShaderUtils.h\"\n"
-        "#include \"/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/include/MetalConstants.h\"\n"
-        "\n"
+        // Hey there! Here's a supper crappy way to share types with online shaders
+        STRINGIFY(ShaderTypes)
+        STRINGIFY(MetalConstants);
+        if ( shader.mBillboard )
+        {
+            library += STRINGIFY(ShaderUtils);
+        }
+        library += "\n"
         "using namespace metal;\n"
         "using namespace cinder;\n"
         "using namespace cinder::mtl;\n"
@@ -154,7 +209,7 @@ namespace cinder { namespace mtl {
         "typedef struct\n"
         "{\n"
         "    float4 position [[position]];\n";
-        if ( shader.mPointSize )
+        if ( shader.mPoints )
         {
             library += "    float pointSize [[point_size]];\n";
         }
@@ -186,41 +241,51 @@ namespace cinder { namespace mtl {
         std::string s;
         
         s +=
-        "vertex ciVertexOut_t ci_generated_vert(device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],\n"
-        "                                       device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],\n"
-        "                                       device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],\n"
-        "                                       constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],\n";
-
-        // TODO: Should these be in ciUniforms_t?
-        if( shader.mUniformBasedPosAndTexCoord )
+        "vertex ciVertexOut_t ci_generated_vert( device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],\n"
+        "                                        device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],\n"
+        "                                        device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],\n"
+        "                                        constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],\n";
+        if ( shader.mRing )
         {
-            s += "                                       constant float3 ciPositionOffset;\n"
-                 "                                       constant float3 ciPositionScale;\n";
-            if( shader.mTextureMapping )
-            {
-                s+= "                                       constant float2 ciTexCoordOffset;\n"
-                    "                                       constant float2 ciTexCoordScale;\n";
-            }
+            s += "                                        constant float *innerRadius [[ buffer(ciBufferIndexCustom0) ]],\n";
         }
+        
         s +=
-        "                                       unsigned int vid [[ vertex_id ]],\n"
-        "                                       uint i [[ instance_id ]] )\n"
+        "                                        unsigned int vid [[ vertex_id ]],\n"
+        "                                        uint i [[ instance_id ]] )\n"
         "{\n"
         "   ciVertexOut_t out;\n";
         
         s +=
         "   unsigned int vertIndex = ciIndices[vid];\n"
         "   ciVertexIn_t v = ciVerts[vertIndex];\n"
-        "   matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;\n"
-        "   matrix_float4x4 mat = ciUniforms.ciViewProjection * modelMat;\n"
-        "   float4 pos = float4(v.ciPosition);\n";
-        
-        if( shader.mUniformBasedPosAndTexCoord )
+        "   matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;\n";
+
+        if ( shader.mBillboard )
         {
-            s += "   pos = float4( ciPositionOffset, 0 ) + float4( uPositionScale, 1 ) * pos;\n";
+            // Billboard the texture.
+            // NOTE: This only really works if the instance geometry is flat in the first place.
+            s += "   modelMat = modelMat * rotationMatrix(ciUniforms.ciModelViewInverse);\n";
+        }
+        s += "   matrix_float4x4 mvpMat = ciUniforms.ciViewProjection * modelMat;\n";
+        s += "   float4 pos = float4(v.ciPosition[0], v.ciPosition[1], v.ciPosition[2], 1.0f);\n";
+        
+        if ( shader.mUniformBasedPosAndTexCoord )
+        {
+            s += "   pos = float4( ciUniforms.ciPositionOffset, 0 ) + float4( ciUniforms.ciPositionScale, 1 ) * pos;\n";
+        }
+        
+        if ( shader.mRing )
+        {
+            s +=
+            "   int segment = vid / 2;\n" // NOTE: % 2 doesn't work on Radeon GPUs
+            "   if ( (vid / 2.0f) == segment )\n"
+            "   {\n"
+            "       pos = float4(pos.rgb * innerRadius[0],1.0);\n"
+            "   }\n";
         }
 
-        s += "   out.position = mat * pos;\n";
+        s += "   out.position = mvpMat * pos;\n";
         s += "   out.color = instances[i].color * ciUniforms.ciColor;\n";
         
         if ( shader.mColor )
@@ -239,11 +304,16 @@ namespace cinder { namespace mtl {
 
             if( shader.mUniformBasedPosAndTexCoord )
             {
-                s += "   out.texCoords = ciTexCoordOffset + ciTexCoordScale * instanceTexCoord;\n";
+                s += "   out.texCoords = ciUniforms.ciTexCoordOffset + ciUniforms.ciTexCoordScale * instanceTexCoord;\n";
             }
             else
             {
                 s += "   out.texCoords = instanceTexCoord;\n";
+            }
+            
+            if ( shader.mTextureArray )
+            {
+                 s += "   out.texIndex = instances[i].textureSlice;\n";
             }
         }
         
@@ -252,7 +322,7 @@ namespace cinder { namespace mtl {
             s += "   out.normal = ciUniforms.ciNormalMatrix4x4 * float4(v.ciNormal, 0.0);\n";
         }
         
-        if( shader.mPointSize )
+        if( shader.mPoints )
         {
             s += "   out.pointSize = instances[i].scale;\n";
         }
@@ -283,9 +353,22 @@ namespace cinder { namespace mtl {
         }
         
         s += "fragment float4 ci_generated_frag( ciVertexOut_t in [[ stage_in ]]";
+        
         if( shader.mTextureMapping )
         {
-            s += ",\n                               texture2d<float> texture [[ texture(ciTextureIndex0) ]]";
+            if ( shader.mTextureArray )
+            {
+                s += ",\n                               texture2d_array<float> texture [[ texture(ciTextureIndex0) ]]";
+            }
+            else
+            {
+                s += ",\n                               texture2d<float> texture [[ texture(ciTextureIndex0) ]]";
+            }
+            
+            if ( shader.mPoints )
+            {
+                s += ",\n                               float2 pointCoord [[point_coord]],";
+            }
         }
         s += " )\n"
         "{\n"
@@ -293,8 +376,29 @@ namespace cinder { namespace mtl {
 
         if( shader.mTextureMapping )
         {
-            s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords);\n"
-                 "   oColor *= texColor;\n";
+            if ( shader.mPoints )
+            {
+                if ( shader.mTextureArray )
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, pointCoord, in.texIndex);\n";
+                }
+                else
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, pointCoord);\n";
+                }
+            }
+            else
+            {
+                if ( shader.mTextureArray )
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords, in.texIndex);\n";
+                }
+                else
+                {
+                    s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords);\n";
+                }
+            }
+            s += "   oColor *= texColor;\n";
         }
 
         if( shader.mLambert )
@@ -320,7 +424,6 @@ namespace cinder { namespace mtl {
         std::string librarySource = PipelineBuilder::generateMetalLibrary(shader);
         CI_LOG_V("Generated Library:\n" << librarySource);
         NSError *compileError = nil;
-        // Does this stick around or do we have to store it somewhere?
         id<MTLLibrary> library = [device newLibraryWithSource:[NSString stringWithUTF8String:librarySource.c_str()]
                                                       options:0
                                                         error:&compileError];

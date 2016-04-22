@@ -158,7 +158,6 @@ void TextureBuffer::update( void * mtlTexture )
     assert( [(__bridge id)mtlTexture conformsToProtocol:@protocol(MTLTexture)] );
     mImpl = mtlTexture;
     CFRetain(mImpl);
-    
     // NOTE:
     // This is called from the MTLTexture * constructor. Don't do anything too fancy.
 }

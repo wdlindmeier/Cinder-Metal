@@ -15,8 +15,9 @@
 #import "RendererMetalImpl.h"
 #import "VertexBuffer.h"
 #import "Batch.h"
-#import "InstanceTypes.h"
+#import "ShaderTypes.h"
 #import "Draw.h"
+#import "Shader.h"
 
 using namespace std;
 using namespace ci;
@@ -177,12 +178,12 @@ void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount
 #ifdef CINDER_COCOA_TOUCH
     else
     {
-        if ( baseInstance > 1 )
+        if ( baseInstance > 0 )
         {
-            CI_LOG_F("This device does not support baseInstance.");
             // https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+            CI_LOG_F("ERROR: This hardware doesn't support baseInstance.");
+            assert(false);
         }
-        assert(baseInstance <= 1);
         [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
                  vertexStart:vertexStart
                  vertexCount:vertexCount
@@ -211,18 +212,18 @@ void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, const DataB
 #ifdef CINDER_COCOA_TOUCH
     else
     {
-        if ( baseInstance > 1 )
+        if ( baseInstance > 0 )
         {
-            CI_LOG_F("This device does not support baseInstance.");
+            CI_LOG_F("ERROR: This hardware doesn't support baseInstance.");
             // https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+            assert(false);
         }
-        assert(baseInstance <= 1);
         if ( baseVertex > 0 )
         {
-            CI_LOG_F("This device does not support baseVertex.");
+            CI_LOG_F("ERROR: This hardware doesn't support baseVertex.");
             // https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/WhatsNewinOSXandiOS/WhatsNewinOSXandiOS.html
+            assert(false);
         }
-        assert(baseVertex == 0);
         [IMPL drawIndexedPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
                          indexCount:indexCount
                           indexType:(MTLIndexType)indexType
@@ -239,7 +240,6 @@ void RenderEncoder::textureBarrier()
     [IMPL textureBarrier];
 }
 #endif
-
 
 
 #pragma mark - Drawing Convenience Functions
@@ -280,7 +280,7 @@ void RenderEncoder::setIdentityInstance()
         // Cache the vanilla buffer.
         Instance i;
         std::vector<Instance> is = {i};
-        sInstanceBuffer = ci::mtl::DataBuffer::create(is);
+        sInstanceBuffer = ci::mtl::DataBuffer::create(is, ci::mtl::DataBuffer::Format().label("Default Instance"));
     }
     setInstanceData(sInstanceBuffer);
 }
@@ -315,7 +315,7 @@ void RenderEncoder::draw( ci::mtl::BatchRef batch,
     batch->drawInstanced(*this, numInstances);
 }
 
-void RenderEncoder::drawOne( ci::mtl::BatchRef batch, const Instance & i )
+void RenderEncoder::drawOne( ci::mtl::BatchRef batch, const ci::mtl::Instance & i )
 {
     std::vector<Instance> is = {i};
     ci::mtl::DataBufferRef iBuffer = ci::mtl::DataBuffer::create(is);
@@ -405,16 +405,18 @@ void RenderEncoder::drawLines( std::vector<ci::vec3> lines, bool isLineStrip,
                                ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
     vector<unsigned int> indices;
+    vector<vec4> positions;
     for ( int i = 0; i < lines.size(); ++i )
     {
+        positions.push_back(vec4(lines[i], 1.f));
         indices.push_back(i);
     }
     auto lineBuffer = mtl::VertexBuffer::create(lines.size(),
-                                                mtl::DataBuffer::create(lines, mtl::DataBuffer::Format().label("LineVerts")),
-                                                mtl::DataBuffer::create(indices),
+                                                mtl::DataBuffer::create(positions, mtl::DataBuffer::Format().label("Line Verts")),
+                                                mtl::DataBuffer::create(indices, mtl::DataBuffer::Format().label("Line Indices")),
                                                 isLineStrip ? mtl::geom::LINE_STRIP : mtl::geom::LINE);
     setIdentityInstance();
-    draw( lineBuffer, mtl::getStockPipelineWire(), instanceBuffer, numInstances );
+    draw( lineBuffer, mtl::getStockPipeline(mtl::ShaderDef()), instanceBuffer, numInstances );
 }
 
 void RenderEncoder::drawLine( ci::vec3 from, ci::vec3 to,
@@ -423,23 +425,14 @@ void RenderEncoder::drawLine( ci::vec3 from, ci::vec3 to,
     drawLines({{from, to}}, false, instanceBuffer, numInstances );
 }
 
-static mtl::VertexBufferRef sColoredCubeBuffer;
 void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size,
                                      ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
-    if ( !sColoredCubeBuffer )
-    {
-        sColoredCubeBuffer = mtl::VertexBuffer::create( ci::geom::Cube()
-                                                       .size(vec3(1.f))
-                                                       .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),
-                                                               Color(1,1,0),Color(0,1,1),Color(1,0,1)),
-                                                       {{ ci::geom::POSITION, ci::geom::NORMAL, ci::geom::COLOR }});
-    }
     mtl::ScopedModelMatrix matModel;
     mtl::translate(position);
     mtl::scale(size);
     setIdentityInstance();
-    draw(sColoredCubeBuffer, mtl::getStockPipelineColoredGeom(), instanceBuffer, numInstances);
+    draw(mtl::getStockBatchColoredCube(), instanceBuffer, numInstances);
 }
 
 // Draw a texture

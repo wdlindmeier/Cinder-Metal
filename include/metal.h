@@ -21,15 +21,13 @@
 #include "apple/Argument.h"
 
 #include "MetalConstants.h"
+#include "ShaderTypes.h"
 #include "RendererMetal.h"
 #include "MetalGeom.h"
 #include "UniformBlock.hpp"
 #include "TextureBuffer.h"
-//#include "Batch.h"
 #include "MetalHelpers.hpp"
 #include "Scope.h"
-//#include "Draw.h"
-//#include "Context.h"
 
 #if defined( __OBJC__ )
 #if !__has_feature(objc_arc)

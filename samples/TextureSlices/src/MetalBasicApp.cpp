@@ -63,10 +63,10 @@ void MetalBasicApp::setup()
     }
 
     // Create instance infos
-    vector<Instance> instances;
+    vector<mtl::Instance> instances;
     for ( int i = 0; i < kNumImages; ++i )
     {
-        Instance instance;
+        mtl::Instance instance;
         vec3 pos(i - ((kNumImages / 2) - 0.5f), 0, 0);
         instance.modelMatrix = toMtl(glm::translate(mat4(1), pos));
         // Define which slice to draw from

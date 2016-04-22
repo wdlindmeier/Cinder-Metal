@@ -7,6 +7,7 @@
 //
 
 #include "Draw.h"
+#include "Shader.h"
 
 using namespace ci;
 using namespace ci::mtl;
@@ -16,270 +17,155 @@ namespace cinder { namespace mtl {
  
 #pragma mark - Generic Pipelines
 
-// TODO: REPLACE these with a shader builder
+std::map<std::string, mtl::BatchRef> sCachedBatches;
 
-ci::mtl::RenderPipelineStateRef sPipelineRing;
-ci::mtl::RenderPipelineStateRef getStockPipelineRing()
-{
-    if ( !sPipelineRing )
-    {
-        sPipelineRing = ci::mtl::RenderPipelineState::create("ci_ring_vertex", "ci_color_fragment",
-                                                             mtl::RenderPipelineState::Format()
-                                                             .blendingEnabled()
-                                                             );
-    }
-    return sPipelineRing;
-}
-
-mtl::RenderPipelineStateRef sPipelineBillboardRing;
-mtl::RenderPipelineStateRef getStockPipelineBillboardRing()
-{
-    if ( !sPipelineBillboardRing )
-    {
-        sPipelineBillboardRing = mtl::RenderPipelineState::create("ci_billboard_ring_vertex", "ci_color_fragment",
-                                                                  mtl::RenderPipelineState::Format()
-                                                                  .blendingEnabled()
-                                                                  );
-    }
-    return sPipelineBillboardRing;
-}
-
-mtl::RenderPipelineStateRef sPipelineWire;
-mtl::RenderPipelineStateRef getStockPipelineWire()
-{
-    if ( !sPipelineWire )
-    {
-        sPipelineWire = mtl::RenderPipelineState::create("ci_wire_vertex", "ci_color_fragment",
-                                                         mtl::RenderPipelineState::Format()
-                                                         .blendingEnabled()
-                                                         );
-    }
-    return sPipelineWire;
-}
-
-mtl::RenderPipelineStateRef sPipelineTexturedRect;
-mtl::RenderPipelineStateRef getStockPipelineTexturedRect()
-{
-    if ( !sPipelineTexturedRect )
-    {
-        sPipelineTexturedRect = mtl::RenderPipelineState::create("ci_rect_vertex", "ci_texture_fragment",
-                                                                 mtl::RenderPipelineState::Format()
-                                                                 .blendingEnabled()
-                                                                 );
-    }
-    return sPipelineTexturedRect;
-}
-
-mtl::RenderPipelineStateRef sPipelineMultiTexturedRect;
-mtl::RenderPipelineStateRef getStockPipelineMultiTexturedRect()
-{
-    if ( !sPipelineMultiTexturedRect )
-    {
-        sPipelineMultiTexturedRect = mtl::RenderPipelineState::create("ci_rect_vertex", "ci_texture_array_fragment",
-                                                                      mtl::RenderPipelineState::Format()
-                                                                      .blendingEnabled()
-                                                                      );
-    }
-    return sPipelineMultiTexturedRect;
-}
-
-mtl::RenderPipelineStateRef sPipelineBillboardTexture;
-mtl::RenderPipelineStateRef getStockPipelineBillboardTexture()
-{
-    if ( !sPipelineBillboardTexture )
-    {
-        sPipelineBillboardTexture = mtl::RenderPipelineState::create("ci_billboard_rect_vertex", "ci_texture_fragment",
-                                                                     mtl::RenderPipelineState::Format()
-                                                                     .blendingEnabled()
-                                                                     );
-    }
-    return sPipelineBillboardTexture;
-}
-        
-mtl::RenderPipelineStateRef sPipelineBillboardMultiTexture;
-mtl::RenderPipelineStateRef getStockPipelineBillboardMultiTexture()
-{
-    if ( !sPipelineBillboardMultiTexture )
-    {
-        sPipelineBillboardMultiTexture = mtl::RenderPipelineState::create("ci_billboard_rect_vertex", "ci_texture_array_fragment",
-                                                                          mtl::RenderPipelineState::Format()
-                                                                          .blendingEnabled()
-                                                                          );
-    }
-    return sPipelineBillboardMultiTexture;
-}
-
-mtl::RenderPipelineStateRef sPipelineSolidRect;
-mtl::RenderPipelineStateRef getStockPipelineSolidRect()
-{
-    if ( !sPipelineSolidRect )
-    {
-        sPipelineSolidRect = mtl::RenderPipelineState::create("ci_rect_vertex", "ci_color_fragment",
-                                                              mtl::RenderPipelineState::Format()
-                                                              .blendingEnabled()
-                                                              );
-    }
-    return sPipelineSolidRect;
-}
-
-mtl::RenderPipelineStateRef sPipelineGeom;
-mtl::RenderPipelineStateRef getStockPipelineGeom()
-{
-    if ( !sPipelineGeom )
-    {
-        sPipelineGeom = mtl::RenderPipelineState::create("ci_geom_vertex", "ci_color_fragment",
-                                                         mtl::RenderPipelineState::Format()
-                                                         .blendingEnabled()
-                                                         );
-    }
-    return sPipelineGeom;
-}
-
-mtl::RenderPipelineStateRef sPipelineColoredGeom;
-mtl::RenderPipelineStateRef getStockPipelineColoredGeom()
-{
-    if ( !sPipelineColoredGeom )
-    {
-        sPipelineColoredGeom = mtl::RenderPipelineState::create("ci_colored_vertex", "ci_color_fragment",
-                                                                mtl::RenderPipelineState::Format()
-                                                                .blendingEnabled()
-                                                                );
-    }
-    return sPipelineColoredGeom;
-}
-
-mtl::BatchRef sBatchWireCube;
 mtl::BatchRef getStockBatchWireCube()
 {
-    if ( !sBatchWireCube )
+    if ( !sCachedBatches.count("BatchWireCube") )
     {
-        sBatchWireCube = mtl::Batch::create( ci::geom::WireCube().size(ci::vec3(1.f)), getStockPipelineWire() );
+        sCachedBatches["BatchWireCube"] = mtl::Batch::create( ci::geom::WireCube().size(ci::vec3(1.f)),
+                                                              getStockPipeline(mtl::ShaderDef()) );
     }
-    return sBatchWireCube;
+    return sCachedBatches.at("BatchWireCube");
 }
 
-mtl::BatchRef sBatchWireCircle;
 mtl::BatchRef getStockBatchWireCircle()
 {
-    if ( !sBatchWireCircle )
+    if ( !sCachedBatches.count("BatchWireCircle") )
     {
-        sBatchWireCircle = mtl::Batch::create( ci::geom::WireCircle().subdivisions(360).radius(1),
-                                               getStockPipelineWire() );
+        sCachedBatches["BatchWireCircle"] = mtl::Batch::create( ci::geom::WireCircle().subdivisions(360).radius(1),
+                                                                getStockPipeline(mtl::ShaderDef()) );
     }
-    return sBatchWireCircle;
+    return sCachedBatches.at("BatchWireCircle");
 }
 
-mtl::BatchRef sBatchWireRect;
 mtl::BatchRef getStockBatchWireRect()
 {
-    if ( !sBatchWireRect )
+    if ( !sCachedBatches.count("BatchWireRect") )
     {
         // NOTE; ci::geom::WireRect doesn't exist for some reason
-        vector<WireVertex> rectVerts = {
-            { vec3(-0.5f,-0.5f,0.f) },
-            { vec3(0.5f,-0.5f,0.f) },
-            { vec3(0.5f,0.5f,0.f) },
-            { vec3(-0.5f,0.5f,0.f) },
-            { vec3(-0.5f,-0.5f,0.f) }
+        vector<vec4> rectVerts = {
+            { vec4(-0.5f,-0.5f,0.f,1.f) },
+            { vec4( 0.5f,-0.5f,0.f,1.f) },
+            { vec4( 0.5f, 0.5f,0.f,1.f) },
+            { vec4(-0.5f, 0.5f,0.f,1.f) },
+            { vec4(-0.5f,-0.5f,0.f,1.f) }
         };
         vector<unsigned int> indices = {{0,1,2,3,4}};
         auto rectBuffer = mtl::VertexBuffer::create(rectVerts.size(),
                                                     mtl::DataBuffer::create(rectVerts, mtl::DataBuffer::Format().label("RectVerts")),
                                                     mtl::DataBuffer::create(indices),
                                                     mtl::geom::LINE_STRIP);
-        sBatchWireRect = mtl::Batch::create( rectBuffer, getStockPipelineWire() );
+        sCachedBatches["BatchWireRect"] = mtl::Batch::create( rectBuffer, getStockPipeline(mtl::ShaderDef()) );
     }
-    return sBatchWireRect;
+    return sCachedBatches.at("BatchWireRect");
 }
 
-mtl::BatchRef sBatchTexturedRectCentered;
-mtl::BatchRef sBatchTexturedRectUL;
 mtl::BatchRef getStockBatchTexturedRect( bool isCentered )
 {
     if ( isCentered )
     {
-        if ( !sBatchTexturedRectCentered )
+        if ( !sCachedBatches.count("BatchTexturedRectCentered") )
         {
-            sBatchTexturedRectCentered = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineTexturedRect() );
+            sCachedBatches["BatchTexturedRectCentered"] = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)),
+                                                                              getStockPipeline(mtl::ShaderDef().texture()) );
+            
         }
-        return sBatchTexturedRectCentered;
+        return sCachedBatches.at("BatchTexturedRectCentered");
     }
     // Else
-    if ( !sBatchTexturedRectUL )
+    if ( !sCachedBatches.count("BatchTexturedRectUL") )
     {
-        sBatchTexturedRectUL = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)), getStockPipelineTexturedRect() );
+        sCachedBatches["BatchTexturedRectUL"] = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)),
+                                                                    getStockPipeline(mtl::ShaderDef().texture()) );
     }
-    return sBatchTexturedRectUL;
+    return sCachedBatches.at("BatchTexturedRectUL");
 }
 
-mtl::BatchRef sBatchMultiTexturedRectCentered;
-mtl::BatchRef sBatchMultiTexturedRectUL;
 mtl::BatchRef getStockBatchMultiTexturedRect( bool isCentered )
 {
     if ( isCentered )
     {
-        if ( !sBatchMultiTexturedRectCentered )
+        if ( !sCachedBatches.count("BatchMultiTexturedRectCentered") )
         {
-            sBatchMultiTexturedRectCentered = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineMultiTexturedRect() );
+            sCachedBatches["BatchMultiTexturedRectCentered"] = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)),
+                                                                                   getStockPipeline(mtl::ShaderDef().textureArray()) );
         }
-        return sBatchMultiTexturedRectCentered;
+        return sCachedBatches.at("BatchMultiTexturedRectCentered");
     }
     // Else
-    if ( !sBatchMultiTexturedRectUL )
+    if ( !sCachedBatches.count("BatchMultiTexturedRectUL") )
     {
-        sBatchMultiTexturedRectUL = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)), getStockPipelineMultiTexturedRect() );
+        sCachedBatches["BatchMultiTexturedRectUL"] = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)),
+                                                                         getStockPipeline(mtl::ShaderDef().textureArray()) );
     }
-    return sBatchMultiTexturedRectUL;
+    return sCachedBatches.at("BatchMultiTexturedRectUL");
 }
 
-mtl::BatchRef sBatchBillboard;
 mtl::BatchRef getStockBatchBillboard()
 {
-    if ( !sBatchBillboard )
+    if ( !sCachedBatches.count("BatchBillboard") )
     {
-        sBatchBillboard = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineBillboardTexture() );
+        sCachedBatches["BatchBillboard"] = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)),
+                                                               getStockPipeline(mtl::ShaderDef().texture().billboard()) );
     }
-    return sBatchBillboard;
+    return sCachedBatches.at("BatchBillboard");
 }
     
-mtl::BatchRef sBatchMultiBillboard;
 mtl::BatchRef getStockBatchMultiBillboard()
 {
-    if ( !sBatchMultiBillboard )
+    if ( !sCachedBatches.count("BatchMultiBillboard") )
     {
-        sBatchMultiBillboard = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineBillboardMultiTexture() );
+        sCachedBatches["BatchMultiBillboard"] = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)),
+                                                                    getStockPipeline(mtl::ShaderDef().textureArray().billboard()) );
     }
-    return sBatchMultiBillboard;
+    return sCachedBatches.at("BatchMultiBillboard");
 }
 
-mtl::BatchRef sBatchSolidRect;
 mtl::BatchRef getStockBatchSolidRect()
 {
-    if ( !sBatchSolidRect )
+    if ( !sCachedBatches.count("BatchSolidRect") )
     {
-        sBatchSolidRect = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineSolidRect());
+        sCachedBatches["BatchSolidRect"] = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)),
+                                                               getStockPipeline(mtl::ShaderDef()) );
     }
-    return sBatchSolidRect;
+    return sCachedBatches.at("BatchSolidRect");
 }
 
-mtl::BatchRef sBatchSphere;
 mtl::BatchRef getStockBatchSphere()
 {
-    if ( !sBatchSphere )
+    if ( !sCachedBatches.count("BatchSphere") )
     {
-        sBatchSphere = mtl::Batch::create( ci::geom::Sphere().radius(0.5).subdivisions(36), getStockPipelineGeom() );
+        sCachedBatches["BatchSphere"] = mtl::Batch::create( ci::geom::Sphere().radius(0.5).subdivisions(36),
+                                                            getStockPipeline(mtl::ShaderDef()) );
     }
-    return sBatchSphere;
+    return sCachedBatches.at("BatchSphere");
 }
 
-mtl::BatchRef sBatchCube;
 mtl::BatchRef getStockBatchCube()
 {
-    if ( !sBatchCube )
+    if ( !sCachedBatches.count("BatchCube") )
     {
-        sBatchCube = mtl::Batch::create( ci::geom::Cube().size(ci::vec3(1.f)), getStockPipelineGeom() );
+        sCachedBatches["BatchCube"] = mtl::Batch::create( ci::geom::Cube().size(ci::vec3(1.f)),
+                                                          getStockPipeline(mtl::ShaderDef()) );
     }
-    return sBatchCube;
+    return sCachedBatches.at("BatchCube");
+}
+    
+mtl::BatchRef getStockBatchColoredCube()
+{
+    if ( !sCachedBatches.count("BatchColoredCube") )
+    {
+        mtl::VertexBufferRef vertBuffer = mtl::VertexBuffer::create( ci::geom::Cube()
+                                                                    .size(vec3(1.f))
+                                                                    .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),
+                                                                            Color(1,1,0),Color(0,1,1),Color(1,0,1)),
+                                                                    {{ ci::geom::POSITION, ci::geom::COLOR }});
+        sCachedBatches["BatchColoredCube"] = mtl::Batch::create( vertBuffer,
+                                                                 getStockPipeline(mtl::ShaderDef().color()) );
+   
+    }
+    return sCachedBatches.at("BatchColoredCube");
 }
 
 mtl::VertexBufferRef sRingBuffer;
@@ -288,7 +174,7 @@ mtl::VertexBufferRef getRingBuffer()
     if ( !sRingBuffer )
     {
         // Create a "ring"
-        vector<GeomVertex> circVerts;
+        vector<vec4> circVerts;
         vector<unsigned int> indices;
         for ( int i = 0; i < 37; ++i )
         {
@@ -299,42 +185,37 @@ mtl::VertexBufferRef getRingBuffer()
             float x = cos(rads);
             float y = sin(rads);
             
-            GeomVertex inner;
-            inner.ciPosition = vec3(x,y,0);
-            circVerts.push_back(inner);
-            
-            GeomVertex outer;
-            outer.ciPosition = vec3(x,y,0);
-            circVerts.push_back(outer);
+            circVerts.push_back(vec4(x,y,0,1));
+            circVerts.push_back(vec4(x,y,0,1));
         }
         
         sRingBuffer = mtl::VertexBuffer::create(circVerts.size(),
-                                                mtl::DataBuffer::create(circVerts, mtl::DataBuffer::Format().label("CircleVerts")),
-                                                mtl::DataBuffer::create(indices),
+                                                mtl::DataBuffer::create(circVerts, mtl::DataBuffer::Format().label("Circle Verts")),
+                                                mtl::DataBuffer::create(indices, mtl::DataBuffer::Format().label("Circle Indices")),
                                                 mtl::geom::TRIANGLE_STRIP);
     }
     return sRingBuffer;
 }
 
 // NOTE: Batch ring can be used as a circle by passing in an innerRadius of 0
-mtl::BatchRef sBatchRing;
 mtl::BatchRef getStockBatchRing()
 {
-    if ( !sBatchRing )
+    if ( !sCachedBatches.count("BatchRing") )
     {
-        sBatchRing = mtl::Batch::create( getRingBuffer(), getStockPipelineRing() );
+        sCachedBatches["BatchRing"] = mtl::Batch::create( getRingBuffer(),
+                                                          getStockPipeline(mtl::ShaderDef().ring()) );
     }
-    return sBatchRing;
+    return sCachedBatches.at("BatchRing");
 }
 
-mtl::BatchRef sBatchBillboardRing;
 mtl::BatchRef getStockBatchBillboardRing()
 {
-    if ( !sBatchBillboardRing )
+    if ( !sCachedBatches.count("BatchBillboardRing") )
     {
-        sBatchBillboardRing = mtl::Batch::create( getRingBuffer(), getStockPipelineBillboardRing() );
+        sCachedBatches["BatchBillboardRing"] = mtl::Batch::create( getRingBuffer(),
+                                                                   getStockPipeline(mtl::ShaderDef().ring().billboard()) );
     }
-    return sBatchBillboardRing;
+    return sCachedBatches.at("BatchBillboardRing");
 }
 
 }};

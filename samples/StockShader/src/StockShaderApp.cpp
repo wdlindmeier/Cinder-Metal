@@ -36,17 +36,17 @@ void StockShaderApp::setup()
     mCam.lookAt(vec3(0,0,7), vec3(0));
     mCamUI = CameraUi(&mCam, getWindow());
     
-    ci::mtl::RenderPipelineStateRef renderPipelineBasic = mtl::PipelineBuilder::buildPipeline();
+    ci::mtl::RenderPipelineStateRef renderPipelineBasic = mtl::getStockPipeline(mtl::ShaderDef());
     mBatchStockBasic = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5f,-0.5f,0.5f,0.5f)), renderPipelineBasic);
     
-    ci::mtl::RenderPipelineStateRef renderPipelineTexture = mtl::PipelineBuilder::buildPipeline(mtl::ShaderDef().texture());
+    ci::mtl::RenderPipelineStateRef renderPipelineTexture = mtl::getStockPipeline(mtl::ShaderDef().texture().billboard());
     mBatchStockTexture = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5f,-0.5f,0.5f,0.5f)), renderPipelineTexture);
     mTextureLogo = mtl::TextureBuffer::create(loadImage(getAssetPath("cinderblock.png")));
 
-    ci::mtl::RenderPipelineStateRef renderPipelineLambert = mtl::PipelineBuilder::buildPipeline(mtl::ShaderDef().lambert());
+    ci::mtl::RenderPipelineStateRef renderPipelineLambert = mtl::getStockPipeline(mtl::ShaderDef().lambert());
     mBatchStockLambert = mtl::Batch::create(ci::geom::TorusKnot(), renderPipelineLambert);
     
-    ci::mtl::RenderPipelineStateRef renderPipelineWire = mtl::PipelineBuilder::buildPipeline();
+    ci::mtl::RenderPipelineStateRef renderPipelineWire = mtl::getStockPipeline(mtl::ShaderDef());
     mBatchStockWire = mtl::Batch::create(ci::geom::WireIcosahedron(), renderPipelineWire);
 }
 

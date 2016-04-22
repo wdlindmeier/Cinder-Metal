@@ -5,6 +5,9 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+// This is an empty project with the relevant XCode changes made to import Metal.
+// Meant to be copied as a starting point for a new project, since TinderBox can't make build-setting changes.
+
 class MetalBasicApp : public App
 {
 public:
@@ -36,9 +39,6 @@ void MetalBasicApp::draw()
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
     // Put your drawing here
-    
-    mtl::color(1, 0, 0);
-    renderEncoder.drawSolidRect(Rectf(-0.5,-0.5,0.5,0.5));
 }
 
 CINDER_APP( MetalBasicApp, RendererMetal )

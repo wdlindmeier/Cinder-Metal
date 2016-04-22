@@ -20,11 +20,19 @@ namespace cinder { namespace mtl {
         public:
         ShaderDef();
         
+        // Attribs
         ShaderDef&		color();
         ShaderDef&		texture(); // const TextureBufferRef &tex = TextureBufferRef() );
         ShaderDef&		lambert();
-        ShaderDef&		pointSize();
+        ShaderDef&		points();
+        ShaderDef&		textureArray();
+        
+        // Display
+        ShaderDef&		billboard();
         ShaderDef&		uniformBasedPosAndTexCoord();
+        
+        // Geom
+        ShaderDef&      ring();
         
     //    bool			isTextureSwizzleDefault() const;
     //    std::string		getTextureSwizzleString() const;
@@ -40,7 +48,10 @@ namespace cinder { namespace mtl {
         
         bool					mColor;
         bool					mLambert;
-        bool                    mPointSize;
+        bool                    mPoints;
+        bool					mTextureArray;
+        bool                    mBillboard;
+        bool                    mRing;
         
     //    friend class EnvironmentCore;
     //    friend class EnvironmentEs;
@@ -50,7 +61,7 @@ namespace cinder { namespace mtl {
     class PipelineBuilder
     {
     public:
-        static ci::mtl::RenderPipelineStateRef buildPipeline( const ShaderDef &shader = ShaderDef(), // defaults to basic shader
+        static ci::mtl::RenderPipelineStateRef buildPipeline( const ShaderDef &shader,
                                                               ci::mtl::RenderPipelineState::Format format =
                                                               ci::mtl::RenderPipelineState::Format() );
         static std::string	generateFragmentShader( const ShaderDef &shader );

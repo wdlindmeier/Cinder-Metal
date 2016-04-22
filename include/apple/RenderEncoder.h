@@ -19,9 +19,9 @@
 #include "CommandEncoder.h"
 #include "MetalEnums.h"
 
-class Instance;
-
 namespace cinder { namespace mtl {
+
+    class Instance;
     
     typedef std::shared_ptr<class RenderEncoder> RenderEncoderRef;
     
@@ -126,7 +126,7 @@ namespace cinder { namespace mtl {
                   ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void draw( ci::mtl::BatchRef batch, size_t vertexLength, size_t vertexStart,
                   ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
-        void drawOne( ci::mtl::BatchRef batch, const Instance & i);
+        void drawOne( ci::mtl::BatchRef batch, const ci::mtl::Instance & i);
         void drawStrokedCircle( ci::vec3 position, float radius,
                                ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void drawSolidCircle( ci::vec3 position, float radius,

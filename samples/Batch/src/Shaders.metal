@@ -69,7 +69,7 @@ vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts
     
     const uint idx = ciIndices[vid];
     CubeVertex vert = ciVerts[idx];
-    float4 in_position = float4(vert.ciPosition, 1.0);
+    float4 in_position = float4(vert.ciPosition);
     out.position = ciUniforms.ciModelViewProjection * in_position;
     
     float4 eye_normal = normalize(ciUniforms.ciNormalMatrix4x4 * float4(vert.ciNormal, 0.0));

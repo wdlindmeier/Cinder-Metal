@@ -8,17 +8,11 @@
 
 #pragma once
 
-//#include "cinder/gl/platform.h"
-//#include "cinder/Camera.h"
 #include "cinder/Color.h"
-//#include "cinder/GeomIo.h"
-//#include "cinder/Matrix44.h"
-
 #include "cinder/Cinder.h"
 #include "RenderEncoder.h"
 #include "RenderPipelineState.h"
 #include "DataBuffer.h"
-//#include "metal.h"
 
 // The capacity for simultaneous uniform buffers.
 // Should be enough for multiple batches.
@@ -28,6 +22,8 @@ namespace cinder { namespace mtl {
     
     class Context;
     typedef std::shared_ptr<Context> ContextRef;
+    
+    class ShaderDef;
 
     class Context {
         public:
@@ -72,8 +68,7 @@ namespace cinder { namespace mtl {
         const ColorAf&              getCurrentColor() const { return mColor; }
         void                        setCurrentColor( const ColorAf &color ) { mColor = color; }
 
-//        RenderEncoder *             getCurrentRenderEncoder() { return mRenderEncoder; }
-//        void                        setCurrentRenderEncoder( RenderEncoder * encoder ) { mRenderEncoder = encoder; }
+        mtl::RenderPipelineStateRef & getStockPipeline( const mtl::ShaderDef &shaderDef );
 
         private:
         
@@ -81,12 +76,12 @@ namespace cinder { namespace mtl {
 
         std::shared_ptr<PlatformData>	mPlatformData;
 
-        ci::ColorAf				mColor;
-        std::vector<mat4>		mModelMatrixStack;
-        std::vector<mat4>		mViewMatrixStack;	
-        std::vector<mat4>		mProjectionMatrixStack;
-        
-        RenderEncoder *         mRenderEncoder;
+        ci::ColorAf                 mColor;
+        std::vector<mat4>           mModelMatrixStack;
+        std::vector<mat4>           mViewMatrixStack;
+        std::vector<mat4>           mProjectionMatrixStack;
+        std::map<mtl::ShaderDef, mtl::RenderPipelineStateRef> mStockShaders;
+
     };
 
     // Remember to add a matching case to uniformSemanticToString
@@ -166,6 +161,8 @@ namespace cinder { namespace mtl {
     mat3 calcNormalMatrix();
 //    mat4 calcViewportMatrix();
     
+    mtl::RenderPipelineStateRef & getStockPipeline( const mtl::ShaderDef &shaderDef );
+
     void setMatricesWindowPersp( int screenWidth, int screenHeight, float fovDegrees = 60.0f, float nearPlane = 1.0f, float farPlane = 1000.0f, bool originUpperLeft = true );
     void setMatricesWindowPersp( const ci::ivec2 &screenSize, float fovDegrees = 60.0f, float nearPlane = 1.0f, float farPlane = 1000.0f, bool originUpperLeft = true );
     void setMatricesWindow( int screenWidth, int screenHeight, bool originUpperLeft = true );
