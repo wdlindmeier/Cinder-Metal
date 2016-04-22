@@ -111,7 +111,6 @@
 		A90C30C71C42E96E00D8E64F /* TextureBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBuffer.h; sourceTree = "<group>"; };
 		A91F69C51C860DBC009EE353 /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Context.h; path = ../../../include/Context.h; sourceTree = "<group>"; };
 		A91F69C61C860DBC009EE353 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
-		A91F69C71C860DBC009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
 		A91F69C81C860DBC009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
 		A91F69C91C860DC8009EE353 /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Context.cpp; path = ../../../src/Context.cpp; sourceTree = "<group>"; };
 		A91F69CA1C860DC8009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
@@ -126,6 +125,8 @@
 		A9F4A81A1C39E33B00B7B421 /* UniformBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UniformBlock.cpp; path = ../../../src/UniformBlock.cpp; sourceTree = "<group>"; };
 		A9FE917D1CC9A6A800E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
 		A9FE917F1CC9A6B400E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
+		A9FE92161CCA8FEC00E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalMacros.h; path = ../../../include/MetalMacros.h; sourceTree = "<group>"; };
+		A9FE92171CCA8FEC00E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderTypes.h; path = ../../../include/ShaderTypes.h; sourceTree = "<group>"; };
 		B3399801009E428297B14EDB /* metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = metal.h; path = ../../../include/metal.h; sourceTree = "<group>"; };
 		BFE1836EA895414E9FF49B5C /* ImageHelpers.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ImageHelpers.mm; path = ../../../src/ImageHelpers.mm; sourceTree = "<group>"; };
 		C2E20FDD7873476F9F1125A6 /* RenderCommandBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderCommandBuffer.h; path = ../../../include/RenderCommandBuffer.h; sourceTree = "<group>"; };
@@ -326,16 +327,17 @@
 				A91F69C51C860DBC009EE353 /* Context.h */,
 				A91F69C61C860DBC009EE353 /* Draw.h */,
 				4347C067954144E3BB96A349 /* ImageHelpers.h */,
-				A91F69C71C860DBC009EE353 /* InstanceTypes.h */,
 				B3399801009E428297B14EDB /* metal.h */,
 				62EC9C6ED4744331B46154EE /* MetalConstants.h */,
 				71B5C999B80649D4A1BDDFAC /* MetalGeom.h */,
 				8B8C9BCBE29D4FA8931A2C57 /* MetalHelpers.hpp */,
+				A9FE92161CCA8FEC00E1E6BD /* MetalMacros.h */,
 				C2E20FDD7873476F9F1125A6 /* RenderCommandBuffer.h */,
 				F6AE7D78118C4985BAF64C28 /* RendererMetal.h */,
 				89D3509D32944F3383929FFE /* RendererMetalImpl.h */,
 				0265DD5D9A2041DF9774DBCE /* Scope.h */,
 				A9FE917F1CC9A6B400E1E6BD /* Shader.h */,
+				A9FE92171CCA8FEC00E1E6BD /* ShaderTypes.h */,
 				A91F69C81C860DBC009EE353 /* ShaderUtils.h */,
 				A9F4A8191C39E32F00B7B421 /* UniformBlock.hpp */,
 				95C8C9D4A5914F4BBD5FB5D5 /* VertexBuffer.h */,

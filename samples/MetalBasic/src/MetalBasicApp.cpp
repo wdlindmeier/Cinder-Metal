@@ -5,6 +5,9 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+// This is an empty project with the relevant XCode changes made to import Metal.
+// Meant to be copied as a starting point for a new project, since TinderBox can't make build-setting changes.
+
 class MetalBasicApp : public App
 {
 public:

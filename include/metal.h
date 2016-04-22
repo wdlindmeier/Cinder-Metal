@@ -21,6 +21,7 @@
 #include "apple/Argument.h"
 
 #include "MetalConstants.h"
+#include "ShaderTypes.h"
 #include "RendererMetal.h"
 #include "MetalGeom.h"
 #include "UniformBlock.hpp"

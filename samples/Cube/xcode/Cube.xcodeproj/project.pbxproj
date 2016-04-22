@@ -108,7 +108,6 @@
 		A90C309D1C42E93000D8E64F /* SamplerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamplerState.h; sourceTree = "<group>"; };
 		A90C309E1C42E93000D8E64F /* TextureBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBuffer.h; sourceTree = "<group>"; };
 		A91F69BE1C860D7F009EE353 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
-		A91F69BF1C860D7F009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
 		A91F69C01C860D7F009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
 		A91F69C11C860D8A009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
 		A93D65EC1C20882100A76A79 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -125,6 +124,8 @@
 		A9F4A8181C39E26900B7B421 /* UniformBlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UniformBlock.hpp; path = ../../../include/UniformBlock.hpp; sourceTree = "<group>"; };
 		A9FE917A1CC9A63300E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
 		A9FE917B1CC9A63F00E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
+		A9FE92181CCA901200E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalMacros.h; path = ../../../include/MetalMacros.h; sourceTree = "<group>"; };
+		A9FE92191CCA901200E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderTypes.h; path = ../../../include/ShaderTypes.h; sourceTree = "<group>"; };
 		AF5F794E96D747A181AE80D0 /* RendererMetal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetal.mm; path = ../../../src/RendererMetal.mm; sourceTree = "<group>"; };
 		BDD35F96AC394A38A55A572F /* RenderCommandBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RenderCommandBuffer.mm; path = ../../../src/RenderCommandBuffer.mm; sourceTree = "<group>"; };
 		D9EC89AF610F4D01A54D19B1 /* RendererMetalImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetalImpl.mm; path = ../../../src/RendererMetalImpl.mm; sourceTree = "<group>"; };
@@ -334,16 +335,17 @@
 				A95C10A61C593C0400F7C5EB /* Context.h */,
 				A91F69BE1C860D7F009EE353 /* Draw.h */,
 				14C7012C52754DE082398AB3 /* ImageHelpers.h */,
-				A91F69BF1C860D7F009EE353 /* InstanceTypes.h */,
 				15EA2E9C9A6C4EE3974F34F5 /* metal.h */,
 				EE79E2CFBB2D45BC99C66ABE /* MetalConstants.h */,
 				348198C51FDF44448F0A00EB /* MetalGeom.h */,
 				515CE8D628894923882BAE96 /* MetalHelpers.hpp */,
+				A9FE92181CCA901200E1E6BD /* MetalMacros.h */,
 				F39D09A083564730B895CCC5 /* RenderCommandBuffer.h */,
 				75FDF3F5AF5B4D00AAED8BF7 /* RendererMetal.h */,
 				9AF3637039D64834BC1BDAFE /* RendererMetalImpl.h */,
 				41A770091EED4232B7D411F7 /* Scope.h */,
 				A9FE917A1CC9A63300E1E6BD /* Shader.h */,
+				A9FE92191CCA901200E1E6BD /* ShaderTypes.h */,
 				A91F69C01C860D7F009EE353 /* ShaderUtils.h */,
 				A9F4A8181C39E26900B7B421 /* UniformBlock.hpp */,
 				2B517DB208EC4A37A306E7F5 /* VertexBuffer.h */,

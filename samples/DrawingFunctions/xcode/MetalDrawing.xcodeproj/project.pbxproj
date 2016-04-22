@@ -93,7 +93,6 @@
 		A99D48F31C82D0B100E7B1D2 /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
 		A99D48F41C82D0B100E7B1D2 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Draw.h; sourceTree = "<group>"; };
 		A99D48F51C82D0B100E7B1D2 /* ImageHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageHelpers.h; sourceTree = "<group>"; };
-		A99D48F61C82D0B100E7B1D2 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstanceTypes.h; sourceTree = "<group>"; };
 		A99D48F71C82D0B100E7B1D2 /* metal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metal.h; sourceTree = "<group>"; };
 		A99D48F81C82D0B100E7B1D2 /* MetalConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalConstants.h; sourceTree = "<group>"; };
 		A99D48F91C82D0B100E7B1D2 /* MetalGeom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalGeom.h; sourceTree = "<group>"; };
@@ -132,6 +131,8 @@
 		A99D4DB11C82D0B300E7B1D2 /* VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexBuffer.cpp; sourceTree = "<group>"; };
 		A9FE91711CC9335200E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		A9FE91721CC9335B00E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Shader.mm; sourceTree = "<group>"; };
+		A9FE92141CCA8FBA00E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalMacros.h; sourceTree = "<group>"; };
+		A9FE92151CCA8FBA00E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		AE9ECF8105C24859B870D3A5 /* MetalDrawing_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalDrawing_Prefix.pch; sourceTree = "<group>"; };
 		C2AB2A95C1684F0BA9497CAB /* MetalBasicApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = MetalBasicApp.cpp; path = ../src/MetalBasicApp.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -273,16 +274,17 @@
 				A99D48F31C82D0B100E7B1D2 /* Context.h */,
 				A99D48F41C82D0B100E7B1D2 /* Draw.h */,
 				A99D48F51C82D0B100E7B1D2 /* ImageHelpers.h */,
-				A99D48F61C82D0B100E7B1D2 /* InstanceTypes.h */,
 				A99D48F71C82D0B100E7B1D2 /* metal.h */,
 				A99D48F81C82D0B100E7B1D2 /* MetalConstants.h */,
 				A99D48F91C82D0B100E7B1D2 /* MetalGeom.h */,
 				A99D48FA1C82D0B100E7B1D2 /* MetalHelpers.hpp */,
+				A9FE92141CCA8FBA00E1E6BD /* MetalMacros.h */,
 				A99D48FB1C82D0B100E7B1D2 /* RenderCommandBuffer.h */,
 				A99D48FC1C82D0B100E7B1D2 /* RendererMetal.h */,
 				A99D48FD1C82D0B100E7B1D2 /* RendererMetalImpl.h */,
 				A99D48FE1C82D0B100E7B1D2 /* Scope.h */,
 				A9FE91711CC9335200E1E6BD /* Shader.h */,
+				A9FE92151CCA8FBA00E1E6BD /* ShaderTypes.h */,
 				A99D48FF1C82D0B100E7B1D2 /* ShaderUtils.h */,
 				A99D49001C82D0B100E7B1D2 /* UniformBlock.hpp */,
 				A99D49011C82D0B100E7B1D2 /* VertexBuffer.h */,

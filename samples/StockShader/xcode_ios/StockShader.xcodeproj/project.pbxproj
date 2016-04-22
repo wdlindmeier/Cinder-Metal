@@ -62,7 +62,6 @@
 		00A66A351965AC8800B17EB3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		00CFDF6A1138442D0091E310 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		00CFDF6A1138442D0091FFFF /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		03CD3A4815904927A9AC1F3A /* InstanceTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
 		05093F55FA8C4974ACFAAB03 /* ShaderUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
 		0B5799CE1F284E0087BBB8CE /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = CinderApp_ios.png; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; };
 		0E9DCA521D424FD9BA904C29 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
@@ -111,6 +110,8 @@
 		A9F801CD1CC5434F00ABEC72 /* StockShaderApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StockShaderApp.cpp; path = ../src/StockShaderApp.cpp; sourceTree = "<group>"; };
 		A9FE91F11CC9AABA00E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
 		A9FE91F31CC9AAC900E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
+		A9FE92061CCA8DE900E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalMacros.h; path = ../../../include/MetalMacros.h; sourceTree = "<group>"; };
+		A9FE92071CCA8DE900E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderTypes.h; path = ../../../include/ShaderTypes.h; sourceTree = "<group>"; };
 		AB97DC3F2CC54C96BB9B994D /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = Shaders.metal; path = ../src/Shaders.metal; sourceTree = "<group>"; };
 		ADD5D49EC6784AABA35CDB1E /* RendererMetal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RendererMetal.mm; path = ../../../src/RendererMetal.mm; sourceTree = "<group>"; };
 		B600A2A72A884925833202AB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Images.xcassets; sourceTree = "<group>"; };
@@ -264,16 +265,17 @@
 				702A92EA5467470C964821A6 /* Context.h */,
 				A11E61C2D12F4D2C8FA77696 /* Draw.h */,
 				6529A85D597B44C196A2E100 /* ImageHelpers.h */,
-				03CD3A4815904927A9AC1F3A /* InstanceTypes.h */,
 				C6FEE8A4F04A4641B79C2D88 /* metal.h */,
 				90C5D58524A448E585652B0B /* MetalConstants.h */,
 				2394F00C171842CA84BAA332 /* MetalGeom.h */,
 				1A648351AD2945AD96A6433D /* MetalHelpers.hpp */,
+				A9FE92061CCA8DE900E1E6BD /* MetalMacros.h */,
 				E4BD986005E846AF9BE6FDA7 /* RenderCommandBuffer.h */,
 				8C21A3349A6D4FF68252D12F /* RendererMetal.h */,
 				DB2C3603216D4532AA8B09F2 /* RendererMetalImpl.h */,
 				279F60D3224548FABC43F189 /* Scope.h */,
 				A9FE91F31CC9AAC900E1E6BD /* Shader.h */,
+				A9FE92071CCA8DE900E1E6BD /* ShaderTypes.h */,
 				05093F55FA8C4974ACFAAB03 /* ShaderUtils.h */,
 				BFB12B8EDF42487180276A91 /* UniformBlock.hpp */,
 				2E3CDC80802E4DA0A146831E /* VertexBuffer.h */,

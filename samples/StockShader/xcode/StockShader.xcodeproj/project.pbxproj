@@ -113,7 +113,7 @@
 		A9F801C71CC540D600ABEC72 /* SharedTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedTypes.h; path = ../include/SharedTypes.h; sourceTree = "<group>"; };
 		A9F801CF1CC544E400ABEC72 /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
 		A9F801D21CC5450C00ABEC72 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
-		A9FE91FA1CC9AFB800E1E6BD /* MetalConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalConstants.h; sourceTree = "<group>"; };
+		A9FE92001CCA8D0D00E1E6BD /* MetalConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalConstants.h; path = ../../../include/MetalConstants.h; sourceTree = "<group>"; };
 		B1C496ACB3AA412A9A96E5FF /* ComputeEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComputeEncoder.h; path = ../../../include/apple/ComputeEncoder.h; sourceTree = "<group>"; };
 		BB1D3AB0CCA04D3485D9F4DF /* Argument.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Argument.mm; path = ../../../src/apple/Argument.mm; sourceTree = "<group>"; };
 		BEC469F727DA40988372D7DB /* CommandEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandEncoder.h; path = ../../../include/apple/CommandEncoder.h; sourceTree = "<group>"; };
@@ -305,7 +305,7 @@
 				9E4C5FD75AFF4C0DB88B34F1 /* Draw.h */,
 				212C6C45C64D4D50B883E374 /* ImageHelpers.h */,
 				3F89374C4EE74B9B82A4ED60 /* metal.h */,
-				A9FE91FA1CC9AFB800E1E6BD /* MetalConstants.h */,
+				A9FE92001CCA8D0D00E1E6BD /* MetalConstants.h */,
 				9D42AC363C264507BF942797 /* MetalGeom.h */,
 				50E3949538524E61949AF6A5 /* MetalHelpers.hpp */,
 				E50B575BF588428481EC5AC4 /* MetalMacros.h */,

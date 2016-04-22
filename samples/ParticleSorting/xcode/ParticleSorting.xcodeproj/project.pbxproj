@@ -101,7 +101,6 @@
 		A90C30E21C42E9D000D8E64F /* SamplerState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SamplerState.mm; sourceTree = "<group>"; };
 		A90C30E31C42E9D000D8E64F /* TextureBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureBuffer.mm; sourceTree = "<group>"; };
 		A91F69D81C861378009EE353 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
-		A91F69D91C861378009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
 		A91F69DA1C861378009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
 		A91F69DB1C861384009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
 		A93D65DB1C1BB6D500A76A79 /* RenderCommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderCommandBuffer.h; path = ../../../include/RenderCommandBuffer.h; sourceTree = "<group>"; };
@@ -122,6 +121,8 @@
 		A9F4A8151C39E20000B7B421 /* UniformBlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UniformBlock.hpp; path = ../../../include/UniformBlock.hpp; sourceTree = "<group>"; };
 		A9FE918C1CC9A89C00E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
 		A9FE918E1CC9A8A500E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
+		A9FE920A1CCA8E5F00E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalMacros.h; path = ../../../include/MetalMacros.h; sourceTree = "<group>"; };
+		A9FE920B1CCA8E5F00E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderTypes.h; path = ../../../include/ShaderTypes.h; sourceTree = "<group>"; };
 		B63D27B9308E471899A13E99 /* Scope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Scope.h; path = ../../../include/Scope.h; sourceTree = "<group>"; };
 		B645E74057D243D8B032FA64 /* VertexBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VertexBuffer.h; path = ../../../include/VertexBuffer.h; sourceTree = "<group>"; };
 		B6EFF6EFCABF47219BB97C7D /* MetalConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalConstants.h; path = ../../../include/MetalConstants.h; sourceTree = "<group>"; };
@@ -257,16 +258,17 @@
 				A95B95031C7298CA00A8F747 /* Context.h */,
 				A91F69D81C861378009EE353 /* Draw.h */,
 				800DE8C21AB143E084F7624C /* ImageHelpers.h */,
-				A91F69D91C861378009EE353 /* InstanceTypes.h */,
 				501E9C0385DA4D1181840188 /* metal.h */,
 				B6EFF6EFCABF47219BB97C7D /* MetalConstants.h */,
 				C1C665E585C7407B812FB411 /* MetalGeom.h */,
 				2A9881FA97F04897BC13645C /* MetalHelpers.hpp */,
+				A9FE920A1CCA8E5F00E1E6BD /* MetalMacros.h */,
 				A93D65DB1C1BB6D500A76A79 /* RenderCommandBuffer.h */,
 				242AE25701FB4B3D9089009A /* RendererMetal.h */,
 				5F6CF9845EE64BBF94E698B2 /* RendererMetalImpl.h */,
 				B63D27B9308E471899A13E99 /* Scope.h */,
 				A9FE918E1CC9A8A500E1E6BD /* Shader.h */,
+				A9FE920B1CCA8E5F00E1E6BD /* ShaderTypes.h */,
 				A91F69DA1C861378009EE353 /* ShaderUtils.h */,
 				A9F4A8151C39E20000B7B421 /* UniformBlock.hpp */,
 				B645E74057D243D8B032FA64 /* VertexBuffer.h */,

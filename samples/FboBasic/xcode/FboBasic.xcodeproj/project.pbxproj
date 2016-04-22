@@ -107,7 +107,6 @@
 		965A640D9A274C20B65FF446 /* ImageHelpers.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ImageHelpers.mm; path = ../../../src/ImageHelpers.mm; sourceTree = "<group>"; };
 		97B3F9954E4D4482B6A83C39 /* Scope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Scope.h; path = ../../../include/Scope.h; sourceTree = "<group>"; };
 		A88CD25FF9794BD591D4AB25 /* TextureBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TextureBuffer.h; path = ../../../include/apple/TextureBuffer.h; sourceTree = "<group>"; };
-		A91F69CF1C860EA7009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
 		A91F69D01C860EA7009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
 		A94FE5AF1C62A5CF0050E7DA /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A94FE5B11C62A5D60050E7DA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -115,6 +114,8 @@
 		A99D51E01C82D24400E7B1D2 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
 		A9FE91801CC9A70A00E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
 		A9FE91821CC9A71300E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
+		A9FE92121CCA8F5600E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalMacros.h; path = ../../../include/MetalMacros.h; sourceTree = "<group>"; };
+		A9FE92131CCA8F5600E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderTypes.h; path = ../../../include/ShaderTypes.h; sourceTree = "<group>"; };
 		B2F22506C09A4B379D24717F /* ComputeEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = ComputeEncoder.mm; path = ../../../src/apple/ComputeEncoder.mm; sourceTree = "<group>"; };
 		B67777533672415A90C35F4E /* Library.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Library.mm; path = ../../../src/apple/Library.mm; sourceTree = "<group>"; };
 		B9719515C4BA4A469FCCFCE9 /* MetalGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MetalGeom.h; path = ../../../include/MetalGeom.h; sourceTree = "<group>"; };
@@ -301,16 +302,17 @@
 				DE245CC2C1BE4A7FB33A2492 /* Context.h */,
 				A990FC571C7CE542002F4160 /* Draw.h */,
 				695754E44D0A46AA99D933AD /* ImageHelpers.h */,
-				A91F69CF1C860EA7009EE353 /* InstanceTypes.h */,
 				CB895963BD194CC7B7348F20 /* metal.h */,
 				7CB9F27DA5A2440995084EB2 /* MetalConstants.h */,
 				B9719515C4BA4A469FCCFCE9 /* MetalGeom.h */,
 				4A6E8AFB190E4A66968CFC31 /* MetalHelpers.hpp */,
+				A9FE92121CCA8F5600E1E6BD /* MetalMacros.h */,
 				FEE5DBB7BC404CB381FC65E1 /* RenderCommandBuffer.h */,
 				676C00CAC1954EE282A4FD80 /* RendererMetal.h */,
 				1B0116624B994755AA095482 /* RendererMetalImpl.h */,
 				97B3F9954E4D4482B6A83C39 /* Scope.h */,
 				A9FE91821CC9A71300E1E6BD /* Shader.h */,
+				A9FE92131CCA8F5600E1E6BD /* ShaderTypes.h */,
 				A91F69D01C860EA7009EE353 /* ShaderUtils.h */,
 				57C57736AAAF48BAADE705B3 /* UniformBlock.hpp */,
 				4D09A79261184778B6B2548A /* VertexBuffer.h */,

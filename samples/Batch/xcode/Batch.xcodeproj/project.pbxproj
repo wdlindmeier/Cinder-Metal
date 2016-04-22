@@ -109,7 +109,6 @@
 		A90C317B1C4344F600D8E64F /* Argument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Argument.h; path = ../../../include/apple/Argument.h; sourceTree = "<group>"; };
 		A91F69B01C860CE7009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Draw.cpp; path = ../../../src/Draw.cpp; sourceTree = "<group>"; };
 		A91F69B41C860CF3009EE353 /* Draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Draw.h; path = ../../../include/Draw.h; sourceTree = "<group>"; };
-		A91F69B51C860CF3009EE353 /* InstanceTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceTypes.h; path = ../../../include/InstanceTypes.h; sourceTree = "<group>"; };
 		A91F69B61C860CF3009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderUtils.h; path = ../../../include/ShaderUtils.h; sourceTree = "<group>"; };
 		A95C101F1C48148100F7C5EB /* checker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checker.png; sourceTree = "<group>"; };
 		A95C10571C500B5E00F7C5EB /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Context.cpp; path = ../../../src/Context.cpp; sourceTree = "<group>"; };
@@ -118,6 +117,8 @@
 		A95C105D1C5019F600F7C5EB /* Library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Library.h; path = ../../../include/apple/Library.h; sourceTree = "<group>"; };
 		A9FE91741CC9A4F700E1E6BD /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shader.h; path = ../../../include/Shader.h; sourceTree = "<group>"; };
 		A9FE91751CC9A50300E1E6BD /* Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Shader.mm; path = ../../../src/Shader.mm; sourceTree = "<group>"; };
+		A9FE921C1CCA906B00E1E6BD /* MetalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalMacros.h; path = ../../../include/MetalMacros.h; sourceTree = "<group>"; };
+		A9FE921D1CCA906B00E1E6BD /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderTypes.h; path = ../../../include/ShaderTypes.h; sourceTree = "<group>"; };
 		B014259F09DA4BC696245BFB /* DataBuffer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DataBuffer.mm; path = ../../../src/apple/DataBuffer.mm; sourceTree = "<group>"; };
 		B4F09A9404A244A082B379B8 /* metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = metal.h; path = ../../../include/metal.h; sourceTree = "<group>"; };
 		B6A76BC71926450AA6BDBAB2 /* Batch_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Batch_Prefix.pch; sourceTree = "<group>"; };
@@ -344,16 +345,17 @@
 				A95C105C1C500BAF00F7C5EB /* Context.h */,
 				A91F69B41C860CF3009EE353 /* Draw.h */,
 				6459D47502A647B9B7BE515A /* ImageHelpers.h */,
-				A91F69B51C860CF3009EE353 /* InstanceTypes.h */,
 				B4F09A9404A244A082B379B8 /* metal.h */,
 				8479654AD400406B9A7C4984 /* MetalConstants.h */,
 				2DB3F4C28A3F47E6A8367EA0 /* MetalGeom.h */,
 				B9F61D2207B546F69E70C078 /* MetalHelpers.hpp */,
+				A9FE921C1CCA906B00E1E6BD /* MetalMacros.h */,
 				1AF9D0512B1444DE8748D1EC /* RenderCommandBuffer.h */,
 				CC88E169D63B40ACB2A50FED /* RendererMetal.h */,
 				E7CA6181F9CA492FBCE30211 /* RendererMetalImpl.h */,
 				E109916F1BB24EB788E98FD2 /* Scope.h */,
 				A9FE91741CC9A4F700E1E6BD /* Shader.h */,
+				A9FE921D1CCA906B00E1E6BD /* ShaderTypes.h */,
 				A91F69B61C860CF3009EE353 /* ShaderUtils.h */,
 				718F89E29F194574ABB7FCDF /* UniformBlock.hpp */,
 				1D93168BDE9044E8B321EF0E /* VertexBuffer.h */,
