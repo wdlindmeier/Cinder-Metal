@@ -192,24 +192,44 @@ mtl::BatchRef getStockBatchWireRect()
     return sBatchWireRect;
 }
 
-mtl::BatchRef sBatchTexturedRect;
-mtl::BatchRef getStockBatchTexturedRect()
+mtl::BatchRef sBatchTexturedRectCentered;
+mtl::BatchRef sBatchTexturedRectUL;
+mtl::BatchRef getStockBatchTexturedRect( bool isCentered )
 {
-    if ( !sBatchTexturedRect )
+    if ( isCentered )
     {
-        sBatchTexturedRect = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineTexturedRect() );
+        if ( !sBatchTexturedRectCentered )
+        {
+            sBatchTexturedRectCentered = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineTexturedRect() );
+        }
+        return sBatchTexturedRectCentered;
     }
-    return sBatchTexturedRect;
+    // Else
+    if ( !sBatchTexturedRectUL )
+    {
+        sBatchTexturedRectUL = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)), getStockPipelineTexturedRect() );
+    }
+    return sBatchTexturedRectUL;
 }
 
-mtl::BatchRef sBatchMultiTexturedRect;
-mtl::BatchRef getStockBatchMultiTexturedRect()
+mtl::BatchRef sBatchMultiTexturedRectCentered;
+mtl::BatchRef sBatchMultiTexturedRectUL;
+mtl::BatchRef getStockBatchMultiTexturedRect( bool isCentered )
 {
-    if ( !sBatchMultiTexturedRect )
+    if ( isCentered )
     {
-        sBatchMultiTexturedRect = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineMultiTexturedRect() );
+        if ( !sBatchMultiTexturedRectCentered )
+        {
+            sBatchMultiTexturedRectCentered = mtl::Batch::create( ci::geom::Rect(Rectf(-0.5,-0.5,0.5,0.5)), getStockPipelineMultiTexturedRect() );
+        }
+        return sBatchMultiTexturedRectCentered;
     }
-    return sBatchMultiTexturedRect;
+    // Else
+    if ( !sBatchMultiTexturedRectUL )
+    {
+        sBatchMultiTexturedRectUL = mtl::Batch::create( ci::geom::Rect(Rectf(0,0,1,1)), getStockPipelineMultiTexturedRect() );
+    }
+    return sBatchMultiTexturedRectUL;
 }
 
 mtl::BatchRef sBatchBillboard;

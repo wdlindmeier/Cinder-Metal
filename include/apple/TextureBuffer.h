@@ -122,6 +122,7 @@ namespace cinder { namespace mtl {
         virtual ~TextureBuffer();
 
         void update( const ImageSourceRef & imageSource, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
+        void update( void * mtlTexture );
         
         // Getting & Setting Data for 2D images
         void setPixelData( const void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );

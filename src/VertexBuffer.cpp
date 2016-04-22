@@ -71,11 +71,11 @@ VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
     for ( const ci::geom::Attrib & attrib : loadAttribs )
     {
         uint dimensions = source.getAttribDims(attrib);
-        if ( attrib == ci::geom::POSITION )
-        {
-            // Always use a 4 component position, even if the source doesn't have 4 (e.g. a 2D position)
-            dimensions = 4;
-        }
+//        if ( attrib == ci::geom::POSITION )
+//        {
+//            // Always use a 4 component position, even if the source doesn't have 4 (e.g. a 2D position)
+//            dimensions = 4;
+//        }
         stride += dimensions * sizeof(float);
     }
     
@@ -85,11 +85,11 @@ VertexBufferRef VertexBuffer::create( const ci::geom::Source & source,
     for ( const ci::geom::Attrib & attrib : loadAttribs )
     {
         uint dimensions = source.getAttribDims(attrib);
-        if ( attrib == ci::geom::POSITION )
-        {
-            // Always use a 4 component position, even if the source doesn't have 4 (e.g. a 2D position)
-            dimensions = 4;
-        }
+//        if ( attrib == ci::geom::POSITION )
+//        {
+//            // Always use a 4 component position, even if the source doesn't have 4 (e.g. a 2D position)
+//            dimensions = 4;
+//        }
         geomLayout.append(attrib, dimensions, stride, offset);
         offset += dimensions * sizeof(float);
     }

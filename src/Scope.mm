@@ -89,11 +89,22 @@ RenderCommandBuffer(bufferName)
 ,mCompletionHandler(NULL)
 {};
 
+ScopedComputeEncoder ScopedRenderCommandBuffer::scopedComputeEncoder( const std::string & bufferName )
+{
+    ComputeEncoderRef computeEncoder = createComputeEncoder( bufferName );
+    return ScopedComputeEncoder( computeEncoder->getNative() );
+}
+
+ScopedBlitEncoder ScopedRenderCommandBuffer::scopedBlitEncoder( const std::string & bufferName )
+{
+    BlitEncoderRef blitEncoder = createBlitEncoder( bufferName );
+    return ScopedBlitEncoder( blitEncoder->getNative() );
+}
+
 ScopedRenderEncoder ScopedRenderCommandBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
                                                                     const std::string & bufferName )
 {
     RenderEncoderRef renderEncoder = createRenderEncoder( descriptor, bufferName );
-    
     return ScopedRenderEncoder( renderEncoder->getNative() );
 }
 
