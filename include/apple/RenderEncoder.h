@@ -141,6 +141,8 @@ namespace cinder { namespace mtl {
                            ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void drawCube( ci::vec3 position, ci::vec3 size,
                       ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
+        void drawStrokedCube( ci::vec3 position, ci::vec3 size,
+                             ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         void drawSphere( ci::vec3 position, float radius,
                         ci::mtl::DataBufferRef instanceBuffer = ci::mtl::DataBufferRef(), unsigned int numInstances = 1 );
         // NOTE: This is not designed to be fast—just convenient

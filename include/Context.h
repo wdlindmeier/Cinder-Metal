@@ -68,8 +68,6 @@ namespace cinder { namespace mtl {
         const ColorAf&              getCurrentColor() const { return mColor; }
         void                        setCurrentColor( const ColorAf &color ) { mColor = color; }
 
-        mtl::RenderPipelineStateRef & getStockPipeline( const mtl::ShaderDef &shaderDef );
-
         private:
         
         Context( const std::shared_ptr<PlatformData> &platformData );
@@ -80,7 +78,6 @@ namespace cinder { namespace mtl {
         std::vector<mat4>           mModelMatrixStack;
         std::vector<mat4>           mViewMatrixStack;
         std::vector<mat4>           mProjectionMatrixStack;
-        std::map<mtl::ShaderDef, mtl::RenderPipelineStateRef> mStockShaders;
 
     };
 

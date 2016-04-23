@@ -91,15 +91,6 @@ namespace cinder { namespace mtl {
         pthread_setspecific( sThreadSpecificCurrentContextKey, context );
     }
     
-    mtl::RenderPipelineStateRef & Context::getStockPipeline( const mtl::ShaderDef &shaderDef )
-    {
-        if ( mStockShaders.count(shaderDef) == 0 )
-        {
-            mStockShaders[shaderDef] = PipelineBuilder::buildPipeline(shaderDef);
-        }
-        return mStockShaders.at(shaderDef);
-    }
-
     Context* context()
     {
         auto ctx = Context::getCurrent();
@@ -333,8 +324,12 @@ namespace cinder { namespace mtl {
     
     mtl::RenderPipelineStateRef & getStockPipeline( const mtl::ShaderDef &shaderDef )
     {
-        auto ctx = mtl::context();
-        return ctx->getStockPipeline( shaderDef );
+        static std::map<mtl::ShaderDef, mtl::RenderPipelineStateRef> sStockShaders;
+        if ( sStockShaders.count(shaderDef) == 0 )
+        {
+            sStockShaders[shaderDef] = PipelineBuilder::buildPipeline(shaderDef);
+        }
+        return sStockShaders.at(shaderDef);
     }
     
     void setMatricesWindowPersp( int screenWidth, int screenHeight, float fovDegrees, float nearPlane, float farPlane, bool originUpperLeft )

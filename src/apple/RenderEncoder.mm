@@ -392,6 +392,16 @@ void RenderEncoder::drawCube( ci::vec3 position, ci::vec3 size,
     draw( mtl::getStockBatchCube(), instanceBuffer, numInstances );
 }
 
+void RenderEncoder::drawStrokedCube( ci::vec3 position, ci::vec3 size,
+                                     ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances)
+
+{
+    mtl::ScopedModelMatrix matModel;
+    mtl::translate(position);
+    mtl::scale(size);
+    draw( mtl::getStockBatchWireCube(), instanceBuffer, numInstances );
+}
+
 void RenderEncoder::drawSphere( ci::vec3 position, float radius,
                                 ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
 {
