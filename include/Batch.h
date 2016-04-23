@@ -74,9 +74,6 @@ namespace cinder { namespace mtl {
             //! Replaces the VertexBuffer associated with the Batch.
             void			replaceVertexBuffer( const VertexBufferRef &vertexBuffer );
             
-            //! Changes the Metal context the Batch is associated with
-            //void			reassignContext( Context *context );
-            
         protected:
         
             Batch( const VertexBufferRef & vertexBuffer,
@@ -95,7 +92,7 @@ namespace cinder { namespace mtl {
             RenderPipelineStateRef  mRenderPipeline;
             AttributeMapping		mAttribMapping;
         
-            std::vector<ci::geom::Attrib> mInterleavedAttribs;
+            ci::geom::BufferLayout mInterleavedLayout;
             std::map<ci::geom::Attrib, unsigned long> mAttribBufferIndices;
 
     };

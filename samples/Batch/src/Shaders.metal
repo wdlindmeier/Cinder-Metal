@@ -9,9 +9,8 @@
 #include <metal_stdlib>
 #include <simd/simd.h>
 #include "MetalConstants.h"
+#include "ShaderTypes.h"
 #include "SharedTypes.h"
-
-using namespace metal;
 
 using namespace metal;
 using namespace cinder::mtl;

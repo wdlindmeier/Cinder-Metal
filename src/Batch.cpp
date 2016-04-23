@@ -70,8 +70,166 @@ Batch::Batch( const ci::geom::Source &source,
 : mRenderPipeline(pipeline)
 {
     initBufferLayout( attributeMapping );
-    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedAttribs );
+    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedLayout );
     checkBufferLayout();
+}
+
+// TODO: Move this
+const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size )
+{
+    switch (type)
+    {
+        case DataTypeFloat:
+        case DataTypeFloat2:
+        case DataTypeFloat3:
+        case DataTypeFloat4:
+        case DataTypeFloat2x2:
+        case DataTypeFloat2x3:
+        case DataTypeFloat2x4:
+        case DataTypeFloat3x2:
+        case DataTypeFloat3x3:
+        case DataTypeFloat3x4:
+        case DataTypeFloat4x2:
+        case DataTypeFloat4x3:
+        case DataTypeFloat4x4:
+            *size = sizeof(float);
+            break;
+        case DataTypeHalf:
+        case DataTypeHalf2:
+        case DataTypeHalf3:
+        case DataTypeHalf4:
+        case DataTypeHalf2x2:
+        case DataTypeHalf2x3:
+        case DataTypeHalf2x4:
+        case DataTypeHalf3x2:
+        case DataTypeHalf3x3:
+        case DataTypeHalf3x4:
+        case DataTypeHalf4x2:
+        case DataTypeHalf4x3:
+        case DataTypeHalf4x4:
+            *size = sizeof(half_float);
+            break;
+        case DataTypeInt:
+        case DataTypeInt2:
+        case DataTypeInt3:
+        case DataTypeInt4:
+            *size = sizeof(int);
+            break;
+        case DataTypeUInt:
+        case DataTypeUInt2:
+        case DataTypeUInt3:
+        case DataTypeUInt4:
+            *size = sizeof(uint);
+            break;
+        case DataTypeShort:
+        case DataTypeShort2:
+        case DataTypeShort3:
+        case DataTypeShort4:
+            *size = sizeof(short);
+            break;
+        case DataTypeUShort:
+        case DataTypeUShort2:
+        case DataTypeUShort3:
+        case DataTypeUShort4:
+            *size = sizeof(ushort);
+            break;
+        case DataTypeChar:
+        case DataTypeChar2:
+        case DataTypeChar3:
+        case DataTypeChar4:
+            *size = sizeof(char);
+            break;
+        case DataTypeUChar:
+        case DataTypeUChar2:
+        case DataTypeUChar3:
+        case DataTypeUChar4:
+            *size = sizeof(u_char);
+            break;
+        case DataTypeBool:
+        case DataTypeBool2:
+        case DataTypeBool3:
+        case DataTypeBool4:
+            *size = sizeof(bool);
+            break;
+        default:
+            assert(false);
+            CI_LOG_F("ERROR: Unsopported data type in ciVerts");
+            break;
+    }
+
+    switch (type)
+    {
+        case DataTypeFloat:
+        case DataTypeHalf:
+        case DataTypeInt:
+        case DataTypeUInt:
+        case DataTypeShort:
+        case DataTypeUShort:
+        case DataTypeChar:
+        case DataTypeUChar:
+        case DataTypeBool:
+            return 1;
+        case DataTypeFloat2:
+        case DataTypeHalf2:
+        case DataTypeInt2:
+        case DataTypeUInt2:
+        case DataTypeShort2:
+        case DataTypeUShort2:
+        case DataTypeChar2:
+        case DataTypeUChar2:
+        case DataTypeBool2:
+            return 2;
+            break;
+        case DataTypeFloat3:
+        case DataTypeHalf3:
+        case DataTypeInt3:
+        case DataTypeUInt3:
+        case DataTypeShort3:
+        case DataTypeUShort3:
+        case DataTypeChar3:
+        case DataTypeUChar3:
+        case DataTypeBool3:
+            return 3;
+            break;
+        case DataTypeFloat4:
+        case DataTypeHalf4:
+        case DataTypeInt4:
+        case DataTypeUInt4:
+        case DataTypeShort4:
+        case DataTypeUShort4:
+        case DataTypeChar4:
+        case DataTypeUChar4:
+        case DataTypeBool4:
+            return 4;
+            break;
+        case DataTypeFloat2x3:
+        case DataTypeHalf2x3:
+            return 6;
+            break;
+        case DataTypeFloat2x4:
+        case DataTypeHalf2x4:
+            return 8;
+            break;
+        case DataTypeFloat3x3:
+        case DataTypeHalf3x3:
+            return 9;
+            break;
+        case DataTypeFloat3x4:
+        case DataTypeHalf3x4:
+        case DataTypeFloat4x3:
+        case DataTypeHalf4x3:
+            return 12;
+            break;
+        case DataTypeFloat4x4:
+        case DataTypeHalf4x4:
+            return 16;
+            break;
+        default:
+            assert(false);
+            CI_LOG_F("ERROR: Unsopported data type in ciVerts");
+            break;
+    }
+    return 0;
 }
 
 void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
@@ -83,7 +241,8 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
         inverseMapping[kvp.second] = kvp.first;
     }
     
-    std::vector<ci::geom::Attrib> interleavedAttribs;
+    ci::geom::BufferLayout interleavedLayout;
+
     std::map<ci::geom::Attrib, unsigned long> attribBufferIndices;
 
     AttribSemanticMap & defaultAttribMap = getDefaultAttribNameToSemanticMap();
@@ -102,25 +261,39 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
                 if ( t == mtl::DataTypeStruct )
                 {
                     mtl::StructType s = argument.getBufferStructType();
+                    
+                    // First calculate the stride
+                    size_t stride = 0;
                     for ( const mtl::StructMember m : s.members )
                     {
                         std::string attrName = m.name;
-                        // NOTE: Check inverseMapping first so it trumps the default.
-                        if ( inverseMapping.count( attrName ) != 0 )
-                        {
-                            ci::geom::Attrib a = inverseMapping[attrName];
-                            interleavedAttribs.push_back(a);
-                        }
-                        else if ( defaultAttribMap.count( attrName ) != 0 )
-                        {
-                            ci::geom::Attrib a = defaultAttribMap[attrName];
-                            interleavedAttribs.push_back(a);
-                        }
-                        else
-                        {
-                            CI_LOG_E( "Don't know how to handle attrib: " << attrName << ". Ignoring");
-                        }
+                        size_t sizeOfComponent;
+                        uint dimensions = DimensionsForAttributeOfType(m.dataType, &sizeOfComponent);
+                        stride += dimensions * sizeOfComponent;
                     }
+                    
+                    // Then build the layout.
+                    size_t offset = 0;
+                    for ( const mtl::StructMember m : s.members )
+                    {
+                        std::string attrName = m.name;
+                        assert(defaultAttribMap.count(attrName));
+                        ci::geom::Attrib attrib;
+                        // Check the custom mapping first before the defaults.
+                        if ( inverseMapping.count( attrName ) )
+                        {
+                            attrib = inverseMapping[attrName];
+                        }
+                        else if ( defaultAttribMap.count( attrName ) )
+                        {
+                            attrib = defaultAttribMap[attrName];
+                        }
+                        size_t sizeOfComponent;
+                        uint dimensions = DimensionsForAttributeOfType(m.dataType, &sizeOfComponent);
+                        interleavedLayout.append(attrib, dimensions, stride, offset);
+                        offset += dimensions * sizeOfComponent;
+                    }
+                    assert(offset == stride);
                 }
                 else
                 {
@@ -150,7 +323,7 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
         }
     }
 
-    mInterleavedAttribs = interleavedAttribs;
+    mInterleavedLayout = interleavedLayout;
     mAttribBufferIndices = attribBufferIndices;
     mAttribMapping = attributeMapping;
 }
@@ -188,7 +361,7 @@ void Batch::checkBufferLayout()
             }
         }
     }
-    else if ( mInterleavedAttribs.size() > 0 )
+    else if ( mInterleavedLayout.getAttribs().size() > 0 )
     {
         // The shader wants interleaved data.
         // Make sure that's the format of the VertexBuffer.

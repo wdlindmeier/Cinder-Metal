@@ -156,11 +156,15 @@ mtl::BatchRef getStockBatchColoredCube()
 {
     if ( !sCachedBatches.count("BatchColoredCube") )
     {
+        ci::geom::BufferLayout cubeLayout;
+        size_t sizeOfVert = sizeof(float) * 8;
+        cubeLayout.append(ci::geom::Attrib::POSITION, 4, sizeOfVert, 0);
+        cubeLayout.append(ci::geom::Attrib::COLOR, 4, sizeOfVert, sizeof(float) * 4);
         mtl::VertexBufferRef vertBuffer = mtl::VertexBuffer::create( ci::geom::Cube()
                                                                     .size(vec3(1.f))
                                                                     .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),
                                                                             Color(1,1,0),Color(0,1,1),Color(1,0,1)),
-                                                                    {{ ci::geom::POSITION, ci::geom::COLOR }});
+                                                                    cubeLayout);
         sCachedBatches["BatchColoredCube"] = mtl::Batch::create( vertBuffer,
                                                                  getStockPipeline(mtl::ShaderDef().color()) );
    
