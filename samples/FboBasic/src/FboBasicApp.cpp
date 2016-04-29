@@ -3,6 +3,7 @@
 #include "Batch.h"
 #include "Draw.h"
 #include "VertexBuffer.h"
+#include "Shader.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -28,7 +29,7 @@ public:
 
     mtl::DepthStateRef mDepthEnabled;
 
-    // An FBO is actually just a Texture with a special format... for now
+    // An "FBO" in metal is a TextureBuffer and RenderPassDescriptor w/ specific formats.
     mtl::TextureBufferRef mFBO;
     
     mat4 mRotation;
@@ -56,9 +57,9 @@ void FboBasicApp::setup()
     mPipelineTexturedGeom = mtl::RenderPipelineState::create("cube_vertex", "rgb_texture_fragment");
 
     mCube = mtl::VertexBuffer::create( ci::geom::Cube()
-                                      .size(vec3(2.2f))
-                                      .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(1,1,0),Color(0,1,1),Color(1,0,1)),
-                                      {{ ci::geom::POSITION, ci::geom::NORMAL, ci::geom::TEX_COORD_0, ci::geom::COLOR }} );
+                                       .size(vec3(2.2f))
+                                       .colors(Color(1,0,0),Color(0,1,0),Color(0,0,1),Color(1,1,0),Color(0,1,1),Color(1,0,1)),
+                                       {{ ci::geom::POSITION, ci::geom::NORMAL, ci::geom::TEX_COORD_0, ci::geom::COLOR }} );
 }
 
 void FboBasicApp::resize()
@@ -72,7 +73,7 @@ void FboBasicApp::createFBO()
     // NOTE: getWindowContentScale() only works on Mac with setHighDensityDisplayEnabled
     float contentScale = getWindow()->getDisplay()->getContentScale();
     mFBO = mtl::TextureBuffer::create( getWindowWidth() * contentScale,
-                                       getWindowWidth() * contentScale,//getWindowHeight() * contentScale,
+                                       getWindowWidth() * contentScale, // width x width keeps it square
                                        mtl::TextureBuffer::Format()
                                        .pixelFormat(mtl::PixelFormatBGRA8Unorm)
                                        .usage((mtl::TextureUsage)(mtl::TextureUsageRenderTarget |

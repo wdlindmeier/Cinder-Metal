@@ -9,7 +9,7 @@
 #include <metal_stdlib>
 #include <simd/simd.h>
 #include "MetalConstants.h"
-#include "InstanceTypes.h"
+#include "ShaderTypes.h"
 #include "ShaderUtils.h"
 
 using namespace metal;
@@ -18,7 +18,7 @@ using namespace cinder::mtl;
 
 typedef struct
 {
-    metal::packed_float4 ciPosition;
+    metal::packed_float3 ciPosition;
     metal::packed_float3 ciNormal;
     metal::packed_float2 ciTexCoord0;
     metal::packed_float4 ciColor;
@@ -27,15 +27,15 @@ typedef struct
 using namespace metal;
 
 vertex ciVertOut_t cube_vertex( device const CubeVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                            device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
-                            constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
-                            unsigned int vid [[ vertex_id ]] )
+                                device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
+                                constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
+                                unsigned int vid [[ vertex_id ]] )
 {
     ciVertOut_t out;
     
     unsigned int vertIndex = ciIndices[vid];
     CubeVertex p = ciVerts[vertIndex];
-    out.position = ciUniforms.ciModelViewProjection * float4(p.ciPosition);
+    out.position = ciUniforms.ciModelViewProjection * float4(p.ciPosition, 1.0);
     out.color = p.ciColor;
     out.texCoords = p.ciTexCoord0;
     return out;
@@ -50,4 +50,9 @@ fragment float4 rgb_texture_fragment( ciVertOut_t in [[ stage_in ]],
                                       texture2d<float> texture [[ texture(ciTextureIndex0) ]] )
 {
     return texture.sample(shaderSampler, in.texCoords);
+}
+
+fragment float4 color_fragment( ciVertOut_t in [[ stage_in ]] )
+{
+    return in.color;
 }

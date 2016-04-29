@@ -11,6 +11,7 @@
 #include "MetalMacros.h"
 #include <simd/simd.h>
 
-// This is a macro. We've defined them this way so they can be rolled into
+// This is a macro, found in MetalMacros.h.
+// They've been defined this way so they can be rolled into
 // online shaders (which don't accept user includes).
 ShaderTypes
