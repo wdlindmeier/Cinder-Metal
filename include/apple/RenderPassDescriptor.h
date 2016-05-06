@@ -43,31 +43,31 @@ namespace cinder { namespace mtl {
 
             Format& shouldClearColor( bool shouldClearColor ) { setShouldClearColor( shouldClearColor ); return *this; };
             void setShouldClearColor( bool shouldClearColor ) { mShouldClearColor = shouldClearColor; };
-            bool getShouldClearColor() { return mShouldClearColor; };
+            bool getShouldClearColor() const { return mShouldClearColor; };
 
             Format& clearColor( ci::ColorAf clearColor ) { setClearColor( clearColor ); return *this; };
             void setClearColor( ci::ColorAf clearColor ) { mClearColor = clearColor; };
-            ci::ColorAf getClearColor() { return mClearColor; };
+            ci::ColorAf getClearColor() const { return mClearColor; };
 
             Format& colorStoreAction( StoreAction colorStoreAction ) { setColorStoreAction( colorStoreAction ); return *this; };
             void setColorStoreAction( StoreAction colorStoreAction ) { mColorStoreAction = colorStoreAction; };
-            StoreAction getColorStoreAction() { return mColorStoreAction; };
+            StoreAction getColorStoreAction() const { return mColorStoreAction; };
 
             Format& shouldClearDepth( bool shouldClearDepth ) { setShouldClearDepth( shouldClearDepth ); return *this; };
             void setShouldClearDepth( bool shouldClearDepth ) { mShouldClearDepth = shouldClearDepth; };
-            bool getShouldClearDepth() { return mShouldClearDepth; };
+            bool getShouldClearDepth() const { return mShouldClearDepth; };
 
             Format& clearDepth( float clearDepth ) { setClearDepth( clearDepth ); return *this; };
             void setClearDepth( float clearDepth ) { mClearDepth = clearDepth; };
-            float getClearDepth() { return mClearDepth; };
+            float getClearDepth() const { return mClearDepth; };
 
             Format& depthStoreAction( StoreAction depthStoreAction ) { setDepthStoreAction( depthStoreAction ); return *this; };
             void setDepthStoreAction( StoreAction depthStoreAction ) { mDepthStoreAction = depthStoreAction; };
-            StoreAction getDepthStoreAction() { return mDepthStoreAction; };
+            StoreAction getDepthStoreAction() const { return mDepthStoreAction; };
 
             Format& depthUsage( TextureUsage depthUsage ) { setDepthUsage( depthUsage ); return *this; };
             void setDepthUsage( TextureUsage depthUsage ) { mDepthUsage = depthUsage; };
-            TextureUsage getDepthUsage() { return mDepthUsage; };
+            TextureUsage getDepthUsage() const { return mDepthUsage; };
 
         protected:
             

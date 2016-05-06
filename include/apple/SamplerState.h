@@ -45,55 +45,55 @@ namespace cinder { namespace mtl {
 
             Format& mipFilter( SamplerMipFilter mipFilter ) { setMipFilter( mipFilter ); return *this; };
             void setMipFilter( SamplerMipFilter mipFilter ) { mMipFilter = mipFilter; };
-            SamplerMipFilter getMipFilter() { return mMipFilter; };
+            SamplerMipFilter getMipFilter() const { return mMipFilter; };
 
             Format& maxAnisotropy( int maxAnisotropy ) { setMaxAnisotropy( maxAnisotropy ); return *this; };
             void setMaxAnisotropy( int maxAnisotropy ) { mMaxAnisotropy = maxAnisotropy; };
-            int getMaxAnisotropy() { return mMaxAnisotropy; };
+            int getMaxAnisotropy() const { return mMaxAnisotropy; };
 
             Format& minFilter( SamplerMinMagFilter minFilter ) { setMinFilter( minFilter ); return *this; };
             void setMinFilter( SamplerMinMagFilter minFilter ) { mMinFilter = minFilter; };
-            SamplerMinMagFilter getMinFilter() { return mMinFilter; };
+            SamplerMinMagFilter getMinFilter() const { return mMinFilter; };
 
             Format& magFilter( SamplerMinMagFilter magFilter ) { setMagFilter( magFilter ); return *this; };
             void setMagFilter( SamplerMinMagFilter magFilter ) { mMagFilter = magFilter; };
-            SamplerMinMagFilter getMagFilter() { return mMagFilter; };
+            SamplerMinMagFilter getMagFilter() const { return mMagFilter; };
 
             Format& sAddressMode( SamplerAddressMode sAddressMode ) { setSAddressMode( sAddressMode ); return *this; };
             void setSAddressMode( SamplerAddressMode sAddressMode ) { mSAddressMode = sAddressMode; };
-            SamplerAddressMode getSAddressMode() { return mSAddressMode; };
+            SamplerAddressMode getSAddressMode() const { return mSAddressMode; };
 
             Format& tAddressMode( SamplerAddressMode tAddressMode ) { setTAddressMode( tAddressMode ); return *this; };
             void setTAddressMode( SamplerAddressMode tAddressMode ) { mTAddressMode = tAddressMode; };
-            SamplerAddressMode getTAddressMode() { return mTAddressMode; };
+            SamplerAddressMode getTAddressMode() const { return mTAddressMode; };
 
             Format& rAddressMode( SamplerAddressMode rAddressMode ) { setRAddressMode( rAddressMode ); return *this; };
             void setRAddressMode( SamplerAddressMode rAddressMode ) { mRAddressMode = rAddressMode; };
-            SamplerAddressMode getRAddressMode() { return mRAddressMode; };
+            SamplerAddressMode getRAddressMode() const { return mRAddressMode; };
 
             Format& normalizedCoordinates( int normalizedCoordinates ) { setNormalizedCoordinates( normalizedCoordinates ); return *this; };
             void setNormalizedCoordinates( int normalizedCoordinates ) { mNormalizedCoordinates = normalizedCoordinates; };
-            int getNormalizedCoordinates() { return mNormalizedCoordinates; };
+            int getNormalizedCoordinates() const { return mNormalizedCoordinates; };
 
             Format& lodMinClamp( int lodMinClamp ) { setLodMinClamp( lodMinClamp ); return *this; };
             void setLodMinClamp( int lodMinClamp ) { mLodMinClamp = lodMinClamp; };
-            int getLodMinClamp() { return mLodMinClamp; };
+            int getLodMinClamp() const { return mLodMinClamp; };
 
             Format& lodMaxClamp( int lodMaxClamp ) { setLodMaxClamp( lodMaxClamp ); return *this; };
             void setLodMaxClamp( int lodMaxClamp ) { mLodMaxClamp = lodMaxClamp; };
-            int getLodMaxClamp() { return mLodMaxClamp; };
+            int getLodMaxClamp() const { return mLodMaxClamp; };
 #if defined( CINDER_COCOA_TOUCH )
             Format& lodAverage( int lodAverage ) { setLodAverage( lodAverage ); return *this; };
             void setLodAverage( int lodAverage ) { mLodAverage = lodAverage; };
-            int getLodAverage() { return mLodAverage; };
+            int getLodAverage() const { return mLodAverage; };
 #endif
             Format& compareFunction( CompareFunction compareFunction ) { setCompareFunction( compareFunction ); return *this; };
             void setCompareFunction( CompareFunction compareFunction ) { mCompareFunction = compareFunction; };
-            CompareFunction getCompareFunction() { return mCompareFunction; };
+            CompareFunction getCompareFunction() const { return mCompareFunction; };
 
             Format& label( std::string label ) { setLabel( label ); return *this; };
             void setLabel( std::string label ) { mLabel = label; };
-            std::string getLabel() { return mLabel; };
+            std::string getLabel() const { return mLabel; };
 
         protected:
             

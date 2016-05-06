@@ -39,20 +39,20 @@ namespace cinder { namespace mtl {
 
             Format& depthWriteEnabled( bool depthWriteEnabled = true ) { setDepthWriteEnabled( depthWriteEnabled ); return *this; };
             void setDepthWriteEnabled( bool depthWriteEnabled ) { mDepthWriteEnabled = depthWriteEnabled; };
-            bool getDepthWriteEnabled() { return mDepthWriteEnabled; };
+            bool getDepthWriteEnabled() const { return mDepthWriteEnabled; };
 
             // TODO: Maybe the back/front stencil descriptors don't belong in the format...
             Format& frontFaceStencil( void * frontFaceStencil ) { setFrontFaceStencil( frontFaceStencil ); return *this; };
             void setFrontFaceStencil( void * frontFaceStencil ) { mFrontFaceStencil = frontFaceStencil; };
-            void * getFrontFaceStencil() { return mFrontFaceStencil; };
+            void * getFrontFaceStencil() const { return mFrontFaceStencil; };
 
             Format& backFaceStencil( void * backFaceStencil ) { setBackFaceStencil( backFaceStencil ); return *this; };
             void setBackFaceStencil( void * backFaceStencil ) { mBackFaceStencil = backFaceStencil; };
-            void * getBackFaceStencil() { return mBackFaceStencil; };
+            void * getBackFaceStencil() const { return mBackFaceStencil; };
 
             Format& label( std::string label ) { setLabel( label ); return *this; };
             void setLabel( std::string label ) { mLabel = label; };
-            std::string getLabel() { return mLabel; };
+            std::string getLabel() const { return mLabel; };
 
         protected:
             

@@ -327,7 +327,12 @@ namespace cinder { namespace mtl {
         static std::map<mtl::ShaderDef, mtl::RenderPipelineStateRef> sStockShaders;
         if ( sStockShaders.count(shaderDef) == 0 )
         {
-            sStockShaders[shaderDef] = PipelineBuilder::buildPipeline(shaderDef);
+            mtl::RenderPipelineState::Format format;
+            if ( shaderDef.getAlphaBlending() )
+            {
+                format.blendingEnabled();
+            }
+            sStockShaders[shaderDef] = PipelineBuilder::buildPipeline(shaderDef, format);
         }
         return sStockShaders.at(shaderDef);
     }

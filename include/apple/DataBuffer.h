@@ -40,19 +40,19 @@ namespace cinder { namespace mtl {
 
             Format& storageMode( StorageMode storageMode ) { setStorageMode( storageMode ); return *this; };
             void setStorageMode( StorageMode storageMode ) { mStorageMode = storageMode; };
-            StorageMode getStorageMode() { return mStorageMode; };
+            StorageMode getStorageMode() const { return mStorageMode; };
 
             Format& cacheMode( CPUCacheMode cacheMode ) { setCacheMode( cacheMode ); return *this; };
             void setCacheMode( CPUCacheMode cacheMode ) { mCacheMode = cacheMode; };
-            CPUCacheMode getCacheMode() { return mCacheMode; };
+            CPUCacheMode getCacheMode() const { return mCacheMode; };
 
             Format& label( std::string label ) { setLabel( label ); return *this; };
             void setLabel( std::string label ) { mLabel = label; };
-            std::string getLabel() { return mLabel; };
+            std::string getLabel() const { return mLabel; };
 
             Format& isConstant( bool isConstant = true ) { setIsConstant( isConstant ); return *this; };
             void setIsConstant( bool isConstant ) { mIsConstant = isConstant; };
-            bool getIsConstant() { return mIsConstant; };
+            bool getIsConstant() const { return mIsConstant; };
 
         protected:
             
