@@ -283,7 +283,7 @@ kernel void bitonic_sort_by_value( constant myUniforms_t& uniforms [[ buffer(ciB
 }
 
 vertex ColorInOut vertex_particles( device const Particle * particles [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                    device const int4 * indices [[ buffer(ciBufferIndexIndicies) ]],
+                                    device const int4 * indices [[ buffer(ciBufferIndexIndices) ]],
                                     constant myUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                     unsigned int vid [[ vertex_id ]] )
 {

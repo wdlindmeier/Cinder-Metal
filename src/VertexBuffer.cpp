@@ -154,16 +154,16 @@ void VertexBuffer::setBufferForAttribute( DataBufferRef buffer,
     
     if ( shaderBufferIndex != -1 )
     {
-        setAttributeShaderIndex(attr, shaderBufferIndex);
+        setAttributeBufferIndex(attr, shaderBufferIndex);
     }
     else if ( mAttributeBufferIndices.count(attr) == 0 )
     {
         // If we don't have an index, use the default
-        setAttributeShaderIndex(attr, geom::defaultShaderIndexForAttribute(attr));
+        setAttributeBufferIndex(attr, geom::defaultBufferIndexForAttribute(attr));
     }
 }
 
-unsigned long VertexBuffer::getAttributeShaderIndex( const ci::geom::Attrib attr )
+unsigned long VertexBuffer::getAttributeBufferIndex( const ci::geom::Attrib attr )
 {
     if ( mAttributeBufferIndices.count(attr) != 0 )
     {
@@ -172,7 +172,7 @@ unsigned long VertexBuffer::getAttributeShaderIndex( const ci::geom::Attrib attr
     return -1;
 }
 
-void VertexBuffer::setAttributeShaderIndex( const ci::geom::Attrib attr, unsigned long shaderBufferIndex )
+void VertexBuffer::setAttributeBufferIndex( const ci::geom::Attrib attr, unsigned long shaderBufferIndex )
 {
     mAttributeBufferIndices[attr] = shaderBufferIndex;
 }
@@ -270,6 +270,7 @@ void VertexBuffer::drawInstanced( RenderEncoder & renderEncoder, size_t instance
     {
         return;
     }
+    
     if ( mIndexLength > 0 )
     {
         draw( renderEncoder, mIndexLength, 0, instanceCount );
@@ -305,23 +306,13 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
         // that using a known data layout with index access. This also lets us
         // use BufferLayouts, which follows the Cinder convention.
         renderEncoder.setVertexBufferAtIndex( mInterleavedData, ciBufferIndexInterleavedVerts );
-        
-        if ( mIndexBuffer )
-        {
-            renderEncoder.setVertexBufferAtIndex( mIndexBuffer, ciBufferIndexIndicies );
-        }
     }
-//    else
-//    {
-//        for ( auto kvp : mAttributeBufferIndices )
-//        {
-//            ci::geom::Attrib attr = kvp.first;
-//            DataBufferRef buffer = mAttributeBuffers[attr];
-//            assert( !!buffer );
-//            renderEncoder.setVertexBufferAtIndex( buffer, kvp.second );
-//        }
-//    }
     
+    if ( mIndexBuffer )
+    {
+        renderEncoder.setVertexBufferAtIndex( mIndexBuffer, mBufferIndexIndices );
+    }
+
     renderEncoder.draw( mPrimitive,
                         vertexLength,
                         vertexStart,

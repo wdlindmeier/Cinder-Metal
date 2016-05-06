@@ -30,7 +30,7 @@ typedef struct
 } ColorInOut;
 
 vertex ColorInOut batch_vertex( device const VertexIn* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
+                                device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                 constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                 unsigned int vid [[ vertex_id ]] )
 {

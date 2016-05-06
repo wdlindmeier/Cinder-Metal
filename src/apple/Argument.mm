@@ -40,22 +40,16 @@ mtl::DataType Argument::getBufferDataType() const { return (mtl::DataType)IMPL.b
 
 mtl::StructType Argument::getBufferStructType()
 {
-//    CI_LOG_I("getBufferDataType() == mtl::DataTypeStruct? " << (getBufferDataType() == mtl::DataTypeStruct));
-//    CI_LOG_I("mCachedStructType.members.size(): " << mCachedStructType.members.size());
     if ( (getBufferDataType() == mtl::DataTypeStruct) &&
          (mCachedStructType.members.size() == 0) )
     {
-        // mCachedStructType.members.clear();
-        // Create the struct type
         MTLStructType *st = IMPL.bufferStructType;
-//        NSLog(@"struct type: %@", st);
         for ( MTLStructMember *sm in st.members )
         {
             StructMember m;
             m.name = std::string([sm.name UTF8String]);
             m.dataType = (mtl::DataType)sm.dataType;
             m.offset = sm.offset;
-            //mCachedStructType.members[m.name] = m;
             mCachedStructType.members.push_back(m);
         }
     }

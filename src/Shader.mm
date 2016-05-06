@@ -15,6 +15,14 @@ using namespace std;
 
 namespace cinder { namespace mtl {
     
+    enum
+    {
+        RED = 0,
+        GREEN = 1,
+        BLUE = 2,
+        ALPHA = 3
+    };
+    
 #pragma mark - ShaderDef
     
     ShaderDef::ShaderDef()
@@ -30,10 +38,10 @@ namespace cinder { namespace mtl {
     ,mAlphaBlending(false)
     ,mUniformBasedPosAndTexCoord( false )
     {
-//        mTextureSwizzleMask[0] = GL_RED;
-//        mTextureSwizzleMask[1] = GL_GREEN;
-//        mTextureSwizzleMask[2] = GL_BLUE;
-//        mTextureSwizzleMask[3] = GL_ALPHA;
+        mTextureSwizzleMask[0] = RED;
+        mTextureSwizzleMask[1] = GREEN;
+        mTextureSwizzleMask[2] = BLUE;
+        mTextureSwizzleMask[3] = ALPHA;
     }
     
     ShaderDef& ShaderDef::texture() // const TextureBufferRef &texture )
@@ -93,32 +101,32 @@ namespace cinder { namespace mtl {
         return *this;
     }
 
-//    bool ShaderDef::isTextureSwizzleDefault() const
-//    {
-//        return mTextureSwizzleMask[0] == GL_RED &&
-//        mTextureSwizzleMask[1] == GL_GREEN &&
-//        mTextureSwizzleMask[2] == GL_BLUE &&
-//        mTextureSwizzleMask[3] == GL_ALPHA;
-//    }
-//    
-//    // this only works with RGBA values
-//    std::string ShaderDef::getTextureSwizzleString() const
-//    {
-//        string result;
-//        for( int i = 0; i < 4; ++i ) {
-//            if( mTextureSwizzleMask[i] == GL_RED )
-//            result += "r";
-//            else if( mTextureSwizzleMask[i] == GL_GREEN )
-//            result += "g";
-//            else if( mTextureSwizzleMask[i] == GL_BLUE )
-//            result += "b";
-//            else
-//            result += "a";
-//        }
-//        
-//        return result;
-//    }
-    
+    bool ShaderDef::isTextureSwizzleDefault() const
+    {
+        return mTextureSwizzleMask[0] == RED &&
+        mTextureSwizzleMask[1] == GREEN &&
+        mTextureSwizzleMask[2] == BLUE &&
+        mTextureSwizzleMask[3] == ALPHA;
+    }
+
+    // this only works with RGBA values
+    std::string ShaderDef::getTextureSwizzleString() const
+    {
+        string result;
+        for( int i = 0; i < 4; ++i )
+        {
+            if( mTextureSwizzleMask[i] == RED )
+            result += "r";
+            else if( mTextureSwizzleMask[i] == GREEN )
+            result += "g";
+            else if( mTextureSwizzleMask[i] == BLUE )
+            result += "b";
+            else
+            result += "a";
+        }
+
+        return result;
+    }
     
     bool ShaderDef::operator<( const ShaderDef &rhs ) const
     {
@@ -136,14 +144,14 @@ namespace cinder { namespace mtl {
         {
             return rhs.mColor;
         }
-//        else if( rhs.mTextureSwizzleMask[0] != mTextureSwizzleMask[0] )
-//        return mTextureSwizzleMask[0] < rhs.mTextureSwizzleMask[0];
-//        else if( rhs.mTextureSwizzleMask[1] != mTextureSwizzleMask[1] )
-//        return mTextureSwizzleMask[1] < rhs.mTextureSwizzleMask[1];	
-//        else if( rhs.mTextureSwizzleMask[2] != mTextureSwizzleMask[2] )
-//        return mTextureSwizzleMask[2] < rhs.mTextureSwizzleMask[2];	
-//        else if( rhs.mTextureSwizzleMask[3] != mTextureSwizzleMask[3] )
-//        return mTextureSwizzleMask[3] < rhs.mTextureSwizzleMask[3];	
+        else if( rhs.mTextureSwizzleMask[0] != mTextureSwizzleMask[0] )
+        return mTextureSwizzleMask[0] < rhs.mTextureSwizzleMask[0];
+        else if( rhs.mTextureSwizzleMask[1] != mTextureSwizzleMask[1] )
+        return mTextureSwizzleMask[1] < rhs.mTextureSwizzleMask[1];	
+        else if( rhs.mTextureSwizzleMask[2] != mTextureSwizzleMask[2] )
+        return mTextureSwizzleMask[2] < rhs.mTextureSwizzleMask[2];	
+        else if( rhs.mTextureSwizzleMask[3] != mTextureSwizzleMask[3] )
+        return mTextureSwizzleMask[3] < rhs.mTextureSwizzleMask[3];	
 
         if( rhs.mLambert != mLambert )
         {
@@ -254,7 +262,7 @@ namespace cinder { namespace mtl {
         
         s +=
         "vertex ciVertexOut_t ci_generated_vert( device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],\n"
-        "                                        device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],\n"
+        "                                        device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],\n"
         "                                        device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],\n"
         "                                        constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],\n";
         if ( shader.mRing )
@@ -410,6 +418,12 @@ namespace cinder { namespace mtl {
                     s += "   float4 texColor = texture.sample(ci_shader_sampler, in.texCoords);\n";
                 }
             }
+            
+            if( !shader.isTextureSwizzleDefault() )
+            {
+                    s += "   texColor = texColor." + shader.getTextureSwizzleString();
+            }
+
             s += "   oColor *= texColor;\n";
         }
 

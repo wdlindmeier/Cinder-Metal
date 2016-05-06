@@ -18,7 +18,7 @@ namespace cinder { \
         { \
             ciBufferIndexUniforms = 0, \
             ciBufferIndexInterleavedVerts = 1, \
-            ciBufferIndexIndicies = 2, \
+            ciBufferIndexIndices = 2, \
             ciBufferIndexPositions = 3, \
             ciBufferIndexColors = 4, \
             ciBufferIndexTexCoords0 = 5, \

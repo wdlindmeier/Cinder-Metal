@@ -20,6 +20,27 @@ namespace cinder { namespace mtl {
     
     typedef std::shared_ptr<class Batch> BatchRef;
     
+    /*
+    Batch infers attribute mapping by name.
+    If you use the names found in src/Batch.cpp for your custom structs,
+    the Batch class will know where to put the data.
+    
+    e.g.:
+     
+    typedef struct
+    {
+        metal::packed_float3 ciPosition;
+        metal::packed_float3 ciNormal;
+        metal::packed_float2 ciTexCoord0;
+        metal::packed_float4 ciColor;
+    } MyVertex;
+    
+    Batch will inspect your vertex function and look for parameters with pre-defined names and buffer indices.
+    
+    ciVerts: The vertex data populated by a Batch. Should use buffer index ciBufferIndexInterleavedVerts.
+    ciIndices: The vertex indices used to access the ciVerts array. Should use buffer index ciBufferIndexIndices.
+    ciUniforms: The uniforms passed in by the context. Should be located at ciBufferIndexUniforms.
+    */
     class Batch
     {
         public:
@@ -94,6 +115,6 @@ namespace cinder { namespace mtl {
         
             ci::geom::BufferLayout mInterleavedLayout;
             std::map<ci::geom::Attrib, unsigned long> mAttribBufferIndices;
-
+            unsigned long mIndicesBufferIndex = ciBufferIndexIndices;
     };
 }}

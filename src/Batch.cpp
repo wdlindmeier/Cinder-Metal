@@ -51,30 +51,6 @@ static AttribSemanticMap & getDefaultAttribNameToSemanticMap()
     return sDefaultAttribNameToSemanticMap;
 }
 
-Batch::Batch( const VertexBufferRef &vertexBuffer,
-              const RenderPipelineStateRef & pipeline,
-              const AttributeMapping &attributeMapping )
-:
-mRenderPipeline(pipeline),
-mVertexBuffer(vertexBuffer)
-{
-    // NOTE: We're not really generating or formatting any vert data here,
-    // just checking that the shader and the VertBuffer are in agreement.
-    initBufferLayout( attributeMapping );
-    checkBufferLayout();
-}
-
-Batch::Batch( const ci::geom::Source &source,
-              const RenderPipelineStateRef &pipeline,
-              const AttributeMapping &attributeMapping )
-: mRenderPipeline(pipeline)
-{
-    initBufferLayout( attributeMapping );
-    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedLayout );
-    checkBufferLayout();
-}
-
-// TODO: Move this
 const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size )
 {
     switch (type)
@@ -156,7 +132,7 @@ const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size
             CI_LOG_F("ERROR: Unsopported data type in ciVerts");
             break;
     }
-
+    
     switch (type)
     {
         case DataTypeFloat:
@@ -232,6 +208,30 @@ const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size
     return 0;
 }
 
+Batch::Batch( const VertexBufferRef &vertexBuffer,
+              const RenderPipelineStateRef & pipeline,
+              const AttributeMapping &attributeMapping )
+:
+mRenderPipeline(pipeline),
+mVertexBuffer(vertexBuffer)
+{
+    // NOTE: We're not really generating or formatting any vert data here,
+    // just checking that the shader and the VertBuffer are in agreement.
+    initBufferLayout( attributeMapping );
+    checkBufferLayout();
+}
+
+Batch::Batch( const ci::geom::Source &source,
+              const RenderPipelineStateRef &pipeline,
+              const AttributeMapping &attributeMapping )
+: mRenderPipeline(pipeline)
+{
+    initBufferLayout( attributeMapping );
+    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedLayout );
+    mVertexBuffer->setIndicesBufferIndex(mIndicesBufferIndex);
+    checkBufferLayout();
+}
+
 void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
 {
     std::map<std::string, ci::geom::Attrib> inverseMapping;
@@ -297,9 +297,13 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
                 }
                 else
                 {
-                    CI_LOG_E( "ciVerts must be defined as a struct" );
+                    CI_LOG_E( "ciVerts must be defined as a struct." );
                     assert(false);
                 }
+            }
+            else if ( argName == "ciIndices" )
+            {
+                mIndicesBufferIndex = argument.getIndex();
             }
             else
             {
@@ -343,11 +347,11 @@ void Batch::checkBufferLayout()
             // Make sure the buffer exists.
             assert( mVertexBuffer->getBufferForAttribute(attrWithIndex.first) );
             // Set the correct shader buffer index
-            unsigned long attrIndex = mVertexBuffer->getAttributeShaderIndex(attrWithIndex.first);
+            unsigned long attrIndex = mVertexBuffer->getAttributeBufferIndex(attrWithIndex.first);
             if ( attrIndex == -1 )
             {
                 // Should this be a negative assertion?
-                mVertexBuffer->setAttributeShaderIndex(attrWithIndex.first,
+                mVertexBuffer->setAttributeBufferIndex(attrWithIndex.first,
                                                        attrWithIndex.second);
             }
             else
@@ -370,6 +374,8 @@ void Batch::checkBufferLayout()
         // ...
         // Assume the data format is correct
     }
+    
+    assert( mVertexBuffer->getIndicesBufferIndex() == mIndicesBufferIndex );
 }
 
 void Batch::replacePipeline( const RenderPipelineStateRef& pipeline )
