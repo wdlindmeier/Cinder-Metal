@@ -35,6 +35,7 @@ namespace cinder { namespace mtl {
     ,mTextureArray( false )
     ,mBillboard( false )
     ,mRing(false)
+    ,mAlphaBlending(false)
     ,mUniformBasedPosAndTexCoord( false )
     {
         mTextureSwizzleMask[0] = RED;
@@ -91,6 +92,12 @@ namespace cinder { namespace mtl {
     ShaderDef& ShaderDef::ring()
     {
         mRing = true;
+        return *this;
+    }
+    
+    ShaderDef& ShaderDef::alphaBlending()
+    {
+        mAlphaBlending = true;
         return *this;
     }
 
@@ -171,6 +178,11 @@ namespace cinder { namespace mtl {
             return rhs.mRing;
         }
         
+        if ( rhs.mAlphaBlending != mAlphaBlending )
+        {
+            return rhs.mAlphaBlending;
+        }
+        
         return false;
     }
     
@@ -184,12 +196,12 @@ namespace cinder { namespace mtl {
         string library = ""
         "#include <metal_stdlib>\n"
         "#include <simd/simd.h>\n"
-        // Hey there! Here's a supper crappy way to share types with online shaders
-        STRINGIFY(ShaderTypes)
-        STRINGIFY(MetalConstants);
+         // These user includes will be pre-processed by RenderPipelineState
+        "#include \"ShaderTypes.h\"\n"
+        "#include \"MetalConstants.h\"\n";
         if ( shader.mBillboard )
         {
-            library += STRINGIFY(ShaderUtils);
+            library += "#include \"ShaderUtils.h\"\n";
         }
         library += "\n"
         "using namespace metal;\n"
@@ -434,20 +446,9 @@ namespace cinder { namespace mtl {
     ci::mtl::RenderPipelineStateRef	PipelineBuilder::buildPipeline( const ShaderDef &shader,
                                                                     mtl::RenderPipelineState::Format format )
     {
-        id<MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
         std::string librarySource = PipelineBuilder::generateMetalLibrary(shader);
         CI_LOG_V("Generated Library:\n" << librarySource);
-        NSError *compileError = nil;
-        id<MTLLibrary> library = [device newLibraryWithSource:[NSString stringWithUTF8String:librarySource.c_str()]
-                                                      options:0
-                                                        error:&compileError];
-        
-        if ( compileError )
-        {
-            NSLog(@"ERROR building pipeline:\n %@", compileError);
-        }
-        RenderPipelineStateRef pipeline = RenderPipelineState::create( "ci_generated_vert", "ci_generated_frag", format, (__bridge void *)library );
-        return pipeline;
+        return RenderPipelineState::create(librarySource, "ci_generated_vert", "ci_generated_frag", format);
     }
     
 } } // namespace cinder::mtl

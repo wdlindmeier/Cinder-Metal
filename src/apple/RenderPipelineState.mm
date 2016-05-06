@@ -95,6 +95,60 @@ mImpl( mtlRenderPipelineStateRef )
     CFRetain(mReflection);
 }
 
+void PreprocessLibrarySource( std::string & librarySource )
+{
+#define STRINGIFY(s) str(s)
+#define str(...) #__VA_ARGS__
+    std::string findString = "#include \"MetalConstants.h\"";
+    size_t loc = librarySource.find(findString);
+    if ( loc != std::string::npos )
+    {
+        librarySource.replace(loc,
+                              findString.length(),
+                              STRINGIFY(MetalConstants));
+    }
+    findString = "#include \"ShaderTypes.h\"";
+    loc = librarySource.find(findString);
+    if ( loc != std::string::npos )
+    {
+        librarySource.replace(loc,
+                              findString.length(),
+                              STRINGIFY(ShaderTypes));
+    }
+    findString = "#include \"ShaderUtils.h\"";
+    loc = librarySource.find(findString);
+    if ( loc != std::string::npos )
+    {
+        librarySource.replace(loc,
+                              findString.length(),
+                              STRINGIFY(ShaderUtils));
+    }
+#undef STRINGIFY
+#undef str
+}
+
+RenderPipelineStateRef RenderPipelineState::create( const std::string & librarySource,
+                                                    const std::string & vertName,
+                                                    const std::string & fragName,
+                                                    const mtl::RenderPipelineState::Format & format )
+{
+    id <MTLDevice> device = [RendererMetalImpl sharedRenderer].device;
+    NSError *compileError = nil;
+    std::string preprocessedLibrary = librarySource;
+    if ( format.getPreprocessSource() )
+    {
+        PreprocessLibrarySource(preprocessedLibrary);
+    }
+    id<MTLLibrary> library = [device newLibraryWithSource:[NSString stringWithUTF8String:preprocessedLibrary.c_str()]
+                                                  options:0
+                                                    error:&compileError];
+    if ( compileError )
+    {
+        NSLog(@"ERROR building pipeline:\n %@", compileError);
+    }
+    return RenderPipelineState::create( vertName, fragName, format, (__bridge void *)library );
+}
+
 RenderPipelineState::~RenderPipelineState()
 {
     if ( mImpl )

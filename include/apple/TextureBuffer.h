@@ -52,43 +52,43 @@ namespace cinder { namespace mtl {
 
             Format& mipmapLevel( int mipmapLevel ) { setMipmapLevel( mipmapLevel ); return *this; };
             void setMipmapLevel( int mipmapLevel ) { mMipmapLevel = mipmapLevel; };
-            int getMipmapLevel() { return mMipmapLevel; };
+            int getMipmapLevel() const { return mMipmapLevel; };
 
             Format& sampleCount( int sampleCount ) { setSampleCount( sampleCount ); return *this; };
             void setSampleCount( int sampleCount ) { mSampleCount = sampleCount; };
-            int getSampleCount() { return mSampleCount; };
+            int getSampleCount() const { return mSampleCount; };
 
             Format& textureType( TextureType textureType ) { setTextureType( textureType ); return *this; };
             void setTextureType( TextureType textureType ) { mTextureType = textureType; };
-            TextureType getTextureType() { return mTextureType; };
+            TextureType getTextureType() const { return mTextureType; };
 
             Format& pixelFormat( PixelFormat pixelFormat ) { setPixelFormat( pixelFormat ); return *this; };
             void setPixelFormat( PixelFormat pixelFormat ) { mPixelFormat = pixelFormat; };
-            PixelFormat getPixelFormat() { return mPixelFormat; };
+            PixelFormat getPixelFormat() const { return mPixelFormat; };
 
             Format& flipVertically( bool flipVertically = true ) { setFlipVertically( flipVertically ); return *this; };
             void setFlipVertically( bool flipVertically ) { mFlipVertically = flipVertically; };
-            bool getFlipVertically() { return mFlipVertically; };
+            bool getFlipVertically() const { return mFlipVertically; };
 
             Format& depth( int depth ) { setDepth( depth ); return *this; };
             void setDepth( int depth ) { mDepth = depth; };
-            int getDepth() { return mDepth; };
+            int getDepth() const { return mDepth; };
 
             Format& arrayLength( int arrayLength ) { setArrayLength( arrayLength ); return *this; };
             void setArrayLength( int arrayLength ) { mArrayLength = arrayLength; };
-            int getArrayLength() { return mArrayLength; };
+            int getArrayLength() const { return mArrayLength; };
 
             Format& usage( TextureUsage usage ) { setUsage( usage ); return *this; };
             void setUsage( TextureUsage usage ) { mUsage = usage; };
-            TextureUsage getUsage() { return mUsage; };
+            TextureUsage getUsage() const { return mUsage; };
 
             Format& storageMode( StorageMode storageMode ) { setStorageMode( storageMode ); return *this; };
             void setStorageMode( StorageMode storageMode ) { mStorageMode = storageMode; };
-            StorageMode getStorageMode() { return mStorageMode; };
+            StorageMode getStorageMode() const { return mStorageMode; };
             
             Format& cacheMode( CPUCacheMode cacheMode ) { setCacheMode( cacheMode ); return *this; };
             void setCacheMode( CPUCacheMode cacheMode ) { mCacheMode = cacheMode; };
-            CPUCacheMode getCacheMode() { return mCacheMode; };
+            CPUCacheMode getCacheMode() const { return mCacheMode; };
 
         protected:
             

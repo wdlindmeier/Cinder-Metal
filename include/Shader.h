@@ -22,14 +22,23 @@ namespace cinder { namespace mtl {
         
         // Attribs
         ShaderDef&		color();
+        ShaderDef&		alphaBlending();
         ShaderDef&		texture();
         ShaderDef&		lambert();
         ShaderDef&		points();
         ShaderDef&		textureArray();
+        bool            getColor() const { return mColor; };
+        bool            getAlphaBlending() const { return mAlphaBlending; };
+        bool            getTexture() const { return mTextureMapping; };
+        bool            getLambert() const { return mLambert; };
+        bool            getPoints() const { return mPoints; };
+        bool            getTextureArray() const { return mTextureArray; };
         
         // Display
         ShaderDef&		billboard();
         ShaderDef&		uniformBasedPosAndTexCoord();
+        bool            getBillboard() const { return mBillboard; };
+        bool            getUniformBasedPosAndTexCoord() const { return mUniformBasedPosAndTexCoord; };
         
         // Geom
         ShaderDef&      ring();
@@ -46,14 +55,13 @@ namespace cinder { namespace mtl {
         bool					mUniformBasedPosAndTexCoord;
         
         bool					mColor;
+        bool                    mAlphaBlending;
         bool					mLambert;
         bool                    mPoints;
         bool					mTextureArray;
         bool                    mBillboard;
         bool                    mRing;
         
-    //    friend class EnvironmentCore;
-    //    friend class EnvironmentEs;
         friend class PipelineBuilder;
     };
     
