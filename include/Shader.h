@@ -22,7 +22,7 @@ namespace cinder { namespace mtl {
         
         // Attribs
         ShaderDef&		color();
-        ShaderDef&		texture(); // const TextureBufferRef &tex = TextureBufferRef() );
+        ShaderDef&		texture();
         ShaderDef&		lambert();
         ShaderDef&		points();
         ShaderDef&		textureArray();
@@ -34,16 +34,15 @@ namespace cinder { namespace mtl {
         // Geom
         ShaderDef&      ring();
         
-    //    bool			isTextureSwizzleDefault() const;
-    //    std::string		getTextureSwizzleString() const;
+        bool			isTextureSwizzleDefault() const;
+        std::string		getTextureSwizzleString() const;
         
         bool operator<( const ShaderDef &rhs ) const;
         
         protected:
         
         bool					mTextureMapping;
-    //    bool					mTextureMappingRectangle;
-    //    std::array<int,4>		mTextureSwizzleMask;
+        std::array<int,4>		mTextureSwizzleMask;
         bool					mUniformBasedPosAndTexCoord;
         
         bool					mColor;

@@ -51,31 +51,6 @@ static AttribSemanticMap & getDefaultAttribNameToSemanticMap()
     return sDefaultAttribNameToSemanticMap;
 }
 
-Batch::Batch( const VertexBufferRef &vertexBuffer,
-              const RenderPipelineStateRef & pipeline,
-              const AttributeMapping &attributeMapping )
-:
-mRenderPipeline(pipeline),
-mVertexBuffer(vertexBuffer)
-{
-    // NOTE: We're not really generating or formatting any vert data here,
-    // just checking that the shader and the VertBuffer are in agreement.
-    initBufferLayout( attributeMapping );
-    checkBufferLayout();
-}
-
-Batch::Batch( const ci::geom::Source &source,
-              const RenderPipelineStateRef &pipeline,
-              const AttributeMapping &attributeMapping )
-: mRenderPipeline(pipeline)
-{
-    initBufferLayout( attributeMapping );
-    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedLayout );
-    mVertexBuffer->setIndicesBufferIndex(mIndicesBufferIndex);
-    checkBufferLayout();
-}
-
-// TODO: Move this
 const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size )
 {
     switch (type)
@@ -157,7 +132,7 @@ const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size
             CI_LOG_F("ERROR: Unsopported data type in ciVerts");
             break;
     }
-
+    
     switch (type)
     {
         case DataTypeFloat:
@@ -231,6 +206,30 @@ const static uint DimensionsForAttributeOfType( mtl::DataType type, size_t *size
             break;
     }
     return 0;
+}
+
+Batch::Batch( const VertexBufferRef &vertexBuffer,
+              const RenderPipelineStateRef & pipeline,
+              const AttributeMapping &attributeMapping )
+:
+mRenderPipeline(pipeline),
+mVertexBuffer(vertexBuffer)
+{
+    // NOTE: We're not really generating or formatting any vert data here,
+    // just checking that the shader and the VertBuffer are in agreement.
+    initBufferLayout( attributeMapping );
+    checkBufferLayout();
+}
+
+Batch::Batch( const ci::geom::Source &source,
+              const RenderPipelineStateRef &pipeline,
+              const AttributeMapping &attributeMapping )
+: mRenderPipeline(pipeline)
+{
+    initBufferLayout( attributeMapping );
+    mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedLayout );
+    mVertexBuffer->setIndicesBufferIndex(mIndicesBufferIndex);
+    checkBufferLayout();
 }
 
 void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
