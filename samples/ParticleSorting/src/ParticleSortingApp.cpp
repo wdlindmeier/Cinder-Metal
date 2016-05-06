@@ -103,7 +103,7 @@ void ParticleSortingApp::loadAssets()
         particleDepths.push_back(p.position.z);
     }
 
-    // Make sure we've got the right number of indicies
+    // Make sure we've got the right number of indices
     assert( float(indices.size()) == particles.size() / 4.0f );
 
     mPipelineParticles = mtl::RenderPipelineState::create("vertex_particles", "fragment_point_texture",
@@ -276,7 +276,7 @@ void ParticleSortingApp::draw()
     renderEncoder.setVertexBufferAtIndex(mParticlesUnsorted, mtl::ciBufferIndexInterleavedVerts);
 
     // Pass in the sorted particle indices
-    renderEncoder.setVertexBufferAtIndex(mParticleIndices, mtl::ciBufferIndexIndicies);
+    renderEncoder.setVertexBufferAtIndex(mParticleIndices, mtl::ciBufferIndexIndices);
 
     renderEncoder.setTexture(mTextureParticle);
     

@@ -28,7 +28,7 @@ typedef struct
 } ciVertexOut_t;
 
 vertex ciVertexOut_t generated_vert( device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                     device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
+                                     device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                      device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                      constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                      unsigned int vid [[ vertex_id ]],

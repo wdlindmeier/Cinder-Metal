@@ -32,10 +32,10 @@ typedef struct
 
 // Cinder-Metal will inspect your vertex function and look for parameters with pre-defined names and buffer indices.
 // ciVerts: The vertex data populated by a Batch. Should use buffer index ciBufferIndexInterleavedVerts.
-// ciIndices: The vertex indices used to access the ciVerts array. Should use buffer index ciBufferIndexIndicies.
+// ciIndices: The vertex indices used to access the ciVerts array. Should use buffer index ciBufferIndexIndices.
 // ciUniforms: The uniforms passed in by the context. Should be located at ciBufferIndexUniforms.
 vertex ciVertOut_t geom_vertex( device const MyVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
+                                device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                 constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                 unsigned int vid [[ vertex_id ]] )
 {

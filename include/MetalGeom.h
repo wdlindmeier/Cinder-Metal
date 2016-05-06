@@ -29,7 +29,7 @@ namespace cinder { namespace mtl {
         extern Primitive mtlPrimitiveTypeFromGeom( const ci::geom::Primitive primitive );
         
         // Returns the shader index associated with a given attribute
-        extern int defaultShaderIndexForAttribute( const ci::geom::Attrib attr );
+        extern int defaultBufferIndexForAttribute( const ci::geom::Attrib attr );
                 
     }
 }}

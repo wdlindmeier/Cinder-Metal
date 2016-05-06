@@ -76,7 +76,7 @@ namespace cinder { namespace mtl { namespace geom {
         return MTLPrimitiveTypeTriangle;
     }
     
-    int defaultShaderIndexForAttribute( const ci::geom::Attrib attr )
+    int defaultBufferIndexForAttribute( const ci::geom::Attrib attr )
     {
         switch (attr)
         {

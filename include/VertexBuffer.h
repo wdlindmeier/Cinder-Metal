@@ -56,12 +56,18 @@ namespace cinder { namespace mtl {
         void setInterleavedBuffer( DataBufferRef buffer ){ mInterleavedData = buffer; };
         DataBufferRef getInterleavedBuffer(){ return mInterleavedData; };
 
+        void setIndexBuffer( DataBufferRef buffer ){ mIndexBuffer = buffer; };
+        DataBufferRef getIndexBuffer(){ return mIndexBuffer; };
+
         // Override the default shader indices.
         // The default geom::Attr shader indices are defined in MetalConstants.h
-        void setAttributeShaderIndex( const ci::geom::Attrib attr, unsigned long shaderBufferIndex );
+        void setAttributeBufferIndex( const ci::geom::Attrib attr, unsigned long shaderBufferIndex );
         // Returns -1 if the attr doesnt have an index
-        unsigned long getAttributeShaderIndex( const ci::geom::Attrib attr );
-        
+        unsigned long getAttributeBufferIndex( const ci::geom::Attrib attr );
+
+        void setIndicesBufferIndex( unsigned long shaderBufferIndex ){ mBufferIndexIndices = shaderBufferIndex; };
+        unsigned long getIndicesBufferIndex(){ return mBufferIndexIndices; };
+
         template<typename T>
         void update( ci::geom::Attrib attr, std::vector<T> vectorData )
         {
@@ -106,6 +112,8 @@ namespace cinder { namespace mtl {
         ci::geom::SourceRef mSource;
         size_t mVertexLength;
         size_t mIndexLength;
+        
+        unsigned long mBufferIndexIndices = ciBufferIndexIndices; // default
         
         ci::geom::BufferLayout mBufferLayout;
         DataBufferRef mInterleavedData;

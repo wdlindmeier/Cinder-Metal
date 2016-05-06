@@ -27,7 +27,7 @@ typedef struct
 using namespace metal;
 
 vertex ciVertOut_t cube_vertex( device const CubeVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                device const uint* ciIndices [[ buffer(ciBufferIndexIndicies) ]],
+                                device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                 constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                 unsigned int vid [[ vertex_id ]] )
 {

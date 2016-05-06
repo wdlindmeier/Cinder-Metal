@@ -62,7 +62,7 @@ vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* v
 // Vertex Bhader using an interleaved geom::Source
 // CubeVertex is found in SharedData.h
 vertex ColorInOut lighting_vertex_interleaved_src( device const CubeVertex* verts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                                   device const uint* indices [[ buffer(ciBufferIndexIndicies) ]],
+                                                   device const uint* indices [[ buffer(ciBufferIndexIndices) ]],
                                                    constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                    unsigned int vid [[ vertex_id ]] )
 {
