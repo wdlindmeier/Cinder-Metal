@@ -34,7 +34,7 @@ namespace cinder { namespace mtl {
             virtual ~PlatformData() {}
             
             bool		mDebug, mObjectTracking;
-            GLenum		mDebugLogSeverity, mDebugBreakSeverity;
+            unsigned int mDebugLogSeverity, mDebugBreakSeverity;
         };
         
         static ContextRef	create( const Context *sharedContext );
@@ -226,5 +226,5 @@ namespace cinder { namespace mtl {
     class ExceptionUnknownTarget : public Exception {
     };
     
-} } // namespace cinder::gl
+} } // namespace cinder::mtl
 

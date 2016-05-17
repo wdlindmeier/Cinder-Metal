@@ -447,7 +447,8 @@ void RenderEncoder::drawColoredCube( ci::vec3 position, ci::vec3 size,
 
 // Draw a texture
 void RenderEncoder::draw( mtl::TextureBufferRef & texture, ci::Rectf rect,
-                          ci::mtl::DataBufferRef instanceBuffer, unsigned int numInstances )
+                          ci::mtl::DataBufferRef instanceBuffer,
+                          unsigned int numInstances )
 {
     mtl::ScopedModelMatrix matModel;
     bool hasRect = rect.getWidth() != 0 && rect.getHeight() != 0;

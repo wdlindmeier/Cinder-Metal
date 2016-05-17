@@ -2,6 +2,7 @@
 
 #include "cinder/Cinder.h"
 #include "cinder/app/Renderer.h"
+#include "MetalEnums.h"
 
 #if defined( CINDER_COCOA )
 //#include "CinderViewCocoaTouch+Metal.h"
@@ -43,11 +44,14 @@ namespace cinder {
                 const int getNumInflightBuffers() const { return mMaxInflightBuffers; }
                 Options & framebufferOnly( bool framebufferOnly ){ mFramebufferOnly = framebufferOnly; return *this; };
                 const int getFramebufferOnly() const { return mFramebufferOnly; }
+                Options & pixelFormat( mtl::PixelFormat format ){ mPixelFormat = format; return *this; };
+                const mtl::PixelFormat getPixelFormat() const { return mPixelFormat; }
                 
             protected:
                 
                 int mMaxInflightBuffers;
                 bool mFramebufferOnly;
+                mtl::PixelFormat mPixelFormat = mtl::PixelFormatBGRA8Unorm;
                 
             };
             

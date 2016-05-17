@@ -135,7 +135,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     }
 
     // Pixel format could be an option.
-    _metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
+    _metalLayer.pixelFormat = (MTLPixelFormat)options.getPixelFormat();
     
     // Change this to NO if the compute encoder is used as the last pass on the drawable texture,
     // or if you wish to copy the layer contents to an image.
