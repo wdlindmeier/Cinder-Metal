@@ -36,11 +36,18 @@ public:
     , mShiftDown( false )
     , mShowBounds( false )
     , mEnableDemo( false )
+    , mFocus(mFocalPlane)
     {}
     
     static void prepare( Settings *settings );
     
     void setup() override;
+    void setupRenderDescriptors();
+    void setupInstances();
+    void setupGeometry();
+    void setupTextures();
+    void setupCamera();
+    
     void update() override;
     void update( double timestep ); // Will be called a fixed number of times per second.
     void draw() override;
@@ -64,12 +71,11 @@ private:
     CameraPersp                  mCameraUser;                     // Our user camera. We'll smoothly interpolate the main camera using the user camera as reference.
     ci::CameraUi                 mCameraUi;                       // Allows us to control the main camera.
     Sphere                       mBounds;                         // Bounding sphere of a single teapot, allows us to easily find the object under the cursor.
-    //gl::VboRef             mInstances;                      // Buffer containing the model matrix for each teapot.
     mtl::DataBufferRef           mInstances;
 
     // TODO:
     // Create an indexed uniform block with all of the params
-    mtl::UniformBlock<myUniforms_t> mUniforms;
+    // mtl::UniformBlock<myUniforms_t> mUniforms;
     
     mtl::BatchRef               mTeapots, mBackground, mSpheres; // Batches to draw our objects.
     mtl::TextureBufferRef       mTexGold, mTexClay;              // Textures.
@@ -108,6 +114,8 @@ private:
     vec2 mMousePos;
 };
 
+#pragma mark - Setup
+
 void DepthOfFieldApp::prepare( Settings *settings )
 {
     settings->setWindowSize( 960, 540 );
@@ -116,37 +124,28 @@ void DepthOfFieldApp::prepare( Settings *settings )
 
 void DepthOfFieldApp::setup()
 {
-    mFocus = mFocalPlane;
-    
+    setupRenderDescriptors();
+    setupInstances();
+    setupGeometry();
+    setupTextures();
+    setupCamera();
+}
+
+void DepthOfFieldApp::setupRenderDescriptors()
+{
     mRenderDescriptor = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
                                                           .clearColor( ColorAf(1.f, 0.f, 0.f, 1.f) ) );
     
-    // TODO: Play around with these formats
     mRenderDescriptorFboGeom = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
-                                                             .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) )
-                                                             .stencilStoreAction( mtl::StoreActionStore )
-                                                             .stencilUsage( ( mtl::TextureUsage )
-                                                                            ( mtl::TextureUsageRenderTarget |
-                                                                              mtl::TextureUsageShaderRead ) )
-                                                             .depthStoreAction( mtl::StoreActionStore )
-                                                             .depthUsage( ( mtl::TextureUsage )
-                                                                          ( mtl::TextureUsageRenderTarget |
-                                                                            mtl::TextureUsageShaderRead ) )
-                                                             );
-    mRenderDescriptorFboBlur = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
-                                                                 .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) )
-                                                                 .depthStoreAction( mtl::StoreActionStore )
-                                                                 .depthUsage( ( mtl::TextureUsage )
-                                                                             ( mtl::TextureUsageRenderTarget |
-                                                                               mtl::TextureUsageShaderRead ) )
-                                                                 );
+                                                                 .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) ) );
 
-    // Load the textures.
-    mTexGold = mtl::TextureBuffer::create( loadImage( loadAsset( "gold.png" ) ),
-                                           mtl::TextureBuffer::Format().flipVertically() );
-    mTexClay = mtl::TextureBuffer::create( loadImage( loadAsset( "clay.png" ) ),
-                                           mtl::TextureBuffer::Format().flipVertically() );
-    
+    mRenderDescriptorFboBlur = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
+                                                                 .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) ) );
+
+}
+
+void DepthOfFieldApp::setupInstances()
+{
     // Initialize model matrices (one for each instance).
     std::vector<mtl::Instance> instances;
     for( int z = -4; z <= 4; z++ )
@@ -171,37 +170,48 @@ void DepthOfFieldApp::setup()
     
     // TODO: Make this indexed
     mInstances = mtl::DataBuffer::create(instances, mtl::DataBuffer::Format().label("Node Instances").isConstant());
+}
     
-    // Create mesh and append per-instance data.
-    AxisAlignedBox bounds;
-
-    mTeapots = mtl::Batch::create( geom::Teapot().subdivisions( 8 ) >> geom::Translate( 0, -0.5f, 0 ) >> geom::Bounds( &bounds ),
-                                  mtl::RenderPipelineState::create("instanced_vertex", "scene_fragment",
-                                                                   mtl::RenderPipelineState::Format()
-                                                                   .pixelFormat(mtl::PixelFormatRGBA16Float)) );
-    
-    mBounds.setCenter( bounds.getCenter() );
-    mBounds.setRadius( 0.5f * glm::length( bounds.getExtents() ) ); // Scale down for a better fit.
-    
-    // Create batches.
+void DepthOfFieldApp::setupGeometry()
+{
+    // Pipelines
     auto blendingFormat = mtl::RenderPipelineState::Format().blendingEnabled().pixelFormat(mtl::PixelFormatRGBA16Float);
     auto opaqueFormat = mtl::RenderPipelineState::Format().pixelFormat(mtl::PixelFormatRGBA16Float);
     
-    mSpheres = mtl::Batch::create( geom::WireSphere().center( mBounds.getCenter() ).radius( mBounds.getRadius() ),
-                                    mtl::RenderPipelineState::create("instanced_vertex", "debug_fragment",
-                                                                      blendingFormat) );
-
-    // Create background.
-    mBackground = mtl::Batch::create( geom::Sphere().subdivisions( 60 ).radius( 150.0f ) >> geom::Invert( geom::NORMAL ),
-                                      mtl::RenderPipelineState::create("background_vertex", "scene_fragment",
-                                                                        opaqueFormat) );
-
     mPipelineBlurHoriz = mtl::RenderPipelineState::create("texture_vertex", "blur_horiz_fragment", opaqueFormat);
     
     mPipelineBlurVert = mtl::RenderPipelineState::create("texture_vertex", "blur_vert_fragment", opaqueFormat);
     
     mPipelineComposite = mtl::RenderPipelineState::create("texture_vertex", "composite_fragment", opaqueFormat);
 
+    // Geometry
+    AxisAlignedBox bounds;
+    
+    mTeapots = mtl::Batch::create( geom::Teapot().subdivisions( 8 ) >> geom::Translate( 0, -0.5f, 0 ) >> geom::Bounds( &bounds ),
+                                    mtl::RenderPipelineState::create("instanced_vertex", "scene_fragment", opaqueFormat) );
+    
+    mBounds.setCenter( bounds.getCenter() );
+    mBounds.setRadius( 0.5f * glm::length( bounds.getExtents() ) ); // Scale down for a better fit.
+    
+    mSpheres = mtl::Batch::create( geom::WireSphere().center( mBounds.getCenter() ).radius( mBounds.getRadius() ),
+                                    mtl::RenderPipelineState::create("instanced_vertex", "debug_fragment", blendingFormat) );
+
+    mBackground = mtl::Batch::create( geom::Sphere().subdivisions( 60 ).radius( 150.0f ) >> geom::Invert( geom::NORMAL ),
+                                      mtl::RenderPipelineState::create("background_vertex", "scene_fragment", opaqueFormat) );
+    
+}
+
+void DepthOfFieldApp::setupTextures()
+{
+    // Load the textures.
+    mTexGold = mtl::TextureBuffer::create( loadImage( loadAsset( "gold.png" ) ),
+                                           mtl::TextureBuffer::Format().flipVertically() );
+    mTexClay = mtl::TextureBuffer::create( loadImage( loadAsset( "clay.png" ) ),
+                                           mtl::TextureBuffer::Format().flipVertically() );
+}
+
+void DepthOfFieldApp::setupCamera()
+{
     // Setup the camera.
     mCamera.setPerspective( mFoV, 1.0f, 0.05f, 100.0f );
     mCamera.lookAt( vec3( 8.4f, 14.1f, 29.7f ), vec3( 0 ) );
@@ -209,6 +219,8 @@ void DepthOfFieldApp::setup()
     mCameraUser.lookAt( vec3( 8.4f, 14.1f, 29.7f ), vec3( 0 ) );
     mCameraUi.setCamera( &mCameraUser );
 }
+
+#pragma mark - Update
 
 void DepthOfFieldApp::update()
 {
@@ -219,7 +231,8 @@ void DepthOfFieldApp::update()
     {
         mResized = false;
         
-        mVertexBufferTexture = mtl::VertexBuffer::create(geom::Rect(getWindowBounds()), {ci::geom::POSITION, ci::geom::TEX_COORD_0});
+        mVertexBufferTexture = mtl::VertexBuffer::create( geom::Rect(getWindowBounds()),
+                                                          {ci::geom::POSITION, ci::geom::TEX_COORD_0} );
         
         int width = getWindowWidth();
         int height = getWindowHeight();
@@ -266,7 +279,6 @@ void DepthOfFieldApp::update()
         update( mPaused ? 0.0 : timestep );
         accumulator -= timestep;
     }
-
 }
 
 void DepthOfFieldApp::update( double timestep )
@@ -344,7 +356,6 @@ void DepthOfFieldApp::update( double timestep )
                 mat4 transform = glm::translate( position );
                 transform *= glm::rotate( glm::radians( angle ), axis );
                 
-                //( *ptr++ ) = transform;
                 ( *ptr++ ).modelMatrix = toMtl(transform);
                 
                 // Ray-casting.
@@ -362,7 +373,6 @@ void DepthOfFieldApp::update( double timestep )
             }
         }
     }
-
     
     // Auto-focus.
     if( mShiftDown && dist < FLT_MAX )
@@ -371,12 +381,14 @@ void DepthOfFieldApp::update( double timestep )
     }
 }
 
+#pragma mark - Draw
+
 void DepthOfFieldApp::draw()
 {
     // Render RGB and normalized CoC (in alpha channel) to Fbo.
     if( true )
     {
-        mtl::ScopedCommandBuffer fboBuffer(true);
+        mtl::ScopedCommandBuffer fboBuffer;
         mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboGeom, mFboSource, "FBO Geom");
         // FLIP the main contents so it looks just like the Cinder demo
         fboEncoder.setViewport(vec2(0, mFboSource->getHeight()),
@@ -427,7 +439,7 @@ void DepthOfFieldApp::draw()
         {
 
             auto fbo = mFboBlurHoriz[i];
-            mtl::ScopedCommandBuffer fboBuffer(true);
+            mtl::ScopedCommandBuffer fboBuffer;
             mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboBlur, fbo, "FBO Horiz Blur " + to_string(i));
             fboEncoder.setViewport(vec2(0), vec2(fbo->getSize()));
 
@@ -464,7 +476,7 @@ void DepthOfFieldApp::draw()
         {
             auto fbo = mFboBlurVert[i];
             // TODO: Try removing "true"
-            mtl::ScopedCommandBuffer fboBuffer(true);
+            mtl::ScopedCommandBuffer fboBuffer;
             mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboBlur, fbo, "FBO Vert Blur " + to_string(i));
             fboEncoder.setViewport(vec2(0), vec2(fbo->getSize()));
 
@@ -521,6 +533,8 @@ void DepthOfFieldApp::draw()
     }
 }
 
+#pragma mark - Input
+
 void DepthOfFieldApp::mouseMove( MouseEvent event )
 {
     mShiftDown = event.isShiftDown();
@@ -562,6 +576,8 @@ void DepthOfFieldApp::keyDown( KeyEvent event )
             break;
     }
 }
+
+#pragma mark - Resize
 
 void DepthOfFieldApp::resize()
 {
