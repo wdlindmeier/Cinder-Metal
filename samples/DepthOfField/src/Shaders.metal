@@ -132,25 +132,31 @@ inline float2 gl_FragCoord( float2 texCoords, uint2 fboSize )
 constant const int KERNEL_TAPS = 6;
 constant float kern[KERNEL_TAPS + 1] = {1.00, 1.00, 0.90, 0.75, 0.60, 0.50, 0.00};
 
-fragment float4 blur_vert_fragment( VertOut in [[ stage_in ]],
-                                   texture2d<float> uBlurSource [[ texture(ciTextureIndex0) ]],
-                                   texture2d<float> uNearSource [[ texture(ciTextureIndex1) ]],
-                                   constant int   &uMaxCoCRadiusPixels [[ buffer(ciBufferIndexCustom0) ]],
-                                   constant int   &uNearBlurRadiusPixels [[ buffer(ciBufferIndexCustom1) ]],
-                                   constant uint2 &uFBOSize [[ buffer(ciBufferIndexCustom3) ]],
-                                   constant bool  &uReturnNear [[ buffer(ciBufferIndexCustom5)]] ) // TODO: Near vs Blur
+struct BlurFragmentOut
+{
+    // color attachment 0
+    float4 blurResult [[ color(0) ]];
+    // color attachment 1
+    float4 nearResult [[ color(1) ]];
+};
+
+fragment BlurFragmentOut blur_vert_fragment( VertOut in [[ stage_in ]],
+                                             texture2d<float> uBlurSource [[ texture(ciTextureIndex0) ]],
+                                             texture2d<float> uNearSource [[ texture(ciTextureIndex1) ]],
+                                             constant int   &uMaxCoCRadiusPixels [[ buffer(ciBufferIndexCustom0) ]],
+                                             constant int   &uNearBlurRadiusPixels [[ buffer(ciBufferIndexCustom1) ]],
+                                             constant uint2 &uFBOSize [[ buffer(ciBufferIndexCustom3) ]] )
 {
     int2 direction = kDirectionVertical;
     
-    float4 nearResult;
-    float4 blurResult;
+    BlurFragmentOut out;
 
     // Accumulate the blurry image color
-    blurResult.rgb  = float3( 0.0 );
+    out.blurResult.rgb  = float3( 0.0 );
     float blurWeightSum = 0.0;
     
     // Accumulate the near-field color and coverage
-    nearResult = float4( 0.0 );
+    out.nearResult = float4( 0.0 );
     float nearWeightSum = 0.0;
     
     // Location of the central filter tap (i.e., "this" pixel's location)
@@ -198,7 +204,7 @@ fragment float4 blur_vert_fragment( VertOut in [[ stage_in ]],
         
         // far + mid-field output
         blurWeightSum  += weight;
-        blurResult.rgb += blurInput.rgb * weight;
+        out.blurResult.rgb += blurInput.rgb * weight;
         
         ///////////////////////////////////////////////////////////////////////////////////////////////
         // Compute near-field super blurry buffer
@@ -206,52 +212,42 @@ fragment float4 blur_vert_fragment( VertOut in [[ stage_in ]],
         float4 nearInput;
         
         // On the vertical pass, use the already-available alpha values
-        //nearInput = texelFetch( uNearSource, clamp( B, int2( 0 ), textureSize( uNearSource, 0 ) - int2( 1 ) ), 0 );
         nearInput = uNearSource.read(uint2(clamp( B, int2( 0 ),
-                                                 //textureSize( uNearSource, 0 ) -
                                                  int2(uNearSource.get_width(0), uNearSource.get_height(0)) -
                                                  int2( 1 ) ) ));
 
         // We subsitute the following efficient expression for the more complex: weight = kernel[clamp(int(float(abs(delta) * (KERNEL_TAPS - 1)) * uInvNearBlurRadiusPixels), 0, KERNEL_TAPS)];
         weight =  float( abs( delta ) < uNearBlurRadiusPixels );
-        nearResult += nearInput * weight;
+        out.nearResult += nearInput * weight;
         nearWeightSum += weight;
     }
     
-    blurResult.a = 1.0;
+    out.blurResult.a = 1.0;
 
     // Normalize the blur
-    blurResult.rgb /= blurWeightSum;
-    nearResult     /= max( nearWeightSum, 0.00001 );
+    out.blurResult.rgb /= blurWeightSum;
+    out.nearResult     /= max( nearWeightSum, 0.00001 );
     
-    // TODO: Refactor
-    if ( uReturnNear )
-    {
-        return nearResult;
-    }
-    return blurResult;
+    return out;
 }
 
-fragment float4 blur_horiz_fragment( VertOut in [[ stage_in ]],
-                               texture2d<float> uBlurSource [[ texture(ciTextureIndex0) ]],
-                               texture2d<float> uNearSource [[ texture(ciTextureIndex1) ]],
-                               constant int   &uMaxCoCRadiusPixels [[ buffer(ciBufferIndexCustom0) ]],
-                               constant int   &uNearBlurRadiusPixels [[ buffer(ciBufferIndexCustom1) ]],
-                               constant float &uInvNearBlurRadiusPixels [[ buffer(ciBufferIndexCustom2) ]],
-                               constant uint2 &uFBOSize [[ buffer(ciBufferIndexCustom3) ]],
-                               constant bool  &uReturnNear [[ buffer(ciBufferIndexCustom5)]] ) // TODO: Near vs Blur
+fragment BlurFragmentOut blur_horiz_fragment( VertOut in [[ stage_in ]],
+                                              texture2d<float> uBlurSource [[ texture(ciTextureIndex0) ]],
+                                              constant int   &uMaxCoCRadiusPixels [[ buffer(ciBufferIndexCustom0) ]],
+                                              constant int   &uNearBlurRadiusPixels [[ buffer(ciBufferIndexCustom1) ]],
+                                              constant float &uInvNearBlurRadiusPixels [[ buffer(ciBufferIndexCustom2) ]],
+                                              constant uint2 &uFBOSize [[ buffer(ciBufferIndexCustom3) ]] )
 {
     int2 direction = kDirectionHorizontal;
 
-    float4 nearResult;
-    float4 blurResult;
+    BlurFragmentOut out;
 
     // Accumulate the blurry image color
-    blurResult.rgb  = float3( 0.0 );
+    out.blurResult.rgb  = float3( 0.0 );
     float blurWeightSum = 0.0;
     
     // Accumulate the near-field color and coverage
-    nearResult = float4( 0.0 );
+    out.nearResult = float4( 0.0 );
     float nearWeightSum = 0.0;
 
     // Location of the central filter tap (i.e., "this" pixel's location)
@@ -270,9 +266,7 @@ fragment float4 blur_horiz_fragment( VertOut in [[ stage_in ]],
         int2   B = A + ( direction * delta );
         
         // Packed values
-        //float4 blurInput = texelFetch( uBlurSource, clamp( B, int2( 0 ), textureSize( uBlurSource, 0 ) - int2( 1 ) ), 0 );
         float4 blurInput = uBlurSource.read(uint2(clamp( B, int2( 0 ),
-                                                  //textureSize( uBlurSource, 0 ) -
                                                   int2(uBlurSource.get_width(0), uBlurSource.get_height(0)) -
                                                   int2( 1 ) ) ));
         
@@ -299,7 +293,7 @@ fragment float4 blur_horiz_fragment( VertOut in [[ stage_in ]],
         
         // far + mid-field output
         blurWeightSum  += weight;
-        blurResult.rgb += blurInput.rgb * weight;
+        out.blurResult.rgb += blurInput.rgb * weight;
         
         ///////////////////////////////////////////////////////////////////////////////////////////////
         // Compute near-field super blurry buffer
@@ -324,23 +318,18 @@ fragment float4 blur_horiz_fragment( VertOut in [[ stage_in ]],
         
         // We subsitute the following efficient expression for the more complex: weight = kernel[clamp(int(float(abs(delta) * (KERNEL_TAPS - 1)) * uInvNearBlurRadiusPixels), 0, KERNEL_TAPS)];
         weight =  float( abs( delta ) < uNearBlurRadiusPixels );
-        nearResult += nearInput * weight;
+        out.nearResult += nearInput * weight;
         nearWeightSum += weight;
     }
     
     // Retain the packed radius on the horiz pass.  On the second pass it is not needed.
-    blurResult.a = packedA;
+    out.blurResult.a = packedA;
 
     // Normalize the blur
-    blurResult.rgb /= blurWeightSum;
-    nearResult     /= max( nearWeightSum, 0.00001 );
-    
-    // TODO: Refactor
-    if ( uReturnNear )
-    {
-        return nearResult;
-    }
-    return blurResult;
+    out.blurResult.rgb /= blurWeightSum;
+    out.nearResult     /= max( nearWeightSum, 0.00001 );
+
+    return out;
 }
 
 constant float2 kCocReadScaleBias = float2(2.0, -1.0);

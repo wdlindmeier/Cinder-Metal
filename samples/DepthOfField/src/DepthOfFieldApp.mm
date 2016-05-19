@@ -65,7 +65,8 @@ private:
 
     mtl::RenderPassDescriptorRef mRenderDescriptor;
     mtl::RenderPassDescriptorRef mRenderDescriptorFboGeom;
-    mtl::RenderPassDescriptorRef mRenderDescriptorFboBlur;
+    mtl::RenderPassDescriptorRef mRenderDescriptorFboBlurHoriz;
+    mtl::RenderPassDescriptorRef mRenderDescriptorFboBlurVert;
 
     CameraPersp                  mCamera;                         // Our main camera.
     CameraPersp                  mCameraUser;                     // Our user camera. We'll smoothly interpolate the main camera using the user camera as reference.
@@ -79,17 +80,11 @@ private:
     
     mtl::BatchRef               mTeapots, mBackground, mSpheres; // Batches to draw our objects.
     mtl::TextureBufferRef       mTexGold, mTexClay;              // Textures.
-    mtl::TextureBufferRef       mFboSource;                      // We render the scene to this Fbo, which is then used as input to the
-    mtl::TextureBufferRef       mFboBlurHoriz[2];                        // We render the scene to this Fbo, which is then used as input to the
-    mtl::TextureBufferRef       mFboBlurVert[2];
+    mtl::TextureBufferRef       mFboSource;                      // We render the scene to this Fbo, which is then used as input to the composite pass.
     mtl::RenderPipelineStateRef mPipelineBlurHoriz;
     mtl::RenderPipelineStateRef mPipelineBlurVert;
     mtl::RenderPipelineStateRef mPipelineComposite;
     mtl::DepthStateRef          mDepthStateFbo;
-    
-    mtl::VertexBufferRef        mVertexBufferTexture;
-    // TMP
-    mtl::RenderPipelineStateRef mPipelineTexture;
     
     float mAperture;           // Calculated from F-Stop and Focal Length.
     int   mFocalStop;          // For more information on these values, see: http://improvephotography.com/photography-basics/aperture-shutter-speed-and-iso/
@@ -139,9 +134,13 @@ void DepthOfFieldApp::setupRenderDescriptors()
     mRenderDescriptorFboGeom = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
                                                                  .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) ) );
 
-    mRenderDescriptorFboBlur = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
-                                                                 .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) ) );
+    // NOTE: We want a render decriptor for BOTH horizontal and vertical because they're different sizes.
+    // Otherwise it has to re-create the depth texture each render pass, which is expensive.
+    mRenderDescriptorFboBlurHoriz = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
+                                                                      .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) ) );
 
+    mRenderDescriptorFboBlurVert = mtl::RenderPassDescriptor::create(mtl::RenderPassDescriptor::Format()
+                                                                     .clearColor( ColorAf(0.f, 0.f, 0.f, 0.f) ) );
 }
 
 void DepthOfFieldApp::setupInstances()
@@ -175,20 +174,23 @@ void DepthOfFieldApp::setupInstances()
 void DepthOfFieldApp::setupGeometry()
 {
     // Pipelines
-    auto blendingFormat = mtl::RenderPipelineState::Format().blendingEnabled().pixelFormat(mtl::PixelFormatRGBA16Float);
-    auto opaqueFormat = mtl::RenderPipelineState::Format().pixelFormat(mtl::PixelFormatRGBA16Float);
+    auto blendingFormat = mtl::RenderPipelineState::Format().colorPixelFormat(mtl::PixelFormatRGBA16Float)
+                                                            .blendingEnabled();
+    auto opaqueFormat = mtl::RenderPipelineState::Format().colorPixelFormat(mtl::PixelFormatRGBA16Float);
+    auto opaqueBlurFormat = mtl::RenderPipelineState::Format().colorPixelFormat(mtl::PixelFormatRGBA16Float)
+                                                              .numColorAttachments(2);
     
-    mPipelineBlurHoriz = mtl::RenderPipelineState::create("texture_vertex", "blur_horiz_fragment", opaqueFormat);
+    mPipelineBlurHoriz = mtl::RenderPipelineState::create("texture_vertex", "blur_horiz_fragment", opaqueBlurFormat);
     
-    mPipelineBlurVert = mtl::RenderPipelineState::create("texture_vertex", "blur_vert_fragment", opaqueFormat);
+    mPipelineBlurVert = mtl::RenderPipelineState::create("texture_vertex", "blur_vert_fragment", opaqueBlurFormat);
     
     mPipelineComposite = mtl::RenderPipelineState::create("texture_vertex", "composite_fragment", opaqueFormat);
-
+    
     // Geometry
     AxisAlignedBox bounds;
     
     mTeapots = mtl::Batch::create( geom::Teapot().subdivisions( 8 ) >> geom::Translate( 0, -0.5f, 0 ) >> geom::Bounds( &bounds ),
-                                    mtl::RenderPipelineState::create("instanced_vertex", "scene_fragment", opaqueFormat) );
+                                    mtl::RenderPipelineState::create("instanced_vertex", "scene_fragment",  opaqueFormat));
     
     mBounds.setCenter( bounds.getCenter() );
     mBounds.setRadius( 0.5f * glm::length( bounds.getExtents() ) ); // Scale down for a better fit.
@@ -197,7 +199,7 @@ void DepthOfFieldApp::setupGeometry()
                                     mtl::RenderPipelineState::create("instanced_vertex", "debug_fragment", blendingFormat) );
 
     mBackground = mtl::Batch::create( geom::Sphere().subdivisions( 60 ).radius( 150.0f ) >> geom::Invert( geom::NORMAL ),
-                                      mtl::RenderPipelineState::create("background_vertex", "scene_fragment", opaqueFormat) );
+                                     mtl::RenderPipelineState::create("background_vertex", "scene_fragment", opaqueFormat));
     
 }
 
@@ -206,6 +208,7 @@ void DepthOfFieldApp::setupTextures()
     // Load the textures.
     mTexGold = mtl::TextureBuffer::create( loadImage( loadAsset( "gold.png" ) ),
                                            mtl::TextureBuffer::Format().flipVertically() );
+    
     mTexClay = mtl::TextureBuffer::create( loadImage( loadAsset( "clay.png" ) ),
                                            mtl::TextureBuffer::Format().flipVertically() );
 }
@@ -231,9 +234,6 @@ void DepthOfFieldApp::update()
     {
         mResized = false;
         
-        mVertexBufferTexture = mtl::VertexBuffer::create( geom::Rect(getWindowBounds()),
-                                                          {ci::geom::POSITION, ci::geom::TEX_COORD_0} );
-        
         int width = getWindowWidth();
         int height = getWindowHeight();
 
@@ -248,16 +248,20 @@ void DepthOfFieldApp::update()
         // The second attachments contains the blurred scene. RGB = color, A = Signed CoC.
         width >>= 2;
 
-        mFboBlurHoriz[0] = mtl::TextureBuffer::create( width, height, fmt );
-        mFboBlurHoriz[1] = mtl::TextureBuffer::create( width, height, fmt );
+        auto fboHoriz0 = mtl::TextureBuffer::create( width, height, fmt );
+        auto fboHoriz1 = mtl::TextureBuffer::create( width, height, fmt );
+        mRenderDescriptorFboBlurHoriz->setColorAttachment(fboHoriz0, 0);
+        mRenderDescriptorFboBlurHoriz->setColorAttachment(fboHoriz1, 1);
         
         // The vertical blur Fbo will contain a downsampled and blurred version of the scene.
         // The first attachment contains the foreground. RGB = premultiplied color, A = coverage.
         // The second attachments contains the blurred scene. RGB = color, A = discarded.
         height >>= 2;
 
-        mFboBlurVert[0] = mtl::TextureBuffer::create( width, height, fmt );
-        mFboBlurVert[1] = mtl::TextureBuffer::create( width, height, fmt );
+        auto fboVert0 = mtl::TextureBuffer::create( width, height, fmt );
+        auto fboVert1 = mtl::TextureBuffer::create( width, height, fmt );
+        mRenderDescriptorFboBlurVert->setColorAttachment(fboVert0, 0);
+        mRenderDescriptorFboBlurVert->setColorAttachment(fboVert1, 1);        
     }
 
     // Use a fixed time step for a steady 60 updates per second.
@@ -431,81 +435,52 @@ void DepthOfFieldApp::draw()
     // Perform horizontal blur and downsampling. Output 2 targets.
     if( true )
     {
-        // TODO: Pass both textures to the Render Encoder
-        // HOWTO: assign both textures to mRenderDescriptorFboBlur
-        // SEE NOTES in Cinder-Metal todo
-        
-        for ( int i = 0; i < 2; ++i )
-        {
+        mtl::ScopedCommandBuffer fboBuffer;
+        mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboBlurHoriz, "FBO Horiz Blur");
+        ivec2 renderSize = mRenderDescriptorFboBlurHoriz->getColorAttachment()->getSize();
+        fboEncoder.setViewport(vec2(0), vec2(renderSize));
 
-            auto fbo = mFboBlurHoriz[i];
-            mtl::ScopedCommandBuffer fboBuffer;
-            mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboBlur, fbo, "FBO Horiz Blur " + to_string(i));
-            fboEncoder.setViewport(vec2(0), vec2(fbo->getSize()));
+        mtl::ScopedMatrices matBlur;
+        mtl::setMatricesWindow(renderSize);
 
-            mtl::ScopedMatrices matBlur;
-            mtl::setMatricesWindow(fbo->getSize());
+        mtl::ScopedColor scpColor(1,1,1);
+        fboEncoder.setTexture( mFboSource );
+        fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom0);
+        fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom1);
+        float invNearBlurRadiusPixels = 1.0f / mMaxCoCRadiusPixels;
+        fboEncoder.setFragmentValueAtIndex(&invNearBlurRadiusPixels, mtl::ciBufferIndexCustom2);
+        fboEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
 
-            mtl::ScopedColor scpColor(1,1,1);
-            fboEncoder.setTexture( mFboSource );
-            fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom0);
-            fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom1);
-            float invNearBlurRadiusPixels = 1.0f / mMaxCoCRadiusPixels;
-            fboEncoder.setFragmentValueAtIndex(&invNearBlurRadiusPixels, mtl::ciBufferIndexCustom2);
-            ivec2 renderSize = fbo->getSize();
-            fboEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
-
-            bool returnNear = true;
-            if ( i == 0 )
-            {
-                returnNear = false;
-            }
-            fboEncoder.setFragmentValueAtIndex( &returnNear, mtl::ciBufferIndexCustom5 );
-
-            // TODO: Cache this
-            auto fboRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0, 0, fbo->getWidth(), fbo->getHeight())),
-                                                     {ci::geom::POSITION, ci::geom::TEX_COORD_0});
-            fboEncoder.draw(fboRect, mPipelineBlurHoriz);
-        }
+        // TODO: Cache this
+        auto fboRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0, 0, renderSize.x, renderSize.y)),
+                                                 {ci::geom::POSITION, ci::geom::TEX_COORD_0});
+        fboEncoder.draw(fboRect, mPipelineBlurHoriz);
     }
 
     // Perform vertical blur.
     if( true )
     {
-        for ( int i = 0; i < 2; ++i )
-        {
-            auto fbo = mFboBlurVert[i];
-            // TODO: Try removing "true"
-            mtl::ScopedCommandBuffer fboBuffer;
-            mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboBlur, fbo, "FBO Vert Blur " + to_string(i));
-            fboEncoder.setViewport(vec2(0), vec2(fbo->getSize()));
+        mtl::ScopedCommandBuffer fboBuffer;
+        mtl::ScopedRenderEncoder fboEncoder = fboBuffer.scopedRenderEncoder(mRenderDescriptorFboBlurVert, "FBO Vert Blur");
+        ivec2 renderSize = mRenderDescriptorFboBlurVert->getColorAttachment()->getSize();
+        fboEncoder.setViewport(vec2(0), vec2(renderSize));
 
-            mtl::ScopedMatrices matBlur;
-            mtl::setMatricesWindow(fbo->getSize());
-            mtl::ScopedColor scpColor(1,1,1);
+        mtl::ScopedMatrices matBlur;
+        mtl::setMatricesWindow(renderSize);
+        mtl::ScopedColor scpColor(1,1,1);
 
-            fboEncoder.setTexture(mFboBlurHoriz[0], 0);
-            fboEncoder.setTexture(mFboBlurHoriz[1], 1);
-            fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom0);
-            fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom1);
-            ivec2 renderSize = fbo->getSize();
-            fboEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
+        fboEncoder.setTexture(mRenderDescriptorFboBlurHoriz->getColorAttachment(0), 0);
+        fboEncoder.setTexture(mRenderDescriptorFboBlurHoriz->getColorAttachment(1), 1);
+        fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom0);
+        fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom1);
+        fboEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
 
-            bool returnNear = true;
-            if ( i == 0 )
-            {
-                returnNear = false;
-            }
-            fboEncoder.setFragmentValueAtIndex( &returnNear, mtl::ciBufferIndexCustom5 );
-
-            // TODO: Cache this
-            auto fboRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0, 0, fbo->getWidth(), fbo->getHeight())),
-                                                     {ci::geom::POSITION, ci::geom::TEX_COORD_0});
-            fboEncoder.draw(fboRect, mPipelineBlurVert);
-
-        }
+        // TODO: Cache this
+        auto fboRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0, 0, renderSize.x, renderSize.y)),
+                                                 {ci::geom::POSITION, ci::geom::TEX_COORD_0});
+        fboEncoder.draw(fboRect, mPipelineBlurVert);
     }
-    
+
     mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     mtl::setMatricesWindow(getWindowSize());
@@ -516,8 +491,8 @@ void DepthOfFieldApp::draw()
         mtl::ScopedColor scpColor(1,1,1);
 
         renderEncoder.setTexture(mFboSource, 0);
-        renderEncoder.setTexture(mFboBlurVert[0], 1);
-        renderEncoder.setTexture(mFboBlurVert[1], 2);
+        renderEncoder.setTexture(mRenderDescriptorFboBlurVert->getColorAttachment(0), 1);
+        renderEncoder.setTexture(mRenderDescriptorFboBlurVert->getColorAttachment(1), 2);
         vec2 inputSourceInvSize = 1.0f / vec2( mFboSource->getSize() );
         renderEncoder.setFragmentValueAtIndex(&inputSourceInvSize, mtl::ciBufferIndexCustom0);
         vec2 offset(0.f);

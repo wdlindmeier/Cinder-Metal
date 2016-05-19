@@ -34,6 +34,7 @@ namespace cinder { namespace mtl {
             ,mClearColor(0.f,0.f,0.f,1.f)
             ,mClearDepth(1.f)
             ,mClearStencil(0)
+//            ,mNumColorAttachments(1)
             ,mColorStoreAction(StoreActionStore)
             ,mDepthStoreAction(StoreActionDontCare)
             ,mStencilStoreAction(StoreActionDontCare)
@@ -41,9 +42,15 @@ namespace cinder { namespace mtl {
             ,mStencilUsage(TextureUsageRenderTarget)
             ,mHasDepth(true)
             ,mHasStencil(false)
+            ,mDepthPixelFormat(PixelFormatDepth32Float)
+            ,mStencilPixelFormat(PixelFormatStencil8)
             {};            
 
         public:
+
+//            Format& numColorAttachments( int numAttachments ) { setNumColorAttachments( numAttachments ); return *this; };
+//            void setNumColorAttachments( int numAttachments ) { mNumColorAttachments = numAttachments; };
+//            int getNumColorAttachments() const { return mNumColorAttachments; };
 
             Format& shouldClearColor( bool shouldClearColor ) { setShouldClearColor( shouldClearColor ); return *this; };
             void setShouldClearColor( bool shouldClearColor ) { mShouldClearColor = shouldClearColor; };
@@ -96,9 +103,18 @@ namespace cinder { namespace mtl {
             Format& hasStencil( bool hasStencil ) { setHasStencil( hasStencil ); return *this; };
             void setHasStencil( bool hasStencil ) { mHasStencil = hasStencil; };
             bool getHasStencil() const { return mHasStencil; };
+            
+            Format& depthPixelFormat( PixelFormat pixelFormat ) { setDepthPixelFormat( pixelFormat ); return *this; };
+            void setDepthPixelFormat( PixelFormat pixelFormat ) { mDepthPixelFormat = pixelFormat; };
+            PixelFormat getDepthPixelFormat() const { return mDepthPixelFormat; };
+            
+            Format& stencilPixelFormat( PixelFormat pixelFormat ) { setStencilPixelFormat( pixelFormat ); return *this; };
+            void setStencilPixelFormat( PixelFormat pixelFormat ) { mStencilPixelFormat = pixelFormat; };
+            PixelFormat getStencilPixelFormat() const { return mStencilPixelFormat; };
 
         protected:
             
+//            int mNumColorAttachments;
             bool mShouldClearColor;
             ci::ColorAf mClearColor;
             StoreAction mColorStoreAction;
@@ -108,12 +124,14 @@ namespace cinder { namespace mtl {
             float mClearDepth;
             StoreAction mDepthStoreAction;
             TextureUsage mDepthUsage;
+            PixelFormat mDepthPixelFormat;
             
             bool mHasStencil;
             bool mShouldClearStencil;
             uint32_t mClearStencil;
             StoreAction mStencilStoreAction;
             TextureUsage mStencilUsage;
+            PixelFormat mStencilPixelFormat;
             
         };
         
@@ -131,8 +149,11 @@ namespace cinder { namespace mtl {
         
         void * getNative(){ return mImpl; };
 
-        mtl::TextureBufferRef getDepthTexture();
-        mtl::TextureBufferRef getStencilTexture();
+        mtl::TextureBufferRef & getDepthTexture();
+        mtl::TextureBufferRef & getStencilTexture();
+        mtl::TextureBufferRef & getColorAttachment( int colorAttachmentIndex = 0 );
+        
+        void setColorAttachment( TextureBufferRef & texture, int colorAttachmentIndex = 0 );
         
     protected:
 
@@ -159,6 +180,7 @@ namespace cinder { namespace mtl {
         
         mtl::TextureBufferRef mDepthTextureBuffer;
         mtl::TextureBufferRef mStencilTextureBuffer;
+        std::vector<mtl::TextureBufferRef> mColorTextureBuffers;
         
         Format mFormat;
         

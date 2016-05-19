@@ -65,11 +65,18 @@ ScopedBlitEncoder ScopedCommandBuffer::scopedBlitEncoder( const std::string & bu
     return ScopedBlitEncoder( blitEncoder->getNative() );
 }
 
-ScopedRenderEncoder ScopedCommandBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+ScopedRenderEncoder ScopedCommandBuffer::scopedRenderEncoder( RenderPassDescriptorRef & descriptor,
                                                               mtl::TextureBufferRef & drawableTexture,
                                                               const std::string & bufferName )
 {
     RenderEncoderRef renderEncoder = createRenderEncoder(descriptor, drawableTexture->getNative(), bufferName);
+    return ScopedRenderEncoder(renderEncoder->getNative());
+}
+
+ScopedRenderEncoder ScopedCommandBuffer::scopedRenderEncoder( RenderPassDescriptorRef & descriptorWithDrawableAttachments,
+                                                              const std::string & bufferName )
+{
+    RenderEncoderRef renderEncoder = createRenderEncoder(descriptorWithDrawableAttachments, bufferName);
     return ScopedRenderEncoder(renderEncoder->getNative());
 }
 
@@ -101,10 +108,10 @@ ScopedBlitEncoder ScopedRenderCommandBuffer::scopedBlitEncoder( const std::strin
     return ScopedBlitEncoder( blitEncoder->getNative() );
 }
 
-ScopedRenderEncoder ScopedRenderCommandBuffer::scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+ScopedRenderEncoder ScopedRenderCommandBuffer::scopedRenderEncoder( RenderPassDescriptorRef & descriptor,
                                                                     const std::string & bufferName )
 {
-    RenderEncoderRef renderEncoder = createRenderEncoder( descriptor, bufferName );
+    RenderEncoderRef renderEncoder = RenderCommandBuffer::createRenderEncoder( descriptor, bufferName );
     return ScopedRenderEncoder( renderEncoder->getNative() );
 }
 

@@ -56,7 +56,6 @@ namespace cinder { \
             ciTextureIndex1 = 1, \
             ciTextureIndex2 = 2, \
         }; \
-        \
     } \
 }
 

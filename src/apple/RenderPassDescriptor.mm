@@ -25,21 +25,37 @@ mDepthTexture(nullptr)
     mImpl = (__bridge void *)[MTLRenderPassDescriptor renderPassDescriptor];
     CFRetain(mImpl);
     
-    // TODO: Apply to multiple color attachments
-    setShouldClearColor(mFormat.getShouldClearColor());
-    setClearColor(mFormat.getClearColor());
-    setColorStoreAction(mFormat.getColorStoreAction());
+//    int maxNumAttachments = [RendererMetalImpl sharedRenderer].maxNumColorAttachments;
+//    assert( mFormat.getNumColorAttachments() <= maxNumAttachments );
+//    mColorTextureBuffers.assign(mFormat.getNumColorAttachments(), mtl::TextureBufferRef());
+    int maxNumAttachments = [RendererMetalImpl sharedRenderer].maxNumColorAttachments;
+    mColorTextureBuffers.assign(maxNumAttachments, mtl::TextureBufferRef());
     
-    setShouldClearDepth(mFormat.getShouldClearDepth());
-    setClearDepth(mFormat.getClearDepth());
-    setDepthStoreAction(mFormat.getDepthStoreAction());
-    
-    setShouldClearStencil(mFormat.getShouldClearStencil());
-    setClearStencil(mFormat.getClearStencil());
-    setStencilStoreAction(mFormat.getStencilStoreAction());
+    // Q: Should we allow different formats for each attachment
+    // or let the user do that through the native interface?
+    for ( int i = 0; i < maxNumAttachments; ++i )
+    {
+        setShouldClearColor(mFormat.getShouldClearColor(), i);
+        setClearColor(mFormat.getClearColor(), i);
+        setColorStoreAction(mFormat.getColorStoreAction(), i);
+    }
     
     mHasDepth = mFormat.getHasDepth();
     mHasStencil = mFormat.getHasStencil();
+
+    if ( mHasDepth )
+    {
+        setShouldClearDepth(mFormat.getShouldClearDepth());
+        setClearDepth(mFormat.getClearDepth());
+        setDepthStoreAction(mFormat.getDepthStoreAction());
+    }
+
+    if ( mHasStencil )
+    {
+        setShouldClearStencil(mFormat.getShouldClearStencil());
+        setClearStencil(mFormat.getClearStencil());
+        setStencilStoreAction(mFormat.getStencilStoreAction());
+    }
 }
 
 RenderPassDescriptor::RenderPassDescriptor( void * mtlRenderPassDescriptor ) :
@@ -110,8 +126,21 @@ void RenderPassDescriptor::setStencilStoreAction( StoreAction storeAction )
     IMPL.stencilAttachment.storeAction = (MTLStoreAction)storeAction;
 }
 
+void RenderPassDescriptor::setColorAttachment( TextureBufferRef & texture, int colorAttachmentIndex )
+{
+    mColorTextureBuffers[colorAttachmentIndex] = texture;
+    applyToDrawableTexture( texture->getNative(), colorAttachmentIndex );
+}
+
 void RenderPassDescriptor::applyToDrawableTexture( void * texture, int colorAttachmentIndex )
 {
+    if ( mColorTextureBuffers[colorAttachmentIndex] == mtl::TextureBufferRef()  // doesnt exist
+         || mColorTextureBuffers[colorAttachmentIndex]->getNative() != texture ) // isn't the same
+    {
+        // Store this MTLTexture as a TextureBufferRef if we haven't already so it can be accessed through getColorAttachment()
+        mColorTextureBuffers[colorAttachmentIndex] =  mtl::TextureBuffer::create( texture );
+    }
+    
     id <MTLTexture> colorTexture = (__bridge id<MTLTexture>)texture;
     IMPL.colorAttachments[colorAttachmentIndex].texture = colorTexture;
     
@@ -124,7 +153,7 @@ void RenderPassDescriptor::applyToDrawableTexture( void * texture, int colorAtta
     {
         auto device = [RendererMetalImpl sharedRenderer].device;
         
-        MTLTextureDescriptor* desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: MTLPixelFormatDepth32Float // this is the only format
+        MTLTextureDescriptor* desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: (MTLPixelFormat)mFormat.getDepthPixelFormat()
                                                                                         width: colorTexture.width
                                                                                        height: colorTexture.height
                                                                                     mipmapped: NO];
@@ -148,7 +177,7 @@ void RenderPassDescriptor::applyToDrawableTexture( void * texture, int colorAtta
     {
         auto device = [RendererMetalImpl sharedRenderer].device;
         
-        MTLTextureDescriptor* desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: MTLPixelFormatStencil8 // this is the only format
+        MTLTextureDescriptor* desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: (MTLPixelFormat)mFormat.getStencilPixelFormat()
                                                                                         width: colorTexture.width
                                                                                        height: colorTexture.height
                                                                                     mipmapped: NO];
@@ -167,12 +196,17 @@ void RenderPassDescriptor::applyToDrawableTexture( void * texture, int colorAtta
     }
 }
 
-mtl::TextureBufferRef RenderPassDescriptor::getDepthTexture()
+mtl::TextureBufferRef & RenderPassDescriptor::getDepthTexture()
 {
     return mDepthTextureBuffer;
 }
 
-mtl::TextureBufferRef RenderPassDescriptor::getStencilTexture()
+mtl::TextureBufferRef & RenderPassDescriptor::getStencilTexture()
 {
     return mStencilTextureBuffer;
+}
+
+mtl::TextureBufferRef & RenderPassDescriptor::getColorAttachment( int colorAttachmentIndex )
+{    
+    return mColorTextureBuffers[colorAttachmentIndex];
 }

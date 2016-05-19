@@ -246,7 +246,6 @@ void RenderEncoder::textureBarrier()
 
 void RenderEncoder::draw( ci::mtl::VertexBufferRef vertBuffer,
                           ci::mtl::RenderPipelineStateRef pipeline,
-                          //bool shouldSetIdentityInstance,
                           ci::mtl::DataBufferRef instanceBuffer,
                           unsigned int numInstances )
 {

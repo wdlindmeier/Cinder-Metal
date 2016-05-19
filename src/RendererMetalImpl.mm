@@ -95,6 +95,18 @@ static RendererMetalImpl * SharedRenderer = nil;
     return self;
 }
 
+// https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/MetalFeatureSetTables/MetalFeatureSetTables.html
+- (int)maxNumColorAttachments
+{
+#ifdef CINDER_COCOA_TOUCH
+    if ( ![self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily2_v1] )
+    {
+        return 4;
+    }
+#endif
+    return 8;
+}
+
 - (void)setupMetal:(cinder::app::RendererMetal::Options &)options
 {
     self.device = MTLCreateSystemDefaultDevice();
