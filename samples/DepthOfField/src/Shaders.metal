@@ -17,11 +17,6 @@ using namespace metal;
 using namespace cinder;
 using namespace cinder::mtl;
 
-// Sample Shader
-
-// Cinder-Metal infers attribute mapping by name.
-// If you use the names found in src/Batch.cpp for your custom structs,
-// the Batch class will know where to put the data.
 typedef struct
 {
     metal::packed_float3 ciPosition;
@@ -68,7 +63,7 @@ vertex VertOut background_vertex( device const VertIn* ciVerts [[ buffer(ciBuffe
 
 vertex VertOut instanced_vertex( device const VertIn* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
                                  device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
-                                 device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
+                                 device const TeapotInstance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                  constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                  unsigned int vid [[ vertex_id ]],
                                  uint i [[ instance_id ]] )
@@ -77,11 +72,12 @@ vertex VertOut instanced_vertex( device const VertIn* ciVerts [[ buffer(ciBuffer
     
     unsigned int vertIndex = ciIndices[vid];
     VertIn p = ciVerts[vertIndex];
-    Instance instance = instances[i];
-
+    
+    TeapotInstance instance = instances[i];
     out.vertPosition = ciUniforms.ciViewMatrix * instance.modelMatrix * float4(p.ciPosition, 1.0);
-    out.vertColor = ciUniforms.ciColor * instance.color;
-    matrix_float3x3 normalMatrix = mat3( ciUniforms.ciViewMatrix * instance.modelMatrix ); // assumes homogenous scaling.
+    out.vertColor = ciUniforms.ciColor;
+    matrix_float3x3 normalMatrix = mat3( ciUniforms.ciViewMatrix * instance.modelMatrix ); // assumes homogenous scaling    
+    
     out.vertNormal = normalize( normalMatrix * float3(p.ciNormal) );
     out.position = ciUniforms.ciProjectionMatrix * out.vertPosition;
     out.texCoords = p.ciTexCoord0;
@@ -111,18 +107,13 @@ vertex VertOut texture_vertex( device const RectIn* ciVerts [[ buffer(ciBufferIn
 constant const int2 kDirectionHorizontal = int2(1, 0);
 constant const int2 kDirectionVertical = int2(0, 1);
 
-//layout(location = 0) out float4 nearResult;
-//layout(location = 1) out float4 blurResult;
-
 inline bool inNearField( float radiusPixels )
 {
     return radiusPixels > 0.25;
 }
 
-constexpr sampler shaderSampler( coord::normalized, // normalized (0-1) or coord::pixel (0-width,height)
-                                 address::repeat, // repeat, clamp_to_zero, clamp_to_edge,
-                                 filter::linear, // nearest or linear
-                                 mip_filter::linear ); // nearest or linear or none
+constexpr sampler shaderSampler( coord::normalized, address::clamp_to_edge,
+                                 filter::linear, mip_filter::none );
 
 inline float2 gl_FragCoord( float2 texCoords, uint2 fboSize )
 {
@@ -134,9 +125,7 @@ constant float kern[KERNEL_TAPS + 1] = {1.00, 1.00, 0.90, 0.75, 0.60, 0.50, 0.00
 
 struct BlurFragmentOut
 {
-    // color attachment 0
     float4 blurResult [[ color(0) ]];
-    // color attachment 1
     float4 nearResult [[ color(1) ]];
 };
 
@@ -175,9 +164,7 @@ fragment BlurFragmentOut blur_vert_fragment( VertOut in [[ stage_in ]],
         int2   B = A + ( direction * delta );
         
         // Packed values
-        //float4 blurInput = texelFetch( uBlurSource, clamp( B, int2( 0 ), textureSize( uBlurSource, 0 ) - int2( 1 ) ), 0 );
         float4 blurInput = uBlurSource.read(uint2(clamp( B, int2( 0 ),
-                                                        //textureSize( uBlurSource, 0 ) -
                                                         int2(uBlurSource.get_width(0), uBlurSource.get_height(0)) -
                                                         int2( 1 ) ) ));
         

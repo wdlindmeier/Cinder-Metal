@@ -16,3 +16,15 @@ typedef struct
 {
     // float progress;
 } myUniforms_t;
+
+typedef struct TeapotInstance
+{
+    vector_float3 position = {0,0,0};
+    vector_float3 axis = {0,0,0};
+    matrix_float4x4 modelMatrix = {
+        (vector_float4){1,0,0,0},
+        (vector_float4){0,1,0,0},
+        (vector_float4){0,0,1,0},
+        (vector_float4){0,0,0,1}
+    };
+} TeapotInstance;

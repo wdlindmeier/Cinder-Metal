@@ -84,7 +84,10 @@ private:
     mtl::RenderPipelineStateRef mPipelineBlurHoriz;
     mtl::RenderPipelineStateRef mPipelineBlurVert;
     mtl::RenderPipelineStateRef mPipelineComposite;
+    mtl::RenderPipelineStateRef mPipelineTexture;
+    
     mtl::DepthStateRef          mDepthStateFbo;
+    mtl::VertexBufferRef        mVertexBufferTexRect;
     
     float mAperture;           // Calculated from F-Stop and Focal Length.
     int   mFocalStop;          // For more information on these values, see: http://improvephotography.com/photography-basics/aperture-shutter-speed-and-iso/
@@ -115,6 +118,7 @@ void DepthOfFieldApp::prepare( Settings *settings )
 {
     settings->setWindowSize( 960, 540 );
     settings->disableFrameRate();
+    settings->setFullScreen();
 }
 
 void DepthOfFieldApp::setup()
@@ -146,20 +150,25 @@ void DepthOfFieldApp::setupRenderDescriptors()
 void DepthOfFieldApp::setupInstances()
 {
     // Initialize model matrices (one for each instance).
-    std::vector<mtl::Instance> instances;
+    Rand::randSeed( 12345 );
+    std::vector<TeapotInstance> instances;
+    
     for( int z = -4; z <= 4; z++ )
     {
         for( int y = -4; y <= 4; y++ )
         {
             for( int x = -4; x <= 4; x++ )
             {
+                vec3  position = vec3( x, y, z ) * 5.0f + Rand::randVec3();
                 vec3  axis = Rand::randVec3();
                 float angle = Rand::randFloat( -180.0f, 180.0f );
                 
                 mat4 transform = glm::translate( vec3( x, y, z ) * 5.0f );
                 transform *= glm::rotate( glm::radians( angle ), axis );
                 
-                mtl::Instance instance;
+                TeapotInstance instance;
+                instance.position = toMtl(position);
+                instance.axis = toMtl(axis);
                 instance.modelMatrix = toMtl(transform);
 
                 instances.emplace_back(instance);
@@ -167,12 +176,13 @@ void DepthOfFieldApp::setupInstances()
         }
     }
     
-    // TODO: Make this indexed
-    mInstances = mtl::DataBuffer::create(instances, mtl::DataBuffer::Format().label("Node Instances").isConstant());
+    mInstances = mtl::DataBuffer::create(instances,
+                                         mtl::DataBuffer::Format().label("Node Instances").isConstant());
 }
     
 void DepthOfFieldApp::setupGeometry()
 {
+
     // Pipelines
     auto blendingFormat = mtl::RenderPipelineState::Format().colorPixelFormat(mtl::PixelFormatRGBA16Float)
                                                             .blendingEnabled();
@@ -185,6 +195,8 @@ void DepthOfFieldApp::setupGeometry()
     mPipelineBlurVert = mtl::RenderPipelineState::create("texture_vertex", "blur_vert_fragment", opaqueBlurFormat);
     
     mPipelineComposite = mtl::RenderPipelineState::create("texture_vertex", "composite_fragment", opaqueFormat);
+
+    mPipelineTexture = mtl::RenderPipelineState::create("texture_vertex", "texture_fragment", opaqueFormat);
     
     // Geometry
     AxisAlignedBox bounds;
@@ -201,6 +213,8 @@ void DepthOfFieldApp::setupGeometry()
     mBackground = mtl::Batch::create( geom::Sphere().subdivisions( 60 ).radius( 150.0f ) >> geom::Invert( geom::NORMAL ),
                                      mtl::RenderPipelineState::create("background_vertex", "scene_fragment", opaqueFormat));
     
+    mVertexBufferTexRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0,0,1,1)),
+                                                     {ci::geom::POSITION, ci::geom::TEX_COORD_0});
 }
 
 void DepthOfFieldApp::setupTextures()
@@ -228,6 +242,11 @@ void DepthOfFieldApp::setupCamera()
 void DepthOfFieldApp::update()
 {
     mFPS = getAverageFps();
+    
+    if ( getElapsedFrames() % 60 == 0 && isFullScreen() )
+    {
+        console() << "mFPS: " << mFPS << "\n";
+    }
 
     // Create or resize Fbo's.
     if( mResized )
@@ -346,21 +365,20 @@ void DepthOfFieldApp::update( double timestep )
     Rand::randSeed( 12345 );
     
     // Animate teapots and perform ray casting at the same time.
-    auto ptr = (mtl::Instance *)mInstances->contents();
+    auto ptr = (TeapotInstance *)mInstances->contents();
     for( int z = -4; z <= 4; z++ )
     {
         for( int y = -4; y <= 4; y++ )
         {
             for( int x = -4; x <= 4; x++ )
             {
-                vec3  position = vec3( x, y, z ) * 5.0f + Rand::randVec3();
-                vec3  axis = Rand::randVec3();
                 float angle = Rand::randFloat( -180.0f, 180.0f ) + Rand::randFloat( 1.0f, 90.0f ) * float( mTime );
                 
-                mat4 transform = glm::translate( position );
-                transform *= glm::rotate( glm::radians( angle ), axis );
+                TeapotInstance & i = *ptr++;
+                mat4 transform = glm::translate( fromMtl(i.position) );
+                transform *= glm::rotate( glm::radians( angle ), fromMtl(i.axis) );
                 
-                ( *ptr++ ).modelMatrix = toMtl(transform);
+                i.modelMatrix = toMtl(transform);
                 
                 // Ray-casting.
                 if( mShiftDown )
@@ -411,10 +429,9 @@ void DepthOfFieldApp::draw()
         {
             mtl::ScopedColor       scpColor( 1, 1, 1 );
             fboEncoder.setTexture(mTexGold);
-            // TODO: Use param names
             fboEncoder.draw(mTeapots, mInstances, 9 * 9 * 9 );
         }
-
+        
         if( true )
         {
             // Render background.
@@ -451,10 +468,8 @@ void DepthOfFieldApp::draw()
         fboEncoder.setFragmentValueAtIndex(&invNearBlurRadiusPixels, mtl::ciBufferIndexCustom2);
         fboEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
 
-        // TODO: Cache this
-        auto fboRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0, 0, renderSize.x, renderSize.y)),
-                                                 {ci::geom::POSITION, ci::geom::TEX_COORD_0});
-        fboEncoder.draw(fboRect, mPipelineBlurHoriz);
+        mtl::scale(vec2(renderSize));
+        fboEncoder.draw(mVertexBufferTexRect, mPipelineBlurHoriz);
     }
 
     // Perform vertical blur.
@@ -475,16 +490,17 @@ void DepthOfFieldApp::draw()
         fboEncoder.setFragmentValueAtIndex(&mMaxCoCRadiusPixels, mtl::ciBufferIndexCustom1);
         fboEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
 
-        // TODO: Cache this
-        auto fboRect = mtl::VertexBuffer::create(geom::Rect(Rectf(0, 0, renderSize.x, renderSize.y)),
-                                                 {ci::geom::POSITION, ci::geom::TEX_COORD_0});
-        fboEncoder.draw(fboRect, mPipelineBlurVert);
+        mtl::scale(vec2(renderSize));
+        fboEncoder.draw(mVertexBufferTexRect, mPipelineBlurVert);
     }
-
+    
     mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
+    mtl::ScopedMatrices matWindow;
     mtl::setMatricesWindow(getWindowSize());
 
+    // + 10 fps
+    
     // Perform compositing.
     if( true )
     {
@@ -501,10 +517,8 @@ void DepthOfFieldApp::draw()
         ivec2 renderSize = getWindowSize();
         renderEncoder.setFragmentValueAtIndex(&renderSize, mtl::ciBufferIndexCustom3);
 
-        // TODO: Cache this
-        auto compositeRect = mtl::VertexBuffer::create(geom::Rect(getWindowBounds()),
-                                                 {ci::geom::POSITION, ci::geom::TEX_COORD_0});
-        renderEncoder.draw(compositeRect, mPipelineComposite);
+        mtl::scale(getWindowSize());
+        renderEncoder.draw(mVertexBufferTexRect, mPipelineComposite);
     }
 }
 
@@ -537,6 +551,9 @@ void DepthOfFieldApp::keyDown( KeyEvent event )
     {
         case KeyEvent::KEY_ESCAPE:
             quit();
+            break;
+        case KeyEvent::KEY_f:
+            setFullScreen(!isFullScreen());
             break;
         case KeyEvent::KEY_SPACE:
             mPaused = !mPaused;
