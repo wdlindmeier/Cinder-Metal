@@ -114,7 +114,7 @@ mSource( source.clone() )
     // Create the data buffer for the indices
     DataBuffer::Format indexFormat = format;
     indexFormat.setLabel(format.getLabel() + ": Indices");
-    mIndexBuffer = DataBuffer::create(mIndexLength * sizeof(unsigned int), NULL, indexFormat);
+    mIndexBuffer = DataBuffer::create(mIndexLength * sizeof(uint32_t), NULL, indexFormat);
     
     // Create the buffer for the interleaved vert data
     size_t numVertData = mSource->getNumVertices();
@@ -226,11 +226,11 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
                                 size_t numIndices, uint8_t requiredBytesPerIndex )
 {
     assert( mPrimitive == mtl::geom::mtlPrimitiveTypeFromGeom(primitive) );
-    std::vector<unsigned int> indices;
+    std::vector<uint32_t> indices;
     for ( size_t i = 0; i < numIndices; ++i )
     {
         // Convert the index into the type expected by Metal
-        unsigned int idx = source[i];
+        uint32_t idx = source[i];
         indices.push_back(idx);
     }
     mIndexBuffer->update(indices);
@@ -239,8 +239,8 @@ void VertexBuffer::copyIndices( ci::geom::Primitive primitive, const uint32_t *s
 void VertexBuffer::createDefaultIndices()
 {
     assert(mIndexLength == mVertexLength);
-    std::vector<unsigned int> indices;
-    for ( unsigned int i = 0; i < mVertexLength; ++i )
+    std::vector<uint32_t> indices;
+    for ( uint32_t i = 0; i < mVertexLength; ++i )
     {
         indices.push_back(i);
     }
@@ -307,14 +307,34 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
         // use BufferLayouts, which follows the Cinder convention.
         renderEncoder.setVertexBufferAtIndex( mInterleavedData, ciBufferIndexInterleavedVerts );
     }
-    
+
     if ( mIndexBuffer )
     {
-        renderEncoder.setVertexBufferAtIndex( mIndexBuffer, mBufferIndexIndices );
-    }
+        //renderEncoder.setVertexBufferAtIndex( mIndexBuffer, mBufferIndexIndices );
+        size_t indexBufferOffset = vertexStart * sizeof(u_int32_t);
+        renderEncoder.drawIndexed( mPrimitive,
+                                   mIndexBuffer,
+                                   vertexLength,
+                                   instanceCount,
+                                   indexBufferOffset);
 
-    renderEncoder.draw( mPrimitive,
-                        vertexLength,
-                        vertexStart,
-                        instanceCount );
+    }
+    else
+    {
+        renderEncoder.draw( mPrimitive,
+                            vertexLength,
+                            vertexStart,
+                            instanceCount );
+    }
+    
+
+//    if ( mIndexBuffer )
+//    {
+//        renderEncoder.setVertexBufferAtIndex( mIndexBuffer, mBufferIndexIndices );
+//    }
+//
+//    renderEncoder.draw( mPrimitive,
+//                        vertexLength,
+//                        vertexStart,
+//                        instanceCount );
 }

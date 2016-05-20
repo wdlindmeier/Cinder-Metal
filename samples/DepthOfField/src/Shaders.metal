@@ -43,14 +43,11 @@ typedef struct
 #pragma mark - Vertex
 
 vertex VertOut background_vertex( device const VertIn* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                  device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                   constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                   unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
-    
-    unsigned int vertIndex = ciIndices[vid];
-    VertIn p = ciVerts[vertIndex];
+    VertIn p = ciVerts[vid];
     out.vertPosition = float4(p.ciPosition, 1.0);
     out.vertNormal = normalize(float3(p.ciNormal));
     out.vertColor = ciUniforms.ciColor;
@@ -62,7 +59,6 @@ vertex VertOut background_vertex( device const VertIn* ciVerts [[ buffer(ciBuffe
 }
 
 vertex VertOut instanced_vertex( device const VertIn* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                 device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                  device const TeapotInstance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                  constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                  unsigned int vid [[ vertex_id ]],
@@ -70,8 +66,7 @@ vertex VertOut instanced_vertex( device const VertIn* ciVerts [[ buffer(ciBuffer
 {
     VertOut out;
     
-    unsigned int vertIndex = ciIndices[vid];
-    VertIn p = ciVerts[vertIndex];
+    VertIn p = ciVerts[vid];
     
     TeapotInstance instance = instances[i];
     out.vertPosition = ciUniforms.ciViewMatrix * instance.modelMatrix * float4(p.ciPosition, 1.0);
@@ -86,14 +81,12 @@ vertex VertOut instanced_vertex( device const VertIn* ciVerts [[ buffer(ciBuffer
 }
 
 vertex VertOut texture_vertex( device const RectIn* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                               device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
-    unsigned int vertIndex = ciIndices[vid];
-    RectIn p = ciVerts[vertIndex];
+    RectIn p = ciVerts[vid];
     out.position = ciUniforms.ciModelViewProjection * float4(p.ciPosition, 0.f, 1.0);
     out.texCoords = p.ciTexCoord0;
     

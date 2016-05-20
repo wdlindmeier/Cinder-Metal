@@ -9,6 +9,7 @@
 #include <metal_stdlib>
 #include <simd/simd.h>
 #include "MetalConstants.h"
+#include "ShaderTypes.h"
 #include "SharedData.h"
 
 using namespace metal;
@@ -59,17 +60,15 @@ vertex ColorInOut lighting_vertex_interleaved( device const InterleavedVertex* v
     return out;
 }
 
-// Vertex Bhader using an interleaved geom::Source
+// Vertex Shader using an interleaved geom::Source
 // CubeVertex is found in SharedData.h
 vertex ColorInOut lighting_vertex_interleaved_src( device const CubeVertex* verts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                                   device const uint* indices [[ buffer(ciBufferIndexIndices) ]],
                                                    constant ciUniforms_t& uniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                    unsigned int vid [[ vertex_id ]] )
 {
     ColorInOut out;
     
-    const uint idx = indices[vid];
-    CubeVertex vert = verts[idx];
+    CubeVertex vert = verts[vid];
     float4 in_position = float4(vert.position, 1.0);
     out.position = uniforms.ciModelViewProjection * in_position;
     

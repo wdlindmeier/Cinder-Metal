@@ -58,16 +58,14 @@ vertex VertOut lighting_vertex_interleaved( device const InterleavedVertex* ciVe
 }
 
 // Batch using an interleaved geom::Source
-// CubeVertex is found in SharedData.h
+// CubeVertex is found in SharedTypes.h
 vertex VertOut lighting_vertex_interleaved_src( device const CubeVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                                device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                                 constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                                 unsigned int vid [[ vertex_id ]] )
 {
     VertOut out;
     
-    const uint idx = ciIndices[vid];
-    CubeVertex vert = ciVerts[idx];
+    CubeVertex vert = ciVerts[vid];
     float4 in_position = float4(vert.ciPosition);
     out.position = ciUniforms.ciModelViewProjection * in_position;
     

@@ -228,7 +228,7 @@ Batch::Batch( const ci::geom::Source &source,
 {
     initBufferLayout( attributeMapping );
     mVertexBuffer = mtl::VertexBuffer::create( source, mInterleavedLayout );
-    mVertexBuffer->setIndicesBufferIndex(mIndicesBufferIndex);
+//    mVertexBuffer->setIndicesBufferIndex(mIndicesBufferIndex);
     checkBufferLayout();
 }
 
@@ -301,10 +301,10 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
                     assert(false);
                 }
             }
-            else if ( argName == "ciIndices" )
-            {
-                mIndicesBufferIndex = argument.getIndex();
-            }
+//            else if ( argName == "ciIndices" )
+//            {
+//                mIndicesBufferIndex = argument.getIndex();
+//            }
             else
             {
                 // Check if we know the name
@@ -375,7 +375,7 @@ void Batch::checkBufferLayout()
         // Assume the data format is correct
     }
     
-    assert( mVertexBuffer->getIndicesBufferIndex() == mIndicesBufferIndex );
+//    assert( mVertexBuffer->getIndicesBufferIndex() == mIndicesBufferIndex );
 }
 
 void Batch::replacePipeline( const RenderPipelineStateRef& pipeline )

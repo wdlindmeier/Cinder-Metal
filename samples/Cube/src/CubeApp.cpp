@@ -2,6 +2,8 @@
 #include "metal.h"
 #include "VertexBuffer.h"
 #include "Batch.h"
+#include "Shader.h"
+
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -39,6 +41,10 @@ void CubeApp::setup()
 
     mPipeline = mtl::RenderPipelineState::create("batch_vertex", "cube_fragment");
     mBatchCube = mtl::Batch::create(geom::Cube(), mPipeline);
+    
+//    mPipeline = mtl::getStockPipeline(mtl::ShaderDef().texture());
+//    mBatchCube = mtl::Batch::create(geom::Cube(), mPipeline);
+
 
 }
 
@@ -63,7 +69,8 @@ void CubeApp::draw()
     
     mtl::setMatrices(mCam);
     mtl::setModelMatrix(mCubeRotation);
-    mBatchCube->draw(renderEncoder);
+    //mBatchCube->draw(renderEncoder);
+    renderEncoder.draw(mBatchCube);
 }
 
 CINDER_APP( CubeApp, RendererMetal( RendererMetal::Options().numInflightBuffers(1) ) )

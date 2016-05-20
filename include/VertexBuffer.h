@@ -65,8 +65,8 @@ namespace cinder { namespace mtl {
         // Returns -1 if the attr doesnt have an index
         unsigned long getAttributeBufferIndex( const ci::geom::Attrib attr );
 
-        void setIndicesBufferIndex( unsigned long shaderBufferIndex ){ mBufferIndexIndices = shaderBufferIndex; };
-        unsigned long getIndicesBufferIndex(){ return mBufferIndexIndices; };
+//        void setIndicesBufferIndex( unsigned long shaderBufferIndex ){ mBufferIndexIndices = shaderBufferIndex; };
+//        unsigned long getIndicesBufferIndex(){ return mBufferIndexIndices; };
 
         template<typename T>
         void update( ci::geom::Attrib attr, std::vector<T> vectorData )
@@ -113,7 +113,7 @@ namespace cinder { namespace mtl {
         size_t mVertexLength;
         size_t mIndexLength;
         
-        unsigned long mBufferIndexIndices = ciBufferIndexIndices; // default
+//        unsigned long mBufferIndexIndices = ciBufferIndexIndices; // default
         
         ci::geom::BufferLayout mBufferLayout;
         DataBufferRef mInterleavedData;

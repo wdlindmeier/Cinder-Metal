@@ -168,7 +168,7 @@ void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount
 #ifdef CINDER_COCOA_TOUCH
     if ( [[RendererMetalImpl sharedRenderer].device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1] )
 #endif
-    {
+    {        
         [IMPL drawPrimitives:(MTLPrimitiveType)nativeMTLPrimitiveType(primitive)
                  vertexStart:vertexStart
                  vertexCount:vertexCount
@@ -193,8 +193,8 @@ void RenderEncoder::draw( ci::mtl::geom::Primitive primitive, size_t vertexCount
 }
 
 void RenderEncoder::drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
-                                 size_t indexCount, IndexType indexType, size_t bufferOffset,
-                                 size_t instanceCount, size_t baseVertex, size_t baseInstance )
+                                 size_t indexCount, size_t instanceCount, size_t bufferOffset,
+                                 IndexType indexType, size_t baseVertex, size_t baseInstance )
 {
 #ifdef CINDER_COCOA_TOUCH
     if ( [[RendererMetalImpl sharedRenderer].device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1] )

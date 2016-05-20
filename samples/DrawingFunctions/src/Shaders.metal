@@ -28,15 +28,13 @@ typedef struct
 } ciVertexOut_t;
 
 vertex ciVertexOut_t generated_vert( device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                     device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                      device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],
                                      constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                      unsigned int vid [[ vertex_id ]],
                                      uint i [[ instance_id ]] )
 {
     ciVertexOut_t out;
-    unsigned int vertIndex = ciIndices[vid];
-    ciVertexIn_t v = ciVerts[vertIndex];
+    ciVertexIn_t v = ciVerts[vid];
     matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;
     matrix_float4x4 mvpMat = ciUniforms.ciViewProjection * modelMat;
     float4 pos = float4(v.ciPosition[0], v.ciPosition[1], v.ciPosition[2], 1.0f);

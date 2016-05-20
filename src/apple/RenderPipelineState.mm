@@ -51,6 +51,7 @@ mFormat(format)
     MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
     pipelineStateDescriptor.label = [NSString stringWithUTF8String:mFormat.getLabel().c_str()];
     [pipelineStateDescriptor setSampleCount: mFormat.getSampleCount()];
+
     [pipelineStateDescriptor setVertexFunction:vertexProgram];
     [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
     
@@ -70,7 +71,7 @@ mFormat(format)
     renderbufferAttachment.sourceRGBBlendFactor = (MTLBlendFactor)mFormat.getSrcColorBlendFactor();
     renderbufferAttachment.sourceAlphaBlendFactor = (MTLBlendFactor)mFormat.getSrcAlphaBlendFactor();
     renderbufferAttachment.destinationRGBBlendFactor = (MTLBlendFactor)mFormat.getDstColorBlendFactor();
-    renderbufferAttachment.destinationAlphaBlendFactor = (MTLBlendFactor)mFormat.getDstAlphaBlendFactor();
+    renderbufferAttachment.destinationAlphaBlendFactor = (MTLBlendFactor)mFormat.getDstAlphaBlendFactor();    
     
     NSError* error = NULL;
     MTLRenderPipelineReflection *reflect = nil;

@@ -38,7 +38,6 @@ namespace cinder { namespace mtl {
     Batch will inspect your vertex function and look for parameters with pre-defined names and buffer indices.
     
     ciVerts: The vertex data populated by a Batch. Should use buffer index ciBufferIndexInterleavedVerts.
-    ciIndices: The vertex indices used to access the ciVerts array. Should use buffer index ciBufferIndexIndices.
     ciUniforms: The uniforms passed in by the context. Should be located at ciBufferIndexUniforms.
     */
     class Batch
@@ -115,6 +114,6 @@ namespace cinder { namespace mtl {
         
             ci::geom::BufferLayout mInterleavedLayout;
             std::map<ci::geom::Attrib, unsigned long> mAttribBufferIndices;
-            unsigned long mIndicesBufferIndex = ciBufferIndexIndices;
+            //unsigned long mIndicesBufferIndex = ciBufferIndexIndices;
     };
 }}

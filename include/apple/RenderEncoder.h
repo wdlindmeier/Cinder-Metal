@@ -93,8 +93,8 @@ namespace cinder { namespace mtl {
                    size_t instanceCount = 1, size_t baseInstance = 0 );
         
         void drawIndexed( ci::mtl::geom::Primitive primitive, const DataBufferRef & indexBuffer,
-                          size_t indexCount, IndexType indexType = IndexTypeUInt32, size_t bufferOffset = 0,
-                          size_t instanceCount = 1, size_t baseVertex = 0, size_t baseInstance = 0 );
+                          size_t indexCount, size_t instanceCount = 1, size_t bufferOffset = 0,
+                          IndexType indexType = IndexTypeUInt32, size_t baseVertex = 0, size_t baseInstance = 0 );
 #if !defined( CINDER_COCOA_TOUCH )
         void textureBarrier();
 #endif

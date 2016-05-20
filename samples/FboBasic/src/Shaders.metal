@@ -27,14 +27,12 @@ typedef struct
 using namespace metal;
 
 vertex ciVertOut_t cube_vertex( device const CubeVertex* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],
-                                device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],
                                 constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],
                                 unsigned int vid [[ vertex_id ]] )
 {
     ciVertOut_t out;
     
-    unsigned int vertIndex = ciIndices[vid];
-    CubeVertex p = ciVerts[vertIndex];
+    CubeVertex p = ciVerts[vid];
     out.position = ciUniforms.ciModelViewProjection * float4(p.ciPosition, 1.0);
     out.color = p.ciColor;
     out.texCoords = p.ciTexCoord0;
