@@ -95,9 +95,10 @@ namespace cinder { namespace mtl {
         return *this;
     }
     
-    ShaderDef& ShaderDef::alphaBlending()
+    ShaderDef& ShaderDef::alphaBlending( BlendMode blendMode )
     {
         mAlphaBlending = true;
+        mBlendMode = blendMode;
         return *this;
     }
 
@@ -182,7 +183,12 @@ namespace cinder { namespace mtl {
         {
             return rhs.mAlphaBlending;
         }
-        
+
+        if ( rhs.mBlendMode != mBlendMode )
+        {
+            return rhs.mBlendMode;
+        }
+
         return false;
     }
     
@@ -444,7 +450,7 @@ namespace cinder { namespace mtl {
     }
     
     ci::mtl::RenderPipelineStateRef	PipelineBuilder::buildPipeline( const ShaderDef &shader,
-                                                                    mtl::RenderPipelineState::Format format )
+                                                                    const mtl::RenderPipelineState::Format & format )
     {
         std::string librarySource = PipelineBuilder::generateMetalLibrary(shader);
         CI_LOG_V("Generated Library:\n" << librarySource);

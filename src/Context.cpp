@@ -331,6 +331,14 @@ namespace cinder { namespace mtl {
             if ( shaderDef.getAlphaBlending() )
             {
                 format.blendingEnabled();
+                if ( shaderDef.getBlendMode() == mtl::BlendModeAdditive )
+                {
+                    format.srcAlphaBlendFactor(mtl::BlendFactorOne);
+                    format.srcColorBlendFactor(mtl::BlendFactorOne);
+                    format.dstAlphaBlendFactor(mtl::BlendFactorOne);
+                    format.dstColorBlendFactor(mtl::BlendFactorOne);
+                }
+                // TODO: Add mode
             }
             sStockShaders[shaderDef] = PipelineBuilder::buildPipeline(shaderDef, format);
         }

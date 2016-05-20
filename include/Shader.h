@@ -15,6 +15,13 @@
 
 namespace cinder { namespace mtl {
     
+    typedef enum BlendModes
+    {
+        BlendModeBlend = 0,
+        BlendModeAdditive
+        // TODO: Add more modes
+    } BlendMode;
+    
     class ShaderDef
     {
         public:
@@ -22,7 +29,7 @@ namespace cinder { namespace mtl {
         
         // Attribs
         ShaderDef&		color();
-        ShaderDef&		alphaBlending();
+        ShaderDef&		alphaBlending( BlendMode blendMode = BlendModeBlend );
         ShaderDef&		texture();
         ShaderDef&		lambert();
         ShaderDef&		points();
@@ -33,6 +40,7 @@ namespace cinder { namespace mtl {
         bool            getLambert() const { return mLambert; };
         bool            getPoints() const { return mPoints; };
         bool            getTextureArray() const { return mTextureArray; };
+        BlendMode       getBlendMode() const { return mBlendMode; }
         
         // Display
         ShaderDef&		billboard();
@@ -61,6 +69,7 @@ namespace cinder { namespace mtl {
         bool					mTextureArray;
         bool                    mBillboard;
         bool                    mRing;
+        BlendMode               mBlendMode;
         
         friend class PipelineBuilder;
     };
@@ -69,7 +78,7 @@ namespace cinder { namespace mtl {
     {
     public:
         static ci::mtl::RenderPipelineStateRef buildPipeline( const ShaderDef &shader,
-                                                              ci::mtl::RenderPipelineState::Format format =
+                                                              const ci::mtl::RenderPipelineState::Format & format =
                                                               ci::mtl::RenderPipelineState::Format() );
         static std::string	generateFragmentShader( const ShaderDef &shader );
         static std::string	generateVertexShader( const ShaderDef &shader );
