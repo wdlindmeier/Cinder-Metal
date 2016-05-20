@@ -51,4 +51,7 @@
 - (void)makeCurrentContext:(bool)force;
 - (dispatch_semaphore_t)inflightSemaphore;
 
+// Device support
+- (int)maxNumColorAttachments;
+
 @end

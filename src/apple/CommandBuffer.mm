@@ -42,15 +42,25 @@ CommandBuffer::~CommandBuffer()
     CFRelease(mImpl);
 }
 
-RenderEncoderRef CommandBuffer::createRenderEncoder( const RenderPassDescriptorRef & descriptor,
+RenderEncoderRef CommandBuffer::createRenderEncoder( RenderPassDescriptorRef & descriptor,
                                                      void *drawableTexture,
                                                      const std::string & encoderName )
 {
     descriptor->applyToDrawableTexture(drawableTexture);
+    return CommandBuffer::createRenderEncoder( descriptor, encoderName );
+}
+
+RenderEncoderRef CommandBuffer::createRenderEncoder( RenderPassDescriptorRef & descriptor,
+                                                     const std::string & encoderName )
+{
+    // The decriptor should have a render target.
+    // QUESTION: Is it possible to render without a color attachment?
+    // Maybe this should test if theres a depth stencil or color...
+    assert( descriptor->getColorAttachment() );
 
     id <MTLRenderCommandEncoder> renderEncoder = [IMPL renderCommandEncoderWithDescriptor:
                                                   (__bridge MTLRenderPassDescriptor *)descriptor->getNative()];
-
+    
     renderEncoder.label = [NSString stringWithUTF8String:encoderName.c_str()];
     return RenderEncoder::create((__bridge void *)renderEncoder);
 }

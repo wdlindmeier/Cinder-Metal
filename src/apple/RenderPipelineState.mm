@@ -54,9 +54,15 @@ mFormat(format)
     [pipelineStateDescriptor setVertexFunction:vertexProgram];
     [pipelineStateDescriptor setFragmentFunction:fragmentProgram];
     
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = (MTLPixelFormat)mFormat.getPixelFormat();
-    pipelineStateDescriptor.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float; // this is the only depth format
-
+    int maxNumAttachments = [RendererMetalImpl sharedRenderer].maxNumColorAttachments;
+    assert( mFormat.getNumColorAttachments() <= maxNumAttachments );
+    for ( int i = 0; i < mFormat.getNumColorAttachments(); ++i )
+    {
+        pipelineStateDescriptor.colorAttachments[i].pixelFormat = (MTLPixelFormat)mFormat.getColorPixelFormat();
+    }
+    pipelineStateDescriptor.depthAttachmentPixelFormat = (MTLPixelFormat)mFormat.getDepthPixelFormat();
+    pipelineStateDescriptor.stencilAttachmentPixelFormat = (MTLPixelFormat)mFormat.getStencilPixelFormat();
+    
     MTLRenderPipelineColorAttachmentDescriptor *renderbufferAttachment = pipelineStateDescriptor.colorAttachments[0];
     renderbufferAttachment.blendingEnabled = mFormat.getBlendingEnabled();
     renderbufferAttachment.rgbBlendOperation = (MTLBlendOperation)mFormat.getColorBlendOperation();

@@ -60,9 +60,11 @@ namespace cinder { namespace mtl {
         
         ScopedComputeEncoder scopedComputeEncoder( const std::string & bufferName = "Scoped Compute Encoder" );
         ScopedBlitEncoder scopedBlitEncoder( const std::string & bufferName = "Scoped Blit Encoder" );
-        ScopedRenderEncoder scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+        ScopedRenderEncoder scopedRenderEncoder( RenderPassDescriptorRef & descriptor,
                                                  mtl::TextureBufferRef & drawableTexture,
-                                                 const std::string & bufferName );
+                                                 const std::string & bufferName = "Scoped Render Encoder" );    
+        ScopedRenderEncoder scopedRenderEncoder( RenderPassDescriptorRef & descriptorWithDrawableAttachments,
+                                                 const std::string & bufferName = "Scoped Render Encoder" );
 
     private:
         bool mWaitUntilCompleted;
@@ -82,7 +84,7 @@ namespace cinder { namespace mtl {
         
         ScopedComputeEncoder scopedComputeEncoder( const std::string & bufferName = "Scoped Compute Encoder" );
         ScopedBlitEncoder scopedBlitEncoder( const std::string & bufferName = "Scoped Blit Encoder" );
-        ScopedRenderEncoder scopedRenderEncoder( const RenderPassDescriptorRef & descriptor,
+        ScopedRenderEncoder scopedRenderEncoder( RenderPassDescriptorRef & descriptor,
                                                  const std::string & bufferName = "Scoped Render Encoder" );
 
     private:

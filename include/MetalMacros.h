@@ -56,7 +56,6 @@ namespace cinder { \
             ciTextureIndex1 = 1, \
             ciTextureIndex2 = 2, \
         }; \
-        \
     } \
 }
 
@@ -147,6 +146,13 @@ namespace cinder { \
             vector_float4 K = vector_float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0); \
             vector_float3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www); \
             return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y); \
+        } \
+        \
+        inline matrix_float3x3 mat3( const matrix_float4x4 m ) \
+        { \
+            return matrix_float3x3((vector_float3){m[0][0], m[0][1], m[0][2]}, \
+                                   (vector_float3){m[1][0], m[1][1], m[1][2]}, \
+                                   (vector_float3){m[2][0], m[2][1], m[2][2]} ); \
         } \
         \
         inline matrix_float4x4 rotationMatrix( const matrix_float4x4 m ) \

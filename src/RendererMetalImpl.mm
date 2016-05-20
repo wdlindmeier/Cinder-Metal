@@ -95,6 +95,18 @@ static RendererMetalImpl * SharedRenderer = nil;
     return self;
 }
 
+// https://developer.apple.com/library/ios/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/MetalFeatureSetTables/MetalFeatureSetTables.html
+- (int)maxNumColorAttachments
+{
+#ifdef CINDER_COCOA_TOUCH
+    if ( ![self.device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily2_v1] )
+    {
+        return 4;
+    }
+#endif
+    return 8;
+}
+
 - (void)setupMetal:(cinder::app::RendererMetal::Options &)options
 {
     self.device = MTLCreateSystemDefaultDevice();
@@ -135,7 +147,7 @@ static RendererMetalImpl * SharedRenderer = nil;
     }
 
     // Pixel format could be an option.
-    _metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
+    _metalLayer.pixelFormat = (MTLPixelFormat)options.getPixelFormat();
     
     // Change this to NO if the compute encoder is used as the last pass on the drawable texture,
     // or if you wish to copy the layer contents to an image.

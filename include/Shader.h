@@ -41,7 +41,7 @@ namespace cinder { namespace mtl {
         bool            getPoints() const { return mPoints; };
         bool            getTextureArray() const { return mTextureArray; };
         BlendMode       getBlendMode() const { return mBlendMode; }
-        
+
         // Display
         ShaderDef&		billboard();
         ShaderDef&		uniformBasedPosAndTexCoord();

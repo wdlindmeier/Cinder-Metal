@@ -34,10 +34,10 @@ namespace cinder { namespace mtl {
         void commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
                 
         // Creates a render encoder for the main draw loop using the next "drawable".
-        RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & renderDescriptor,
+        RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef & renderDescriptor,
                                               const std::string & encoderName = "Default Render Encoder" );
         
-        virtual RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & descriptor,
+        virtual RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef & descriptor,
                                                       void *drawableTexture,
                                                       const std::string & encoderName = "Default Render Encoder" )
         {

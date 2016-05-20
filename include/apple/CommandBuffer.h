@@ -43,9 +43,12 @@ namespace cinder { namespace mtl {
 
         void * getNative(){ return mImpl; }
 
-        virtual RenderEncoderRef createRenderEncoder( const RenderPassDescriptorRef & descriptor,
-                                                      void *drawableTexture,
-                                                      const std::string & encoderName = "Default Render Encoder" );
+        virtual RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef & descriptor,
+                                                     const std::string & encoderName = "Default Render Encoder" );
+        // Create a render encoder and apply the texture to the RenderPassDescriptor
+        virtual RenderEncoderRef createRenderEncoder( RenderPassDescriptorRef & descriptor,
+                                                     void *drawableTexture,
+                                                     const std::string & encoderName = "Default Render Encoder" );
         virtual ComputeEncoderRef createComputeEncoder( const std::string & encoderName = "Default Compute Encoder" );
         virtual BlitEncoderRef createBlitEncoder( const std::string & encoderName = "Default Blit Encoder" );
         

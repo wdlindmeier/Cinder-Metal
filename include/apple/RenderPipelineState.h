@@ -27,6 +27,7 @@ namespace cinder { namespace mtl {
         {
             Format() :
             mSampleCount(1)
+            ,mNumColorAttachments(1)
             ,mBlendingEnabled(false)
             ,mColorBlendOperation(BlendOperationAdd)
             ,mAlphaBlendOperation(BlendOperationAdd)
@@ -35,7 +36,9 @@ namespace cinder { namespace mtl {
             ,mDstColorBlendFactor(BlendFactorOneMinusSourceAlpha)
             ,mDstAlphaBlendFactor(BlendFactorOneMinusSourceAlpha)
             ,mLabel("Default Pipeline")
-            ,mPixelFormat(PixelFormatBGRA8Unorm)
+            ,mColorPixelFormat(PixelFormatBGRA8Unorm)
+            ,mDepthPixelFormat(PixelFormatDepth32Float)
+            ,mStencilPixelFormat(PixelFormatInvalid)
             ,mPreprocessSource(true)
             {}
 
@@ -81,12 +84,25 @@ namespace cinder { namespace mtl {
             void setLabel( std::string label ) { mLabel = label; };
             std::string getLabel() const { return mLabel; };
 
-            Format& pixelFormat( PixelFormat pixelFormat ) { setPixelFormat( pixelFormat ); return *this; };
-            void setPixelFormat( PixelFormat pixelFormat ) { mPixelFormat = pixelFormat; };
-            PixelFormat getPixelFormat() const { return mPixelFormat; };
+            Format& colorPixelFormat( PixelFormat pixelFormat ) { setColorPixelFormat( pixelFormat ); return *this; };
+            void setColorPixelFormat( PixelFormat pixelFormat ) { mColorPixelFormat = pixelFormat; };
+            PixelFormat getColorPixelFormat() const { return mColorPixelFormat; };
+
+            Format& depthPixelFormat( PixelFormat pixelFormat ) { setDepthPixelFormat( pixelFormat ); return *this; };
+            void setDepthPixelFormat( PixelFormat pixelFormat ) { mDepthPixelFormat = pixelFormat; };
+            PixelFormat getDepthPixelFormat() const { return mDepthPixelFormat; };
+
+            Format& stencilPixelFormat( PixelFormat pixelFormat ) { setStencilPixelFormat( pixelFormat ); return *this; };
+            void setStencilPixelFormat( PixelFormat pixelFormat ) { mStencilPixelFormat = pixelFormat; };
+            PixelFormat getStencilPixelFormat() const { return mStencilPixelFormat; };
+
+            Format& numColorAttachments( int numAttachments ) { setNumColorAttachments( numAttachments ); return *this; };
+            void setNumColorAttachments( int numAttachments ) { mNumColorAttachments = numAttachments; };
+            int getNumColorAttachments() const { return mNumColorAttachments; };
 
         protected:
             
+            int mNumColorAttachments;
             int mSampleCount;
             bool mBlendingEnabled;
             BlendOperation mColorBlendOperation;
@@ -96,7 +112,9 @@ namespace cinder { namespace mtl {
             BlendFactor mDstColorBlendFactor;
             BlendFactor mDstAlphaBlendFactor;
             std::string mLabel;
-            PixelFormat mPixelFormat;
+            PixelFormat mColorPixelFormat;
+            PixelFormat mDepthPixelFormat;
+            PixelFormat mStencilPixelFormat;
             bool mPreprocessSource;
             
         };
