@@ -41,11 +41,6 @@ void CubeApp::setup()
 
     mPipeline = mtl::RenderPipelineState::create("batch_vertex", "cube_fragment");
     mBatchCube = mtl::Batch::create(geom::Cube(), mPipeline);
-    
-//    mPipeline = mtl::getStockPipeline(mtl::ShaderDef().texture());
-//    mBatchCube = mtl::Batch::create(geom::Cube(), mPipeline);
-
-
 }
 
 void CubeApp::resize()
@@ -69,7 +64,6 @@ void CubeApp::draw()
     
     mtl::setMatrices(mCam);
     mtl::setModelMatrix(mCubeRotation);
-    //mBatchCube->draw(renderEncoder);
     renderEncoder.draw(mBatchCube);
 }
 
