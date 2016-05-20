@@ -310,7 +310,6 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
 
     if ( mIndexBuffer )
     {
-        //renderEncoder.setVertexBufferAtIndex( mIndexBuffer, mBufferIndexIndices );
         size_t indexBufferOffset = vertexStart * sizeof(u_int32_t);
         renderEncoder.drawIndexed( mPrimitive,
                                    mIndexBuffer,
@@ -326,15 +325,4 @@ void VertexBuffer::draw( RenderEncoder & renderEncoder,
                             vertexStart,
                             instanceCount );
     }
-    
-
-//    if ( mIndexBuffer )
-//    {
-//        renderEncoder.setVertexBufferAtIndex( mIndexBuffer, mBufferIndexIndices );
-//    }
-//
-//    renderEncoder.draw( mPrimitive,
-//                        vertexLength,
-//                        vertexStart,
-//                        instanceCount );
 }

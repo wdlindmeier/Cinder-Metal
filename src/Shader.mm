@@ -268,7 +268,6 @@ namespace cinder { namespace mtl {
         
         s +=
         "vertex ciVertexOut_t ci_generated_vert( device const ciVertexIn_t* ciVerts [[ buffer(ciBufferIndexInterleavedVerts) ]],\n"
-//        "                                        device const uint* ciIndices [[ buffer(ciBufferIndexIndices) ]],\n"
         "                                        device const Instance* instances [[ buffer(ciBufferIndexInstanceData) ]],\n"
         "                                        constant ciUniforms_t& ciUniforms [[ buffer(ciBufferIndexUniforms) ]],\n";
         if ( shader.mRing )
@@ -283,7 +282,6 @@ namespace cinder { namespace mtl {
         "   ciVertexOut_t out;\n";
         
         s +=
-//        "   unsigned int vertIndex = ciIndices[vid];\n"
         "   ciVertexIn_t v = ciVerts[vid];\n"
         "   matrix_float4x4 modelMat = ciUniforms.ciModelMatrix * instances[i].modelMatrix;\n";
 
