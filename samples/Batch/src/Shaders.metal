@@ -8,6 +8,7 @@
 
 #include <metal_stdlib>
 #include <simd/simd.h>
+
 #include "MetalConstants.h"
 #include "ShaderTypes.h"
 #include "SharedTypes.h"

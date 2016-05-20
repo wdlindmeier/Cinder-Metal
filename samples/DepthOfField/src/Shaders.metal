@@ -11,6 +11,7 @@
 
 #include "SharedTypes.h"
 #include "ShaderUtils.h"
+#include "ShaderTypes.h"
 #include "MetalConstants.h"
 
 using namespace metal;

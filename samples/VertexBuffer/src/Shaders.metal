@@ -11,6 +11,7 @@
 #include "MetalConstants.h"
 #include "ShaderTypes.h"
 #include "SharedData.h"
+#include "ShaderTypes.h"
 
 using namespace metal;
 using namespace cinder::mtl;
