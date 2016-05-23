@@ -12,6 +12,14 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+#ifdef CINDER_COCOA_TOUCH
+const static int kHalfDimension = 2;
+#else
+const static int kHalfDimension = 4;
+#endif
+const static int kDrawDimension = (kHalfDimension * 2 + 1);
+const static int kDrawNum = kDrawDimension * kDrawDimension * kDrawDimension;
+
 // Ported from Paul Houx's Depth of Field sample:
 // https://github.com/paulhoux/Cinder-Samples/tree/master/DepthOfField
 
@@ -33,7 +41,7 @@ public:
     , mTimeDemo( 0 )
     , mPaused( false )
     , mResized( true )
-    , mShiftDown( false )
+    , mIsManualFocus( false )
     , mShowBounds( false )
     , mEnableDemo( false )
     , mFocus(mFocalPlane)
@@ -52,12 +60,17 @@ public:
     void update( double timestep ); // Will be called a fixed number of times per second.
     void draw() override;
     
+#ifdef CINDER_COCOA_TOUCH
+    void touchesBegan( TouchEvent event ) override;
+    void touchesMoved( TouchEvent event ) override;
+    void touchesEnded( TouchEvent event ) override;
+#else
     void mouseMove( MouseEvent event ) override;
     void mouseDown( MouseEvent event ) override;
     void mouseDrag( MouseEvent event ) override;
-    
     void keyDown( KeyEvent event ) override;
-    void keyUp( KeyEvent event ) override { mShiftDown = event.isShiftDown(); }
+    void keyUp( KeyEvent event ) override { mIsManualFocus = event.isShiftDown(); }
+#endif
     
     void resize() override;
 
@@ -105,7 +118,7 @@ private:
     
     bool mPaused;
     bool mResized;
-    bool mShiftDown;
+    bool mIsManualFocus;
     bool mShowBounds;
     bool mEnableDemo;
     
@@ -153,17 +166,17 @@ void DepthOfFieldApp::setupInstances()
     Rand::randSeed( 12345 );
     std::vector<TeapotInstance> instances;
     
-    for( int z = -4; z <= 4; z++ )
+    for( int z = -kHalfDimension; z <= kHalfDimension; z++ )
     {
-        for( int y = -4; y <= 4; y++ )
+        for( int y = -kHalfDimension; y <= kHalfDimension; y++ )
         {
-            for( int x = -4; x <= 4; x++ )
+            for( int x = -kHalfDimension; x <= kHalfDimension; x++ )
             {
-                vec3  position = vec3( x, y, z ) * 5.0f + Rand::randVec3();
+                vec3  position = vec3( x, y, z ) * 5.f + Rand::randVec3();
                 vec3  axis = Rand::randVec3();
                 float angle = Rand::randFloat( -180.0f, 180.0f );
                 
-                mat4 transform = glm::translate( vec3( x, y, z ) * 5.0f );
+                mat4 transform = glm::translate( position );
                 transform *= glm::rotate( glm::radians( angle ), axis );
                 
                 TeapotInstance instance;
@@ -175,6 +188,8 @@ void DepthOfFieldApp::setupInstances()
             }
         }
     }
+    
+    assert(instances.size() == kDrawNum);
     
     mInstances = mtl::DataBuffer::create(instances,
                                          mtl::DataBuffer::Format().label("Node Instances").isConstant());
@@ -234,7 +249,11 @@ void DepthOfFieldApp::setupCamera()
     mCamera.lookAt( vec3( 8.4f, 14.1f, 29.7f ), vec3( 0 ) );
     mCameraUser.setPerspective( mFoV, 1.0f, 0.05f, 100.0f );
     mCameraUser.lookAt( vec3( 8.4f, 14.1f, 29.7f ), vec3( 0 ) );
+#ifdef CINDER_COCOA_TOUCH
+    mCameraUi = CameraUi(&mCameraUser, getWindow());
+#else
     mCameraUi.setCamera( &mCameraUser );
+#endif
 }
 
 #pragma mark - Update
@@ -324,7 +343,7 @@ void DepthOfFieldApp::update( double timestep )
             eye.y = float( 15.0 * cos( 0.01 * mTimeDemo ) );
             eye.z = float( 10.0 * cos( 0.05 * mTimeDemo ) );
             
-            mFocus = mShiftDown ? mFocus : glm::mix( distance, 45.0f, float( 0.5 - 0.5 * cos( 0.05 * mTimeDemo ) ) );
+            mFocus = mIsManualFocus ? mFocus : glm::mix( distance, 45.0f, float( 0.5 - 0.5 * cos( 0.05 * mTimeDemo ) ) );
             mFoV = glm::mix( 10.0f, 20.0f, float( 0.5 - 0.5 * cos( 0.02 * mTimeDemo ) ) );
         }
         else
@@ -364,13 +383,13 @@ void DepthOfFieldApp::update( double timestep )
     // Reset random number generator.
     Rand::randSeed( 12345 );
     
-    // Animate teapots and perform ray casting at the same time.
+//    // Animate teapots and perform ray casting at the same time.
     auto ptr = (TeapotInstance *)mInstances->contents();
-    for( int z = -4; z <= 4; z++ )
+    for( int z = -kHalfDimension; z <= kHalfDimension; z++ )
     {
-        for( int y = -4; y <= 4; y++ )
+        for( int y = -kHalfDimension; y <= kHalfDimension; y++ )
         {
-            for( int x = -4; x <= 4; x++ )
+            for( int x = -kHalfDimension; x <= kHalfDimension; x++ )
             {
                 float angle = Rand::randFloat( -180.0f, 180.0f ) + Rand::randFloat( 1.0f, 90.0f ) * float( mTime );
                 
@@ -381,7 +400,7 @@ void DepthOfFieldApp::update( double timestep )
                 i.modelMatrix = toMtl(transform);
                 
                 // Ray-casting.
-                if( mShiftDown )
+                if( mIsManualFocus )
                 {
                     auto bounds = mBounds.transformed( transform );
                     if( bounds.intersect( ray, &min, &max ) > 0 )
@@ -397,7 +416,7 @@ void DepthOfFieldApp::update( double timestep )
     }
     
     // Auto-focus.
-    if( mShiftDown && dist < FLT_MAX )
+    if( mIsManualFocus && dist < FLT_MAX )
     {
         mFocalPlane = dist;
     }
@@ -429,7 +448,7 @@ void DepthOfFieldApp::draw()
         {
             mtl::ScopedColor       scpColor( 1, 1, 1 );
             fboEncoder.setTexture(mTexGold);
-            fboEncoder.draw(mTeapots, mInstances, 9 * 9 * 9 );
+            fboEncoder.draw(mTeapots, mInstances, kDrawNum );
         }
         
         if( true )
@@ -445,7 +464,7 @@ void DepthOfFieldApp::draw()
         {
             // Render bounding spheres.
             mtl::ScopedColor       scpColor( 1, 1, 1 );
-            fboEncoder.draw( mSpheres, mInstances, 9 * 9 * 9 );
+            fboEncoder.draw( mSpheres, mInstances, kDrawNum );
         }
     }
 
@@ -499,8 +518,6 @@ void DepthOfFieldApp::draw()
     mtl::ScopedMatrices matWindow;
     mtl::setMatricesWindow(getWindowSize());
 
-    // + 10 fps
-    
     // Perform compositing.
     if( true )
     {
@@ -524,9 +541,33 @@ void DepthOfFieldApp::draw()
 
 #pragma mark - Input
 
+#ifdef CINDER_COCOA_TOUCH
+
+void DepthOfFieldApp::touchesBegan( TouchEvent event )
+{
+    mMousePos = event.getTouches()[0].getPos();
+    mCameraUi.mouseDown(mMousePos);
+}
+
+void DepthOfFieldApp::touchesMoved( TouchEvent event )
+{
+    mIsManualFocus = false;
+    mMousePos = event.getTouches()[0].getPos();
+    mCameraUi.mouseDrag( mMousePos, true, false, false );
+}
+
+void DepthOfFieldApp::touchesEnded( TouchEvent event )
+{
+    mIsManualFocus = true;
+    mMousePos = event.getTouches()[0].getPos();
+    mCameraUi.mouseUp(mMousePos);
+}
+
+#else
+
 void DepthOfFieldApp::mouseMove( MouseEvent event )
 {
-    mShiftDown = event.isShiftDown();
+    mIsManualFocus = event.isShiftDown();
     mMousePos = event.getPos();
 }
 
@@ -539,13 +580,13 @@ void DepthOfFieldApp::mouseDrag( MouseEvent event )
 {
     mCameraUi.mouseDrag( event );
     
-    mShiftDown = event.isShiftDown();
+    mIsManualFocus = event.isShiftDown();
     mMousePos = event.getPos();
 }
 
 void DepthOfFieldApp::keyDown( KeyEvent event )
 {
-    mShiftDown = event.isShiftDown();
+    mIsManualFocus = event.isShiftDown();
     
     switch( event.getCode() )
     {
@@ -568,6 +609,8 @@ void DepthOfFieldApp::keyDown( KeyEvent event )
             break;
     }
 }
+
+#endif
 
 #pragma mark - Resize
 

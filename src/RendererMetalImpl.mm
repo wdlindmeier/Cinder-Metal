@@ -109,6 +109,22 @@ static RendererMetalImpl * SharedRenderer = nil;
 
 - (void)setupMetal:(cinder::app::RendererMetal::Options &)options
 {
+    // TODO: Add device picking to options.
+    // Example of how to pick a specific GPU:
+    /*
+    NSArray<id<MTLDevice>> * devices = MTLCopyAllDevices();
+    for ( id<MTLDevice> d in devices )
+    {
+       NSLog(@"device: %@", d);
+       //if ( [d.name rangeOfString:@"750"].location != NSNotFound )
+       if ( [d.name rangeOfString:@"Iris"].location != NSNotFound )
+       {
+           self.device = d;
+       }
+    }
+
+    assert(self.device);
+    */
     self.device = MTLCreateSystemDefaultDevice();
     
 #if DEBUG
