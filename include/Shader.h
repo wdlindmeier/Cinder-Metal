@@ -15,6 +15,14 @@
 
 namespace cinder { namespace mtl {
     
+    typedef enum SwizzleComponents
+    {
+        RED = 0,
+        GREEN = 1,
+        BLUE = 2,
+        ALPHA = 3
+    } SwizzleComponent;
+    
     typedef enum BlendModes
     {
         BlendModeBlend = 0,
@@ -34,6 +42,8 @@ namespace cinder { namespace mtl {
         ShaderDef&		lambert();
         ShaderDef&		points();
         ShaderDef&		textureArray();
+        ShaderDef&      textureSwizzleMask( SwizzleComponent zero = RED, SwizzleComponent one = GREEN,
+                                            SwizzleComponent two = BLUE, SwizzleComponent three = ALPHA );
         bool            getColor() const { return mColor; };
         bool            getAlphaBlending() const { return mAlphaBlending; };
         bool            getTexture() const { return mTextureMapping; };

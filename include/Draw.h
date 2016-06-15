@@ -34,6 +34,7 @@ namespace cinder { namespace mtl {
     ci::mtl::BatchRef getStockBatchSphere();
     ci::mtl::BatchRef getStockBatchCube();
     ci::mtl::BatchRef getStockBatchColoredCube();
+    ci::mtl::BatchRef getStockBatchPlane();
     // NOTE: Ring can be a circle by passing in an inner radius of 0
     ci::mtl::BatchRef getStockBatchRing();
     ci::mtl::BatchRef getStockBatchBillboardRing();

@@ -26,6 +26,7 @@ public:
     mtl::BatchRef mBatchStockTexture;
     mtl::BatchRef mBatchStockLambert;
     mtl::BatchRef mBatchStockWire;
+    mtl::BatchRef mBatchStockSwizzle;
     mtl::TextureBufferRef mTextureLogo;
 };
 
@@ -42,6 +43,10 @@ void StockShaderApp::setup()
     ci::mtl::RenderPipelineStateRef renderPipelineTexture = mtl::getStockPipeline(mtl::ShaderDef().texture().billboard());
     mBatchStockTexture = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5f,-0.5f,0.5f,0.5f)), renderPipelineTexture);
     mTextureLogo = mtl::TextureBuffer::create(loadImage(getAssetPath("cinderblock.png")));
+    
+    ci::mtl::RenderPipelineStateRef renderPipelineSwizzle = mtl::getStockPipeline(mtl::ShaderDef().texture().billboard()
+                                                                                  .textureSwizzleMask(mtl::BLUE, mtl::GREEN, mtl::RED, mtl::ALPHA));
+    mBatchStockSwizzle = mtl::Batch::create(ci::geom::Rect(Rectf(-0.5f,-0.5f,0.5f,0.5f)), renderPipelineSwizzle);
 
     ci::mtl::RenderPipelineStateRef renderPipelineLambert = mtl::getStockPipeline(mtl::ShaderDef().lambert());
     mBatchStockLambert = mtl::Batch::create(ci::geom::TorusKnot(), renderPipelineLambert);
@@ -68,7 +73,7 @@ void StockShaderApp::draw()
 
     {
         mtl::ScopedModelMatrix matBasic;
-        mtl::translate(vec3(0,-1,0));
+        mtl::translate(vec3(0,0,0));
         mtl::color(0.25, 0.65, 1);
         renderEncoder.draw(mBatchStockBasic);
     }
@@ -80,7 +85,15 @@ void StockShaderApp::draw()
         renderEncoder.setTexture(mTextureLogo);
         renderEncoder.draw(mBatchStockTexture);
     }
-    
+
+    {
+        mtl::ScopedModelMatrix matTexture;
+        mtl::translate(vec3(0,-1,0));
+        mtl::color(1, 1, 1);
+        renderEncoder.setTexture(mTextureLogo);
+        renderEncoder.draw(mBatchStockSwizzle);
+    }
+
     {
         mtl::ScopedModelMatrix matLambert;
         mtl::translate(vec3(-1,0,0));

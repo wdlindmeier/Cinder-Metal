@@ -151,7 +151,7 @@ mtl::BatchRef getStockBatchCube()
     }
     return sCachedBatches.at("BatchCube");
 }
-    
+        
 mtl::BatchRef getStockBatchColoredCube()
 {
     if ( !sCachedBatches.count("BatchColoredCube") )
@@ -211,7 +211,6 @@ mtl::BatchRef getStockBatchRing()
     }
     return sCachedBatches.at("BatchRing");
 }
-
 mtl::BatchRef getStockBatchBillboardRing()
 {
     if ( !sCachedBatches.count("BatchBillboardRing") )

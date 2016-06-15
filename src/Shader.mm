@@ -15,14 +15,6 @@ using namespace std;
 
 namespace cinder { namespace mtl {
     
-    enum
-    {
-        RED = 0,
-        GREEN = 1,
-        BLUE = 2,
-        ALPHA = 3
-    };
-    
 #pragma mark - ShaderDef
     
     ShaderDef::ShaderDef()
@@ -44,11 +36,19 @@ namespace cinder { namespace mtl {
         mTextureSwizzleMask[3] = ALPHA;
     }
     
-    ShaderDef& ShaderDef::texture() // const TextureBufferRef &texture )
+    ShaderDef& ShaderDef::texture()
     {
         mTextureMapping = true;
-//        if( texture && ( ! TextureBase::supportsHardwareSwizzle() ) )
-//        mTextureSwizzleMask = texture->getSwizzleMask();
+        return *this;
+    }
+    
+    ShaderDef& ShaderDef::textureSwizzleMask( SwizzleComponent zero, SwizzleComponent one,
+                                              SwizzleComponent two, SwizzleComponent three )
+    {
+        mTextureSwizzleMask[0] = zero;
+        mTextureSwizzleMask[1] = one;
+        mTextureSwizzleMask[2] = two;
+        mTextureSwizzleMask[3] = three;
         return *this;
     }
     
@@ -425,7 +425,7 @@ namespace cinder { namespace mtl {
             
             if( !shader.isTextureSwizzleDefault() )
             {
-                    s += "   texColor = texColor." + shader.getTextureSwizzleString();
+                s += "   texColor = texColor." + shader.getTextureSwizzleString() + ";\n";
             }
 
             s += "   oColor *= texColor;\n";
