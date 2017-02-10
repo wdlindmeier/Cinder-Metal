@@ -108,7 +108,6 @@
 		A91F69F01C86152E009EE353 /* ShaderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderUtils.h; sourceTree = "<group>"; };
 		A91F69F11C86153A009EE353 /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; };
 		A91F69F21C86153A009EE353 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Draw.cpp; sourceTree = "<group>"; };
-		A92044851BCAD14500CC8AAB /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/src"; sourceTree = "<absolute>"; };
 		A92044881BCAD17700CC8AAB /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A92044891BCAD17700CC8AAB /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		A920448A1BCAD17700CC8AAB /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
@@ -538,12 +537,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_HEADER_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_NAME = VertexBuffer;
@@ -563,12 +558,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_HEADER_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_NAME = VertexBuffer;

@@ -371,6 +371,11 @@
 		00692BC614FF149000D0A05E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				TargetAttributes = {
+					00692BCE14FF149000D0A05E = {
+						DevelopmentTeam = 664M7G3SHW;
+					};
+				};
 			};
 			buildConfigurationList = 00692BC914FF149000D0A05E /* Build configuration list for PBXProject "StockShader" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -513,16 +518,13 @@
 		00692BF614FF149000D0A05E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 664M7G3SHW;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = StockShader_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include $(SRCROOT)/../include";
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_NAME = StockShader;
@@ -533,16 +535,13 @@
 		00692BF714FF149000D0A05E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 664M7G3SHW;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = StockShader_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include $(SRCROOT)/../include";
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_NAME = StockShader;

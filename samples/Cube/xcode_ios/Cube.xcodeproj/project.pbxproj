@@ -524,16 +524,13 @@
 				GCC_PREFIX_HEADER = Cube_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include";
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -547,16 +544,13 @@
 				GCC_PREFIX_HEADER = Cube_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include";
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

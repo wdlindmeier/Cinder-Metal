@@ -367,6 +367,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				TargetAttributes = {
+					8D1107260486CEB800E47090 = {
+						DevelopmentTeam = 664M7G3SHW;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "DepthOfField" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -444,6 +449,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 664M7G3SHW;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -458,7 +464,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include $(SRCROOT)/../include";
 				OTHER_LDFLAGS = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
@@ -474,6 +480,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 664M7G3SHW;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -489,7 +496,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MTL_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/blocks/Cinder-Metal/include $(SRCROOT)/../include";
 				OTHER_LDFLAGS = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";

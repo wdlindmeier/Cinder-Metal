@@ -116,10 +116,12 @@ void RenderEncoder::setCullMode( int mtlCullMode )
     [IMPL setCullMode:(MTLCullMode)mtlCullMode];
 }
 
+#if !defined( CINDER_COCOA_TOUCH )
 void RenderEncoder::setDepthClipMode( int mtlDepthClipMode )
 {
     [IMPL setDepthClipMode:(MTLDepthClipMode)mtlDepthClipMode];
 }
+#endif
 
 void RenderEncoder::setDepthBias( float depthBias, float slopeScale, float clamp )
 {

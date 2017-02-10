@@ -12,6 +12,9 @@
 #include "RendererMetal.h"
 #include "CommandBuffer.h"
 #include "Context.h"
+// IMPORTANT:
+// Metal doesn't work in the iOS simulator.
+// If your build is failing here, try running on the device.
 #import <QuartzCore/CAMetalLayer.h>
 
 @interface RendererMetalImpl : NSObject

@@ -14,7 +14,7 @@
 		<supports os="macosx" />
 	
 		<sourcePattern>src/*.cpp</sourcePattern>	
-		<sourcePattern>src/*.cpp</sourcePattern>	
+		<sourcePattern>src/*.mm</sourcePattern>	
 		<sourcePattern>src/*.metal</sourcePattern>		
 		<sourcePattern>src/apple/*.cpp</sourcePattern>	
 		<sourcePattern>src/apple/*.mm</sourcePattern>

@@ -73,7 +73,6 @@
 		A99166CC1BF2D2C4006F710D /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		A9BDFE8E1C09568300A76FD0 /* MetalIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = MetalIcon.png; path = ../resources/MetalIcon.png; sourceTree = "<group>"; };
 		A9C4747E1BF6D02B0015B236 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedData.h; path = ../include/SharedData.h; sourceTree = "<group>"; };
-		A9FE91961CC9AA1B00E1E6BD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "/Users/bill/Tools/cinder_master/blocks/Cinder-Metal/src"; sourceTree = "<absolute>"; };
 		A9FE919B1CC9AA4700E1E6BD /* Argument.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Argument.mm; sourceTree = "<group>"; };
 		A9FE919C1CC9AA4700E1E6BD /* BlitEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlitEncoder.mm; sourceTree = "<group>"; };
 		A9FE919D1CC9AA4700E1E6BD /* CommandBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandBuffer.mm; sourceTree = "<group>"; };
@@ -556,12 +555,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSorting_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
@@ -577,12 +572,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSorting_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",
-					"-lz",
-				);
-				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim.a\"",
+				OTHER_LDFLAGS = (
+					"\"$(CINDER_PATH)/lib/ios/$(CONFIGURATION)/libcinder.a\"",
 					"-lz",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";

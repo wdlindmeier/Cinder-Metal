@@ -75,7 +75,9 @@ namespace cinder { namespace mtl {
         void setViewport( vec2 origin, vec2 size, float near = 0.0, float far = 1.f );
         void setFrontFacingWinding( bool isClockwise );
         void setCullMode( int mtlCullMode );
+#if !defined( CINDER_COCOA_TOUCH )
         void setDepthClipMode( int mtlDepthClipMode );
+#endif
         void setDepthBias( float depthBias, float slopeScale, float clamp );
         void setScissor( Area scissor );
         void setTriangleFillMode( int mtlTriangleFillMode );
