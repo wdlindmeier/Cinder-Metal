@@ -86,6 +86,10 @@ static RendererMetalImpl * SharedRenderer = nil;
         assert( [self.metalLayer isKindOfClass:[CAMetalLayer class]] );
         [self setupMetal:options];
     }
+    else
+    {
+        return nil;
+    }
     
     SharedRenderer = self;
     

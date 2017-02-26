@@ -22,6 +22,9 @@ namespace cinder { namespace mtl {
         
     public:
         
+        // The number of buffers should be the number of inflight buffers * the number of times the block is updated per-frame.
+        // It defaults to the number of inflight buffers that the renderer has, with the assumption that the block is
+        // updated once per frame.
         UniformBlock( int numBuffers = -1, const std::string & name = "Uniforms" ) :
         mInflightBufferIndex(0)
         ,mNumInflightBuffers(numBuffers)

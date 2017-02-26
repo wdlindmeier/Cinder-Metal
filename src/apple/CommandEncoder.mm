@@ -14,7 +14,6 @@
 #import <simd/simd.h>
 #import "RendererMetalImpl.h"
 #import "VertexBuffer.h"
-#import "UniformBlock.hpp"
 
 using namespace ci;
 using namespace ci::mtl;

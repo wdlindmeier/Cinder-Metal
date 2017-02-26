@@ -31,6 +31,8 @@ namespace cinder { namespace mtl {
             return RenderCommandBufferRef( new RenderCommandBuffer( bufferName ) );
         }
         
+        ~RenderCommandBuffer();
+        
         void commitAndPresent( std::function< void( void * mtlCommandBuffer) > completionHandler = NULL );
                 
         // Creates a render encoder for the main draw loop using the next "drawable".
@@ -49,6 +51,7 @@ namespace cinder { namespace mtl {
     protected:
         
         RenderCommandBuffer( const std::string & bufferName );
+        
         
         void * mDrawable; // <CAMetalDrawable>
     };

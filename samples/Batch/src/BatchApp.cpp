@@ -24,7 +24,6 @@ public:
     float mRotation;
     
     mtl::RenderPassDescriptorRef mRenderDescriptor;
-    mtl::UniformBlock<mtl::ciUniforms_t> mUniformBlock;
     
     mtl::RenderPipelineStateRef mPipelineSource;
     mtl::BatchRef mBatchSource;

@@ -47,6 +47,7 @@ mFormat(format)
 
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device
                                        newTextureWithDescriptor:desc];
+    assert(mImpl != nil);
 }
 
 TextureBuffer::TextureBuffer( void * mtlTexture )
@@ -60,8 +61,16 @@ TextureBuffer::TextureBuffer( void * mtlTexture )
     assert( numChannels > 0 && numChannels != 3 );
 
     mBytesPerRow = dataSizeForType( mDataType ) * [IMPL width] * numChannels;
-    
-    mFormat = Format().pixelFormat(pxFormat);
+
+    mFormat = Format()
+                .pixelFormat(pxFormat)
+                .mipmapLevel((int)[IMPL mipmapLevelCount])
+                .sampleCount((int)[IMPL sampleCount])
+                .depth((int)[IMPL depth])
+                .arrayLength((int)[IMPL arrayLength])
+                .usage((mtl::TextureUsage)[IMPL usage])
+                .storageMode((mtl::StorageMode)[IMPL storageMode])
+                .cacheMode((mtl::CPUCacheMode)[IMPL cpuCacheMode]);
 }
 
 TextureBuffer::TextureBuffer( const ImageSourceRef & imageSource, Format format ) :
@@ -107,6 +116,7 @@ mFormat(format)
 
     // Does this need to be CFRetained?
     mImpl = (__bridge_retained void *)[[RendererMetalImpl sharedRenderer].device newTextureWithDescriptor:desc];
+    assert(mImpl != nil);
     
     updateWithCGImage( imageRef, mFormat.getFlipVertically() );
     

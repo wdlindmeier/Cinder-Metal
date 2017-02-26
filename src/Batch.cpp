@@ -288,6 +288,12 @@ void Batch::initBufferLayout( const AttributeMapping &attributeMapping )
                         {
                             attrib = defaultAttribMap[attrName];
                         }
+                        else
+                        {
+                            ci::app::console() << "Unknown attribute name: " << attrName << std::endl;
+                            assert(false);
+                            return;
+                        }
                         size_t sizeOfComponent;
                         uint dimensions = DimensionsForAttributeOfType(m.dataType, &sizeOfComponent);
                         interleavedLayout.append(attrib, dimensions, stride, offset);

@@ -22,10 +22,18 @@ RenderCommandBuffer::RenderCommandBuffer( const std::string & bufferName )
 CommandBuffer( bufferName )
 {
     RendererMetalImpl *renderer = [RendererMetalImpl sharedRenderer];
-    mDrawable = (__bridge void *)[renderer.metalLayer nextDrawable];
+    CGRect layerFrame = renderer.metalLayer.frame;
+    assert(!CGSizeEqualToSize(layerFrame.size, CGSizeZero));
+    mDrawable = (__bridge_retained void *)[renderer.metalLayer nextDrawable];
     assert( mImpl != NULL );
     assert( mDrawable != NULL );
     assert( [(__bridge id)mDrawable conformsToProtocol:@protocol(CAMetalDrawable)] );
+}
+
+RenderCommandBuffer::~RenderCommandBuffer()
+{
+    // CFRelease(mDrawable);
+    mDrawable = nil;
 }
 
 RenderEncoderRef RenderCommandBuffer::createRenderEncoder( RenderPassDescriptorRef & descriptor,

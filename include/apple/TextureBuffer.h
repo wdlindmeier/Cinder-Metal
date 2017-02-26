@@ -127,7 +127,7 @@ namespace cinder { namespace mtl {
         // Getting & Setting Data for 2D images
         void setPixelData( const void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         void getPixelData( void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
-        
+
         ci::ImageSourceRef createSource();
 
         // Accessors
@@ -143,7 +143,7 @@ namespace cinder { namespace mtl {
         TextureUsage getUsage(); // <MTLTextureUsage>
         
         void getBytes( void * pixelBytes, const ivec3 regionOrigin, const ivec3 regionSize,
-                      uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0);
+                       uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0);
         
         void replaceRegion( const ivec3 regionOrigin, const ivec3 regionSize, const void * newBytes,
                             uint bytesPerRow, uint bytesPerImage, uint mipmapLevel = 0, uint slice = 0 );
