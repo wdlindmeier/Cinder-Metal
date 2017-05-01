@@ -39,7 +39,7 @@ This class doesn't have an equvalent Objective-C implementation, it's just usefu
 **Number of Inflight Buffers**  
 Metal generally has multiple Command Buffers at various points of execution, referred to as "inflight buffers." This improves concurrency across the CPU and GPU. One important consideration is that the CPU and GPU have access to the same memory at different points in the pipeline, and you don't want your CPU to overwrite data that the GPU hasn't rendered yet. To account for this, you should make your mutating buffers large enough for multiple copies of the data (each mapping to a frame), and offset the "current" data using the current inflight buffer index. The default number of inflight buffers is 3, but this can be changed in the RendererMetal::Options.
 
-###Using the Metal API directly 
+### Using the Metal API directly 
 This block is still a work in progress, and you may find a reason to call the Objective-C Metal API directly. All of the C++ classes found in this block have accessors to their native Objective-C implementations using the `getNative()` accessor, as well as constructors that take a native instance (generally as a `void *`). To make Objective-C calls in your Cinder app, change the .cpp suffix of your App file to .mm.
 
 ### Gotchas
