@@ -279,15 +279,17 @@ ImageIo::DataType dataTypeFromPixelFormat( PixelFormat pixelFormat )
 }
 
 
-ImageSourceTextureBuffer::ImageSourceTextureBuffer( TextureBuffer & texture )
-: ImageSourceMTLTexture( texture.getNative() )
+ImageSourceTextureBuffer::ImageSourceTextureBuffer( TextureBuffer & texture, int slice, int mipmapLevel )
+: ImageSourceMTLTexture( texture.getNative(), slice, mipmapLevel )
 {
     //...
 }
         
-ImageSourceMTLTexture::ImageSourceMTLTexture( void *texture )
+ImageSourceMTLTexture::ImageSourceMTLTexture( void *texture, int slice, int mipmapLevel )
 : ImageSource()
 ,mTexture(texture)
+,mSlice(slice)
+,mMipmapLevel(mipmapLevel)
 {
     assert( [(__bridge id)mTexture conformsToProtocol:@protocol(MTLTexture)] );
     mWidth = (int)((__bridge id <MTLTexture>)mTexture).width;
@@ -313,8 +315,8 @@ void ImageSourceMTLTexture::getPixelData()
           bytesPerRow:mRowBytes
         bytesPerImage:mRowBytes * texture.height
            fromRegion:MTLRegionMake2D(0, 0, texture.width, texture.height)
-          mipmapLevel:0
-                slice:0];
+          mipmapLevel:mMipmapLevel
+                slice:mSlice];
 }
 
 void ImageSourceMTLTexture::load( ImageTargetRef target )

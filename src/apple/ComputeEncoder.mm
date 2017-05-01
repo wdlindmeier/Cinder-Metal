@@ -59,6 +59,11 @@ void ComputeEncoder::setBufferAtIndex( const DataBufferRef & buffer, size_t inde
             atIndex:index];
 }
 
+void ComputeEncoder::setBytesAtIndex( const void * bytes, size_t length, size_t index )
+{
+    [IMPL setBytes:bytes length:length atIndex:index];
+}
+
 void ComputeEncoder::setThreadgroupMemoryLength( size_t byteLength, size_t groupMemoryIndex )
 {
     [IMPL setThreadgroupMemoryLength:byteLength atIndex:groupMemoryIndex];

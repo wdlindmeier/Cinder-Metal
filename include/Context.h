@@ -14,10 +14,6 @@
 #include "RenderPipelineState.h"
 #include "DataBuffer.h"
 
-// The capacity for simultaneous uniform buffers.
-// Should be enough for multiple batches.
-const static int kNumUniformBuffers = 5;
-
 namespace cinder { namespace mtl {
     
     class Context;
@@ -104,27 +100,9 @@ namespace cinder { namespace mtl {
     };
     
     Context* context();
-//    class Environment* env();
 
     void setDefaultShaderVars( RenderEncoder & renderEncoder, RenderPipelineStateRef pipeline);
 
-    // TODO: How much of this is appropriate and relevant for the Metal architecture?
-//    void enableVerticalSync( bool enable = true );
-//    bool isVerticalSyncEnabled();
-//    void enableAlphaBlending( bool premultiplied = false );
-//    void disableAlphaBlending();
-//    void enableAdditiveBlending();
-//    void enableFaceCulling( bool enable = true );
-//    void cullFace( GLenum face );
-//    void disableDepthRead();
-//    void disableDepthWrite();
-//    void enableDepthRead( bool enable = true );
-//    void enableDepthWrite( bool enable = true );
-//    void enableStencilRead( bool enable = true );
-//    void disableStencilRead();
-//    void enableStencilWrite( bool enable = true );
-//    void disableStencilWrite();
-    
     //! Sets the View and Projection matrices based on a Camera
     void setMatrices( const ci::Camera &cam );
     void setModelMatrix( const ci::mat4 &m );

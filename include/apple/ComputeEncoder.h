@@ -32,6 +32,7 @@ namespace cinder { namespace mtl {
         virtual void setTexture( const TextureBufferRef & texture, size_t index = ciTextureIndex0 );
         virtual void setUniforms( const DataBufferRef & buffer, size_t bytesOffset = 0, size_t bufferIndex = ciBufferIndexUniforms );
         void setBufferAtIndex( const DataBufferRef & buffer, size_t bufferIndex , size_t bytesOffset = 0 );
+        void setBytesAtIndex( const void * bytes, size_t length, size_t index );
         void setSamplerState( const SamplerStateRef & samplerState, int samplerIndex = 0 );
         void setThreadgroupMemoryLength( size_t byteLength, size_t groupMemoryIndex );
         

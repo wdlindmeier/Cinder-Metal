@@ -133,9 +133,9 @@ TextureBuffer::~TextureBuffer()
 
 #pragma mark - Getting data
 
-ImageSourceRef TextureBuffer::createSource()
+ImageSourceRef TextureBuffer::createSource( int slice, int mipmapLevel )
 {
-    return ImageSourceRef( new ImageSourceTextureBuffer( *this ) );
+    return ImageSourceRef( new ImageSourceTextureBuffer( *this, slice, mipmapLevel ) );
 }
 
 void TextureBuffer::getPixelData( void *pixelBytes, unsigned int slice, unsigned int mipmapLevel )
@@ -347,6 +347,11 @@ TextureUsage TextureBuffer::getUsage() // AKA MTLTextureUsage
 // Not implemented
 // rootResource
 
+static inline MTLRegion mtlRegion( const glm::ivec2 regionOrigin, const glm::ivec2 regionSize )
+{
+    return MTLRegionMake2D( regionOrigin.x, regionOrigin.y, regionSize.x, regionSize.y);
+}
+
 static inline MTLRegion mtlRegion( const glm::ivec3 regionOrigin, const glm::ivec3 regionSize )
 {
     return MTLRegionMake3D( regionOrigin.x, regionOrigin.y, regionOrigin.z,
@@ -372,6 +377,14 @@ void TextureBuffer::replaceRegion(const ivec3 regionOrigin, const ivec3 regionSi
               withBytes:newBytes
             bytesPerRow:bytesPerRow
           bytesPerImage:bytesPerImage];
+}
+
+void TextureBuffer::replaceRegion(const ivec2 regionOrigin, const ivec2 regionSize, const void * newBytes, uint bytesPerRow, uint mipmapLevel)
+{
+    [IMPL replaceRegion:mtlRegion(regionOrigin, regionSize)
+            mipmapLevel:mipmapLevel
+              withBytes:newBytes
+            bytesPerRow:bytesPerRow];
 }
 
 TextureBufferRef TextureBuffer::newTexture( PixelFormat pixelFormat, TextureType type,

@@ -34,7 +34,7 @@ class ImageSourceMTLTexture : public ImageSource
 {    
 public:
     
-    ImageSourceMTLTexture( void * mtlTexture ); // <MTLTexture>
+    ImageSourceMTLTexture( void * mtlTexture, int slice = 0, int mipmapLevel = 0 ); // <MTLTexture>
     void load( ImageTargetRef target );
     
 protected:
@@ -43,6 +43,8 @@ protected:
     
     std::unique_ptr<uint8_t[]>	mData;
     int32_t						mRowBytes;
+    int                         mSlice;
+    int                         mMipmapLevel;
     void *                      mTexture; // <MTLTexture>
 };
     
@@ -51,7 +53,7 @@ class ImageSourceTextureBuffer : public ImageSourceMTLTexture
 {
 public:
     
-    ImageSourceTextureBuffer( TextureBuffer & texture );
+    ImageSourceTextureBuffer( TextureBuffer & texture, int slice = 0, int mipmapLevel = 0 );
 
 };
     
