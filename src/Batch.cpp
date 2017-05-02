@@ -1,6 +1,5 @@
 //
 //  Batch.cpp
-//  Batch
 //
 //  Created by William Lindmeier on 1/10/16.
 //

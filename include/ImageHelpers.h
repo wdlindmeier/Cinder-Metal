@@ -1,6 +1,5 @@
 //
 //  ImageHelpers.h
-//  ParticleSorting
 //
 //  Created by William Lindmeier on 11/27/15.
 //

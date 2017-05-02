@@ -1,6 +1,5 @@
 //
 //  Shader.cpp
-//  StockShader
 //
 //  Created by William Lindmeier on 4/18/16.
 //

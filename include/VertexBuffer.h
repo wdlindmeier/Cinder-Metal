@@ -1,6 +1,5 @@
 //
 //  GeomTarget.hpp
-//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/24/15.
 //

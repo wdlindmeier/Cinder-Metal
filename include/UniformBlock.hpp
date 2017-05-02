@@ -1,6 +1,5 @@
 //
 //  UniformBlock.hpp
-//  CinderVuforiaMTL
 //
 //  Created by William Lindmeier on 1/3/16.
 //

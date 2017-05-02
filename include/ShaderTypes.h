@@ -1,6 +1,5 @@
 //
 //  ShaderTypes.h
-//  CascadeTimeline
 //
 //  Created by William Lindmeier on 2/27/16.
 //

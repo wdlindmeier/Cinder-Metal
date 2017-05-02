@@ -1,6 +1,5 @@
 //
 //  MetalConstants.h
-//  Cinder-Metal
 //
 //  Created by William Lindmeier on 11/8/15.
 //

@@ -1,6 +1,5 @@
 //
 //  TextureBuffer.hpp
-//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/30/15.
 //

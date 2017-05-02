@@ -1,6 +1,5 @@
 //
 //  CommandEncoder.cpp
-//  ParticleSorting
 //
 //  Created by William Lindmeier on 11/12/15.
 //

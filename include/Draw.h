@@ -1,6 +1,5 @@
 //
 //  Draw.h
-//  MetalBasic
 //
 //  Created by William Lindmeier on 2/23/16.
 //

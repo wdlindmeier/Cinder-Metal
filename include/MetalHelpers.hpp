@@ -1,6 +1,5 @@
 //
 //  MetalHelpers.hpp
-//  Cinder-Metal
 //
 //  Created by William Lindmeier on 11/4/15.
 //

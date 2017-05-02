@@ -1,6 +1,5 @@
 //
-//  Cocoa.cpp
-//  MagicEraserCam
+//  CinderMetalCocoa.mm
 //
 //  Created by William Lindmeier on 3/3/17.
 //

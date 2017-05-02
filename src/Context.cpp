@@ -1,6 +1,5 @@
 //
 //  Context.cpp
-//  Batch
 //
 //  Created by William Lindmeier on 1/20/16.
 //

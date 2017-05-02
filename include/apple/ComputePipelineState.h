@@ -1,6 +1,5 @@
 //
 //  ComputePipelineState.hpp
-//  ParticleSorting
 //
 //  Created by William Lindmeier on 11/13/15.
 //

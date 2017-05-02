@@ -1,6 +1,5 @@
 //
 //  RendererMetalImpl.m
-//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/11/15.
 //

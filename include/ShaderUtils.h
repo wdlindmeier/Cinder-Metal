@@ -1,6 +1,5 @@
 //
 //  ShaderUtils.h
-//  MetalBasic
 //
 //  Created by William Lindmeier on 2/20/16.
 //

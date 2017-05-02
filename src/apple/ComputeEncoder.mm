@@ -1,6 +1,5 @@
 //
 //  ComputeEncoder.cpp
-//  Cinder-Metal
 //
 //  Created by William Lindmeier on 10/17/15.
 //
