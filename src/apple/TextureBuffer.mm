@@ -137,6 +137,17 @@ ImageSourceRef TextureBuffer::createSource( int slice, int mipmapLevel )
     return ImageSourceRef( new ImageSourceTextureBuffer( *this, slice, mipmapLevel ) );
 }
 
+void TextureBuffer::getPixelData( void *pixelBytes, const ivec2 & origin, const ivec2 & size,
+                                  unsigned int slice, unsigned int mipmapLevel )
+{
+    [IMPL getBytes:pixelBytes
+       bytesPerRow:mBytesPerRow
+     bytesPerImage:mBytesPerRow * getHeight()
+        fromRegion:MTLRegionMake2D(origin.x, origin.y, size.x, size.y)
+       mipmapLevel:mipmapLevel
+             slice:slice];
+}
+
 void TextureBuffer::getPixelData( void *pixelBytes, unsigned int slice, unsigned int mipmapLevel )
 {
     [IMPL getBytes:pixelBytes

@@ -126,6 +126,8 @@ namespace cinder { namespace mtl {
         // Getting & Setting Data for 2D images
         void setPixelData( const void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         void getPixelData( void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
+        void getPixelData( void *pixelBytes, const ivec2 & origin, const ivec2 & size,
+                           unsigned int slice = 0, unsigned int mipmapLevel = 0);
 
         ci::ImageSourceRef createSource( int slice = 0, int mipmapLevel = 0 );
 
