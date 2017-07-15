@@ -42,9 +42,30 @@ CGImageRef convertMTLTexture(id <MTLTexture> texture)
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     
-    // TODO: Make this more robust to other pixel formats
-    CGBitmapInfo bitmapInfo = kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big;
-    
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big;
+	switch (pxFormat)
+	{
+        case mtl::PixelFormatRGBA8Unorm:
+		case mtl::PixelFormatRGBA8Unorm_sRGB:
+		case mtl::PixelFormatRGBA8Snorm:
+		case mtl::PixelFormatRGBA8Uint:
+		case mtl::PixelFormatRGBA8Sint:
+		{
+			bitmapInfo = kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big;
+		}
+			break;
+		case PixelFormatBGRA8Unorm:
+		case PixelFormatBGRA8Unorm_sRGB:
+		{
+			bitmapInfo = kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst;
+		}
+			break;
+		default:
+			// TODO: Make this more robust to other pixel formats
+			NSLog(@"WARNING: Unsupported pixel format. TODO: Add support for %i", (int)pxFormat);
+			break;
+	}
+
     CGDataProviderRef provider = CGDataProviderCreateWithData(nil, data, memSize, &ReleaseTextureData);
     
     CGImageRef cgImageRef = CGImageCreate(width, height,

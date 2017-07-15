@@ -3,6 +3,7 @@
 #include "RenderEncoder.h"
 #include "ImageHelpers.h"
 #include "cinder/ip/resize.h"
+#include "cinder/cocoa/CinderCocoa.h"
 
 using namespace cinder;
 using namespace cinder::app;

@@ -29,9 +29,13 @@ namespace cinder { namespace mtl {
         
         void play();
         void pause();
+        void seekToTime(double secondsOffset);
+        double getDuration();
+        void setRate(float rate);
+        float getRate();
         
-        TextureBufferRef & textureLuma();
-        TextureBufferRef & textureChroma();
+        TextureBufferRef & getTextureLuma();
+        TextureBufferRef & getTextureChroma();
         
     protected:
         

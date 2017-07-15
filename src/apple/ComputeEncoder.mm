@@ -6,6 +6,7 @@
 //
 
 #include "ComputeEncoder.h"
+#include "cinder/cocoa/CinderCocoa.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>

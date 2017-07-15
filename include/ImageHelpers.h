@@ -9,6 +9,7 @@
 
 #include "cinder/Cinder.h"
 #include "MetalEnums.h"
+#include "TextureBuffer.h"
 
 namespace cinder { namespace mtl {
     
@@ -55,6 +56,8 @@ public:
     ImageSourceTextureBuffer( TextureBuffer & texture, int slice = 0, int mipmapLevel = 0 );
 
 };
-    
+
+void copyTexture( TextureBufferRef & from, TextureBufferRef & to, int fromIndex = 0, int toIndex = 0 );
+
 }} // cinder mtl
 

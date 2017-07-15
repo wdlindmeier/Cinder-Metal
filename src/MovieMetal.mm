@@ -19,7 +19,6 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 @interface MovieMetalImpl : NSObject <AVPlayerItemOutputPullDelegate>
 {
-    AVPlayer *_player;
     AVPlayerItemVideoOutput *_videoOutput;
     dispatch_queue_t _myVideoOutputQueue;
     id _notificationToken;
@@ -29,6 +28,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 @property (nonatomic, readonly) ci::mtl::TextureBufferRef & textureLuma;
 @property (nonatomic, readonly) ci::mtl::TextureBufferRef & textureChroma;
+@property (nonatomic, readonly) AVPlayer *player;
 
 @property (nonatomic, assign) BOOL isPlaying;
 
@@ -161,7 +161,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
                                                                        usingBlock:^(NSNotification *note)
     {
         // Simple item playback rewind.
-        [[_player currentItem] seekToTime:kCMTimeZero];
+        [[_player currentItem] seekToTime:kCMTimeZero completionHandler:nil];
     }];
 }
 
@@ -258,12 +258,33 @@ void mtl::MovieMetal::pause()
     mVideoDelegate.isPlaying = NO;
 }
 
-mtl::TextureBufferRef & mtl::MovieMetal::textureLuma()
+void mtl::MovieMetal::setRate(float rate)
+{
+    mVideoDelegate.player.rate = rate;
+}
+
+void mtl::MovieMetal::seekToTime(double secondsOffset)
+{
+    [[mVideoDelegate.player currentItem] seekToTime:CMTimeMakeWithSeconds(secondsOffset, 60) // eh? CMTimeMake(60*secondsOffset, 60) // eh?
+                                  completionHandler:nil];
+}
+
+double mtl::MovieMetal::getDuration()
+{
+    return CMTimeGetSeconds([[mVideoDelegate.player currentItem] duration]);
+}
+
+float mtl::MovieMetal::getRate()
+{
+    return mVideoDelegate.player.rate;
+}
+
+mtl::TextureBufferRef & mtl::MovieMetal::getTextureLuma()
 {
     return mVideoDelegate.textureLuma;
 }
 
-mtl::TextureBufferRef & mtl::MovieMetal::textureChroma()
+mtl::TextureBufferRef & mtl::MovieMetal::getTextureChroma()
 {
     return mVideoDelegate.textureChroma;
 }

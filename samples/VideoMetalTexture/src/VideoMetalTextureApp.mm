@@ -52,8 +52,8 @@ void VideoMetalTextureApp::draw()
     mtl::ScopedRenderCommandBuffer renderBuffer;
     mtl::ScopedRenderEncoder renderEncoder = renderBuffer.scopedRenderEncoder(mRenderDescriptor);
     
-    mtl::TextureBufferRef & luma = mMovieMetal->textureLuma();
-    mtl::TextureBufferRef & chroma = mMovieMetal->textureChroma();
+    mtl::TextureBufferRef & luma = mMovieMetal->getTextureLuma();
+    mtl::TextureBufferRef & chroma = mMovieMetal->getTextureChroma();
     if ( luma && chroma )
     {
         renderEncoder.setTexture(luma, mtl::ciTextureIndex0);

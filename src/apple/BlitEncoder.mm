@@ -6,6 +6,7 @@
 //
 
 #include "BlitEncoder.h"
+#include "cinder/cocoa/CinderCocoa.h"
 #import <QuartzCore/CAMetalLayer.h>
 #import <Metal/Metal.h>
 #import <simd/simd.h>
@@ -55,7 +56,10 @@ void BlitEncoder::synchronizeTexture( const TextureBufferRef & texture, uint sli
 }
 #endif
 
-void BlitEncoder::copyFromTextureToTexture(const TextureBufferRef & sourceTexture, uint sourceSlice, uint sourceLevel, ivec3 sourceOrigin, ivec3 sourceSize, TextureBufferRef & destTexture, uint destSlice, uint destLevel, ivec3 destOrigin)
+void BlitEncoder::copyFromTextureToTexture( const TextureBufferRef & sourceTexture, uint sourceSlice,
+										    uint sourceLevel, ivec3 sourceOrigin, ivec3 sourceSize,
+										    TextureBufferRef & destTexture, uint destSlice, uint destLevel,
+										    ivec3 destOrigin )
 {
     [IMPL copyFromTexture:(__bridge id <MTLTexture>)sourceTexture->getNative()
               sourceSlice:sourceSlice

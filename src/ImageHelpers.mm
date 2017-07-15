@@ -10,6 +10,7 @@
 #include "cinder/Log.h"
 #include "cinder/cocoa/CinderCocoa.h"
 #include "ImageHelpers.h"
+#include "Scope.h"
 
 using namespace std;
 using namespace cinder;
@@ -332,6 +333,23 @@ void ImageSourceMTLTexture::load( ImageTargetRef target )
         ((*this).*func)( target, row, data );
         data += mRowBytes;
     }
+}
+
+void copyTexture( TextureBufferRef & from, TextureBufferRef & to, int fromIndex, int toIndex )
+{
+	mtl::ScopedCommandBuffer commandBuffer(true);
+	mtl::ScopedBlitEncoder blitEncoder = commandBuffer.scopedBlitEncoder();
+
+	ivec2 textureSize = from->getSize();
+	blitEncoder.copyFromTextureToTexture(from,
+										 fromIndex,
+										 0,
+										 ivec3(0),
+										 ivec3(textureSize.x, textureSize.y, 1),
+										 to,
+										 toIndex,
+										 0,
+										 ivec3(0));
 }
     
 }} // cinder mtl

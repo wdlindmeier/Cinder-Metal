@@ -6,6 +6,7 @@
 //
 
 #include "Batch.h"
+#include "cinder/app/App.h"
 #include "cinder/Log.h"
 #include "Context.h"
 
