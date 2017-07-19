@@ -122,6 +122,14 @@ mFormat(format)
     CFRelease(imageRef);
 }
 
+TextureBufferRef TextureBuffer::clone()
+{
+	TextureBufferRef myClone = mtl::TextureBuffer::create((int)getWidth(), (int)getHeight(), getFormat());
+	TextureBufferRef myRef(this);
+	copyTexture(myRef, myClone);
+	return myClone;
+}
+
 TextureBuffer::~TextureBuffer()
 {
     if ( mImpl )

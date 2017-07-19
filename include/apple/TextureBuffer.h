@@ -118,6 +118,9 @@ namespace cinder { namespace mtl {
             return TextureBufferRef( new TextureBuffer( mtlTexture ) );
         }
 
+		// What's the right way to handle copy?
+		TextureBufferRef clone();
+
         virtual ~TextureBuffer();
 
         void update( const ImageSourceRef & imageSource, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
