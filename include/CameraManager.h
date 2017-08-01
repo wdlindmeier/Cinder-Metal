@@ -8,7 +8,7 @@
 
 #include "cinder/cinder.h"
 #include "metal.h"
-
+#ifdef CINDER_COCOA_TOUCH
 typedef void (^PixelBufferCallback)(CVPixelBufferRef pxBuffer);
 
 class CameraManager
@@ -60,3 +60,4 @@ protected:
     Options mOptions;
 
 };
+#endif

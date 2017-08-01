@@ -8,6 +8,10 @@
 #pragma once
 
 #include "cinder/Cinder.h"
+
+// TODO: Update with OS X support
+#ifdef CINDER_COCOA_TOUCH
+
 #include "metal.h"
 #include <memory>
 
@@ -45,3 +49,4 @@ namespace cinder { namespace mtl {
     
 }}
 
+#endif

@@ -6,6 +6,7 @@
 //
 
 #import "MovieMetal.h"
+#ifdef CINDER_COCOA_TOUCH
 #import <Foundation/Foundation.h>
 #include "RendererMetalImpl.h"
 #import <AVFoundation/AVFoundation.h>
@@ -288,3 +289,5 @@ mtl::TextureBufferRef & mtl::MovieMetal::getTextureChroma()
 {
     return mVideoDelegate.textureChroma;
 }
+#endif
+

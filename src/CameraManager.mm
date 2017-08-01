@@ -5,8 +5,8 @@
 //  Created by William Lindmeier on 2/10/17.
 //
 //
-
 #import "CameraManager.h"
+#ifdef CINDER_COCOA_TOUCH
 #import "RendererMetalImpl.h"
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIDevice.h>
@@ -515,4 +515,4 @@ mtl::TextureBufferRef & CameraManager::getTexture( const int inflightBufferIndex
     }
     return [IMPL lastTexture];
 }
-
+#endif
