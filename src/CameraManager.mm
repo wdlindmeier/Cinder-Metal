@@ -50,7 +50,7 @@ const int kVideoTextureBufferSize = 2;
     {
         _currVideoTextureIndex = -1;
         
-        if ( !options.isFrontFacing )
+        if ( !options.getIsFrontFacing() )
         {
             _devicePosition = AVCaptureDevicePositionBack;
         }
@@ -59,11 +59,11 @@ const int kVideoTextureBufferSize = 2;
             _devicePosition = AVCaptureDevicePositionFront;
         }
 
-        _targetFramerate = options.targetFramerate;
-        _targetWidth = options.targetWidth;
-        _targetHeight = options.targetHeight;
-        _mipmapLevel = options.mipMapLevel;
-        _useCinematicStabilization = options.useCinematicStabilization;
+        _targetFramerate = options.getTargetFramerate();
+        _targetWidth = options.getTargetWidth();
+        _targetHeight = options.getTargetHeight();
+        _mipmapLevel = options.getMipMapLevel();
+        _useCinematicStabilization = options.getUsesCinematicStabilization();
     }
     return self;
 }

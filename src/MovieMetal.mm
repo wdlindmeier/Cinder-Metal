@@ -25,11 +25,13 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     id _notificationToken;
     CADisplayLink *_displayLink;
     CVMetalTextureCacheRef _videoTextureCache;
+	BOOL _shouldLoop;
 }
 
 @property (nonatomic, readonly) ci::mtl::TextureBufferRef & textureLuma;
 @property (nonatomic, readonly) ci::mtl::TextureBufferRef & textureChroma;
 @property (nonatomic, readonly) AVPlayer *player;
+@property (nonatomic, copy) void (^playbackCompleteHandler)(void);
 
 @property (nonatomic, assign) BOOL isPlaying;
 
@@ -37,17 +39,18 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 @implementation MovieMetalImpl
 
-- (void)setupWithURL:(NSURL *)url
+- (void)setupWithURL:(NSURL *)url options:( const mtl::MovieMetal::Options & )options
 {
     assert(url != nil);
-    
+
+	_shouldLoop = options.getLoops();
+
     CVMetalTextureCacheCreate(NULL, NULL, [RendererMetalImpl sharedRenderer].device,
                               NULL, &_videoTextureCache);
     
     _player = [[AVPlayer alloc] init];
-    
     [self setupPlaybackForURL:url];
-    
+
     NSDictionary *pixBuffAttributes = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)};
     _videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:pixBuffAttributes];
     _videoOutput.suppressesPlayerRendering = YES;
@@ -62,14 +65,12 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
     [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [_displayLink setPaused:YES];
-    
 }
 
 # define ONE_FRAME_DURATION 0.03
 
 - (void)outputMediaDataWillChange:(AVPlayerItemOutput *)sender
 {
-    NSLog(@"outputMediaDataWillChange");
     if ( _isPlaying )
     {
         [_displayLink setPaused:NO];
@@ -79,12 +80,20 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 - (void)setIsPlaying:(int)isPlaying
 {
     _isPlaying = isPlaying;
+	if ( _isPlaying )
+	{
+		[_player play];
+	}
+	else
+	{
+		[_player pause];
+	}
     [_displayLink setPaused:!_isPlaying];
 }
 
 - (void)outputSequenceWasFlushed:(AVPlayerItemOutput *)output
 {
-    NSLog(@"outputSequenceWasFlushed");
+    //NSLog(@"outputSequenceWasFlushed");
 }
 
 - (void)setupPlaybackForURL:(NSURL *)URL
@@ -93,14 +102,15 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     [[_player currentItem] removeOutput:_videoOutput];
     
     AVPlayerItem *item = [AVPlayerItem playerItemWithURL:URL];
-    AVAsset *asset = [item asset];
+	AVAsset *asset = [item asset];
     
     [asset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^
     {
         if ( [asset statusOfValueForKey:@"tracks" error:nil] == AVKeyValueStatusLoaded )
         {
             NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
-            if ([tracks count] > 0) {
+            if ([tracks count] > 0)
+			{
                 // Choose the first video track.
                 AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
                 [videoTrack loadValuesAsynchronouslyForKeys:@[@"preferredTransform"] completionHandler:^
@@ -111,11 +121,9 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
                         
                         dispatch_async(dispatch_get_main_queue(), ^
                         {
-                            NSLog(@"PLAYING VIDEO");
                             [item addOutput:_videoOutput];
                             [_player replaceCurrentItemWithPlayerItem:item];
                             [_videoOutput requestNotificationOfMediaDataChangeWithAdvanceInterval:ONE_FRAME_DURATION];
-                            [_player play];
                         });
                     }
                 }];
@@ -156,14 +164,21 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     }
      // Setting actionAtItemEnd to None prevents the movie from getting paused at item end. A very simplistic, and not gapless, looped playback.
     _player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    _notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
-                                                                           object:item
-                                                                            queue:[NSOperationQueue mainQueue]
-                                                                       usingBlock:^(NSNotification *note)
-    {
-        // Simple item playback rewind.
-        [[_player currentItem] seekToTime:kCMTimeZero completionHandler:nil];
-    }];
+	_notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
+																		   object:item
+																			queue:[NSOperationQueue mainQueue]
+																	   usingBlock:^(NSNotification *note)
+	{
+		// Simple item playback rewind.
+		if ( _shouldLoop )
+		{
+			[[_player currentItem] seekToTime:kCMTimeZero];
+		}
+		if ( self.playbackCompleteHandler )
+		{
+			self.playbackCompleteHandler();
+		}
+	}];
 }
 
 - (void)displayLinkCallback:(CADisplayLink *)sender
@@ -243,14 +258,25 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 @end
 
-mtl::MovieMetal::MovieMetal( const fs::path & movieURL )
+mtl::MovieMetal::MovieMetal( const fs::path & movieURL, Options options )
+:
+mOptions(options)
+,mLoops(false)
 {
     mVideoDelegate = [MovieMetalImpl new];
-    [mVideoDelegate setupWithURL:[NSURL fileURLWithPath:[NSString stringWithUTF8String:movieURL.c_str()]]];
+    [mVideoDelegate setupWithURL:[NSURL fileURLWithPath:[NSString stringWithUTF8String:movieURL.c_str()]]
+						 options:mOptions];
+	mVideoDelegate.playbackCompleteHandler = ^{
+		if ( mPlaybackCompleteHandler ) mPlaybackCompleteHandler(this);
+	};
 }
 
-void mtl::MovieMetal::play()
+void mtl::MovieMetal::play( bool seekToZero )
 {
+	if ( seekToZero )
+	{
+		seekToTime(0);
+	}
     mVideoDelegate.isPlaying = YES;
 }
 

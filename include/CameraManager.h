@@ -15,26 +15,54 @@ class CameraManager
 {
     
 public:
-    
-    struct Options
-    {
-        int targetFramerate;
-        int targetWidth;
-        int targetHeight;
-        bool isFrontFacing;
-        bool useCinematicStabilization;
-        int mipMapLevel;
 
-        Options() :
-        targetFramerate(60)
-        ,targetWidth(640)
-        ,targetHeight(480)
-        ,isFrontFacing(false)
-        ,mipMapLevel(1)
-        ,useCinematicStabilization(false)
-        {}
-    };
-    
+	struct Options
+	{
+		Options() :
+		mTargetFramerate(60)
+		,mTargetWidth(640)
+		,mTargetHeight(480)
+		,mIsFrontFacing(false)
+		,mMipMapLevel(1)
+		,mUsesCinematicStabilization(false)
+		{}
+
+	public:
+
+		Options& targetFramerate( int framerate ) { setTargetFramerate( framerate ); return *this; };
+		void setTargetFramerate( int framerate ) { mTargetFramerate = framerate; };
+		int getTargetFramerate() const { return mTargetFramerate; };
+
+		Options& targetWidth( int width ) { setTargetWidth( width ); return *this; };
+		void setTargetWidth( int width ) { mTargetWidth = width; };
+		int getTargetWidth() const { return mTargetWidth; };
+
+		Options& targetHeight( int height ) { setTargetHeight( height ); return *this; };
+		void setTargetHeight( int height ) { mTargetHeight = height; };
+		int getTargetHeight() const { return mTargetHeight; };
+
+		Options& mipMapLevel( int mipMapLevel ) { setMipMapLevel( mipMapLevel ); return *this; };
+		void setMipMapLevel( int mipMapLevel ) { mMipMapLevel = mipMapLevel; };
+		int getMipMapLevel() const { return mMipMapLevel; };
+
+		Options& isFrontFacing( bool isFrontFacing ) { setIsFrontFacing( isFrontFacing ); return *this; };
+		void setIsFrontFacing( bool isFrontFacing ) { mIsFrontFacing = isFrontFacing; };
+		bool getIsFrontFacing() const { return mIsFrontFacing; };
+
+		Options& usesCinematicStabilization( bool useCinematicStabilization ) { setUsesCinematicStabilization( useCinematicStabilization ); return *this; };
+		void setUsesCinematicStabilization( bool useCinematicStabilization ) { mUsesCinematicStabilization = useCinematicStabilization; };
+		bool getUsesCinematicStabilization() const { return mUsesCinematicStabilization; };
+
+	protected:
+
+		int mTargetFramerate;
+		int mTargetWidth;
+		int mTargetHeight;
+		bool mIsFrontFacing;
+		bool mUsesCinematicStabilization;
+		int mMipMapLevel;
+	};
+	
     CameraManager( Options options = Options() );
     
     bool hasTexture();
@@ -44,7 +72,7 @@ public:
     void startCapture();
     void stopCapture();
     bool isCapturing();
-    bool isFrontFacing(){ return mOptions.isFrontFacing; }
+    bool isFrontFacing(){ return mOptions.getIsFrontFacing(); }
     // restartWithOptions is good for toggling between front and back cameras with different resolutions, etc
     void restartWithOptions( const Options & options );
     void lockConfiguration( bool isExposureLocked = true, bool isWhiteBalanceLocked = true, bool isFocusLocked = true );
