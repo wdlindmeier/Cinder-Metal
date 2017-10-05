@@ -8,8 +8,11 @@
 
 #include "cinder/cinder.h"
 #include "metal.h"
+
 #ifdef CINDER_COCOA_TOUCH
-typedef void (^PixelBufferCallback)(CVPixelBufferRef pxBuffer);
+
+typedef void (^PixelBufferCallback)( CVPixelBufferRef pxBuffer );
+typedef void (^FaceDetectionCallback)( const std::map<long, ci::Rectf> & faceRegionsByID );
 
 class CameraManager
 {
@@ -25,6 +28,7 @@ public:
 		,mIsFrontFacing(false)
 		,mMipMapLevel(1)
 		,mUsesCinematicStabilization(false)
+		,mTracksFaces(false)
 		{}
 
 	public:
@@ -49,6 +53,10 @@ public:
 		void setIsFrontFacing( bool isFrontFacing ) { mIsFrontFacing = isFrontFacing; };
 		bool getIsFrontFacing() const { return mIsFrontFacing; };
 
+		Options& tracksFaces( bool trackFaces ) { setTracksFaces( trackFaces ); return *this; };
+		void setTracksFaces( bool trackFaces ) { mTracksFaces = trackFaces; };
+		bool getTracksFaces() const { return mTracksFaces; };
+
 		Options& usesCinematicStabilization( bool useCinematicStabilization ) { setUsesCinematicStabilization( useCinematicStabilization ); return *this; };
 		void setUsesCinematicStabilization( bool useCinematicStabilization ) { mUsesCinematicStabilization = useCinematicStabilization; };
 		bool getUsesCinematicStabilization() const { return mUsesCinematicStabilization; };
@@ -59,6 +67,7 @@ public:
 		int mTargetWidth;
 		int mTargetHeight;
 		bool mIsFrontFacing;
+		bool mTracksFaces;
 		bool mUsesCinematicStabilization;
 		int mMipMapLevel;
 	};
@@ -79,6 +88,7 @@ public:
     void unlockConfiguration( bool isExposureUnlocked = true, bool isWhiteBalanceUnlocked = true, bool isFocusUnlocked = true );
 
 	void setPixelBufferCallback( const PixelBufferCallback & pxBufferCallback );
+	void setFaceDetectionCallback( const FaceDetectionCallback & faceDetectionCallback );
 
 protected:
 

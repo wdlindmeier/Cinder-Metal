@@ -18,9 +18,13 @@ using namespace std;
 using namespace ci;
 using namespace ci::mtl;
 
-@interface MTLCameraManager : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface MTLCameraManager : NSObject <
+AVCaptureVideoDataOutputSampleBufferDelegate,
+AVCaptureMetadataOutputObjectsDelegate
+>
 
 @property (nonatomic, copy, nullable) PixelBufferCallback pxBufferCallback;
+@property (nonatomic, copy, nullable) FaceDetectionCallback faceDetectionCallback;
 
 @end
 
@@ -40,6 +44,7 @@ const int kVideoTextureBufferSize = 2;
     int _targetHeight;
     int _mipmapLevel;
     bool _useCinematicStabilization;
+	bool _trackFaces;
 	CFAbsoluteTime _timestampLastFrame;
 }
 
@@ -64,6 +69,7 @@ const int kVideoTextureBufferSize = 2;
         _targetHeight = options.getTargetHeight();
         _mipmapLevel = options.getMipMapLevel();
         _useCinematicStabilization = options.getUsesCinematicStabilization();
+		_trackFaces = options.getTracksFaces();
     }
     return self;
 }
@@ -91,6 +97,7 @@ const int kVideoTextureBufferSize = 2;
     {
         [self setupCaptureSession];
     }
+	_textures.clear();
     _textures.assign(kVideoTextureBufferSize, mtl::TextureBufferRef());
     [_captureSession startRunning];
 }
@@ -183,6 +190,21 @@ const int kVideoTextureBufferSize = 2;
     
     // Set dispatch to be on the main thread to create the texture in memory and allow Metal to use it for rendering
     [dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+
+	// Face tracking
+
+	if ( _trackFaces )
+	{
+		AVCaptureMetadataOutput* output = [[AVCaptureMetadataOutput alloc] init];
+		[output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+		if ([_captureSession canAddOutput:output])
+		{
+			[_captureSession addOutput:output];
+		}
+
+		// NOW try adding metadata types
+		output.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+	}
 
     NSError *deviceConfigError = nil;
     [_videoDevice lockForConfiguration:&deviceConfigError];
@@ -338,6 +360,32 @@ void ReleasePixelData( void * __nullable info, const void *data )
     free((void *)data);
 }
 
+- (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects
+	   fromConnection:(AVCaptureConnection *)connection
+{
+	if ( !self.faceDetectionCallback ) return;
+
+	std::map<long, ci::Rectf> faceRegionsByID;
+
+	for ( AVMetadataObject * metadata in metadataObjects )
+	{
+		if ( [metadata isKindOfClass:[AVMetadataFaceObject class]] )
+		{
+			AVMetadataFaceObject *faceObject = (AVMetadataFaceObject*)metadata;
+
+			CGRect bounds = metadata.bounds;
+			Rectf roi(bounds.origin.x,
+					  bounds.origin.y,
+					  bounds.origin.x + bounds.size.width,
+					  bounds.origin.y + bounds.size.height);
+			
+			faceRegionsByID[faceObject.faceID] = roi;
+		}
+	}
+
+	self.faceDetectionCallback(faceRegionsByID);
+}
+
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 	   fromConnection:(AVCaptureConnection *)connection
@@ -446,9 +494,14 @@ void CameraManager::setPixelBufferCallback( const PixelBufferCallback & pxBuffer
 	IMPL.pxBufferCallback = pxBufferCallback;
 }
 
+void CameraManager::setFaceDetectionCallback( const FaceDetectionCallback & faceDetectionCallback )
+{
+	IMPL.faceDetectionCallback = faceDetectionCallback;
+}
+
 void CameraManager::init()
 {
-    mImpl = (__bridge_retained void *)[[MTLCameraManager alloc] initWithOptions:mOptions];
+	mImpl = (__bridge_retained void *)[[MTLCameraManager alloc] initWithOptions:mOptions];
 }
 
 void CameraManager::startCapture()
@@ -478,12 +531,16 @@ void CameraManager::stopCapture()
 
 void CameraManager::restartWithOptions( const Options & options )
 {
-    if ( isCapturing() )
+	if ( isCapturing() )
     {
         stopCapture();
     }
     mOptions = options;
+	PixelBufferCallback pxBufferCallback = IMPL.pxBufferCallback;
+	FaceDetectionCallback faceDetectCallback = IMPL.faceDetectionCallback;
     init();
+	IMPL.pxBufferCallback = pxBufferCallback; // reset the callback if there was one
+	IMPL.faceDetectionCallback = faceDetectCallback; // ditto
     startCapture();
 }
 
