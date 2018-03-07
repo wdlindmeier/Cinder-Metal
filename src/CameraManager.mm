@@ -174,7 +174,7 @@ const int kVideoTextureBufferSize = 2;
     
     if (error)
     {
-        NSLog(@">> ERROR: Couldnt create AVCaptureDeviceInput");
+        NSLog(@">> ERROR: Couldnt create AVCaptureDeviceInput %@", error);
         assert(0);
     }
     

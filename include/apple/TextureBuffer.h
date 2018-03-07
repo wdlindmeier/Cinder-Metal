@@ -125,6 +125,7 @@ namespace cinder { namespace mtl {
 
         void update( const ImageSourceRef & imageSource, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         void update( void * mtlTexture );
+		void updateWithCGImage( void *, bool flipVertically, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         
         // Getting & Setting Data for 2D images
         void setPixelData( const void *pixelBytes, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
@@ -166,7 +167,6 @@ namespace cinder { namespace mtl {
         TextureBuffer( uint width, uint height, Format format );
         TextureBuffer( void * mtlTexture );
 
-        void updateWithCGImage( void *, bool flipVertically, unsigned int slice = 0, unsigned int mipmapLevel = 0 );
         void generateMipmap();
         
         void *mImpl = NULL; // <MTLTexture>

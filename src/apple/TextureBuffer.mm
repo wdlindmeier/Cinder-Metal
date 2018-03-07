@@ -313,6 +313,11 @@ void TextureBuffer::setPixelData( const void *pixelBytes, unsigned int slice, un
               withBytes:pixelBytes
             bytesPerRow:mBytesPerRow
           bytesPerImage:mBytesPerRow * size.y];
+
+	if ( [IMPL mipmapLevelCount] > 1 )
+	{
+		generateMipmap();
+	}
 }
 
 #pragma mark - Accessors
